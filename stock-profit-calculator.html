@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Profit Calculator - Calculate Stock Gains and Losses</title>
+    <meta name="description" content="Calculate stock profit or loss. Enter buy and sell prices to see your return. Includes fees and commissions. Free stock calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #16a34a 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 6px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #16a34a;
+        }
+        .result-box {
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box.profit {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+        }
+        .result-box.loss {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .break-item {
+            background: #f0fdf4;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .break-item .value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #16a34a;
+        }
+        .break-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #16a34a; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #15803d;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #86efac; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Stock Profit Calculator</h1>
+            <p class="subtitle">Calculate your stock gains and losses</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Buy Price ($)</label>
+                    <input type="number" id="buyPrice" value="100" min="0" step="0.01" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Sell Price ($)</label>
+                    <input type="number" id="sellPrice" value="125" min="0" step="0.01" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Number of Shares</label>
+                    <input type="number" id="shares" value="50" min="1" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Commission/Trade ($)</label>
+                    <input type="number" id="commission" value="0" min="0" step="1" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box profit" id="resultBox">
+                <div class="label">Total Profit/Loss</div>
+                <div class="value" id="profitLoss">+$1,250</div>
+                <div class="sub" id="returnPercent">+25.0% Return</div>
+            </div>
+
+            <div class="breakdown">
+                <div class="break-item">
+                    <div class="value" id="totalInvested">$5,000</div>
+                    <div class="label">Total Invested</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="saleProceeds">$6,250</div>
+                    <div class="label">Sale Proceeds</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="totalFees">$0</div>
+                    <div class="label">Total Fees</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="netReturn">$6,250</div>
+                    <div class="label">Net After Fees</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Investment Tools</h4>
+            <a href="investment-calculator.html">Investment Calculator</a>
+            <a href="roi-calculator.html">ROI Calculator</a>
+            <a href="compound-interest.html">Compound Interest</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Stock Profit Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const buyPrice = parseFloat(document.getElementById('buyPrice').value) || 0;
+            const sellPrice = parseFloat(document.getElementById('sellPrice').value) || 0;
+            const shares = parseInt(document.getElementById('shares').value) || 0;
+            const commission = parseFloat(document.getElementById('commission').value) || 0;
+
+            const totalInvested = buyPrice * shares + commission;
+            const saleProceeds = sellPrice * shares;
+            const totalFees = commission * 2; // Buy + Sell
+            const netProceeds = saleProceeds - commission;
+            const profitLoss = netProceeds - totalInvested;
+            const returnPercent = totalInvested > 0 ? (profitLoss / totalInvested) * 100 : 0;
+
+            const resultBox = document.getElementById('resultBox');
+            const profitLossEl = document.getElementById('profitLoss');
+            const returnPercentEl = document.getElementById('returnPercent');
+
+            if (profitLoss >= 0) {
+                resultBox.className = 'result-box profit';
+                profitLossEl.textContent = '+$' + profitLoss.toLocaleString('en-US', {maximumFractionDigits: 2});
+                returnPercentEl.textContent = '+' + returnPercent.toFixed(1) + '% Return';
+            } else {
+                resultBox.className = 'result-box loss';
+                profitLossEl.textContent = '-$' + Math.abs(profitLoss).toLocaleString('en-US', {maximumFractionDigits: 2});
+                returnPercentEl.textContent = returnPercent.toFixed(1) + '% Return';
+            }
+
+            document.getElementById('totalInvested').textContent = '$' + totalInvested.toLocaleString('en-US', {maximumFractionDigits: 2});
+            document.getElementById('saleProceeds').textContent = '$' + saleProceeds.toLocaleString('en-US', {maximumFractionDigits: 2});
+            document.getElementById('totalFees').textContent = '$' + totalFees.toLocaleString('en-US', {maximumFractionDigits: 2});
+            document.getElementById('netReturn').textContent = '$' + netProceeds.toLocaleString('en-US', {maximumFractionDigits: 2});
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

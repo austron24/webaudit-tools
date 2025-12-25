@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Card Payoff Calculator - How Long to Pay Off?</title>
+    <meta name="description" content="Calculate how long to pay off credit card debt. See interest saved by paying more. Free credit card payoff calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #be123c 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group {
+            margin-bottom: 18px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 16px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #be123c;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #be123c 0%, #9f1239 100%);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            color: white;
+            margin: 20px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .warning {
+            background: #fef2f2;
+            border: 2px solid #fecaca;
+            border-radius: 12px;
+            padding: 15px;
+            color: #dc2626;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .comparison {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .comparison h4 {
+            color: #be123c;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .compare-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .compare-row:last-child { border: none; }
+        .compare-row .label { color: #64748b; font-size: 14px; }
+        .compare-row .value { font-weight: 600; color: #1e293b; }
+        .savings-box {
+            background: #dcfce7;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .savings-box .label { color: #16a34a; font-size: 14px; }
+        .savings-box .value { color: #16a34a; font-size: 28px; font-weight: bold; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #be123c; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #9f1239;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fda4af; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Credit Card Payoff</h1>
+            <p class="subtitle">See how fast you can become debt-free</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Credit Card Balance ($)</label>
+                <input type="number" id="balance" value="5000" min="0" step="100" oninput="calculate()">
+            </div>
+
+            <div class="input-group">
+                <label>Interest Rate (APR %)</label>
+                <input type="number" id="rate" value="22" min="0" max="40" step="0.1" oninput="calculate()">
+            </div>
+
+            <div class="input-group">
+                <label>Monthly Payment ($)</label>
+                <input type="number" id="payment" value="200" min="0" step="10" oninput="calculate()">
+            </div>
+
+            <div class="warning" id="warning">
+                Your payment is too low! You'll never pay off the balance because interest exceeds your payment.
+            </div>
+
+            <div class="result-box">
+                <div class="label">Time to Pay Off</div>
+                <div class="value" id="timeToPayoff">31 months</div>
+                <div class="sub" id="payoffDate">Debt-free by: August 2027</div>
+            </div>
+
+            <div class="comparison">
+                <h4>Payment Breakdown</h4>
+                <div class="compare-row">
+                    <span class="label">Total Amount Paid</span>
+                    <span class="value" id="totalPaid">$6,200</span>
+                </div>
+                <div class="compare-row">
+                    <span class="label">Total Interest Paid</span>
+                    <span class="value" id="totalInterest">$1,200</span>
+                </div>
+                <div class="compare-row">
+                    <span class="label">Minimum Payment (~2%)</span>
+                    <span class="value" id="minPayment">$100</span>
+                </div>
+            </div>
+
+            <div class="savings-box" id="savingsBox">
+                <div class="label">Interest Saved vs Minimum Payments</div>
+                <div class="value" id="interestSaved">$2,800</div>
+            </div>
+
+            <div class="comparison">
+                <h4>If You Pay More...</h4>
+                <div class="compare-row">
+                    <span class="label">Pay $250/mo</span>
+                    <span class="value" id="pay250">24 mo • $987 interest</span>
+                </div>
+                <div class="compare-row">
+                    <span class="label">Pay $300/mo</span>
+                    <span class="value" id="pay300">19 mo • $761 interest</span>
+                </div>
+                <div class="compare-row">
+                    <span class="label">Pay $400/mo</span>
+                    <span class="value" id="pay400">14 mo • $539 interest</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Debt Tools</h4>
+            <a href="debt-payoff-calculator.html">Debt Payoff Calculator</a>
+            <a href="loan-calculator.html">Loan Calculator</a>
+            <a href="net-worth-calculator.html">Net Worth Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Credit Card Payoff Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calcPayoff(balance, rate, payment) {
+            if (payment <= 0 || balance <= 0) return { months: 0, interest: 0 };
+
+            const monthlyRate = rate / 100 / 12;
+            const minRequired = balance * monthlyRate;
+
+            if (payment <= minRequired) {
+                return { months: Infinity, interest: Infinity };
+            }
+
+            let remaining = balance;
+            let months = 0;
+            let totalInterest = 0;
+
+            while (remaining > 0.01 && months < 600) {
+                const interest = remaining * monthlyRate;
+                totalInterest += interest;
+                remaining = remaining + interest - payment;
+                months++;
+            }
+
+            return { months, interest: totalInterest };
+        }
+
+        function formatTime(months) {
+            if (months === Infinity) return 'Never';
+            if (months >= 12) {
+                const years = Math.floor(months / 12);
+                const mo = months % 12;
+                return `${years}y ${mo}mo`;
+            }
+            return `${months} months`;
+        }
+
+        function calculate() {
+            const balance = parseFloat(document.getElementById('balance').value) || 0;
+            const rate = parseFloat(document.getElementById('rate').value) || 0;
+            const payment = parseFloat(document.getElementById('payment').value) || 0;
+
+            const result = calcPayoff(balance, rate, payment);
+            const minPaymentAmount = Math.max(balance * 0.02, 25);
+            const minPaymentResult = calcPayoff(balance, rate, minPaymentAmount);
+
+            const warning = document.getElementById('warning');
+            if (result.months === Infinity) {
+                warning.style.display = 'block';
+                document.getElementById('timeToPayoff').textContent = 'Never';
+                document.getElementById('payoffDate').textContent = 'Payment too low!';
+                document.getElementById('totalPaid').textContent = '--';
+                document.getElementById('totalInterest').textContent = '--';
+            } else {
+                warning.style.display = 'none';
+                document.getElementById('timeToPayoff').textContent = formatTime(result.months);
+
+                const payoffDate = new Date();
+                payoffDate.setMonth(payoffDate.getMonth() + result.months);
+                document.getElementById('payoffDate').textContent = 'Debt-free by: ' + payoffDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+                const totalPaid = payment * result.months;
+                document.getElementById('totalPaid').textContent = '$' + totalPaid.toLocaleString('en-US', {maximumFractionDigits: 0});
+                document.getElementById('totalInterest').textContent = '$' + result.interest.toLocaleString('en-US', {maximumFractionDigits: 0});
+            }
+
+            document.getElementById('minPayment').textContent = '$' + minPaymentAmount.toFixed(0);
+
+            // Interest saved vs minimum
+            const interestSaved = minPaymentResult.interest - result.interest;
+            if (interestSaved > 0 && result.months !== Infinity) {
+                document.getElementById('savingsBox').style.display = 'block';
+                document.getElementById('interestSaved').textContent = '$' + interestSaved.toLocaleString('en-US', {maximumFractionDigits: 0});
+            } else {
+                document.getElementById('savingsBox').style.display = 'none';
+            }
+
+            // What if you pay more
+            [250, 300, 400].forEach(p => {
+                const r = calcPayoff(balance, rate, p);
+                if (r.months !== Infinity) {
+                    document.getElementById('pay' + p).textContent = `${formatTime(r.months)} • $${r.interest.toLocaleString('en-US', {maximumFractionDigits: 0})} interest`;
+                } else {
+                    document.getElementById('pay' + p).textContent = '--';
+                }
+            });
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
