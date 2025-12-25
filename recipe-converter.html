@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Converter - Scale Recipes Up or Down</title>
+    <meta name="description" content="Scale recipes to any serving size. Convert ingredients proportionally. Double, halve, or customize servings. Free recipe converter.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #dc2626 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #dc2626;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .quick-btns {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .quick-btn {
+            padding: 12px;
+            background: #fee2e2;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #dc2626;
+            transition: all 0.2s;
+        }
+        .quick-btn:hover {
+            background: #dc2626;
+            color: white;
+        }
+        .quick-btn.active {
+            background: #dc2626;
+            color: white;
+        }
+        .ingredients {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .ingredients h4 {
+            color: #dc2626;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .ingredient-row {
+            display: grid;
+            grid-template-columns: 1fr 80px 80px;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            align-items: center;
+        }
+        .ingredient-row:last-child { border: none; }
+        .ingredient-row input {
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .ingredient-row .result {
+            font-weight: bold;
+            color: #dc2626;
+            text-align: center;
+        }
+        .add-row {
+            padding: 10px;
+            background: #fee2e2;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            font-weight: 600;
+            color: #dc2626;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #dc2626; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #b91c1c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fca5a5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Recipe Converter</h1>
+            <p class="subtitle">Scale recipes to any serving size</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Original Servings</label>
+                    <input type="number" id="originalServings" value="4" min="1" max="100" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>New Servings</label>
+                    <input type="number" id="newServings" value="8" min="1" max="100" step="1" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="quick-btns">
+                <button class="quick-btn" onclick="setMultiplier(0.5)">1/2x</button>
+                <button class="quick-btn" onclick="setMultiplier(1)">1x</button>
+                <button class="quick-btn active" onclick="setMultiplier(2)">2x</button>
+                <button class="quick-btn" onclick="setMultiplier(3)">3x</button>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Multiplier</div>
+                <div class="value" id="multiplier">2x</div>
+                <div class="sub" id="subtext">Double the recipe</div>
+            </div>
+
+            <div class="ingredients">
+                <h4>Convert Ingredients</h4>
+                <div id="ingredientList">
+                    <div class="ingredient-row">
+                        <input type="text" placeholder="Ingredient name" value="Flour">
+                        <input type="text" placeholder="Amount" value="2 cups" oninput="calculate()">
+                        <div class="result">4 cups</div>
+                    </div>
+                    <div class="ingredient-row">
+                        <input type="text" placeholder="Ingredient name" value="Sugar">
+                        <input type="text" placeholder="Amount" value="1/2 cup" oninput="calculate()">
+                        <div class="result">1 cup</div>
+                    </div>
+                    <div class="ingredient-row">
+                        <input type="text" placeholder="Ingredient name" value="Eggs">
+                        <input type="text" placeholder="Amount" value="3" oninput="calculate()">
+                        <div class="result">6</div>
+                    </div>
+                    <div class="ingredient-row">
+                        <input type="text" placeholder="Ingredient name" value="Butter">
+                        <input type="text" placeholder="Amount" value="1/4 cup" oninput="calculate()">
+                        <div class="result">1/2 cup</div>
+                    </div>
+                </div>
+                <button class="add-row" onclick="addRow()">+ Add Ingredient</button>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Cooking Tools</h4>
+            <a href="cooking-converter.html">Measurement Converter</a>
+            <a href="unit-converter.html">Unit Converter</a>
+            <a href="percentage-calc.html">Percentage Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Recipe Converter by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function parseFraction(str) {
+            str = str.trim();
+
+            // Handle mixed numbers like "1 1/2"
+            const mixedMatch = str.match(/^(\d+)\s+(\d+)\/(\d+)$/);
+            if (mixedMatch) {
+                return parseInt(mixedMatch[1]) + parseInt(mixedMatch[2]) / parseInt(mixedMatch[3]);
+            }
+
+            // Handle simple fractions like "1/2"
+            const fractionMatch = str.match(/^(\d+)\/(\d+)$/);
+            if (fractionMatch) {
+                return parseInt(fractionMatch[1]) / parseInt(fractionMatch[2]);
+            }
+
+            // Handle whole numbers
+            const num = parseFloat(str);
+            return isNaN(num) ? null : num;
+        }
+
+        function toFraction(decimal) {
+            if (Number.isInteger(decimal)) return decimal.toString();
+
+            const tolerance = 0.01;
+            const fractions = [
+                [1/8, '1/8'], [1/4, '1/4'], [1/3, '1/3'], [3/8, '3/8'],
+                [1/2, '1/2'], [5/8, '5/8'], [2/3, '2/3'], [3/4, '3/4'], [7/8, '7/8']
+            ];
+
+            const whole = Math.floor(decimal);
+            const remainder = decimal - whole;
+
+            if (remainder < tolerance) {
+                return whole.toString();
+            }
+
+            for (const [val, str] of fractions) {
+                if (Math.abs(remainder - val) < tolerance) {
+                    return whole > 0 ? `${whole} ${str}` : str;
+                }
+            }
+
+            // Fall back to decimal
+            return decimal.toFixed(2);
+        }
+
+        function scaleAmount(amountStr, multiplier) {
+            // Extract number and unit
+            const match = amountStr.match(/^([\d\s\/]+)\s*(.*)$/);
+            if (!match) return amountStr;
+
+            const numPart = match[1];
+            const unitPart = match[2];
+
+            const num = parseFraction(numPart);
+            if (num === null) return amountStr;
+
+            const scaled = num * multiplier;
+            return toFraction(scaled) + (unitPart ? ' ' + unitPart : '');
+        }
+
+        function setMultiplier(mult) {
+            const original = parseFloat(document.getElementById('originalServings').value) || 4;
+            document.getElementById('newServings').value = original * mult;
+
+            document.querySelectorAll('.quick-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            calculate();
+        }
+
+        function calculate() {
+            const original = parseFloat(document.getElementById('originalServings').value) || 1;
+            const newServings = parseFloat(document.getElementById('newServings').value) || 1;
+            const multiplier = newServings / original;
+
+            document.getElementById('multiplier').textContent = multiplier.toFixed(2).replace(/\.?0+$/, '') + 'x';
+
+            let subtext = 'Same amount';
+            if (multiplier < 1) subtext = 'Reduce recipe';
+            else if (multiplier === 2) subtext = 'Double the recipe';
+            else if (multiplier === 3) subtext = 'Triple the recipe';
+            else if (multiplier > 1) subtext = 'Increase recipe';
+            document.getElementById('subtext').textContent = subtext;
+
+            // Update ingredient results
+            const rows = document.querySelectorAll('.ingredient-row');
+            rows.forEach(row => {
+                const amountInput = row.querySelectorAll('input')[1];
+                const resultDiv = row.querySelector('.result');
+                if (amountInput && resultDiv) {
+                    resultDiv.textContent = scaleAmount(amountInput.value, multiplier);
+                }
+            });
+
+            // Update quick button states
+            document.querySelectorAll('.quick-btn').forEach(btn => {
+                const btnMult = parseFloat(btn.textContent);
+                btn.classList.toggle('active', Math.abs(btnMult - multiplier) < 0.01);
+            });
+        }
+
+        function addRow() {
+            const list = document.getElementById('ingredientList');
+            const row = document.createElement('div');
+            row.className = 'ingredient-row';
+            row.innerHTML = `
+                <input type="text" placeholder="Ingredient name">
+                <input type="text" placeholder="Amount" oninput="calculate()">
+                <div class="result">-</div>
+            `;
+            list.appendChild(row);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

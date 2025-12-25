@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cooking Measurement Converter - Cups, Tablespoons, Teaspoons</title>
+    <meta name="description" content="Convert cooking measurements between cups, tablespoons, teaspoons, ounces, and milliliters. Free cooking measurement converter.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #f97316 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #f97316;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .conversions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .conv-item {
+            background: #fff7ed;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .conv-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ea580c;
+        }
+        .conv-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .ref-table {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .ref-table h4 {
+            color: #ea580c;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .ref-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .ref-row:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #ea580c; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #f97316;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fdba74; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Cooking Converter</h1>
+            <p class="subtitle">Convert cooking measurements instantly</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Amount</label>
+                    <input type="number" id="amount" value="1" min="0" step="0.125" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>From</label>
+                    <select id="fromUnit" onchange="calculate()">
+                        <option value="cup" selected>Cup</option>
+                        <option value="tbsp">Tablespoon</option>
+                        <option value="tsp">Teaspoon</option>
+                        <option value="floz">Fluid Ounce</option>
+                        <option value="ml">Milliliter</option>
+                        <option value="liter">Liter</option>
+                        <option value="pint">Pint</option>
+                        <option value="quart">Quart</option>
+                        <option value="gallon">Gallon</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Converted Amount</div>
+                <div class="value" id="result">16 tbsp</div>
+                <div class="sub" id="subtext">1 cup = 16 tablespoons</div>
+            </div>
+
+            <div class="conversions">
+                <div class="conv-item">
+                    <div class="value" id="cups">1 cup</div>
+                    <div class="label">Cups</div>
+                </div>
+                <div class="conv-item">
+                    <div class="value" id="tbsp">16 tbsp</div>
+                    <div class="label">Tablespoons</div>
+                </div>
+                <div class="conv-item">
+                    <div class="value" id="tsp">48 tsp</div>
+                    <div class="label">Teaspoons</div>
+                </div>
+                <div class="conv-item">
+                    <div class="value" id="floz">8 fl oz</div>
+                    <div class="label">Fluid Ounces</div>
+                </div>
+                <div class="conv-item">
+                    <div class="value" id="ml">237 ml</div>
+                    <div class="label">Milliliters</div>
+                </div>
+                <div class="conv-item">
+                    <div class="value" id="liter">0.24 L</div>
+                    <div class="label">Liters</div>
+                </div>
+            </div>
+
+            <div class="ref-table">
+                <h4>Quick Reference</h4>
+                <div class="ref-row">
+                    <span>1 cup</span>
+                    <span>= 16 tbsp = 48 tsp</span>
+                </div>
+                <div class="ref-row">
+                    <span>1 tablespoon</span>
+                    <span>= 3 teaspoons</span>
+                </div>
+                <div class="ref-row">
+                    <span>1 cup</span>
+                    <span>= 8 fluid ounces</span>
+                </div>
+                <div class="ref-row">
+                    <span>1 pint</span>
+                    <span>= 2 cups</span>
+                </div>
+                <div class="ref-row">
+                    <span>1 quart</span>
+                    <span>= 4 cups</span>
+                </div>
+                <div class="ref-row">
+                    <span>1 gallon</span>
+                    <span>= 16 cups</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Cooking Tools</h4>
+            <a href="recipe-converter.html">Recipe Scaler</a>
+            <a href="unit-converter.html">Unit Converter</a>
+            <a href="temperature-converter.html">Temperature Converter</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Cooking Converter by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        // Everything in milliliters as base
+        const toML = {
+            cup: 236.588,
+            tbsp: 14.787,
+            tsp: 4.929,
+            floz: 29.574,
+            ml: 1,
+            liter: 1000,
+            pint: 473.176,
+            quart: 946.353,
+            gallon: 3785.41
+        };
+
+        function formatNumber(num) {
+            if (num >= 100) return Math.round(num);
+            if (num >= 10) return Math.round(num * 10) / 10;
+            if (num >= 1) return Math.round(num * 100) / 100;
+            return Math.round(num * 1000) / 1000;
+        }
+
+        function calculate() {
+            const amount = parseFloat(document.getElementById('amount').value) || 0;
+            const fromUnit = document.getElementById('fromUnit').value;
+
+            // Convert to ml
+            const ml = amount * toML[fromUnit];
+
+            // Calculate all conversions
+            const cups = ml / toML.cup;
+            const tbsp = ml / toML.tbsp;
+            const tsp = ml / toML.tsp;
+            const floz = ml / toML.floz;
+            const liters = ml / toML.liter;
+
+            // Determine best display unit
+            let resultValue, resultUnit, subtext;
+            if (fromUnit === 'cup') {
+                resultValue = formatNumber(tbsp);
+                resultUnit = 'tbsp';
+                subtext = `${amount} cup${amount !== 1 ? 's' : ''} = ${resultValue} tablespoons`;
+            } else if (fromUnit === 'tbsp') {
+                resultValue = formatNumber(tsp);
+                resultUnit = 'tsp';
+                subtext = `${amount} tablespoon${amount !== 1 ? 's' : ''} = ${resultValue} teaspoons`;
+            } else if (fromUnit === 'tsp') {
+                resultValue = formatNumber(tbsp);
+                resultUnit = 'tbsp';
+                subtext = `${amount} teaspoon${amount !== 1 ? 's' : ''} = ${resultValue} tablespoons`;
+            } else if (fromUnit === 'ml') {
+                resultValue = formatNumber(tsp);
+                resultUnit = 'tsp';
+                subtext = `${amount} ml = ${resultValue} teaspoons`;
+            } else {
+                resultValue = formatNumber(cups);
+                resultUnit = 'cups';
+                subtext = `${amount} ${fromUnit}${amount !== 1 ? 's' : ''} = ${resultValue} cups`;
+            }
+
+            document.getElementById('result').textContent = resultValue + ' ' + resultUnit;
+            document.getElementById('subtext').textContent = subtext;
+
+            document.getElementById('cups').textContent = formatNumber(cups) + ' cup' + (cups !== 1 ? 's' : '');
+            document.getElementById('tbsp').textContent = formatNumber(tbsp) + ' tbsp';
+            document.getElementById('tsp').textContent = formatNumber(tsp) + ' tsp';
+            document.getElementById('floz').textContent = formatNumber(floz) + ' fl oz';
+            document.getElementById('ml').textContent = formatNumber(ml) + ' ml';
+            document.getElementById('liter').textContent = formatNumber(liters) + ' L';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
