@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Color Contrast Checker - WCAG 2.1 Accessibility</title>
+    <meta name="description" content="Check if your color combinations meet WCAG accessibility standards. Get instant pass/fail results for AA and AAA compliance.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #115e59 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 42px; margin-bottom: 15px; }
+        .subtitle { font-size: 18px; opacity: 0.9; }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            color: #1e293b;
+            margin-bottom: 30px;
+        }
+        .color-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        @media (max-width: 600px) { .color-inputs { grid-template-columns: 1fr; } }
+        .color-group { text-align: center; }
+        .color-group h3 { margin-bottom: 15px; color: #334155; }
+        .color-picker-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .color-picker {
+            width: 100px;
+            height: 100px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .color-input {
+            width: 120px;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 16px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        .color-input:focus { outline: none; border-color: #14b8a6; }
+        .swap-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #64748b;
+        }
+        .swap-btn:hover { background: #e2e8f0; }
+        .preview {
+            margin: 30px 0;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .preview-large { font-size: 32px; font-weight: 700; margin-bottom: 10px; }
+        .preview-small { font-size: 16px; }
+        .results {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+        @media (max-width: 500px) { .results { grid-template-columns: 1fr; } }
+        .result-card {
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .result-card.pass { background: #dcfce7; border: 2px solid #16a34a; }
+        .result-card.fail { background: #fee2e2; border: 2px solid #dc2626; }
+        .result-card h4 { font-size: 14px; color: #64748b; margin-bottom: 5px; }
+        .result-card .status {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .result-card.pass .status { color: #16a34a; }
+        .result-card.fail .status { color: #dc2626; }
+        .result-card .ratio { font-size: 14px; color: #64748b; margin-top: 5px; }
+        .contrast-display {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #14b8a6, #0d9488);
+            border-radius: 12px;
+            color: white;
+            margin: 30px 0;
+        }
+        .contrast-display .label { font-size: 14px; opacity: 0.9; }
+        .contrast-display .value { font-size: 48px; font-weight: 700; }
+        .info-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .info-section h3 { margin-bottom: 15px; color: #1e293b; }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        @media (max-width: 500px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-box {
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        .info-box h4 { color: #0d9488; font-size: 14px; margin-bottom: 5px; }
+        .info-box p { color: #64748b; font-size: 13px; line-height: 1.5; }
+        .cta-section {
+            background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .cta-section a {
+            display: inline-block;
+            background: white;
+            color: #0d9488;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        footer { text-align: center; padding: 40px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #5eead4; }
+        .suggestions { margin-top: 20px; }
+        .suggestions h4 { margin-bottom: 10px; color: #1e293b; }
+        .suggestion-list {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .suggestion {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #f1f5f9;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .suggestion:hover { background: #e2e8f0; }
+        .suggestion-swatch {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+        }
+        .suggestion-text { font-size: 13px; color: #334155; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Color Contrast Checker</h1>
+            <p class="subtitle">Check if your colors meet WCAG 2.1 accessibility standards.</p>
+        </header>
+
+        <div class="card">
+            <div class="color-inputs">
+                <div class="color-group">
+                    <h3>Foreground (Text)</h3>
+                    <div class="color-picker-wrap">
+                        <input type="color" class="color-picker" id="foreground" value="#000000">
+                        <input type="text" class="color-input" id="foregroundHex" value="#000000">
+                    </div>
+                </div>
+                <div class="color-group">
+                    <h3>Background</h3>
+                    <div class="color-picker-wrap">
+                        <input type="color" class="color-picker" id="background" value="#FFFFFF">
+                        <input type="text" class="color-input" id="backgroundHex" value="#FFFFFF">
+                    </div>
+                </div>
+            </div>
+
+            <button class="swap-btn" onclick="swapColors()">⇄ Swap Colors</button>
+
+            <div class="preview" id="preview">
+                <div class="preview-large">Large Text (24px+)</div>
+                <div class="preview-small">Normal text sample. The quick brown fox jumps over the lazy dog.</div>
+            </div>
+
+            <div class="contrast-display">
+                <div class="label">Contrast Ratio</div>
+                <div class="value" id="contrastRatio">21:1</div>
+            </div>
+
+            <div class="results" id="results">
+                <div class="result-card pass" id="result-aa-large">
+                    <h4>WCAG AA Large Text</h4>
+                    <div class="status">PASS</div>
+                    <div class="ratio">Min 3:1</div>
+                </div>
+                <div class="result-card pass" id="result-aa-normal">
+                    <h4>WCAG AA Normal Text</h4>
+                    <div class="status">PASS</div>
+                    <div class="ratio">Min 4.5:1</div>
+                </div>
+                <div class="result-card pass" id="result-aaa-large">
+                    <h4>WCAG AAA Large Text</h4>
+                    <div class="status">PASS</div>
+                    <div class="ratio">Min 4.5:1</div>
+                </div>
+                <div class="result-card pass" id="result-aaa-normal">
+                    <h4>WCAG AAA Normal Text</h4>
+                    <div class="status">PASS</div>
+                    <div class="ratio">Min 7:1</div>
+                </div>
+            </div>
+
+            <div class="suggestions" id="suggestions" style="display: none;">
+                <h4>Suggested Alternatives (WCAG AA Compliant)</h4>
+                <div class="suggestion-list" id="suggestionList"></div>
+            </div>
+
+            <div class="info-section">
+                <h3>WCAG Guidelines Explained</h3>
+                <div class="info-grid">
+                    <div class="info-box">
+                        <h4>Level AA (Minimum)</h4>
+                        <p>Normal text: 4.5:1 ratio<br>Large text (24px+ or 18px+ bold): 3:1 ratio</p>
+                    </div>
+                    <div class="info-box">
+                        <h4>Level AAA (Enhanced)</h4>
+                        <p>Normal text: 7:1 ratio<br>Large text (24px+ or 18px+ bold): 4.5:1 ratio</p>
+                    </div>
+                    <div class="info-box">
+                        <h4>Why It Matters</h4>
+                        <p>300 million people have color vision deficiency. Low contrast text is hard to read for everyone.</p>
+                    </div>
+                    <div class="info-box">
+                        <h4>Legal Risk</h4>
+                        <p>ADA lawsuits often cite contrast issues. WCAG AA is the legal standard for web accessibility.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h3>Check Your Entire Website</h3>
+            <p>Get a full accessibility audit with all contrast issues identified.</p>
+            <a href="https://fiverr.com/austron24" target="_blank">Get Professional Accessibility Audit →</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Color Contrast Checker by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> • <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const fgPicker = document.getElementById('foreground');
+        const bgPicker = document.getElementById('background');
+        const fgHex = document.getElementById('foregroundHex');
+        const bgHex = document.getElementById('backgroundHex');
+
+        function hexToRgb(hex) {
+            hex = hex.replace('#', '');
+            if (hex.length === 3) {
+                hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+            }
+            const r = parseInt(hex.substring(0, 2), 16);
+            const g = parseInt(hex.substring(2, 4), 16);
+            const b = parseInt(hex.substring(4, 6), 16);
+            return { r, g, b };
+        }
+
+        function getLuminance(r, g, b) {
+            const [rs, gs, bs] = [r, g, b].map(c => {
+                c = c / 255;
+                return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+            });
+            return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+        }
+
+        function getContrastRatio(fg, bg) {
+            const fgLum = getLuminance(fg.r, fg.g, fg.b);
+            const bgLum = getLuminance(bg.r, bg.g, bg.b);
+            const lighter = Math.max(fgLum, bgLum);
+            const darker = Math.min(fgLum, bgLum);
+            return (lighter + 0.05) / (darker + 0.05);
+        }
+
+        function updateResult(id, pass) {
+            const el = document.getElementById(id);
+            el.className = 'result-card ' + (pass ? 'pass' : 'fail');
+            el.querySelector('.status').textContent = pass ? 'PASS' : 'FAIL';
+        }
+
+        function generateSuggestions(fgHexVal, bgHexVal, ratio) {
+            if (ratio >= 4.5) {
+                document.getElementById('suggestions').style.display = 'none';
+                return;
+            }
+
+            const fg = hexToRgb(fgHexVal);
+            const bg = hexToRgb(bgHexVal);
+            const suggestions = [];
+
+            // Try darkening foreground
+            for (let i = 0.9; i >= 0.1; i -= 0.1) {
+                const newFg = {
+                    r: Math.round(fg.r * i),
+                    g: Math.round(fg.g * i),
+                    b: Math.round(fg.b * i)
+                };
+                const newRatio = getContrastRatio(newFg, bg);
+                if (newRatio >= 4.5) {
+                    const hex = '#' + [newFg.r, newFg.g, newFg.b].map(c => c.toString(16).padStart(2, '0')).join('');
+                    suggestions.push({ hex, ratio: newRatio.toFixed(2), type: 'Darker text' });
+                    break;
+                }
+            }
+
+            // Try lightening background
+            for (let i = 1.1; i <= 2; i += 0.1) {
+                const newBg = {
+                    r: Math.min(255, Math.round(bg.r + (255 - bg.r) * (i - 1))),
+                    g: Math.min(255, Math.round(bg.g + (255 - bg.g) * (i - 1))),
+                    b: Math.min(255, Math.round(bg.b + (255 - bg.b) * (i - 1)))
+                };
+                const newRatio = getContrastRatio(fg, newBg);
+                if (newRatio >= 4.5) {
+                    const hex = '#' + [newBg.r, newBg.g, newBg.b].map(c => c.toString(16).padStart(2, '0')).join('');
+                    suggestions.push({ hex, ratio: newRatio.toFixed(2), type: 'Lighter bg', isBg: true });
+                    break;
+                }
+            }
+
+            if (suggestions.length > 0) {
+                document.getElementById('suggestions').style.display = 'block';
+                document.getElementById('suggestionList').innerHTML = suggestions.map(s => `
+                    <div class="suggestion" onclick="applySuggestion('${s.hex}', ${s.isBg || false})">
+                        <div class="suggestion-swatch" style="background: ${s.hex}"></div>
+                        <span class="suggestion-text">${s.type}: ${s.hex} (${s.ratio}:1)</span>
+                    </div>
+                `).join('');
+            } else {
+                document.getElementById('suggestions').style.display = 'none';
+            }
+        }
+
+        function applySuggestion(hex, isBg) {
+            if (isBg) {
+                bgPicker.value = hex;
+                bgHex.value = hex.toUpperCase();
+            } else {
+                fgPicker.value = hex;
+                fgHex.value = hex.toUpperCase();
+            }
+            updateContrast();
+        }
+
+        function updateContrast() {
+            const fgColor = fgPicker.value;
+            const bgColor = bgPicker.value;
+
+            fgHex.value = fgColor.toUpperCase();
+            bgHex.value = bgColor.toUpperCase();
+
+            const fg = hexToRgb(fgColor);
+            const bg = hexToRgb(bgColor);
+            const ratio = getContrastRatio(fg, bg);
+
+            // Update preview
+            const preview = document.getElementById('preview');
+            preview.style.backgroundColor = bgColor;
+            preview.style.color = fgColor;
+
+            // Update ratio display
+            document.getElementById('contrastRatio').textContent = ratio.toFixed(2) + ':1';
+
+            // Update results
+            updateResult('result-aa-large', ratio >= 3);
+            updateResult('result-aa-normal', ratio >= 4.5);
+            updateResult('result-aaa-large', ratio >= 4.5);
+            updateResult('result-aaa-normal', ratio >= 7);
+
+            // Generate suggestions if failing
+            generateSuggestions(fgColor, bgColor, ratio);
+        }
+
+        function swapColors() {
+            const temp = fgPicker.value;
+            fgPicker.value = bgPicker.value;
+            bgPicker.value = temp;
+            updateContrast();
+        }
+
+        // Event listeners
+        fgPicker.addEventListener('input', updateContrast);
+        bgPicker.addEventListener('input', updateContrast);
+
+        fgHex.addEventListener('input', function() {
+            let val = this.value;
+            if (!val.startsWith('#')) val = '#' + val;
+            if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+                fgPicker.value = val;
+                updateContrast();
+            }
+        });
+
+        bgHex.addEventListener('input', function() {
+            let val = this.value;
+            if (!val.startsWith('#')) val = '#' + val;
+            if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+                bgPicker.value = val;
+                updateContrast();
+            }
+        });
+
+        // Initial calculation
+        updateContrast();
+    </script>
+</body>
+</html>
