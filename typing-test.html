@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Typing Speed Test - Check Your WPM</title>
+    <meta name="description" content="Test your typing speed and accuracy. Measure words per minute (WPM), characters per minute, and accuracy percentage. Free online typing test.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #16a34a 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            color: #1e293b;
+        }
+        .stat-card .value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #16a34a;
+        }
+        .stat-card .label {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+        .test-area {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            color: #1e293b;
+        }
+        .timer-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .time-select {
+            display: flex;
+            gap: 10px;
+        }
+        .time-btn {
+            padding: 8px 16px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .time-btn.active {
+            background: #16a34a;
+            border-color: #16a34a;
+            color: white;
+        }
+        .timer {
+            font-size: 28px;
+            font-weight: bold;
+            color: #16a34a;
+        }
+        .text-display {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 25px;
+            font-size: 20px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            min-height: 150px;
+        }
+        .text-display .char {
+            transition: color 0.1s;
+        }
+        .text-display .char.correct { color: #16a34a; }
+        .text-display .char.incorrect { color: #dc2626; background: #fef2f2; }
+        .text-display .char.current {
+            background: #fef3c7;
+            border-bottom: 2px solid #16a34a;
+        }
+        .text-display .char.untyped { color: #94a3b8; }
+        .input-area {
+            position: relative;
+        }
+        .type-input {
+            width: 100%;
+            padding: 20px;
+            font-size: 18px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            outline: none;
+        }
+        .type-input:focus {
+            border-color: #16a34a;
+        }
+        .type-input:disabled {
+            background: #f8fafc;
+        }
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: #16a34a; color: white; }
+        .btn-primary:hover { background: #15803d; }
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .results-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        .results-overlay.show { display: flex; }
+        .results-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            color: #1e293b;
+            max-width: 400px;
+            width: 90%;
+        }
+        .results-card h2 {
+            color: #16a34a;
+            margin-bottom: 20px;
+        }
+        .result-wpm {
+            font-size: 72px;
+            font-weight: bold;
+            color: #16a34a;
+        }
+        .result-label {
+            font-size: 18px;
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+        .result-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .result-detail {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .result-detail .value { font-size: 24px; font-weight: bold; color: #1e293b; }
+        .result-detail .label { font-size: 11px; color: #64748b; text-transform: uppercase; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #16a34a; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #15803d;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        .cta-section {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 25px;
+        }
+        .cta-section a {
+            display: inline-block;
+            background: white;
+            color: #16a34a;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #86efac; }
+        @media (max-width: 600px) {
+            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Typing Speed Test</h1>
+            <p class="subtitle">Test your typing speed and accuracy</p>
+        </header>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="value" id="wpmDisplay">0</div>
+                <div class="label">WPM</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="cpmDisplay">0</div>
+                <div class="label">CPM</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="accuracyDisplay">100%</div>
+                <div class="label">Accuracy</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="errorsDisplay">0</div>
+                <div class="label">Errors</div>
+            </div>
+        </div>
+
+        <div class="test-area">
+            <div class="timer-bar">
+                <div class="time-select">
+                    <button class="time-btn" onclick="setTime(15)">15s</button>
+                    <button class="time-btn active" onclick="setTime(30)">30s</button>
+                    <button class="time-btn" onclick="setTime(60)">60s</button>
+                    <button class="time-btn" onclick="setTime(120)">2min</button>
+                </div>
+                <div class="timer" id="timerDisplay">30</div>
+            </div>
+
+            <div class="text-display" id="textDisplay"></div>
+
+            <div class="input-area">
+                <input type="text" class="type-input" id="typeInput"
+                    placeholder="Click here and start typing..."
+                    autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+            </div>
+
+            <div class="btn-row">
+                <button class="btn btn-primary" onclick="resetTest()">🔄 New Test</button>
+            </div>
+        </div>
+
+        <div class="results-overlay" id="resultsOverlay">
+            <div class="results-card">
+                <h2>Test Complete!</h2>
+                <div class="result-wpm" id="resultWpm">0</div>
+                <div class="result-label">Words Per Minute</div>
+                <div class="result-details">
+                    <div class="result-detail">
+                        <div class="value" id="resultCpm">0</div>
+                        <div class="label">CPM</div>
+                    </div>
+                    <div class="result-detail">
+                        <div class="value" id="resultAccuracy">0%</div>
+                        <div class="label">Accuracy</div>
+                    </div>
+                    <div class="result-detail">
+                        <div class="value" id="resultErrors">0</div>
+                        <div class="label">Errors</div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="closeResults()">Try Again</button>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Productivity Tools</h4>
+            <a href="word-counter.html">Word Counter</a>
+            <a href="lorem-ipsum.html">Lorem Ipsum Generator</a>
+            <a href="case-converter.html">Case Converter</a>
+            <a href="index.html">View All 50+ Tools</a>
+        </div>
+
+        <div class="cta-section">
+            <h3>Need a Website Audit?</h3>
+            <p>Get professional accessibility and SEO analysis.</p>
+            <a href="https://fiverr.com/austron24" target="_blank">Get Professional Audit</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Typing Speed Test by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const texts = [
+            "The quick brown fox jumps over the lazy dog. This sentence contains every letter of the English alphabet and is commonly used for typing practice.",
+            "Programming is the art of telling a computer what to do. It requires patience, logic, and creativity to solve complex problems efficiently.",
+            "Web development combines design and technology to create interactive experiences. HTML provides structure, CSS adds style, and JavaScript brings interactivity.",
+            "Success is not final, failure is not fatal. It is the courage to continue that counts. Every expert was once a beginner who never gave up.",
+            "The internet has transformed how we communicate, learn, and work. It connects billions of people and provides access to unlimited information.",
+            "Good user experience design focuses on making products intuitive and enjoyable. It considers usability, accessibility, and aesthetic appeal.",
+            "Artificial intelligence is changing the world. Machine learning algorithms can now recognize images, understand speech, and generate creative content.",
+            "Remote work has become the new normal for many professionals. It offers flexibility but requires discipline and effective communication skills.",
+        ];
+
+        let testText = '';
+        let currentPosition = 0;
+        let errors = 0;
+        let totalTyped = 0;
+        let isRunning = false;
+        let timeLeft = 30;
+        let testDuration = 30;
+        let timer = null;
+        let startTime = null;
+
+        function init() {
+            selectNewText();
+            document.getElementById('typeInput').addEventListener('input', handleInput);
+            document.getElementById('typeInput').addEventListener('keydown', handleKeyDown);
+        }
+
+        function selectNewText() {
+            testText = texts[Math.floor(Math.random() * texts.length)];
+            renderText();
+        }
+
+        function renderText() {
+            const display = document.getElementById('textDisplay');
+            let html = '';
+
+            for (let i = 0; i < testText.length; i++) {
+                let className = 'char ';
+                if (i < currentPosition) {
+                    // Already typed
+                    className += 'correct';
+                } else if (i === currentPosition) {
+                    className += 'current untyped';
+                } else {
+                    className += 'untyped';
+                }
+
+                let char = testText[i];
+                if (char === ' ') char = '&nbsp;';
+                html += `<span class="${className}">${char}</span>`;
+            }
+
+            display.innerHTML = html;
+        }
+
+        function handleKeyDown(e) {
+            if (e.key === 'Backspace') {
+                e.preventDefault();
+            }
+        }
+
+        function handleInput(e) {
+            const input = e.target;
+            const typed = input.value;
+
+            if (!isRunning && typed.length > 0) {
+                startTest();
+            }
+
+            // Get the last typed character
+            const lastChar = typed[typed.length - 1];
+            const expectedChar = testText[currentPosition];
+
+            if (lastChar !== undefined) {
+                totalTyped++;
+
+                if (lastChar === expectedChar) {
+                    currentPosition++;
+                    updateCharDisplay(currentPosition - 1, 'correct');
+                } else {
+                    errors++;
+                    currentPosition++;
+                    updateCharDisplay(currentPosition - 1, 'incorrect');
+                }
+
+                // Update current position highlight
+                if (currentPosition < testText.length) {
+                    updateCharDisplay(currentPosition, 'current untyped');
+                }
+
+                input.value = '';
+                updateStats();
+
+                // Check if test completed (typed all text)
+                if (currentPosition >= testText.length) {
+                    endTest();
+                }
+            }
+        }
+
+        function updateCharDisplay(index, className) {
+            const chars = document.querySelectorAll('.text-display .char');
+            if (chars[index]) {
+                chars[index].className = 'char ' + className;
+            }
+        }
+
+        function startTest() {
+            isRunning = true;
+            startTime = Date.now();
+            timer = setInterval(tick, 1000);
+        }
+
+        function tick() {
+            timeLeft--;
+            document.getElementById('timerDisplay').textContent = timeLeft;
+
+            updateStats();
+
+            if (timeLeft <= 0) {
+                endTest();
+            }
+        }
+
+        function updateStats() {
+            if (!startTime) return;
+
+            const elapsed = (Date.now() - startTime) / 1000 / 60; // minutes
+            const correctChars = currentPosition - errors;
+
+            const wpm = elapsed > 0 ? Math.round((correctChars / 5) / elapsed) : 0;
+            const cpm = elapsed > 0 ? Math.round(correctChars / elapsed) : 0;
+            const accuracy = totalTyped > 0 ? Math.round((totalTyped - errors) / totalTyped * 100) : 100;
+
+            document.getElementById('wpmDisplay').textContent = wpm;
+            document.getElementById('cpmDisplay').textContent = cpm;
+            document.getElementById('accuracyDisplay').textContent = accuracy + '%';
+            document.getElementById('errorsDisplay').textContent = errors;
+        }
+
+        function endTest() {
+            clearInterval(timer);
+            isRunning = false;
+            document.getElementById('typeInput').disabled = true;
+
+            const elapsed = (Date.now() - startTime) / 1000 / 60;
+            const correctChars = currentPosition - errors;
+            const wpm = elapsed > 0 ? Math.round((correctChars / 5) / elapsed) : 0;
+            const cpm = elapsed > 0 ? Math.round(correctChars / elapsed) : 0;
+            const accuracy = totalTyped > 0 ? Math.round((totalTyped - errors) / totalTyped * 100) : 100;
+
+            document.getElementById('resultWpm').textContent = wpm;
+            document.getElementById('resultCpm').textContent = cpm;
+            document.getElementById('resultAccuracy').textContent = accuracy + '%';
+            document.getElementById('resultErrors').textContent = errors;
+
+            document.getElementById('resultsOverlay').classList.add('show');
+        }
+
+        function closeResults() {
+            document.getElementById('resultsOverlay').classList.remove('show');
+            resetTest();
+        }
+
+        function setTime(seconds) {
+            document.querySelectorAll('.time-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            testDuration = seconds;
+            resetTest();
+        }
+
+        function resetTest() {
+            clearInterval(timer);
+            isRunning = false;
+            currentPosition = 0;
+            errors = 0;
+            totalTyped = 0;
+            timeLeft = testDuration;
+            startTime = null;
+
+            document.getElementById('timerDisplay').textContent = timeLeft;
+            document.getElementById('typeInput').disabled = false;
+            document.getElementById('typeInput').value = '';
+            document.getElementById('typeInput').focus();
+
+            document.getElementById('wpmDisplay').textContent = '0';
+            document.getElementById('cpmDisplay').textContent = '0';
+            document.getElementById('accuracyDisplay').textContent = '100%';
+            document.getElementById('errorsDisplay').textContent = '0';
+
+            selectNewText();
+        }
+
+        init();
+    </script>
+</body>
+</html>
