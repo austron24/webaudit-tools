@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amortization Calculator - Loan Payment Schedule</title>
+    <meta name="description" content="Calculate your loan amortization schedule. See how each payment is split between principal and interest. Free amortization calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 0;
+        }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #1e40af;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .break-item {
+            background: #eff6ff;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .break-item .value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1e40af;
+        }
+        .break-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .schedule {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+        }
+        .schedule-header {
+            display: grid;
+            grid-template-columns: 60px 1fr 1fr 1fr 1fr;
+            gap: 10px;
+            padding: 12px;
+            background: #f8fafc;
+            font-weight: 600;
+            font-size: 12px;
+            color: #64748b;
+            position: sticky;
+            top: 0;
+        }
+        .schedule-row {
+            display: grid;
+            grid-template-columns: 60px 1fr 1fr 1fr 1fr;
+            gap: 10px;
+            padding: 10px 12px;
+            font-size: 13px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .schedule-row:last-child { border: none; }
+        .schedule-row.year-summary {
+            background: #eff6ff;
+            font-weight: 600;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #1e40af; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #1d4ed8;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #93c5fd; }
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .view-btn {
+            padding: 8px 16px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .view-btn.active {
+            border-color: #1e40af;
+            background: #eff6ff;
+            color: #1e40af;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Amortization Calculator</h1>
+            <p class="subtitle">See your loan payment schedule</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Loan Amount ($)</label>
+                    <input type="number" id="principal" value="300000" min="0" step="1000" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Interest Rate (%)</label>
+                    <input type="number" id="rate" value="7" min="0" max="30" step="0.125" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Loan Term (Years)</label>
+                    <input type="number" id="term" value="30" min="1" max="40" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Monthly Payment</div>
+                <div class="value" id="payment">$1,996</div>
+                <div class="sub" id="paymentSub">Principal + Interest</div>
+            </div>
+
+            <div class="breakdown">
+                <div class="break-item">
+                    <div class="value" id="totalPayments">$718,527</div>
+                    <div class="label">Total Payments</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="totalInterest">$418,527</div>
+                    <div class="label">Total Interest</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="interestRatio">58%</div>
+                    <div class="label">Interest % of Total</div>
+                </div>
+            </div>
+
+            <div class="view-toggle">
+                <button class="view-btn active" onclick="setView('yearly')">Yearly Summary</button>
+                <button class="view-btn" onclick="setView('monthly')">Monthly Details</button>
+            </div>
+
+            <div class="schedule">
+                <div class="schedule-header">
+                    <span>#</span>
+                    <span>Payment</span>
+                    <span>Principal</span>
+                    <span>Interest</span>
+                    <span>Balance</span>
+                </div>
+                <div id="scheduleBody"></div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Loan Tools</h4>
+            <a href="mortgage-calculator.html">Mortgage Calculator</a>
+            <a href="loan-calculator.html">Loan Calculator</a>
+            <a href="car-loan-calculator.html">Car Loan Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Amortization Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        let view = 'yearly';
+        let schedule = [];
+
+        function setView(v) {
+            view = v;
+            document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            renderSchedule();
+        }
+
+        function calculate() {
+            const principal = parseFloat(document.getElementById('principal').value) || 0;
+            const rate = parseFloat(document.getElementById('rate').value) / 100 / 12;
+            const termYears = parseInt(document.getElementById('term').value) || 30;
+            const termMonths = termYears * 12;
+
+            let payment = 0;
+            if (rate > 0) {
+                payment = principal * (rate * Math.pow(1 + rate, termMonths)) / (Math.pow(1 + rate, termMonths) - 1);
+            } else {
+                payment = principal / termMonths;
+            }
+
+            const totalPayments = payment * termMonths;
+            const totalInterest = totalPayments - principal;
+            const interestRatio = totalPayments > 0 ? (totalInterest / totalPayments) * 100 : 0;
+
+            document.getElementById('payment').textContent = '$' + payment.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('totalPayments').textContent = '$' + totalPayments.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('totalInterest').textContent = '$' + totalInterest.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('interestRatio').textContent = interestRatio.toFixed(0) + '%';
+
+            // Build schedule
+            schedule = [];
+            let balance = principal;
+            for (let month = 1; month <= termMonths; month++) {
+                const interest = balance * rate;
+                const principalPaid = payment - interest;
+                balance -= principalPaid;
+
+                schedule.push({
+                    month,
+                    payment,
+                    principal: principalPaid,
+                    interest,
+                    balance: Math.max(0, balance)
+                });
+            }
+
+            renderSchedule();
+        }
+
+        function renderSchedule() {
+            const body = document.getElementById('scheduleBody');
+            let html = '';
+
+            if (view === 'yearly') {
+                let yearlyData = [];
+                let currentYear = { payment: 0, principal: 0, interest: 0 };
+
+                schedule.forEach((row, i) => {
+                    currentYear.payment += row.payment;
+                    currentYear.principal += row.principal;
+                    currentYear.interest += row.interest;
+
+                    if ((i + 1) % 12 === 0 || i === schedule.length - 1) {
+                        yearlyData.push({
+                            year: Math.ceil((i + 1) / 12),
+                            ...currentYear,
+                            balance: row.balance
+                        });
+                        currentYear = { payment: 0, principal: 0, interest: 0 };
+                    }
+                });
+
+                yearlyData.forEach(row => {
+                    html += `
+                        <div class="schedule-row year-summary">
+                            <span>Year ${row.year}</span>
+                            <span>$${row.payment.toLocaleString('en-US', {maximumFractionDigits: 0})}</span>
+                            <span>$${row.principal.toLocaleString('en-US', {maximumFractionDigits: 0})}</span>
+                            <span>$${row.interest.toLocaleString('en-US', {maximumFractionDigits: 0})}</span>
+                            <span>$${row.balance.toLocaleString('en-US', {maximumFractionDigits: 0})}</span>
+                        </div>
+                    `;
+                });
+            } else {
+                schedule.slice(0, 360).forEach(row => {
+                    html += `
+                        <div class="schedule-row">
+                            <span>${row.month}</span>
+                            <span>$${row.payment.toLocaleString('en-US', {maximumFractionDigits: 0})}</span>
+                            <span>$${row.principal.toLocaleString('en-US', {maximumFractionDigits: 0})}</span>
+                            <span>$${row.interest.toLocaleString('en-US', {maximumFractionDigits: 0})}</span>
+                            <span>$${row.balance.toLocaleString('en-US', {maximumFractionDigits: 0})}</span>
+                        </div>
+                    `;
+                });
+            }
+
+            body.innerHTML = html;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

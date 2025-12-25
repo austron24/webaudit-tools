@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Break Even Calculator - Break Even Point Analysis</title>
+    <meta name="description" content="Calculate your break even point. Find how many units you need to sell to cover costs. Free break even analysis calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #ea580c 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group {
+            margin-bottom: 18px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 16px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #ea580c;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .break-item {
+            background: #fff7ed;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .break-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ea580c;
+        }
+        .break-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .chart {
+            margin-top: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .chart h4 {
+            color: #ea580c;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .profit-table {
+            font-size: 13px;
+        }
+        .profit-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .profit-row:last-child { border: none; }
+        .profit-row.break-even {
+            background: #fef3c7;
+            margin: 0 -10px;
+            padding: 8px 10px;
+            border-radius: 6px;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #ea580c; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #c2410c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fdba74; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Break Even Calculator</h1>
+            <p class="subtitle">How many units to cover your costs?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Fixed Costs ($)</label>
+                <input type="number" id="fixedCosts" value="10000" min="0" step="100" oninput="calculate()">
+            </div>
+
+            <div class="input-group">
+                <label>Price Per Unit ($)</label>
+                <input type="number" id="price" value="50" min="0" step="1" oninput="calculate()">
+            </div>
+
+            <div class="input-group">
+                <label>Variable Cost Per Unit ($)</label>
+                <input type="number" id="variableCost" value="20" min="0" step="1" oninput="calculate()">
+            </div>
+
+            <div class="result-box">
+                <div class="label">Break Even Point</div>
+                <div class="value" id="breakEvenUnits">334 units</div>
+                <div class="sub" id="breakEvenRevenue">$16,700 in revenue</div>
+            </div>
+
+            <div class="breakdown">
+                <div class="break-item">
+                    <div class="value" id="contributionMargin">$30</div>
+                    <div class="label">Contribution Margin</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="marginPercent">60%</div>
+                    <div class="label">Margin Percentage</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="profitAt500">$5,000</div>
+                    <div class="label">Profit at 500 Units</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="profitAt1000">$20,000</div>
+                    <div class="label">Profit at 1000 Units</div>
+                </div>
+            </div>
+
+            <div class="chart">
+                <h4>Profit at Different Sales Levels</h4>
+                <div class="profit-table" id="profitTable"></div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Business Tools</h4>
+            <a href="profit-margin-calculator.html">Profit Margin</a>
+            <a href="markup-calculator.html">Markup Calculator</a>
+            <a href="roi-calculator.html">ROI Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Break Even Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const fixedCosts = parseFloat(document.getElementById('fixedCosts').value) || 0;
+            const price = parseFloat(document.getElementById('price').value) || 0;
+            const variableCost = parseFloat(document.getElementById('variableCost').value) || 0;
+
+            const contributionMargin = price - variableCost;
+            const marginPercent = price > 0 ? (contributionMargin / price) * 100 : 0;
+
+            let breakEvenUnits = 0;
+            if (contributionMargin > 0) {
+                breakEvenUnits = Math.ceil(fixedCosts / contributionMargin);
+            }
+
+            const breakEvenRevenue = breakEvenUnits * price;
+
+            const profitAt500 = (500 * contributionMargin) - fixedCosts;
+            const profitAt1000 = (1000 * contributionMargin) - fixedCosts;
+
+            document.getElementById('breakEvenUnits').textContent = breakEvenUnits.toLocaleString() + ' units';
+            document.getElementById('breakEvenRevenue').textContent = '$' + breakEvenRevenue.toLocaleString() + ' in revenue';
+            document.getElementById('contributionMargin').textContent = '$' + contributionMargin.toFixed(0);
+            document.getElementById('marginPercent').textContent = marginPercent.toFixed(0) + '%';
+            document.getElementById('profitAt500').textContent = (profitAt500 >= 0 ? '$' : '-$') + Math.abs(profitAt500).toLocaleString();
+            document.getElementById('profitAt1000').textContent = (profitAt1000 >= 0 ? '$' : '-$') + Math.abs(profitAt1000).toLocaleString();
+
+            // Build profit table
+            const levels = [100, 250, breakEvenUnits, 500, 750, 1000];
+            let html = '';
+            levels.forEach(units => {
+                const profit = (units * contributionMargin) - fixedCosts;
+                const revenue = units * price;
+                const isBreakEven = units === breakEvenUnits;
+                html += `
+                    <div class="profit-row${isBreakEven ? ' break-even' : ''}">
+                        <span>${units.toLocaleString()} units</span>
+                        <span>$${revenue.toLocaleString()} revenue</span>
+                        <span style="color: ${profit >= 0 ? '#16a34a' : '#dc2626'}">
+                            ${profit >= 0 ? '+$' : '-$'}${Math.abs(profit).toLocaleString()}
+                        </span>
+                    </div>
+                `;
+            });
+            document.getElementById('profitTable').innerHTML = html;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
