@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hourly to Salary Calculator - Convert Wage to Annual Salary</title>
+    <meta name="description" content="Convert hourly wage to annual salary or salary to hourly rate. Calculate weekly, biweekly, and monthly income. Free salary calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #059669 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .tab {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+        }
+        .tab.active {
+            border-color: #059669;
+            background: #ecfdf5;
+            color: #059669;
+        }
+        .input-group {
+            margin-bottom: 18px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 16px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #059669;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .break-item {
+            background: #ecfdf5;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .break-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #059669;
+        }
+        .break-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #059669; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #047857;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #6ee7b7; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Salary Calculator</h1>
+            <p class="subtitle">Convert between hourly and annual salary</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="tabs">
+                <button class="tab active" onclick="setMode('hourly')">Hourly to Salary</button>
+                <button class="tab" onclick="setMode('salary')">Salary to Hourly</button>
+            </div>
+
+            <div id="hourlyInputs">
+                <div class="input-group">
+                    <label>Hourly Rate ($)</label>
+                    <input type="number" id="hourlyRate" value="25" min="0" step="0.25" oninput="calculate()">
+                </div>
+            </div>
+
+            <div id="salaryInputs" class="hidden">
+                <div class="input-group">
+                    <label>Annual Salary ($)</label>
+                    <input type="number" id="annualSalary" value="52000" min="0" step="1000" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Hours Per Week</label>
+                <input type="number" id="hoursWeek" value="40" min="1" max="168" oninput="calculate()">
+            </div>
+
+            <div class="input-group">
+                <label>Weeks Per Year</label>
+                <input type="number" id="weeksYear" value="52" min="1" max="52" oninput="calculate()">
+            </div>
+
+            <div class="result-box">
+                <div class="label" id="resultLabel">Annual Salary</div>
+                <div class="value" id="mainResult">$52,000</div>
+                <div class="sub" id="resultSub">Based on 40 hours/week, 52 weeks/year</div>
+            </div>
+
+            <div class="breakdown">
+                <div class="break-item">
+                    <div class="value" id="weekly">$1,000</div>
+                    <div class="label">Weekly</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="biweekly">$2,000</div>
+                    <div class="label">Bi-Weekly</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="semimonthly">$2,167</div>
+                    <div class="label">Semi-Monthly</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="monthly">$4,333</div>
+                    <div class="label">Monthly</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Financial Tools</h4>
+            <a href="paycheck-calculator.html">Paycheck Calculator</a>
+            <a href="tip-calculator.html">Tip Calculator</a>
+            <a href="net-worth-calculator.html">Net Worth Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Salary Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        let mode = 'hourly';
+
+        function setMode(m) {
+            mode = m;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.getElementById('hourlyInputs').classList.toggle('hidden', m !== 'hourly');
+            document.getElementById('salaryInputs').classList.toggle('hidden', m !== 'salary');
+
+            calculate();
+        }
+
+        function calculate() {
+            const hoursWeek = parseFloat(document.getElementById('hoursWeek').value) || 40;
+            const weeksYear = parseFloat(document.getElementById('weeksYear').value) || 52;
+            const totalHours = hoursWeek * weeksYear;
+
+            let annual, hourly;
+
+            if (mode === 'hourly') {
+                hourly = parseFloat(document.getElementById('hourlyRate').value) || 0;
+                annual = hourly * totalHours;
+                document.getElementById('resultLabel').textContent = 'Annual Salary';
+                document.getElementById('mainResult').textContent = '$' + annual.toLocaleString('en-US', {maximumFractionDigits: 0});
+            } else {
+                annual = parseFloat(document.getElementById('annualSalary').value) || 0;
+                hourly = totalHours > 0 ? annual / totalHours : 0;
+                document.getElementById('resultLabel').textContent = 'Hourly Rate';
+                document.getElementById('mainResult').textContent = '$' + hourly.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            }
+
+            document.getElementById('resultSub').textContent = `Based on ${hoursWeek} hours/week, ${weeksYear} weeks/year`;
+
+            const weekly = annual / weeksYear;
+            const biweekly = annual / (weeksYear / 2);
+            const semimonthly = annual / 24;
+            const monthly = annual / 12;
+
+            document.getElementById('weekly').textContent = '$' + weekly.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('biweekly').textContent = '$' + biweekly.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('semimonthly').textContent = '$' + semimonthly.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('monthly').textContent = '$' + monthly.toLocaleString('en-US', {maximumFractionDigits: 0});
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

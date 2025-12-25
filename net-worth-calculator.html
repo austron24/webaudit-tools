@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Net Worth Calculator - Calculate Your Net Worth</title>
+    <meta name="description" content="Calculate your net worth instantly. Add up your assets and subtract liabilities. Track your financial progress with our free net worth calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #047857 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 650px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 20px 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .section-title.assets { color: #16a34a; }
+        .section-title.liabilities { color: #dc2626; }
+        .input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+        .input-row label {
+            flex: 1;
+            font-size: 14px;
+            color: #64748b;
+        }
+        .input-row input {
+            width: 150px;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: right;
+        }
+        .input-row input:focus {
+            outline: none;
+            border-color: #047857;
+        }
+        .subtotal {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+        .subtotal.assets-total {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        .subtotal.liabilities-total {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box.negative {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #047857;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .tips ul {
+            font-size: 13px;
+            color: #64748b;
+            padding-left: 20px;
+        }
+        .tips li { margin-bottom: 5px; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #047857; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #065f46;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #6ee7b7; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Net Worth Calculator</h1>
+            <p class="subtitle">Assets - Liabilities = Your Net Worth</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="section-title assets">Assets (What You Own)</div>
+
+            <div class="input-row">
+                <label>Cash & Savings</label>
+                <input type="number" id="cash" value="10000" min="0" step="100" oninput="calculate()">
+            </div>
+            <div class="input-row">
+                <label>Checking Accounts</label>
+                <input type="number" id="checking" value="5000" min="0" step="100" oninput="calculate()">
+            </div>
+            <div class="input-row">
+                <label>Investments (401k, IRA, Stocks)</label>
+                <input type="number" id="investments" value="50000" min="0" step="100" oninput="calculate()">
+            </div>
+            <div class="input-row">
+                <label>Real Estate Value</label>
+                <input type="number" id="realEstate" value="250000" min="0" step="1000" oninput="calculate()">
+            </div>
+            <div class="input-row">
+                <label>Vehicles</label>
+                <input type="number" id="vehicles" value="20000" min="0" step="100" oninput="calculate()">
+            </div>
+            <div class="input-row">
+                <label>Other Assets</label>
+                <input type="number" id="otherAssets" value="5000" min="0" step="100" oninput="calculate()">
+            </div>
+
+            <div class="subtotal assets-total">
+                <span>Total Assets</span>
+                <span id="totalAssets">$340,000</span>
+            </div>
+
+            <div class="section-title liabilities">Liabilities (What You Owe)</div>
+
+            <div class="input-row">
+                <label>Mortgage Balance</label>
+                <input type="number" id="mortgage" value="180000" min="0" step="1000" oninput="calculate()">
+            </div>
+            <div class="input-row">
+                <label>Car Loans</label>
+                <input type="number" id="carLoans" value="15000" min="0" step="100" oninput="calculate()">
+            </div>
+            <div class="input-row">
+                <label>Student Loans</label>
+                <input type="number" id="studentLoans" value="25000" min="0" step="100" oninput="calculate()">
+            </div>
+            <div class="input-row">
+                <label>Credit Card Debt</label>
+                <input type="number" id="creditCards" value="5000" min="0" step="100" oninput="calculate()">
+            </div>
+            <div class="input-row">
+                <label>Other Debts</label>
+                <input type="number" id="otherDebts" value="0" min="0" step="100" oninput="calculate()">
+            </div>
+
+            <div class="subtotal liabilities-total">
+                <span>Total Liabilities</span>
+                <span id="totalLiabilities">$225,000</span>
+            </div>
+
+            <div class="result-box" id="resultBox">
+                <div class="label">Your Net Worth</div>
+                <div class="value" id="netWorth">$115,000</div>
+                <div class="sub" id="status">You're in positive territory!</div>
+            </div>
+
+            <div class="tips">
+                <h4>Building Net Worth Tips</h4>
+                <ul>
+                    <li>Pay down high-interest debt first (credit cards)</li>
+                    <li>Maximize employer 401k match - it's free money</li>
+                    <li>Build an emergency fund of 3-6 months expenses</li>
+                    <li>Avoid lifestyle inflation as income grows</li>
+                    <li>Track net worth monthly to see progress</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Financial Tools</h4>
+            <a href="retirement-calculator.html">Retirement Calculator</a>
+            <a href="savings-calculator.html">Savings Calculator</a>
+            <a href="debt-payoff-calculator.html">Debt Payoff</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Net Worth Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            // Assets
+            const cash = parseFloat(document.getElementById('cash').value) || 0;
+            const checking = parseFloat(document.getElementById('checking').value) || 0;
+            const investments = parseFloat(document.getElementById('investments').value) || 0;
+            const realEstate = parseFloat(document.getElementById('realEstate').value) || 0;
+            const vehicles = parseFloat(document.getElementById('vehicles').value) || 0;
+            const otherAssets = parseFloat(document.getElementById('otherAssets').value) || 0;
+
+            // Liabilities
+            const mortgage = parseFloat(document.getElementById('mortgage').value) || 0;
+            const carLoans = parseFloat(document.getElementById('carLoans').value) || 0;
+            const studentLoans = parseFloat(document.getElementById('studentLoans').value) || 0;
+            const creditCards = parseFloat(document.getElementById('creditCards').value) || 0;
+            const otherDebts = parseFloat(document.getElementById('otherDebts').value) || 0;
+
+            const totalAssets = cash + checking + investments + realEstate + vehicles + otherAssets;
+            const totalLiabilities = mortgage + carLoans + studentLoans + creditCards + otherDebts;
+            const netWorth = totalAssets - totalLiabilities;
+
+            document.getElementById('totalAssets').textContent = '$' + totalAssets.toLocaleString();
+            document.getElementById('totalLiabilities').textContent = '$' + totalLiabilities.toLocaleString();
+
+            const resultBox = document.getElementById('resultBox');
+            const netWorthEl = document.getElementById('netWorth');
+            const statusEl = document.getElementById('status');
+
+            if (netWorth >= 0) {
+                netWorthEl.textContent = '$' + netWorth.toLocaleString();
+                resultBox.className = 'result-box';
+                statusEl.textContent = netWorth > 100000 ? "You're building wealth!" : "You're in positive territory!";
+            } else {
+                netWorthEl.textContent = '-$' + Math.abs(netWorth).toLocaleString();
+                resultBox.className = 'result-box negative';
+                statusEl.textContent = "Focus on paying down debt";
+            }
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
