@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tile Calculator - How Many Tiles Do I Need?</title>
+    <meta name="description" content="Calculate how many tiles you need for your floor or wall. Estimate tile quantity and cost. Free tile calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0891b2 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #0891b2;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .break-item {
+            background: #ecfeff;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .break-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #0e7490;
+        }
+        .break-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .materials {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .materials h4 {
+            color: #0e7490;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .material-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .material-row:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0e7490; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0891b2;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #67e8f9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Tile Calculator</h1>
+            <p class="subtitle">How many tiles do you need?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Area Length (ft)</label>
+                    <input type="number" id="areaLength" value="10" min="0" step="0.5" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Area Width (ft)</label>
+                    <input type="number" id="areaWidth" value="10" min="0" step="0.5" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Tile Width (inches)</label>
+                    <input type="number" id="tileWidth" value="12" min="1" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Tile Height (inches)</label>
+                    <input type="number" id="tileHeight" value="12" min="1" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Grout Gap (inches)</label>
+                    <input type="number" id="groutGap" value="0.125" min="0" max="0.5" step="0.0625" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Waste Factor (%)</label>
+                    <input type="number" id="waste" value="10" min="5" max="20" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Price per Tile ($)</label>
+                    <input type="number" id="pricePerTile" value="3" min="0" step="0.5" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Tiles per Box</label>
+                    <input type="number" id="tilesPerBox" value="10" min="1" step="1" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Tiles Needed</div>
+                <div class="value" id="tilesNeeded">110</div>
+                <div class="sub" id="tilesNote">Including 10% waste factor</div>
+            </div>
+
+            <div class="breakdown">
+                <div class="break-item">
+                    <div class="value" id="areaSize">100 ft²</div>
+                    <div class="label">Area Size</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="tileSize">1 ft²</div>
+                    <div class="label">Tile Size</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="boxes">11</div>
+                    <div class="label">Boxes Needed</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="totalCost">$330</div>
+                    <div class="label">Tile Cost</div>
+                </div>
+            </div>
+
+            <div class="materials">
+                <h4>Additional Materials Estimate</h4>
+                <div class="material-row">
+                    <span>Thin-set Mortar (50 lb bags)</span>
+                    <span id="mortar">2</span>
+                </div>
+                <div class="material-row">
+                    <span>Grout (25 lb bags)</span>
+                    <span id="grout">1</span>
+                </div>
+                <div class="material-row">
+                    <span>Tile Spacers (bags)</span>
+                    <span id="spacers">1</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Improvement Tools</h4>
+            <a href="flooring-calculator.html">Flooring Calculator</a>
+            <a href="paint-calculator.html">Paint Calculator</a>
+            <a href="square-footage.html">Square Footage</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Tile Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const areaLength = parseFloat(document.getElementById('areaLength').value) || 0;
+            const areaWidth = parseFloat(document.getElementById('areaWidth').value) || 0;
+            const tileWidth = parseFloat(document.getElementById('tileWidth').value) || 12;
+            const tileHeight = parseFloat(document.getElementById('tileHeight').value) || 12;
+            const groutGap = parseFloat(document.getElementById('groutGap').value) || 0;
+            const waste = parseFloat(document.getElementById('waste').value) || 10;
+            const pricePerTile = parseFloat(document.getElementById('pricePerTile').value) || 0;
+            const tilesPerBox = parseInt(document.getElementById('tilesPerBox').value) || 10;
+
+            // Area in sq ft
+            const areaSize = areaLength * areaWidth;
+
+            // Tile size in sq ft (convert from inches)
+            const tileWidthFt = (tileWidth + groutGap) / 12;
+            const tileHeightFt = (tileHeight + groutGap) / 12;
+            const tileSizeSqFt = tileWidthFt * tileHeightFt;
+
+            // Base tiles needed
+            const baseTiles = Math.ceil(areaSize / tileSizeSqFt);
+
+            // With waste factor
+            const tilesNeeded = Math.ceil(baseTiles * (1 + waste / 100));
+
+            // Boxes needed
+            const boxes = Math.ceil(tilesNeeded / tilesPerBox);
+
+            // Total cost
+            const totalCost = tilesNeeded * pricePerTile;
+
+            // Additional materials
+            const mortar = Math.ceil(areaSize / 50); // 1 bag per 50 sq ft
+            const grout = Math.ceil(areaSize / 100); // 1 bag per 100 sq ft
+            const spacers = Math.ceil(areaSize / 100);
+
+            document.getElementById('areaSize').textContent = Math.round(areaSize) + ' ft²';
+            document.getElementById('tileSize').textContent = (tileWidth * tileHeight / 144).toFixed(2) + ' ft²';
+            document.getElementById('tilesNeeded').textContent = tilesNeeded;
+            document.getElementById('tilesNote').textContent = 'Including ' + waste + '% waste factor';
+            document.getElementById('boxes').textContent = boxes;
+            document.getElementById('totalCost').textContent = '$' + Math.round(totalCost);
+            document.getElementById('mortar').textContent = mortar;
+            document.getElementById('grout').textContent = Math.max(1, grout);
+            document.getElementById('spacers').textContent = Math.max(1, spacers);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

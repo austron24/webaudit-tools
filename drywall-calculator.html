@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drywall Calculator - How Many Sheets Do I Need?</title>
+    <meta name="description" content="Calculate how many drywall sheets you need for your room. Estimate sheetrock for walls and ceilings. Free drywall calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #a8a29e 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #78716c;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .checkbox-group input {
+            width: 20px;
+            height: 20px;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #78716c 0%, #57534e 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .break-item {
+            background: #f5f5f4;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .break-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #57534e;
+        }
+        .break-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .materials {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .materials h4 {
+            color: #57534e;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .material-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .material-row:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #57534e; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #78716c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #d6d3d1; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Drywall Calculator</h1>
+            <p class="subtitle">How many drywall sheets do you need?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Room Length (ft)</label>
+                    <input type="number" id="length" value="12" min="0" step="0.5" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Room Width (ft)</label>
+                    <input type="number" id="width" value="10" min="0" step="0.5" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Wall Height (ft)</label>
+                    <input type="number" id="height" value="8" min="0" step="0.5" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Sheet Size</label>
+                    <select id="sheetSize" onchange="calculate()">
+                        <option value="32">4' x 8' (32 sq ft)</option>
+                        <option value="48">4' x 12' (48 sq ft)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="includeCeiling" checked onchange="calculate()">
+                <label for="includeCeiling">Include Ceiling</label>
+            </div>
+
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Number of Doors</label>
+                    <input type="number" id="doors" value="1" min="0" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Number of Windows</label>
+                    <input type="number" id="windows" value="2" min="0" step="1" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Drywall Sheets Needed</div>
+                <div class="value" id="sheets">16</div>
+                <div class="sub" id="sheetsNote">Including 10% waste factor</div>
+            </div>
+
+            <div class="breakdown">
+                <div class="break-item">
+                    <div class="value" id="wallArea">352 ft²</div>
+                    <div class="label">Wall Area</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="ceilingArea">120 ft²</div>
+                    <div class="label">Ceiling Area</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="totalArea">472 ft²</div>
+                    <div class="label">Total Area</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="cost">$240</div>
+                    <div class="label">Est. Cost (~$15/sheet)</div>
+                </div>
+            </div>
+
+            <div class="materials">
+                <h4>Additional Materials Needed</h4>
+                <div class="material-row">
+                    <span>Joint Compound (buckets)</span>
+                    <span id="compound">2</span>
+                </div>
+                <div class="material-row">
+                    <span>Drywall Tape (rolls)</span>
+                    <span id="tape">2</span>
+                </div>
+                <div class="material-row">
+                    <span>Drywall Screws (lbs)</span>
+                    <span id="screws">3</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Construction Tools</h4>
+            <a href="paint-calculator.html">Paint Calculator</a>
+            <a href="concrete-calculator.html">Concrete Calculator</a>
+            <a href="square-footage.html">Square Footage</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Drywall Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const length = parseFloat(document.getElementById('length').value) || 0;
+            const width = parseFloat(document.getElementById('width').value) || 0;
+            const height = parseFloat(document.getElementById('height').value) || 0;
+            const sheetSize = parseFloat(document.getElementById('sheetSize').value) || 32;
+            const includeCeiling = document.getElementById('includeCeiling').checked;
+            const doors = parseInt(document.getElementById('doors').value) || 0;
+            const windows = parseInt(document.getElementById('windows').value) || 0;
+
+            // Wall area (perimeter * height)
+            const perimeter = 2 * (length + width);
+            const wallArea = perimeter * height;
+
+            // Subtract openings (doors ~21 sq ft, windows ~15 sq ft)
+            const openingsArea = (doors * 21) + (windows * 15);
+            const netWallArea = Math.max(0, wallArea - openingsArea);
+
+            // Ceiling area
+            const ceilingArea = includeCeiling ? length * width : 0;
+
+            // Total area
+            const totalArea = netWallArea + ceilingArea;
+
+            // Add 10% waste
+            const totalWithWaste = totalArea * 1.1;
+
+            // Calculate sheets
+            const sheets = Math.ceil(totalWithWaste / sheetSize);
+
+            // Additional materials
+            const compound = Math.ceil(totalArea / 400); // 1 bucket per 400 sq ft
+            const tape = Math.ceil(totalArea / 250); // 1 roll per 250 sq ft
+            const screws = Math.ceil(totalArea / 150); // 1 lb per 150 sq ft
+
+            document.getElementById('wallArea').textContent = Math.round(netWallArea) + ' ft²';
+            document.getElementById('ceilingArea').textContent = Math.round(ceilingArea) + ' ft²';
+            document.getElementById('totalArea').textContent = Math.round(totalArea) + ' ft²';
+            document.getElementById('sheets').textContent = sheets;
+            document.getElementById('cost').textContent = '$' + (sheets * 15);
+            document.getElementById('compound').textContent = compound;
+            document.getElementById('tape').textContent = tape;
+            document.getElementById('screws').textContent = screws;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
