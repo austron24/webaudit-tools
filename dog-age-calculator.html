@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dog Age Calculator - Dog Years to Human Years</title>
+    <meta name="description" content="Calculate your dog's age in human years. Accurate dog to human age conversion by breed size. Free dog age calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #ea580c 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #ea580c;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .break-item {
+            background: #fff7ed;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .break-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ea580c;
+        }
+        .break-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .age-chart {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .age-chart h4 {
+            color: #ea580c;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .age-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .age-row:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #ea580c; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #c2410c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fdba74; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Dog Age Calculator</h1>
+            <p class="subtitle">How old is your dog in human years?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Dog's Age (years)</label>
+                    <input type="number" id="years" value="5" min="0" max="25" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Months</label>
+                    <input type="number" id="months" value="0" min="0" max="11" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group full">
+                    <label>Dog Size</label>
+                    <select id="size" onchange="calculate()">
+                        <option value="small">Small (under 20 lbs)</option>
+                        <option value="medium" selected>Medium (21-50 lbs)</option>
+                        <option value="large">Large (51-100 lbs)</option>
+                        <option value="giant">Giant (over 100 lbs)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Human Age Equivalent</div>
+                <div class="value" id="humanAge">36 years</div>
+                <div class="sub" id="lifeStage">Adult</div>
+            </div>
+
+            <div class="breakdown">
+                <div class="break-item">
+                    <div class="value" id="dogAge">5 yrs</div>
+                    <div class="label">Dog Age</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="multiplier">7.2x</div>
+                    <div class="label">Age Multiplier</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="lifeExpect">13 yrs</div>
+                    <div class="label">Life Expectancy</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="percentLife">38%</div>
+                    <div class="label">Life Lived</div>
+                </div>
+            </div>
+
+            <div class="age-chart">
+                <h4>Life Stage Guide</h4>
+                <div class="age-row">
+                    <span>Puppy</span>
+                    <span>0-1 year</span>
+                </div>
+                <div class="age-row">
+                    <span>Junior</span>
+                    <span>1-2 years</span>
+                </div>
+                <div class="age-row">
+                    <span>Adult</span>
+                    <span>2-7 years</span>
+                </div>
+                <div class="age-row">
+                    <span>Senior</span>
+                    <span>7-10 years</span>
+                </div>
+                <div class="age-row">
+                    <span>Geriatric</span>
+                    <span>10+ years</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Pet & Health Tools</h4>
+            <a href="bmi-calculator.html">BMI Calculator</a>
+            <a href="calorie-calculator.html">Calorie Calculator</a>
+            <a href="age-calculator.html">Age Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Dog Age Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        // Life expectancy by size
+        const lifeExpectancy = {
+            small: 15,
+            medium: 13,
+            large: 10,
+            giant: 8
+        };
+
+        // Age multipliers (simplified research-based model)
+        function getHumanAge(dogYears, size) {
+            if (dogYears <= 0) return 0;
+
+            // First year = 15 human years
+            // Second year = 9 human years
+            // After that, varies by size
+
+            const laterYearMultiplier = {
+                small: 4,
+                medium: 5,
+                large: 6,
+                giant: 7
+            };
+
+            if (dogYears <= 1) {
+                return Math.round(dogYears * 15);
+            } else if (dogYears <= 2) {
+                return 15 + Math.round((dogYears - 1) * 9);
+            } else {
+                return 24 + Math.round((dogYears - 2) * laterYearMultiplier[size]);
+            }
+        }
+
+        function getLifeStage(dogYears, size) {
+            const maxLife = lifeExpectancy[size];
+            const percentLife = dogYears / maxLife;
+
+            if (dogYears < 1) return 'Puppy';
+            if (dogYears < 2) return 'Junior';
+            if (percentLife < 0.5) return 'Adult';
+            if (percentLife < 0.75) return 'Senior';
+            return 'Geriatric';
+        }
+
+        function calculate() {
+            const years = parseFloat(document.getElementById('years').value) || 0;
+            const months = parseFloat(document.getElementById('months').value) || 0;
+            const size = document.getElementById('size').value;
+
+            const totalDogYears = years + (months / 12);
+            const humanAge = getHumanAge(totalDogYears, size);
+            const lifeStage = getLifeStage(totalDogYears, size);
+            const maxLife = lifeExpectancy[size];
+            const percentLife = Math.min(100, Math.round((totalDogYears / maxLife) * 100));
+            const multiplier = totalDogYears > 0 ? (humanAge / totalDogYears).toFixed(1) : 0;
+
+            document.getElementById('humanAge').textContent = humanAge + ' years';
+            document.getElementById('lifeStage').textContent = lifeStage;
+            document.getElementById('dogAge').textContent = totalDogYears.toFixed(1) + ' yrs';
+            document.getElementById('multiplier').textContent = multiplier + 'x';
+            document.getElementById('lifeExpect').textContent = maxLife + ' yrs';
+            document.getElementById('percentLife').textContent = percentLife + '%';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

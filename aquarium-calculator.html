@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aquarium Calculator - Tank Volume & Fish Stocking</title>
+    <meta name="description" content="Calculate aquarium volume in gallons. Fish stocking guide and water change calculator. Free aquarium calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0891b2 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #0891b2;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .break-item {
+            background: #e0f2fe;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .break-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #0891b2;
+        }
+        .break-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .stocking-guide {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .stocking-guide h4 {
+            color: #0891b2;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .guide-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .guide-row:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0891b2; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0e7490;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #67e8f9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Aquarium Calculator</h1>
+            <p class="subtitle">Calculate tank volume and fish stocking</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group full">
+                    <label>Tank Shape</label>
+                    <select id="shape" onchange="updateShape()">
+                        <option value="rectangle" selected>Rectangular</option>
+                        <option value="cylinder">Cylinder</option>
+                        <option value="bowfront">Bow Front</option>
+                        <option value="hexagon">Hexagon</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label id="dimLabel1">Length (inches)</label>
+                    <input type="number" id="dim1" value="48" min="1" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label id="dimLabel2">Width (inches)</label>
+                    <input type="number" id="dim2" value="13" min="1" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Height (inches)</label>
+                    <input type="number" id="height" value="21" min="1" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Substrate Depth (in)</label>
+                    <input type="number" id="substrate" value="2" min="0" max="6" step="0.5" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Tank Volume</div>
+                <div class="value" id="gallons">55 gal</div>
+                <div class="sub" id="liters">208 liters</div>
+            </div>
+
+            <div class="breakdown">
+                <div class="break-item">
+                    <div class="value" id="actualGal">52 gal</div>
+                    <div class="label">Actual Water</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="fishInches">26"</div>
+                    <div class="label">Max Fish Inches</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="waterChange">10 gal</div>
+                    <div class="label">Weekly Change (20%)</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="heaterWatts">150W</div>
+                    <div class="label">Heater Size</div>
+                </div>
+            </div>
+
+            <div class="stocking-guide">
+                <h4>Stocking Guide (1" fish per gallon)</h4>
+                <div class="guide-row">
+                    <span>Small tetras (1")</span>
+                    <span id="smallFish">52 fish</span>
+                </div>
+                <div class="guide-row">
+                    <span>Medium fish (2")</span>
+                    <span id="medFish">26 fish</span>
+                </div>
+                <div class="guide-row">
+                    <span>Large fish (4")</span>
+                    <span id="largeFish">13 fish</span>
+                </div>
+                <div class="guide-row">
+                    <span>Filter flow rate</span>
+                    <span id="filterFlow">260 GPH</span>
+                </div>
+                <div class="guide-row">
+                    <span>Light (moderate plants)</span>
+                    <span id="lighting">55 lumens</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Calculator Tools</h4>
+            <a href="pool-calculator.html">Pool Calculator</a>
+            <a href="unit-converter.html">Unit Converter</a>
+            <a href="dog-food-calculator.html">Dog Food Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Aquarium Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function updateShape() {
+            const shape = document.getElementById('shape').value;
+            const label1 = document.getElementById('dimLabel1');
+            const label2 = document.getElementById('dimLabel2');
+            const dim2Input = document.getElementById('dim2');
+
+            switch(shape) {
+                case 'cylinder':
+                    label1.textContent = 'Diameter (inches)';
+                    label2.textContent = 'Width (not used)';
+                    dim2Input.style.opacity = '0.5';
+                    break;
+                case 'hexagon':
+                    label1.textContent = 'Side Length (inches)';
+                    label2.textContent = 'Width (not used)';
+                    dim2Input.style.opacity = '0.5';
+                    break;
+                default:
+                    label1.textContent = 'Length (inches)';
+                    label2.textContent = 'Width (inches)';
+                    dim2Input.style.opacity = '1';
+            }
+            calculate();
+        }
+
+        function calculate() {
+            const shape = document.getElementById('shape').value;
+            const dim1 = parseFloat(document.getElementById('dim1').value) || 0;
+            const dim2 = parseFloat(document.getElementById('dim2').value) || 0;
+            const height = parseFloat(document.getElementById('height').value) || 0;
+            const substrate = parseFloat(document.getElementById('substrate').value) || 0;
+
+            let cubicInches;
+
+            switch(shape) {
+                case 'cylinder':
+                    const radius = dim1 / 2;
+                    cubicInches = Math.PI * radius * radius * height;
+                    break;
+                case 'hexagon':
+                    // Regular hexagon area = (3 * sqrt(3) / 2) * side^2
+                    const hexArea = (3 * Math.sqrt(3) / 2) * dim1 * dim1;
+                    cubicInches = hexArea * height;
+                    break;
+                case 'bowfront':
+                    // Approximate: rectangle + extra 10%
+                    cubicInches = dim1 * dim2 * height * 1.1;
+                    break;
+                default: // rectangle
+                    cubicInches = dim1 * dim2 * height;
+            }
+
+            // Convert to gallons (231 cubic inches per gallon)
+            const gallons = cubicInches / 231;
+            const liters = gallons * 3.78541;
+
+            // Account for substrate displacement
+            const substrateGal = (dim1 * dim2 * substrate) / 231 * 0.5;
+            const actualGal = gallons - substrateGal;
+
+            // Stocking: 1 inch of fish per gallon (conservative)
+            const fishInches = Math.floor(actualGal * 0.5); // 0.5 is more realistic
+
+            // Water change (20% weekly)
+            const waterChange = actualGal * 0.2;
+
+            // Heater: 3-5 watts per gallon
+            const heaterWatts = Math.ceil(actualGal * 3 / 50) * 50;
+
+            // Filter: 4-5x tank volume per hour
+            const filterFlow = Math.round(actualGal * 5);
+
+            // Lighting: 1 lumen per gallon for low-light
+            const lighting = Math.round(actualGal);
+
+            document.getElementById('gallons').textContent = Math.round(gallons) + ' gal';
+            document.getElementById('liters').textContent = Math.round(liters) + ' liters';
+            document.getElementById('actualGal').textContent = Math.round(actualGal) + ' gal';
+            document.getElementById('fishInches').textContent = fishInches + '"';
+            document.getElementById('waterChange').textContent = Math.round(waterChange) + ' gal';
+            document.getElementById('heaterWatts').textContent = heaterWatts + 'W';
+            document.getElementById('smallFish').textContent = fishInches + ' fish';
+            document.getElementById('medFish').textContent = Math.floor(fishInches / 2) + ' fish';
+            document.getElementById('largeFish').textContent = Math.floor(fishInches / 4) + ' fish';
+            document.getElementById('filterFlow').textContent = filterFlow + ' GPH';
+            document.getElementById('lighting').textContent = lighting + ' lumens';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

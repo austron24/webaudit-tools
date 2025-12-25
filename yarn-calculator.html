@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yarn Calculator - How Much Yarn Do I Need?</title>
+    <meta name="description" content="Calculate how much yarn you need for knitting or crochet projects. Estimate skeins by project type. Free yarn calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #be185d 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #be185d;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #be185d 0%, #9f1239 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .break-item {
+            background: #fce7f3;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .break-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #be185d;
+        }
+        .break-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .yarn-guide {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .yarn-guide h4 {
+            color: #be185d;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .guide-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .guide-row:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #be185d; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #9f1239;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #f9a8d4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Yarn Calculator</h1>
+            <p class="subtitle">How much yarn do you need?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group full">
+                    <label>Project Type</label>
+                    <select id="project" onchange="calculate()">
+                        <option value="scarf">Scarf (6" x 60")</option>
+                        <option value="hat">Hat (Adult)</option>
+                        <option value="blanket-baby">Baby Blanket (30" x 40")</option>
+                        <option value="blanket-throw" selected>Throw Blanket (50" x 60")</option>
+                        <option value="blanket-queen">Queen Blanket (90" x 100")</option>
+                        <option value="sweater-sm">Sweater (Small)</option>
+                        <option value="sweater-lg">Sweater (Large)</option>
+                        <option value="socks">Socks (Pair)</option>
+                        <option value="custom">Custom Size</option>
+                    </select>
+                </div>
+                <div class="input-group" id="customWidth" style="display:none;">
+                    <label>Width (inches)</label>
+                    <input type="number" id="width" value="50" min="1" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group" id="customLength" style="display:none;">
+                    <label>Length (inches)</label>
+                    <input type="number" id="length" value="60" min="1" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group full">
+                    <label>Yarn Weight</label>
+                    <select id="weight" onchange="calculate()">
+                        <option value="lace">Lace (0)</option>
+                        <option value="fingering">Fingering (1)</option>
+                        <option value="sport">Sport (2)</option>
+                        <option value="dk">DK (3)</option>
+                        <option value="worsted" selected>Worsted (4)</option>
+                        <option value="bulky">Bulky (5)</option>
+                        <option value="super-bulky">Super Bulky (6)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Skein Yardage</label>
+                    <input type="number" id="skeinYards" value="220" min="50" step="10" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Price per Skein ($)</label>
+                    <input type="number" id="price" value="8" min="0" step="0.5" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Yarn Needed</div>
+                <div class="value" id="skeins">8 skeins</div>
+                <div class="sub" id="yards">1,760 yards total</div>
+            </div>
+
+            <div class="breakdown">
+                <div class="break-item">
+                    <div class="value" id="totalYards">1,760 yd</div>
+                    <div class="label">Total Yards</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="totalMeters">1,609 m</div>
+                    <div class="label">Total Meters</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="totalWeight">28 oz</div>
+                    <div class="label">Total Weight</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="cost">$64</div>
+                    <div class="label">Yarn Cost</div>
+                </div>
+            </div>
+
+            <div class="yarn-guide">
+                <h4>Yarn Weight Reference</h4>
+                <div class="guide-row">
+                    <span>Lace (0)</span>
+                    <span>~800 yd/100g</span>
+                </div>
+                <div class="guide-row">
+                    <span>Fingering (1)</span>
+                    <span>~400 yd/100g</span>
+                </div>
+                <div class="guide-row">
+                    <span>DK (3)</span>
+                    <span>~250 yd/100g</span>
+                </div>
+                <div class="guide-row">
+                    <span>Worsted (4)</span>
+                    <span>~200 yd/100g</span>
+                </div>
+                <div class="guide-row">
+                    <span>Bulky (5)</span>
+                    <span>~130 yd/100g</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Craft Tools</h4>
+            <a href="fabric-calculator.html">Fabric Calculator</a>
+            <a href="unit-converter.html">Unit Converter</a>
+            <a href="percentage-calc.html">Percentage Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Yarn Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        // Yards needed per square inch by yarn weight
+        const yardsPerSqInch = {
+            'lace': 0.7,
+            'fingering': 0.5,
+            'sport': 0.4,
+            'dk': 0.35,
+            'worsted': 0.3,
+            'bulky': 0.2,
+            'super-bulky': 0.15
+        };
+
+        // Preset project sizes (width x length in inches) and yards
+        const projectYards = {
+            'scarf': 200,
+            'hat': 150,
+            'blanket-baby': 800,
+            'blanket-throw': 1600,
+            'blanket-queen': 4000,
+            'sweater-sm': 1200,
+            'sweater-lg': 1800,
+            'socks': 400
+        };
+
+        document.getElementById('project').addEventListener('change', function() {
+            const isCustom = this.value === 'custom';
+            document.getElementById('customWidth').style.display = isCustom ? 'block' : 'none';
+            document.getElementById('customLength').style.display = isCustom ? 'block' : 'none';
+        });
+
+        function calculate() {
+            const project = document.getElementById('project').value;
+            const weight = document.getElementById('weight').value;
+            const skeinYards = parseFloat(document.getElementById('skeinYards').value) || 220;
+            const price = parseFloat(document.getElementById('price').value) || 8;
+
+            let totalYards;
+
+            if (project === 'custom') {
+                const width = parseFloat(document.getElementById('width').value) || 50;
+                const length = parseFloat(document.getElementById('length').value) || 60;
+                const sqInches = width * length;
+                totalYards = sqInches * yardsPerSqInch[weight];
+            } else {
+                // Base yards for worsted, adjust for weight
+                const baseYards = projectYards[project];
+                const worstedRatio = yardsPerSqInch['worsted'];
+                const weightRatio = yardsPerSqInch[weight];
+                totalYards = baseYards * (weightRatio / worstedRatio);
+            }
+
+            // Add 10% buffer
+            totalYards *= 1.1;
+
+            const skeins = Math.ceil(totalYards / skeinYards);
+            const totalMeters = totalYards * 0.9144;
+
+            // Weight estimate (yards per oz varies by weight)
+            const yardsPerOz = {
+                'lace': 200,
+                'fingering': 100,
+                'sport': 80,
+                'dk': 60,
+                'worsted': 50,
+                'bulky': 35,
+                'super-bulky': 25
+            };
+            const totalWeight = totalYards / yardsPerOz[weight];
+
+            const cost = skeins * price;
+
+            document.getElementById('skeins').textContent = skeins + ' skeins';
+            document.getElementById('yards').textContent = Math.round(totalYards).toLocaleString() + ' yards total';
+            document.getElementById('totalYards').textContent = Math.round(totalYards).toLocaleString() + ' yd';
+            document.getElementById('totalMeters').textContent = Math.round(totalMeters).toLocaleString() + ' m';
+            document.getElementById('totalWeight').textContent = Math.round(totalWeight) + ' oz';
+            document.getElementById('cost').textContent = '$' + cost;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
