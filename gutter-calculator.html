@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gutter Calculator - How Much Gutter Do I Need?</title>
+    <meta name="description" content="Calculate how much gutter material you need. Estimate linear feet and downspouts. Free gutter calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #475569 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #64748b;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .break-item {
+            background: #f1f5f9;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .break-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #475569;
+        }
+        .break-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .materials {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .materials h4 {
+            color: #475569;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .material-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .material-row:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #475569; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #64748b;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #cbd5e1; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Gutter Calculator</h1>
+            <p class="subtitle">How much gutter do you need?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>House Length (ft)</label>
+                    <input type="number" id="length" value="50" min="0" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>House Width (ft)</label>
+                    <input type="number" id="width" value="30" min="0" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Roof Stories</label>
+                    <select id="stories" onchange="calculate()">
+                        <option value="1" selected>1 Story (10 ft)</option>
+                        <option value="2">2 Story (20 ft)</option>
+                        <option value="3">3 Story (30 ft)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Gutter Style</label>
+                    <select id="style" onchange="calculate()">
+                        <option value="5" selected>5" K-Style</option>
+                        <option value="6">6" K-Style</option>
+                        <option value="half">Half-Round</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Material</label>
+                    <select id="material" onchange="calculate()">
+                        <option value="4" selected>Aluminum ($4-9/ft)</option>
+                        <option value="6">Vinyl ($3-5/ft)</option>
+                        <option value="8">Steel ($8-10/ft)</option>
+                        <option value="15">Copper ($15-25/ft)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Total Gutter Length</div>
+                <div class="value" id="totalFeet">160 ft</div>
+                <div class="sub" id="totalCost">Estimated: $640-$1,440</div>
+            </div>
+
+            <div class="breakdown">
+                <div class="break-item">
+                    <div class="value" id="downspouts">8</div>
+                    <div class="label">Downspouts</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="corners">4</div>
+                    <div class="label">Inside Corners</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="endCaps">8</div>
+                    <div class="label">End Caps</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="hangers">32</div>
+                    <div class="label">Hangers</div>
+                </div>
+            </div>
+
+            <div class="materials">
+                <h4>Materials List</h4>
+                <div class="material-row">
+                    <span>Gutter Sections (10 ft)</span>
+                    <span id="sections">16</span>
+                </div>
+                <div class="material-row">
+                    <span>Downspout (10 ft)</span>
+                    <span id="downspoutPcs">16</span>
+                </div>
+                <div class="material-row">
+                    <span>Elbows</span>
+                    <span id="elbows">24</span>
+                </div>
+                <div class="material-row">
+                    <span>Gutter Hangers</span>
+                    <span id="hangerList">32</span>
+                </div>
+                <div class="material-row">
+                    <span>Splash Blocks</span>
+                    <span id="splashBlocks">8</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Tools</h4>
+            <a href="roofing-calculator.html">Roofing Calculator</a>
+            <a href="paint-calculator.html">Paint Calculator</a>
+            <a href="square-footage.html">Square Footage</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Gutter Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const length = parseFloat(document.getElementById('length').value) || 0;
+            const width = parseFloat(document.getElementById('width').value) || 0;
+            const stories = parseInt(document.getElementById('stories').value) || 1;
+            const pricePerFt = parseFloat(document.getElementById('material').value) || 4;
+
+            // Total gutter length (perimeter for simple rectangular home)
+            const totalFeet = 2 * (length + width);
+
+            // Downspouts: 1 per 40 linear feet of gutter
+            const downspouts = Math.max(4, Math.ceil(totalFeet / 40));
+
+            // Downspout length = height + extension
+            const downspoutHeight = stories * 10;
+            const downspoutPcs = downspouts * Math.ceil((downspoutHeight + 5) / 10);
+
+            // Corners: 4 for simple rectangle
+            const corners = 4;
+
+            // End caps: 2 per corner typically
+            const endCaps = corners * 2;
+
+            // Hangers: 1 every 24 inches
+            const hangers = Math.ceil(totalFeet * 12 / 24);
+
+            // Elbows: 3 per downspout typically
+            const elbows = downspouts * 3;
+
+            // Gutter sections
+            const sections = Math.ceil(totalFeet / 10);
+
+            // Cost estimate
+            const minCost = totalFeet * pricePerFt;
+            const maxCost = totalFeet * pricePerFt * 2.25;
+
+            document.getElementById('totalFeet').textContent = totalFeet + ' ft';
+            document.getElementById('totalCost').textContent = 'Estimated: $' + Math.round(minCost) + '-$' + Math.round(maxCost);
+            document.getElementById('downspouts').textContent = downspouts;
+            document.getElementById('corners').textContent = corners;
+            document.getElementById('endCaps').textContent = endCaps;
+            document.getElementById('hangers').textContent = hangers;
+            document.getElementById('sections').textContent = sections;
+            document.getElementById('downspoutPcs').textContent = downspoutPcs;
+            document.getElementById('elbows').textContent = elbows;
+            document.getElementById('hangerList').textContent = hangers;
+            document.getElementById('splashBlocks').textContent = downspouts;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topsoil Calculator - How Much Topsoil Do I Need?</title>
+    <meta name="description" content="Calculate how much topsoil you need for your garden or lawn. Estimate cubic yards and bags. Free topsoil calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #78350f 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #78350f;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #78350f 0%, #451a03 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .break-item {
+            background: #fef3c7;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .break-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #78350f;
+        }
+        .break-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .coverage {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .coverage h4 {
+            color: #78350f;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .coverage-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .coverage-row:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #78350f; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #92400e;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fcd34d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Topsoil Calculator</h1>
+            <p class="subtitle">How much topsoil do you need?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Area Length (ft)</label>
+                    <input type="number" id="length" value="20" min="0" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Area Width (ft)</label>
+                    <input type="number" id="width" value="15" min="0" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group full">
+                    <label>Depth Needed</label>
+                    <select id="depth" onchange="calculate()">
+                        <option value="2">2 inches (topdressing)</option>
+                        <option value="4" selected>4 inches (new beds)</option>
+                        <option value="6">6 inches (lawn prep)</option>
+                        <option value="8">8 inches (raised beds)</option>
+                        <option value="12">12 inches (deep beds)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Price per Cubic Yard ($)</label>
+                    <input type="number" id="price" value="30" min="0" step="5" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Bag Size (cu ft)</label>
+                    <select id="bagSize" onchange="calculate()">
+                        <option value="0.75">0.75 cu ft (small)</option>
+                        <option value="1" selected>1 cu ft (standard)</option>
+                        <option value="2">2 cu ft (large)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Topsoil Needed</div>
+                <div class="value" id="cubicYards">3.7 yd³</div>
+                <div class="sub" id="cubicFeet">100 cubic feet</div>
+            </div>
+
+            <div class="breakdown">
+                <div class="break-item">
+                    <div class="value" id="area">300 ft²</div>
+                    <div class="label">Coverage Area</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="bags">100</div>
+                    <div class="label">Bags Needed</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="tons">4.1</div>
+                    <div class="label">Weight (tons)</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="cost">$111</div>
+                    <div class="label">Bulk Cost</div>
+                </div>
+            </div>
+
+            <div class="coverage">
+                <h4>Coverage Guide (1 cubic yard covers)</h4>
+                <div class="coverage-row">
+                    <span>2" deep</span>
+                    <span>~162 sq ft</span>
+                </div>
+                <div class="coverage-row">
+                    <span>4" deep</span>
+                    <span>~81 sq ft</span>
+                </div>
+                <div class="coverage-row">
+                    <span>6" deep</span>
+                    <span>~54 sq ft</span>
+                </div>
+                <div class="coverage-row">
+                    <span>Bulk vs Bags</span>
+                    <span>Bulk saves 50%+ on large jobs</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Landscaping Tools</h4>
+            <a href="mulch-calculator.html">Mulch Calculator</a>
+            <a href="gravel-calculator.html">Gravel Calculator</a>
+            <a href="sod-calculator.html">Sod Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Topsoil Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const length = parseFloat(document.getElementById('length').value) || 0;
+            const width = parseFloat(document.getElementById('width').value) || 0;
+            const depthInches = parseFloat(document.getElementById('depth').value) || 4;
+            const price = parseFloat(document.getElementById('price').value) || 30;
+            const bagSize = parseFloat(document.getElementById('bagSize').value) || 1;
+
+            const area = length * width;
+            const depthFt = depthInches / 12;
+            const cubicFeet = area * depthFt;
+            const cubicYards = cubicFeet / 27;
+
+            // Topsoil weighs about 1.1 tons per cubic yard
+            const tons = cubicYards * 1.1;
+
+            // Bags needed
+            const bags = Math.ceil(cubicFeet / bagSize);
+
+            // Cost (bulk)
+            const cost = cubicYards * price;
+
+            // Bag cost (~$5 per 1 cu ft bag)
+            const bagCost = bags * 5;
+
+            document.getElementById('area').textContent = area + ' ft²';
+            document.getElementById('cubicFeet').textContent = Math.round(cubicFeet) + ' cubic feet';
+            document.getElementById('cubicYards').textContent = cubicYards.toFixed(1) + ' yd³';
+            document.getElementById('bags').textContent = bags;
+            document.getElementById('tons').textContent = tons.toFixed(1);
+            document.getElementById('cost').textContent = '$' + Math.round(cost);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
