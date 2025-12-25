@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Text Diff Checker - Compare Text Online</title>
+    <meta name="description" content="Compare two texts and find differences instantly. Highlight additions, deletions, and changes. Free online diff tool.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #6366f1 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 42px; margin-bottom: 15px; }
+        .subtitle { font-size: 18px; opacity: 0.9; }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            color: #1e293b;
+            margin-bottom: 30px;
+        }
+        .inputs-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 768px) {
+            .inputs-row { grid-template-columns: 1fr; }
+        }
+        .input-section h3 { margin-bottom: 10px; color: #1e293b; }
+        .text-input {
+            width: 100%;
+            height: 250px;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+        .text-input:focus { outline: none; border-color: #6366f1; }
+        .btn-row {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-primary { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; }
+        .btn-secondary { background: #f1f5f9; color: #64748b; }
+        .btn-swap { background: #f59e0b; color: white; }
+        .result-section { display: none; }
+        .result-section.show { display: block; }
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .result-header h3 { color: #1e293b; }
+        .stats {
+            display: flex;
+            gap: 20px;
+        }
+        .stat {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .stat.added { background: #dcfce7; color: #16a34a; }
+        .stat.removed { background: #fee2e2; color: #dc2626; }
+        .stat.unchanged { background: #f1f5f9; color: #64748b; }
+        .diff-output {
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.8;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .diff-line {
+            padding: 3px 10px;
+            margin: 2px 0;
+            border-radius: 4px;
+        }
+        .diff-line.added { background: rgba(34, 197, 94, 0.3); color: #86efac; }
+        .diff-line.removed { background: rgba(239, 68, 68, 0.3); color: #fca5a5; }
+        .diff-line.unchanged { color: #94a3b8; }
+        .diff-line .line-number {
+            display: inline-block;
+            min-width: 40px;
+            color: #64748b;
+            margin-right: 10px;
+        }
+        .diff-line .prefix {
+            display: inline-block;
+            width: 20px;
+            font-weight: bold;
+        }
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .view-btn {
+            padding: 10px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            color: #64748b;
+        }
+        .view-btn.active { border-color: #6366f1; background: #eef2ff; color: #6366f1; }
+        .inline-diff {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            line-height: 2;
+        }
+        .inline-diff .added { background: #dcfce7; color: #16a34a; padding: 2px 4px; border-radius: 3px; }
+        .inline-diff .removed { background: #fee2e2; color: #dc2626; padding: 2px 4px; border-radius: 3px; text-decoration: line-through; }
+        .tools-promo {
+            margin-top: 30px;
+            padding: 20px;
+            background: #eef2ff;
+            border-radius: 12px;
+        }
+        .tools-promo h4 { color: #6366f1; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #4f46e5;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        .cta-section {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .cta-section a {
+            display: inline-block;
+            background: white;
+            color: #6366f1;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        footer { text-align: center; padding: 40px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #a5b4fc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Text Diff Checker</h1>
+            <p class="subtitle">Compare two texts and find all differences instantly</p>
+        </header>
+
+        <div class="card">
+            <div class="inputs-row">
+                <div class="input-section">
+                    <h3>Original Text</h3>
+                    <textarea class="text-input" id="text1" placeholder="Paste original text here..."></textarea>
+                </div>
+                <div class="input-section">
+                    <h3>Modified Text</h3>
+                    <textarea class="text-input" id="text2" placeholder="Paste modified text here..."></textarea>
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn btn-primary" onclick="compareDiff()">Find Differences</button>
+                <button class="btn btn-swap" onclick="swapTexts()">Swap Texts</button>
+                <button class="btn btn-secondary" onclick="clearAll()">Clear All</button>
+            </div>
+
+            <div class="result-section" id="resultSection">
+                <div class="result-header">
+                    <h3>Comparison Results</h3>
+                    <div class="stats">
+                        <span class="stat added" id="addedCount">+0 added</span>
+                        <span class="stat removed" id="removedCount">-0 removed</span>
+                        <span class="stat unchanged" id="unchangedCount">0 unchanged</span>
+                    </div>
+                </div>
+
+                <div class="view-toggle">
+                    <button class="view-btn active" onclick="switchView('line')" id="lineViewBtn">Line by Line</button>
+                    <button class="view-btn" onclick="switchView('inline')" id="inlineViewBtn">Inline</button>
+                </div>
+
+                <div id="lineView" class="diff-output"></div>
+                <div id="inlineView" class="inline-diff" style="display: none;"></div>
+            </div>
+
+            <div class="tools-promo">
+                <h4>More Developer Tools</h4>
+                <a href="json-formatter.html">JSON Formatter</a>
+                <a href="base64.html">Base64 Encoder</a>
+                <a href="hash-generator.html">Hash Generator</a>
+                <a href="index.html">View All Tools</a>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h3>Need a Website Audit?</h3>
+            <p>Get professional accessibility and SEO analysis.</p>
+            <a href="https://fiverr.com/austron24" target="_blank">Get Professional Audit</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Diff Checker by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function computeDiff(text1, text2) {
+            const lines1 = text1.split('\n');
+            const lines2 = text2.split('\n');
+            const result = [];
+
+            // Simple LCS-based diff algorithm
+            const m = lines1.length;
+            const n = lines2.length;
+
+            // Create DP table
+            const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
+
+            for (let i = 1; i <= m; i++) {
+                for (let j = 1; j <= n; j++) {
+                    if (lines1[i - 1] === lines2[j - 1]) {
+                        dp[i][j] = dp[i - 1][j - 1] + 1;
+                    } else {
+                        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                    }
+                }
+            }
+
+            // Backtrack to find diff
+            let i = m, j = n;
+            const diff = [];
+
+            while (i > 0 || j > 0) {
+                if (i > 0 && j > 0 && lines1[i - 1] === lines2[j - 1]) {
+                    diff.unshift({ type: 'unchanged', text: lines1[i - 1], line1: i, line2: j });
+                    i--;
+                    j--;
+                } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
+                    diff.unshift({ type: 'added', text: lines2[j - 1], line2: j });
+                    j--;
+                } else if (i > 0) {
+                    diff.unshift({ type: 'removed', text: lines1[i - 1], line1: i });
+                    i--;
+                }
+            }
+
+            return diff;
+        }
+
+        function compareDiff() {
+            const text1 = document.getElementById('text1').value;
+            const text2 = document.getElementById('text2').value;
+
+            if (!text1 && !text2) {
+                alert('Please enter text in at least one field');
+                return;
+            }
+
+            const diff = computeDiff(text1, text2);
+
+            // Count stats
+            let added = 0, removed = 0, unchanged = 0;
+            diff.forEach(d => {
+                if (d.type === 'added') added++;
+                else if (d.type === 'removed') removed++;
+                else unchanged++;
+            });
+
+            document.getElementById('addedCount').textContent = `+${added} added`;
+            document.getElementById('removedCount').textContent = `-${removed} removed`;
+            document.getElementById('unchangedCount').textContent = `${unchanged} unchanged`;
+
+            // Render line view
+            const lineView = document.getElementById('lineView');
+            lineView.innerHTML = diff.map(d => {
+                const prefix = d.type === 'added' ? '+' : d.type === 'removed' ? '-' : ' ';
+                const lineNum = d.line1 || d.line2 || '';
+                return `<div class="diff-line ${d.type}"><span class="line-number">${lineNum}</span><span class="prefix">${prefix}</span>${escapeHtml(d.text)}</div>`;
+            }).join('');
+
+            // Render inline view
+            const inlineView = document.getElementById('inlineView');
+            let inlineHtml = '';
+            let currentLine = [];
+
+            diff.forEach((d, i) => {
+                if (d.type === 'removed') {
+                    currentLine.push(`<span class="removed">${escapeHtml(d.text)}</span>`);
+                } else if (d.type === 'added') {
+                    currentLine.push(`<span class="added">${escapeHtml(d.text)}</span>`);
+                } else {
+                    if (currentLine.length > 0) {
+                        inlineHtml += currentLine.join(' ') + '<br>';
+                        currentLine = [];
+                    }
+                    inlineHtml += escapeHtml(d.text) + '<br>';
+                }
+            });
+
+            if (currentLine.length > 0) {
+                inlineHtml += currentLine.join(' ');
+            }
+
+            inlineView.innerHTML = inlineHtml || 'No differences found';
+
+            document.getElementById('resultSection').classList.add('show');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function switchView(view) {
+            document.getElementById('lineViewBtn').classList.toggle('active', view === 'line');
+            document.getElementById('inlineViewBtn').classList.toggle('active', view === 'inline');
+            document.getElementById('lineView').style.display = view === 'line' ? 'block' : 'none';
+            document.getElementById('inlineView').style.display = view === 'inline' ? 'block' : 'none';
+        }
+
+        function swapTexts() {
+            const text1 = document.getElementById('text1').value;
+            const text2 = document.getElementById('text2').value;
+            document.getElementById('text1').value = text2;
+            document.getElementById('text2').value = text1;
+        }
+
+        function clearAll() {
+            document.getElementById('text1').value = '';
+            document.getElementById('text2').value = '';
+            document.getElementById('resultSection').classList.remove('show');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Markdown Previewer - Live Markdown Editor Online</title>
+    <meta name="description" content="Write and preview Markdown in real-time. Export to HTML. Free online Markdown editor with live preview.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0d9488 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 42px; margin-bottom: 15px; }
+        .subtitle { font-size: 18px; opacity: 0.9; }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            color: #1e293b;
+            margin-bottom: 30px;
+        }
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        .toolbar button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            background: #e2e8f0;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #475569;
+        }
+        .toolbar button:hover { background: #cbd5e1; }
+        .toolbar .primary { background: #0d9488; color: white; }
+        .toolbar .primary:hover { background: #0f766e; }
+        .editor-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            min-height: 500px;
+        }
+        @media (max-width: 900px) {
+            .editor-container { grid-template-columns: 1fr; }
+        }
+        .pane {
+            display: flex;
+            flex-direction: column;
+        }
+        .pane-header {
+            padding: 12px 15px;
+            background: #1e293b;
+            color: white;
+            font-weight: 600;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .pane-header .badge {
+            font-size: 12px;
+            padding: 4px 10px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+        }
+        .markdown-input {
+            flex: 1;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: none;
+        }
+        .markdown-input:focus { outline: none; border-color: #0d9488; }
+        .preview-output {
+            flex: 1;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            overflow-y: auto;
+            line-height: 1.8;
+        }
+        /* Markdown styles */
+        .preview-output h1 { font-size: 2em; margin: 0.67em 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.3em; }
+        .preview-output h2 { font-size: 1.5em; margin: 0.83em 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.3em; }
+        .preview-output h3 { font-size: 1.25em; margin: 1em 0; }
+        .preview-output h4 { font-size: 1em; margin: 1.33em 0; }
+        .preview-output p { margin: 1em 0; }
+        .preview-output ul, .preview-output ol { margin: 1em 0; padding-left: 2em; }
+        .preview-output li { margin: 0.5em 0; }
+        .preview-output blockquote {
+            margin: 1em 0;
+            padding: 10px 20px;
+            background: #f8fafc;
+            border-left: 4px solid #0d9488;
+            color: #64748b;
+        }
+        .preview-output code {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        .preview-output pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1em 0;
+        }
+        .preview-output pre code { background: none; padding: 0; color: inherit; }
+        .preview-output a { color: #0d9488; }
+        .preview-output img { max-width: 100%; border-radius: 8px; }
+        .preview-output hr { border: none; border-top: 1px solid #e2e8f0; margin: 2em 0; }
+        .preview-output table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+        .preview-output th, .preview-output td { border: 1px solid #e2e8f0; padding: 10px; text-align: left; }
+        .preview-output th { background: #f8fafc; font-weight: 600; }
+        .cheatsheet {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f0fdfa;
+            border-radius: 12px;
+        }
+        .cheatsheet h4 { color: #0d9488; margin-bottom: 15px; }
+        .cheatsheet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .cheat-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .cheat-item .syntax { font-family: monospace; color: #0d9488; }
+        .cheat-item .result { color: #64748b; margin-top: 5px; }
+        .tools-promo {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f0fdfa;
+            border-radius: 12px;
+        }
+        .tools-promo h4 { color: #0d9488; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0f766e;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        .cta-section {
+            background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .cta-section a {
+            display: inline-block;
+            background: white;
+            color: #0d9488;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        footer { text-align: center; padding: 40px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #5eead4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Markdown Previewer</h1>
+            <p class="subtitle">Write Markdown and see the preview in real-time</p>
+        </header>
+
+        <div class="card">
+            <div class="toolbar">
+                <button onclick="insertMarkdown('**', '**')"><b>B</b></button>
+                <button onclick="insertMarkdown('*', '*')"><i>I</i></button>
+                <button onclick="insertMarkdown('~~', '~~')"><s>S</s></button>
+                <button onclick="insertMarkdown('`', '`')">Code</button>
+                <button onclick="insertMarkdown('# ', '')">H1</button>
+                <button onclick="insertMarkdown('## ', '')">H2</button>
+                <button onclick="insertMarkdown('### ', '')">H3</button>
+                <button onclick="insertMarkdown('- ', '')">List</button>
+                <button onclick="insertMarkdown('[', '](url)')">Link</button>
+                <button onclick="insertMarkdown('> ', '')">Quote</button>
+                <button onclick="insertMarkdown('---\n', '')">HR</button>
+                <button onclick="insertMarkdown('```\n', '\n```')">Code Block</button>
+                <button class="primary" onclick="copyHtml()">Copy HTML</button>
+                <button class="primary" onclick="downloadMd()">Download .md</button>
+            </div>
+
+            <div class="editor-container">
+                <div class="pane">
+                    <div class="pane-header">
+                        <span>Markdown</span>
+                        <span class="badge" id="charCount">0 chars</span>
+                    </div>
+                    <textarea class="markdown-input" id="markdownInput" placeholder="Type your Markdown here..."></textarea>
+                </div>
+                <div class="pane">
+                    <div class="pane-header">
+                        <span>Preview</span>
+                        <span class="badge">Live</span>
+                    </div>
+                    <div class="preview-output" id="previewOutput"></div>
+                </div>
+            </div>
+
+            <div class="cheatsheet">
+                <h4>Markdown Quick Reference</h4>
+                <div class="cheatsheet-grid">
+                    <div class="cheat-item">
+                        <div class="syntax"># Heading 1</div>
+                        <div class="result">Large heading</div>
+                    </div>
+                    <div class="cheat-item">
+                        <div class="syntax">**bold**</div>
+                        <div class="result"><strong>bold text</strong></div>
+                    </div>
+                    <div class="cheat-item">
+                        <div class="syntax">*italic*</div>
+                        <div class="result"><em>italic text</em></div>
+                    </div>
+                    <div class="cheat-item">
+                        <div class="syntax">[link](url)</div>
+                        <div class="result">Clickable link</div>
+                    </div>
+                    <div class="cheat-item">
+                        <div class="syntax">- item</div>
+                        <div class="result">Bullet list</div>
+                    </div>
+                    <div class="cheat-item">
+                        <div class="syntax">`code`</div>
+                        <div class="result"><code>inline code</code></div>
+                    </div>
+                    <div class="cheat-item">
+                        <div class="syntax">> quote</div>
+                        <div class="result">Blockquote</div>
+                    </div>
+                    <div class="cheat-item">
+                        <div class="syntax">---</div>
+                        <div class="result">Horizontal line</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tools-promo">
+                <h4>More Content Tools</h4>
+                <a href="word-counter.html">Word Counter</a>
+                <a href="case-converter.html">Case Converter</a>
+                <a href="json-formatter.html">JSON Formatter</a>
+                <a href="index.html">View All Tools</a>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h3>Need a Website Audit?</h3>
+            <p>Get professional accessibility and SEO analysis.</p>
+            <a href="https://fiverr.com/austron24" target="_blank">Get Professional Audit</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Markdown Previewer by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const input = document.getElementById('markdownInput');
+        const output = document.getElementById('previewOutput');
+
+        // Simple Markdown parser
+        function parseMarkdown(md) {
+            let html = md;
+
+            // Escape HTML
+            html = html.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+            // Code blocks (before other processing)
+            html = html.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+
+            // Headers
+            html = html.replace(/^#### (.*$)/gm, '<h4>$1</h4>');
+            html = html.replace(/^### (.*$)/gm, '<h3>$1</h3>');
+            html = html.replace(/^## (.*$)/gm, '<h2>$1</h2>');
+            html = html.replace(/^# (.*$)/gm, '<h1>$1</h1>');
+
+            // Bold and italic
+            html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            html = html.replace(/~~(.*?)~~/g, '<del>$1</del>');
+
+            // Inline code
+            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+            // Links and images
+            html = html.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1">');
+            html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>');
+
+            // Blockquotes
+            html = html.replace(/^&gt; (.*$)/gm, '<blockquote>$1</blockquote>');
+
+            // Horizontal rule
+            html = html.replace(/^---$/gm, '<hr>');
+
+            // Unordered lists
+            html = html.replace(/^\* (.*$)/gm, '<li>$1</li>');
+            html = html.replace(/^- (.*$)/gm, '<li>$1</li>');
+            html = html.replace(/(<li>.*<\/li>)\n(<li>)/g, '$1$2');
+            html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+
+            // Ordered lists
+            html = html.replace(/^\d+\. (.*$)/gm, '<li>$1</li>');
+
+            // Paragraphs
+            html = html.replace(/\n\n/g, '</p><p>');
+            html = '<p>' + html + '</p>';
+
+            // Clean up
+            html = html.replace(/<p><\/p>/g, '');
+            html = html.replace(/<p>(<h[1-6]>)/g, '$1');
+            html = html.replace(/(<\/h[1-6]>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<ul>)/g, '$1');
+            html = html.replace(/(<\/ul>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<blockquote>)/g, '$1');
+            html = html.replace(/(<\/blockquote>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<pre>)/g, '$1');
+            html = html.replace(/(<\/pre>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<hr>)<\/p>/g, '$1');
+
+            return html;
+        }
+
+        function updatePreview() {
+            const md = input.value;
+            output.innerHTML = parseMarkdown(md);
+            document.getElementById('charCount').textContent = md.length + ' chars';
+        }
+
+        function insertMarkdown(before, after) {
+            const start = input.selectionStart;
+            const end = input.selectionEnd;
+            const selected = input.value.substring(start, end);
+            const replacement = before + selected + after;
+
+            input.value = input.value.substring(0, start) + replacement + input.value.substring(end);
+            input.focus();
+            input.selectionStart = start + before.length;
+            input.selectionEnd = start + before.length + selected.length;
+            updatePreview();
+        }
+
+        function copyHtml() {
+            const html = output.innerHTML;
+            navigator.clipboard.writeText(html).then(() => {
+                const btn = event.target;
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy HTML', 2000);
+            });
+        }
+
+        function downloadMd() {
+            const md = input.value;
+            const blob = new Blob([md], { type: 'text/markdown' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'document.md';
+            link.click();
+        }
+
+        input.addEventListener('input', updatePreview);
+
+        // Default content
+        input.value = `# Welcome to Markdown Previewer
+
+This is a **live preview** of your Markdown.
+
+## Features
+
+- Real-time preview
+- Export to HTML
+- Download as .md file
+
+### Code Example
+
+\`\`\`javascript
+function hello() {
+    console.log("Hello World!");
+}
+\`\`\`
+
+> This is a blockquote
+
+Visit [WebAudit Pro](https://austron24.github.io/webaudit-tools/) for more tools!
+`;
+        updatePreview();
+    </script>
+</body>
+</html>
