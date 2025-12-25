@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free CSS Text Shadow Generator - Create Text Effects</title>
+    <meta name="description" content="Generate CSS text-shadow with live preview. Create glow effects, 3D text, and outlines. Copy CSS code instantly. Free online text shadow maker.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #a855f7 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 42px; margin-bottom: 15px; }
+        .subtitle { font-size: 18px; opacity: 0.9; }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            color: #1e293b;
+            margin-bottom: 30px;
+        }
+        .preview-area {
+            padding: 60px 40px;
+            background: #1e293b;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .preview-text {
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+            transition: text-shadow 0.3s;
+        }
+        .text-input-section {
+            margin-bottom: 30px;
+        }
+        .text-input-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .text-input-section input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .controls-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        @media (max-width: 700px) {
+            .controls-section { grid-template-columns: 1fr; }
+        }
+        .control-group {
+            margin-bottom: 20px;
+        }
+        .control-group label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .control-group .value {
+            color: #64748b;
+            font-weight: normal;
+        }
+        .control-group input[type="range"] {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            background: #e2e8f0;
+            border-radius: 4px;
+        }
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #a855f7;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .color-row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .color-row input[type="color"] {
+            width: 50px;
+            height: 40px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .color-row input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-family: monospace;
+        }
+        .presets-section {
+            margin-bottom: 30px;
+        }
+        .presets-section h4 {
+            margin-bottom: 15px;
+            color: #1e293b;
+        }
+        .presets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+        }
+        .preset {
+            background: #1e293b;
+            padding: 15px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            text-align: center;
+        }
+        .preset:hover { transform: scale(1.05); }
+        .preset-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+        .preset-name {
+            font-size: 10px;
+            color: #94a3b8;
+            margin-top: 5px;
+        }
+        .code-section {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .code-section h4 {
+            color: #f8fafc;
+            margin-bottom: 15px;
+        }
+        .code-block {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            color: #22d3ee;
+            overflow-x: auto;
+        }
+        .btn-row {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-copy { background: #a855f7; color: white; }
+        .btn-reset { background: #64748b; color: white; }
+        .tools-promo {
+            margin-top: 30px;
+            padding: 20px;
+            background: #faf5ff;
+            border-radius: 12px;
+        }
+        .tools-promo h4 { color: #a855f7; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #7c3aed;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        .cta-section {
+            background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .cta-section a {
+            display: inline-block;
+            background: white;
+            color: #a855f7;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        footer { text-align: center; padding: 40px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #d8b4fe; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Text Shadow Generator</h1>
+            <p class="subtitle">Create stunning CSS text shadow effects</p>
+        </header>
+
+        <div class="card">
+            <div class="preview-area" id="previewArea">
+                <div class="preview-text" id="preview">Shadow Text</div>
+            </div>
+
+            <div class="text-input-section">
+                <label>Preview Text</label>
+                <input type="text" id="textInput" value="Shadow Text" oninput="updatePreviewText()">
+            </div>
+
+            <div class="presets-section">
+                <h4>Quick Presets</h4>
+                <div class="presets-grid" id="presets"></div>
+            </div>
+
+            <div class="controls-section">
+                <div>
+                    <div class="control-group">
+                        <label>Horizontal Offset <span class="value" id="hValue">2px</span></label>
+                        <input type="range" id="horizontal" min="-50" max="50" value="2" oninput="updateShadow()">
+                    </div>
+                    <div class="control-group">
+                        <label>Vertical Offset <span class="value" id="vValue">2px</span></label>
+                        <input type="range" id="vertical" min="-50" max="50" value="2" oninput="updateShadow()">
+                    </div>
+                    <div class="control-group">
+                        <label>Blur Radius <span class="value" id="blurValue">4px</span></label>
+                        <input type="range" id="blur" min="0" max="50" value="4" oninput="updateShadow()">
+                    </div>
+                </div>
+                <div>
+                    <div class="control-group">
+                        <label>Shadow Color</label>
+                        <div class="color-row">
+                            <input type="color" id="color" value="#000000" oninput="updateShadow()">
+                            <input type="text" id="colorText" value="rgba(0, 0, 0, 0.5)" readonly>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label>Opacity <span class="value" id="opacityValue">50%</span></label>
+                        <input type="range" id="opacity" min="0" max="100" value="50" oninput="updateShadow()">
+                    </div>
+                    <div class="control-group">
+                        <label>Text Color</label>
+                        <input type="color" id="textColor" value="#ffffff" oninput="updateShadow()">
+                    </div>
+                    <div class="control-group">
+                        <label>Background</label>
+                        <input type="color" id="bgColor" value="#1e293b" oninput="updateShadow()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-section">
+                <h4>CSS Code</h4>
+                <div class="code-block" id="cssCode"></div>
+                <div class="btn-row">
+                    <button class="btn btn-copy" onclick="copyCSS()">Copy CSS</button>
+                    <button class="btn btn-reset" onclick="resetShadow()">Reset</button>
+                </div>
+            </div>
+
+            <div class="tools-promo">
+                <h4>More Design Tools</h4>
+                <a href="box-shadow-generator.html">Box Shadow Generator</a>
+                <a href="gradient-generator.html">Gradient Generator</a>
+                <a href="border-radius.html">Border Radius Generator</a>
+                <a href="index.html">View All 40+ Tools</a>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h3>Need a Website Audit?</h3>
+            <p>Get professional accessibility and SEO analysis.</p>
+            <a href="https://fiverr.com/austron24" target="_blank">Get Professional Audit</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Text Shadow Generator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const presets = [
+            { name: 'Simple', shadow: '2px 2px 4px rgba(0,0,0,0.5)', h: 2, v: 2, blur: 4, color: '#000000', opacity: 50 },
+            { name: 'Hard', shadow: '3px 3px 0 rgba(0,0,0,0.8)', h: 3, v: 3, blur: 0, color: '#000000', opacity: 80 },
+            { name: 'Soft Glow', shadow: '0 0 20px rgba(168,85,247,0.8)', h: 0, v: 0, blur: 20, color: '#a855f7', opacity: 80 },
+            { name: 'Neon Blue', shadow: '0 0 10px #00f, 0 0 20px #00f, 0 0 30px #00f', h: 0, v: 0, blur: 10, color: '#0000ff', opacity: 100 },
+            { name: 'Fire', shadow: '0 0 10px #ff0, 0 0 20px #f80, 0 0 30px #f00', h: 0, v: 0, blur: 10, color: '#ff8800', opacity: 100 },
+            { name: '3D Effect', shadow: '1px 1px 0 #666, 2px 2px 0 #555, 3px 3px 0 #444', h: 1, v: 1, blur: 0, color: '#666666', opacity: 100 },
+            { name: 'Outline', shadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000', h: 1, v: 1, blur: 0, color: '#000000', opacity: 100 },
+            { name: 'Retro', shadow: '4px 4px 0 #ff6b6b, 8px 8px 0 #4ecdc4', h: 4, v: 4, blur: 0, color: '#ff6b6b', opacity: 100 }
+        ];
+
+        function init() {
+            renderPresets();
+            updateShadow();
+        }
+
+        function renderPresets() {
+            const container = document.getElementById('presets');
+            container.innerHTML = presets.map((preset, i) => `
+                <div class="preset" onclick="applyPreset(${i})">
+                    <div class="preset-text" style="text-shadow: ${preset.shadow}">Aa</div>
+                    <div class="preset-name">${preset.name}</div>
+                </div>
+            `).join('');
+        }
+
+        function applyPreset(index) {
+            const preset = presets[index];
+            document.getElementById('horizontal').value = preset.h;
+            document.getElementById('vertical').value = preset.v;
+            document.getElementById('blur').value = preset.blur;
+            document.getElementById('color').value = preset.color;
+            document.getElementById('opacity').value = preset.opacity;
+            updateShadow();
+        }
+
+        function updatePreviewText() {
+            document.getElementById('preview').textContent = document.getElementById('textInput').value || 'Shadow Text';
+        }
+
+        function updateShadow() {
+            const h = parseInt(document.getElementById('horizontal').value);
+            const v = parseInt(document.getElementById('vertical').value);
+            const blur = parseInt(document.getElementById('blur').value);
+            const color = document.getElementById('color').value;
+            const opacity = parseInt(document.getElementById('opacity').value);
+            const textColor = document.getElementById('textColor').value;
+            const bgColor = document.getElementById('bgColor').value;
+
+            // Update display values
+            document.getElementById('hValue').textContent = h + 'px';
+            document.getElementById('vValue').textContent = v + 'px';
+            document.getElementById('blurValue').textContent = blur + 'px';
+            document.getElementById('opacityValue').textContent = opacity + '%';
+
+            // Convert hex to rgba
+            const rgba = hexToRgba(color, opacity / 100);
+            document.getElementById('colorText').value = rgba;
+
+            // Update preview
+            const shadow = `${h}px ${v}px ${blur}px ${rgba}`;
+            document.getElementById('preview').style.textShadow = shadow;
+            document.getElementById('preview').style.color = textColor;
+            document.getElementById('previewArea').style.background = bgColor;
+
+            // Update CSS code
+            document.getElementById('cssCode').textContent = `text-shadow: ${shadow};\ncolor: ${textColor};`;
+        }
+
+        function hexToRgba(hex, alpha) {
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
+        function copyCSS() {
+            const css = document.getElementById('cssCode').textContent;
+            navigator.clipboard.writeText(css).then(() => {
+                const btn = event.target;
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy CSS', 2000);
+            });
+        }
+
+        function resetShadow() {
+            document.getElementById('horizontal').value = 2;
+            document.getElementById('vertical').value = 2;
+            document.getElementById('blur').value = 4;
+            document.getElementById('opacity').value = 50;
+            document.getElementById('color').value = '#000000';
+            document.getElementById('textColor').value = '#ffffff';
+            document.getElementById('bgColor').value = '#1e293b';
+            updateShadow();
+        }
+
+        init();
+    </script>
+</body>
+</html>

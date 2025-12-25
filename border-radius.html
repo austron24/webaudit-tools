@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free CSS Border Radius Generator - Create Rounded Corners</title>
+    <meta name="description" content="Generate CSS border-radius with visual editor. Create rounded corners, ellipses, and organic shapes. Copy CSS code instantly. Free online tool.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #14b8a6 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 42px; margin-bottom: 15px; }
+        .subtitle { font-size: 18px; opacity: 0.9; }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            color: #1e293b;
+            margin-bottom: 30px;
+        }
+        .preview-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        .preview-box {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #14b8a6, #0d9488);
+            transition: border-radius 0.3s;
+            position: relative;
+        }
+        .corner-handle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 2px solid #14b8a6;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .corner-handle.tl { top: -10px; left: -10px; }
+        .corner-handle.tr { top: -10px; right: -10px; }
+        .corner-handle.br { bottom: -10px; right: -10px; }
+        .corner-handle.bl { bottom: -10px; left: -10px; }
+        .controls-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        @media (max-width: 700px) {
+            .controls-section { grid-template-columns: 1fr; }
+        }
+        .control-group {
+            margin-bottom: 20px;
+        }
+        .control-group label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .control-group .value {
+            color: #64748b;
+            font-weight: normal;
+        }
+        .control-group input[type="range"] {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            background: #e2e8f0;
+            border-radius: 4px;
+        }
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #14b8a6;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .checkbox-row input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+        .presets-section {
+            margin-bottom: 30px;
+        }
+        .presets-section h4 {
+            margin-bottom: 15px;
+            color: #1e293b;
+        }
+        .presets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+        }
+        .preset {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .preset:hover { transform: scale(1.05); }
+        .preset-box {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #14b8a6, #0d9488);
+        }
+        .code-section {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .code-section h4 {
+            color: #f8fafc;
+            margin-bottom: 15px;
+        }
+        .code-block {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            color: #22d3ee;
+            overflow-x: auto;
+        }
+        .btn-row {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-copy { background: #14b8a6; color: white; }
+        .btn-reset { background: #64748b; color: white; }
+        .tools-promo {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f0fdfa;
+            border-radius: 12px;
+        }
+        .tools-promo h4 { color: #14b8a6; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0d9488;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        .cta-section {
+            background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .cta-section a {
+            display: inline-block;
+            background: white;
+            color: #14b8a6;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        footer { text-align: center; padding: 40px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #5eead4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Border Radius Generator</h1>
+            <p class="subtitle">Create CSS border-radius with visual editor</p>
+        </header>
+
+        <div class="card">
+            <div class="preview-area">
+                <div class="preview-box" id="preview">
+                    <div class="corner-handle tl" title="Top Left"></div>
+                    <div class="corner-handle tr" title="Top Right"></div>
+                    <div class="corner-handle br" title="Bottom Right"></div>
+                    <div class="corner-handle bl" title="Bottom Left"></div>
+                </div>
+            </div>
+
+            <div class="presets-section">
+                <h4>Quick Presets</h4>
+                <div class="presets-grid" id="presets"></div>
+            </div>
+
+            <div class="checkbox-row">
+                <input type="checkbox" id="linkCorners" checked onchange="updateRadius()">
+                <label for="linkCorners">Link all corners</label>
+            </div>
+
+            <div class="controls-section">
+                <div>
+                    <div class="control-group">
+                        <label>Top Left <span class="value" id="tlValue">20px</span></label>
+                        <input type="range" id="tl" min="0" max="100" value="20" oninput="updateRadius()">
+                    </div>
+                    <div class="control-group">
+                        <label>Top Right <span class="value" id="trValue">20px</span></label>
+                        <input type="range" id="tr" min="0" max="100" value="20" oninput="updateRadius()">
+                    </div>
+                </div>
+                <div>
+                    <div class="control-group">
+                        <label>Bottom Right <span class="value" id="brValue">20px</span></label>
+                        <input type="range" id="br" min="0" max="100" value="20" oninput="updateRadius()">
+                    </div>
+                    <div class="control-group">
+                        <label>Bottom Left <span class="value" id="blValue">20px</span></label>
+                        <input type="range" id="bl" min="0" max="100" value="20" oninput="updateRadius()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-section">
+                <h4>CSS Code</h4>
+                <div class="code-block" id="cssCode"></div>
+                <div class="btn-row">
+                    <button class="btn btn-copy" onclick="copyCSS()">Copy CSS</button>
+                    <button class="btn btn-reset" onclick="resetRadius()">Reset</button>
+                </div>
+            </div>
+
+            <div class="tools-promo">
+                <h4>More Design Tools</h4>
+                <a href="box-shadow-generator.html">Box Shadow Generator</a>
+                <a href="gradient-generator.html">Gradient Generator</a>
+                <a href="color-converter.html">Color Converter</a>
+                <a href="index.html">View All 40+ Tools</a>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h3>Need a Website Audit?</h3>
+            <p>Get professional accessibility and SEO analysis.</p>
+            <a href="https://fiverr.com/austron24" target="_blank">Get Professional Audit</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Border Radius Generator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const presets = [
+            { name: 'Square', values: [0, 0, 0, 0] },
+            { name: 'Rounded', values: [10, 10, 10, 10] },
+            { name: 'More Round', values: [20, 20, 20, 20] },
+            { name: 'Pill', values: [50, 50, 50, 50] },
+            { name: 'Circle', values: [100, 100, 100, 100] },
+            { name: 'Top Only', values: [20, 20, 0, 0] },
+            { name: 'Bottom Only', values: [0, 0, 20, 20] },
+            { name: 'Left Only', values: [20, 0, 0, 20] },
+            { name: 'Right Only', values: [0, 20, 20, 0] },
+            { name: 'Diagonal', values: [30, 0, 30, 0] },
+            { name: 'Blob', values: [60, 40, 70, 30] },
+            { name: 'Drop', values: [50, 50, 0, 50] }
+        ];
+
+        function init() {
+            renderPresets();
+            updateRadius();
+        }
+
+        function renderPresets() {
+            const container = document.getElementById('presets');
+            container.innerHTML = presets.map((preset, i) => {
+                const br = preset.values.map(v => v + 'px').join(' ');
+                return `
+                    <div class="preset" onclick="applyPreset(${i})" title="${preset.name}">
+                        <div class="preset-box" style="border-radius: ${br}"></div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function applyPreset(index) {
+            const preset = presets[index];
+            document.getElementById('tl').value = preset.values[0];
+            document.getElementById('tr').value = preset.values[1];
+            document.getElementById('br').value = preset.values[2];
+            document.getElementById('bl').value = preset.values[3];
+            document.getElementById('linkCorners').checked = false;
+            updateRadius();
+        }
+
+        function updateRadius() {
+            const linked = document.getElementById('linkCorners').checked;
+            const tl = parseInt(document.getElementById('tl').value);
+
+            let tr, br, bl;
+            if (linked) {
+                tr = br = bl = tl;
+                document.getElementById('tr').value = tl;
+                document.getElementById('br').value = tl;
+                document.getElementById('bl').value = tl;
+            } else {
+                tr = parseInt(document.getElementById('tr').value);
+                br = parseInt(document.getElementById('br').value);
+                bl = parseInt(document.getElementById('bl').value);
+            }
+
+            // Update display values
+            document.getElementById('tlValue').textContent = tl + 'px';
+            document.getElementById('trValue').textContent = tr + 'px';
+            document.getElementById('brValue').textContent = br + 'px';
+            document.getElementById('blValue').textContent = bl + 'px';
+
+            // Update preview
+            const borderRadius = `${tl}px ${tr}px ${br}px ${bl}px`;
+            document.getElementById('preview').style.borderRadius = borderRadius;
+
+            // Update CSS code
+            let css;
+            if (tl === tr && tr === br && br === bl) {
+                css = `border-radius: ${tl}px;`;
+            } else if (tl === br && tr === bl) {
+                css = `border-radius: ${tl}px ${tr}px;`;
+            } else {
+                css = `border-radius: ${tl}px ${tr}px ${br}px ${bl}px;`;
+            }
+            document.getElementById('cssCode').textContent = css;
+        }
+
+        function copyCSS() {
+            const css = document.getElementById('cssCode').textContent;
+            navigator.clipboard.writeText(css).then(() => {
+                const btn = event.target;
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy CSS', 2000);
+            });
+        }
+
+        function resetRadius() {
+            document.getElementById('tl').value = 20;
+            document.getElementById('tr').value = 20;
+            document.getElementById('br').value = 20;
+            document.getElementById('bl').value = 20;
+            document.getElementById('linkCorners').checked = true;
+            updateRadius();
+        }
+
+        init();
+    </script>
+</body>
+</html>
