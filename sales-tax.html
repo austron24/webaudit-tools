@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Sales Tax Calculator - Calculate Tax on Purchases</title>
+    <meta name="description" content="Calculate sales tax on purchases. Find tax amount and total price. Reverse calculate pre-tax price. Free sales tax calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0d9488 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 500px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tab {
+            flex: 1;
+            padding: 12px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .tab.active { background: white; color: #0d9488; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .input-row input {
+            flex: 1;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .input-row input:focus {
+            outline: none;
+            border-color: #0d9488;
+        }
+        .input-row span {
+            font-size: 24px;
+            color: #64748b;
+            font-weight: 600;
+        }
+        .tax-presets {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .preset-btn {
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .preset-btn:hover, .preset-btn.active {
+            border-color: #0d9488;
+            background: #f0fdfa;
+            color: #0d9488;
+        }
+        .results {
+            background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+            border-radius: 16px;
+            padding: 25px;
+            color: white;
+            margin-top: 20px;
+        }
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .result-row:last-child { border: none; }
+        .result-row .label { opacity: 0.9; }
+        .result-row .value { font-weight: 600; font-size: 18px; }
+        .result-row.total .value { font-size: 28px; }
+        .state-info {
+            background: #f0fdfa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .state-info h4 {
+            color: #0d9488;
+            margin-bottom: 10px;
+        }
+        .state-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            font-size: 13px;
+        }
+        .state-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 10px;
+            background: white;
+            border-radius: 6px;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0d9488; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0f766e;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #5eead4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sales Tax Calculator</h1>
+            <p class="subtitle">Calculate tax on any purchase</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" onclick="setMode('add')">Add Tax</button>
+            <button class="tab" onclick="setMode('reverse')">Reverse (Find Pre-Tax)</button>
+        </div>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label id="priceLabel">Price Before Tax</label>
+                <div class="input-row">
+                    <span>$</span>
+                    <input type="number" id="price" value="100" step="0.01">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Tax Rate</label>
+                <div class="input-row">
+                    <input type="number" id="taxRate" value="8.25" step="0.01">
+                    <span>%</span>
+                </div>
+            </div>
+
+            <div class="tax-presets">
+                <button class="preset-btn" onclick="setTax(5)">5%</button>
+                <button class="preset-btn" onclick="setTax(6)">6%</button>
+                <button class="preset-btn" onclick="setTax(7)">7%</button>
+                <button class="preset-btn active" onclick="setTax(8.25)">8.25%</button>
+            </div>
+
+            <div class="results">
+                <div class="result-row">
+                    <span class="label" id="subtotalLabel">Subtotal</span>
+                    <span class="value" id="subtotal">$100.00</span>
+                </div>
+                <div class="result-row">
+                    <span class="label">Tax Amount</span>
+                    <span class="value" id="taxAmount">$8.25</span>
+                </div>
+                <div class="result-row total">
+                    <span class="label" id="totalLabel">Total</span>
+                    <span class="value" id="total">$108.25</span>
+                </div>
+            </div>
+
+            <div class="state-info">
+                <h4>US State Tax Rates</h4>
+                <div class="state-grid">
+                    <div class="state-item"><span>California</span><span>7.25%</span></div>
+                    <div class="state-item"><span>Texas</span><span>6.25%</span></div>
+                    <div class="state-item"><span>New York</span><span>4.00%</span></div>
+                    <div class="state-item"><span>Florida</span><span>6.00%</span></div>
+                    <div class="state-item"><span>Washington</span><span>6.50%</span></div>
+                    <div class="state-item"><span>Oregon</span><span>0.00%</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Calculator Tools</h4>
+            <a href="discount-calculator.html">Discount Calculator</a>
+            <a href="tip-calculator.html">Tip Calculator</a>
+            <a href="percentage-calc.html">Percentage Calculator</a>
+            <a href="index.html">View All 60+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Sales Tax Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        let mode = 'add';
+
+        function setMode(m) {
+            mode = m;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (m === 'add') {
+                document.getElementById('priceLabel').textContent = 'Price Before Tax';
+                document.getElementById('subtotalLabel').textContent = 'Subtotal';
+                document.getElementById('totalLabel').textContent = 'Total';
+            } else {
+                document.getElementById('priceLabel').textContent = 'Total (Including Tax)';
+                document.getElementById('subtotalLabel').textContent = 'Pre-Tax Price';
+                document.getElementById('totalLabel').textContent = 'Total Paid';
+            }
+            calculate();
+        }
+
+        function setTax(rate) {
+            document.getElementById('taxRate').value = rate;
+            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            calculate();
+        }
+
+        function calculate() {
+            const price = parseFloat(document.getElementById('price').value) || 0;
+            const rate = parseFloat(document.getElementById('taxRate').value) || 0;
+
+            let subtotal, tax, total;
+
+            if (mode === 'add') {
+                subtotal = price;
+                tax = price * (rate / 100);
+                total = price + tax;
+            } else {
+                total = price;
+                subtotal = price / (1 + rate / 100);
+                tax = total - subtotal;
+            }
+
+            document.getElementById('subtotal').textContent = '$' + subtotal.toFixed(2);
+            document.getElementById('taxAmount').textContent = '$' + tax.toFixed(2);
+            document.getElementById('total').textContent = '$' + total.toFixed(2);
+        }
+
+        document.getElementById('price').addEventListener('input', calculate);
+        document.getElementById('taxRate').addEventListener('input', calculate);
+
+        calculate();
+    </script>
+</body>
+</html>

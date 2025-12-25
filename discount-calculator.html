@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Discount Calculator - Calculate Sale Prices & Savings</title>
+    <meta name="description" content="Calculate discount prices and savings instantly. Find sale price after discount. Free online discount calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #dc2626 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 500px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .input-row input {
+            flex: 1;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .input-row input:focus {
+            outline: none;
+            border-color: #dc2626;
+        }
+        .input-row span {
+            font-size: 24px;
+            color: #64748b;
+            font-weight: 600;
+        }
+        .discount-presets {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .preset-btn {
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .preset-btn:hover, .preset-btn.active {
+            border-color: #dc2626;
+            background: #fef2f2;
+            color: #dc2626;
+        }
+        .results {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            border-radius: 16px;
+            padding: 25px;
+            color: white;
+            margin-top: 20px;
+        }
+        .result-main {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 20px;
+        }
+        .result-main .original {
+            text-decoration: line-through;
+            opacity: 0.7;
+            font-size: 18px;
+        }
+        .result-main .final {
+            font-size: 48px;
+            font-weight: bold;
+        }
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+        }
+        .result-row .label { opacity: 0.9; }
+        .result-row .value { font-weight: 600; }
+        .double-discount {
+            background: #fef2f2;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .double-discount h4 {
+            color: #dc2626;
+            margin-bottom: 15px;
+        }
+        .double-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .double-input input {
+            width: 70px;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .double-result {
+            margin-top: 15px;
+            font-weight: 600;
+            color: #dc2626;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #dc2626; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #b91c1c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fca5a5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Discount Calculator</h1>
+            <p class="subtitle">Calculate sale prices & savings</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Original Price</label>
+                <div class="input-row">
+                    <span>$</span>
+                    <input type="number" id="originalPrice" value="100" step="0.01">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Discount</label>
+                <div class="input-row">
+                    <input type="number" id="discountPercent" value="25" max="100">
+                    <span>%</span>
+                </div>
+            </div>
+
+            <div class="discount-presets">
+                <button class="preset-btn" onclick="setDiscount(10)">10%</button>
+                <button class="preset-btn" onclick="setDiscount(20)">20%</button>
+                <button class="preset-btn active" onclick="setDiscount(25)">25%</button>
+                <button class="preset-btn" onclick="setDiscount(50)">50%</button>
+                <button class="preset-btn" onclick="setDiscount(75)">75%</button>
+            </div>
+
+            <div class="results">
+                <div class="result-main">
+                    <div class="original" id="originalDisplay">$100.00</div>
+                    <div class="final" id="salePrice">$75.00</div>
+                </div>
+                <div class="result-row">
+                    <span class="label">You Save</span>
+                    <span class="value" id="savings">$25.00</span>
+                </div>
+                <div class="result-row">
+                    <span class="label">Savings %</span>
+                    <span class="value" id="savingsPercent">25%</span>
+                </div>
+            </div>
+
+            <div class="double-discount">
+                <h4>Double Discount (Stacked)</h4>
+                <div class="double-input">
+                    <span>First:</span>
+                    <input type="number" id="first" value="20">
+                    <span>% + Second:</span>
+                    <input type="number" id="second" value="10">
+                    <span>%</span>
+                </div>
+                <div class="double-result">
+                    Final: <span id="doubleResult">$72.00</span> (Total: <span id="totalDiscount">28%</span> off)
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Calculator Tools</h4>
+            <a href="percentage-calc.html">Percentage Calculator</a>
+            <a href="tip-calculator.html">Tip Calculator</a>
+            <a href="loan-calculator.html">Loan Calculator</a>
+            <a href="index.html">View All 60+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Discount Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function setDiscount(percent) {
+            document.getElementById('discountPercent').value = percent;
+            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            calculate();
+        }
+
+        function calculate() {
+            const original = parseFloat(document.getElementById('originalPrice').value) || 0;
+            const discount = parseFloat(document.getElementById('discountPercent').value) || 0;
+
+            const savings = original * (discount / 100);
+            const salePrice = original - savings;
+
+            document.getElementById('originalDisplay').textContent = '$' + original.toFixed(2);
+            document.getElementById('salePrice').textContent = '$' + salePrice.toFixed(2);
+            document.getElementById('savings').textContent = '$' + savings.toFixed(2);
+            document.getElementById('savingsPercent').textContent = discount.toFixed(0) + '%';
+
+            calculateDouble();
+        }
+
+        function calculateDouble() {
+            const original = parseFloat(document.getElementById('originalPrice').value) || 0;
+            const first = parseFloat(document.getElementById('first').value) || 0;
+            const second = parseFloat(document.getElementById('second').value) || 0;
+
+            const afterFirst = original * (1 - first / 100);
+            const afterSecond = afterFirst * (1 - second / 100);
+            const totalDiscount = ((original - afterSecond) / original) * 100;
+
+            document.getElementById('doubleResult').textContent = '$' + afterSecond.toFixed(2);
+            document.getElementById('totalDiscount').textContent = totalDiscount.toFixed(1) + '%';
+        }
+
+        document.getElementById('originalPrice').addEventListener('input', calculate);
+        document.getElementById('discountPercent').addEventListener('input', calculate);
+        document.getElementById('first').addEventListener('input', calculateDouble);
+        document.getElementById('second').addEventListener('input', calculateDouble);
+
+        calculate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Speed Distance Time Calculator - Physics Calculator</title>
+    <meta name="description" content="Calculate speed, distance, or time. Solve for any variable. Supports multiple units. Free speed calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #2563eb 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .formula-display {
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 20px;
+        }
+        .formula-display span { font-weight: bold; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .solve-for {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .solve-btn {
+            flex: 1;
+            padding: 12px;
+            border: 3px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .solve-btn.active {
+            border-color: #2563eb;
+            background: #eff6ff;
+            color: #2563eb;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group.disabled {
+            opacity: 0.5;
+        }
+        .input-group.result {
+            background: #eff6ff;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px -10px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+        .input-row input {
+            flex: 1;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .input-row input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+        .input-row input:disabled {
+            background: #eff6ff;
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+        .input-row select {
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            min-width: 100px;
+        }
+        .examples {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .examples h4 {
+            color: #2563eb;
+            margin-bottom: 15px;
+        }
+        .example-grid {
+            display: grid;
+            gap: 10px;
+        }
+        .example-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .example-item span:first-child { color: #64748b; }
+        .example-item span:last-child { font-weight: 600; color: #2563eb; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #2563eb; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #1d4ed8;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #93c5fd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Speed Calculator</h1>
+            <p class="subtitle">Speed = Distance ÷ Time</p>
+        </header>
+
+        <div class="formula-display">
+            <span>Speed</span> × <span>Time</span> = <span>Distance</span>
+        </div>
+
+        <div class="calc-card">
+            <div class="solve-for">
+                <button class="solve-btn active" onclick="solvingFor('speed')">Solve for Speed</button>
+                <button class="solve-btn" onclick="solvingFor('distance')">Solve for Distance</button>
+                <button class="solve-btn" onclick="solvingFor('time')">Solve for Time</button>
+            </div>
+
+            <div class="input-group" id="speedGroup">
+                <label>Speed</label>
+                <div class="input-row">
+                    <input type="number" id="speed" value="" disabled>
+                    <select id="speedUnit">
+                        <option value="mph">mph</option>
+                        <option value="kmh">km/h</option>
+                        <option value="ms">m/s</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group" id="distanceGroup">
+                <label>Distance</label>
+                <div class="input-row">
+                    <input type="number" id="distance" value="100">
+                    <select id="distanceUnit">
+                        <option value="mi">miles</option>
+                        <option value="km">km</option>
+                        <option value="m">meters</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group" id="timeGroup">
+                <label>Time</label>
+                <div class="input-row">
+                    <input type="number" id="timeHours" value="1" placeholder="hrs" style="width: 80px;">
+                    <span style="color: #64748b;">h</span>
+                    <input type="number" id="timeMinutes" value="30" placeholder="min" style="width: 80px;">
+                    <span style="color: #64748b;">m</span>
+                </div>
+            </div>
+
+            <div class="examples">
+                <h4>Common Reference Speeds</h4>
+                <div class="example-grid">
+                    <div class="example-item"><span>Walking</span><span>3-4 mph</span></div>
+                    <div class="example-item"><span>Cycling</span><span>12-15 mph</span></div>
+                    <div class="example-item"><span>City driving</span><span>25-35 mph</span></div>
+                    <div class="example-item"><span>Highway</span><span>65-75 mph</span></div>
+                    <div class="example-item"><span>Commercial jet</span><span>~550 mph</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Calculator Tools</h4>
+            <a href="unit-converter.html">Unit Converter</a>
+            <a href="fuel-calculator.html">Fuel Calculator</a>
+            <a href="percentage-calc.html">Percentage Calculator</a>
+            <a href="index.html">View All 60+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Speed Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        let solving = 'speed';
+
+        function solvingFor(what) {
+            solving = what;
+            document.querySelectorAll('.solve-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.getElementById('speed').disabled = what === 'speed';
+            document.getElementById('distance').disabled = what === 'distance';
+            document.getElementById('timeHours').disabled = what === 'time';
+            document.getElementById('timeMinutes').disabled = what === 'time';
+
+            document.getElementById('speedGroup').classList.toggle('result', what === 'speed');
+            document.getElementById('distanceGroup').classList.toggle('result', what === 'distance');
+            document.getElementById('timeGroup').classList.toggle('result', what === 'time');
+
+            calculate();
+        }
+
+        function calculate() {
+            const speedUnit = document.getElementById('speedUnit').value;
+            const distanceUnit = document.getElementById('distanceUnit').value;
+
+            let speed = parseFloat(document.getElementById('speed').value) || 0;
+            let distance = parseFloat(document.getElementById('distance').value) || 0;
+            const hours = parseFloat(document.getElementById('timeHours').value) || 0;
+            const minutes = parseFloat(document.getElementById('timeMinutes').value) || 0;
+            let time = hours + minutes / 60;
+
+            // Convert to base units (miles, hours)
+            if (distanceUnit === 'km') distance *= 0.621371;
+            else if (distanceUnit === 'm') distance *= 0.000621371;
+
+            if (speedUnit === 'kmh') speed *= 0.621371;
+            else if (speedUnit === 'ms') speed *= 2.23694;
+
+            if (solving === 'speed') {
+                if (time > 0) {
+                    speed = distance / time;
+                    // Convert back to selected unit
+                    if (speedUnit === 'kmh') speed /= 0.621371;
+                    else if (speedUnit === 'ms') speed /= 2.23694;
+                    document.getElementById('speed').value = speed.toFixed(2);
+                }
+            } else if (solving === 'distance') {
+                distance = speed * time;
+                // Convert back to selected unit
+                if (distanceUnit === 'km') distance /= 0.621371;
+                else if (distanceUnit === 'm') distance /= 0.000621371;
+                document.getElementById('distance').value = distance.toFixed(2);
+            } else if (solving === 'time') {
+                if (speed > 0) {
+                    time = distance / speed;
+                    const h = Math.floor(time);
+                    const m = Math.round((time - h) * 60);
+                    document.getElementById('timeHours').value = h;
+                    document.getElementById('timeMinutes').value = m;
+                }
+            }
+        }
+
+        document.querySelectorAll('input, select').forEach(el => {
+            el.addEventListener('input', calculate);
+            el.addEventListener('change', calculate);
+        });
+
+        solvingFor('speed');
+    </script>
+</body>
+</html>

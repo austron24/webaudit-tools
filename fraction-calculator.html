@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Fraction Calculator - Add, Subtract, Multiply, Divide Fractions</title>
+    <meta name="description" content="Calculate fractions easily. Add, subtract, multiply, divide fractions. Convert to decimal. Simplify fractions. Free fraction calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #9333ea 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+        .calc-card h3 {
+            color: #9333ea;
+            margin-bottom: 20px;
+        }
+        .fraction-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .fraction {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .fraction input {
+            width: 70px;
+            padding: 12px;
+            border: 3px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .fraction input:focus {
+            outline: none;
+            border-color: #9333ea;
+        }
+        .fraction .line {
+            width: 70px;
+            height: 3px;
+            background: #1e293b;
+            margin: 5px 0;
+        }
+        .operation {
+            display: flex;
+            gap: 5px;
+        }
+        .op-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .op-btn.active {
+            border-color: #9333ea;
+            background: #f3e8ff;
+            color: #9333ea;
+        }
+        .equals {
+            font-size: 28px;
+            color: #9333ea;
+            font-weight: bold;
+        }
+        .result-fraction {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #f3e8ff;
+            padding: 15px 25px;
+            border-radius: 12px;
+        }
+        .result-fraction .num, .result-fraction .denom {
+            font-size: 24px;
+            font-weight: bold;
+            color: #9333ea;
+        }
+        .result-fraction .line {
+            width: 60px;
+            height: 3px;
+            background: #9333ea;
+            margin: 5px 0;
+        }
+        .conversions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+        .conv-item {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .conv-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #9333ea;
+        }
+        .conv-item .label {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .simplify-section {
+            border-top: 2px solid #f1f5f9;
+            padding-top: 25px;
+            margin-top: 25px;
+        }
+        .simplify-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        .btn {
+            padding: 12px 25px;
+            background: #9333ea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn:hover { background: #7e22ce; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #9333ea; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #7e22ce;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #d8b4fe; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Fraction Calculator</h1>
+            <p class="subtitle">Add, subtract, multiply, divide fractions</p>
+        </header>
+
+        <div class="calc-card">
+            <h3>Calculate Fractions</h3>
+            <div class="fraction-row">
+                <div class="fraction">
+                    <input type="number" id="num1" value="1">
+                    <div class="line"></div>
+                    <input type="number" id="denom1" value="2">
+                </div>
+
+                <div class="operation">
+                    <button class="op-btn active" onclick="setOp('+', this)">+</button>
+                    <button class="op-btn" onclick="setOp('-', this)">−</button>
+                    <button class="op-btn" onclick="setOp('*', this)">×</button>
+                    <button class="op-btn" onclick="setOp('/', this)">÷</button>
+                </div>
+
+                <div class="fraction">
+                    <input type="number" id="num2" value="1">
+                    <div class="line"></div>
+                    <input type="number" id="denom2" value="4">
+                </div>
+
+                <div class="equals">=</div>
+
+                <div class="result-fraction">
+                    <span class="num" id="resultNum">3</span>
+                    <div class="line"></div>
+                    <span class="denom" id="resultDenom">4</span>
+                </div>
+            </div>
+
+            <div class="conversions">
+                <div class="conv-item">
+                    <div class="value" id="decimal">0.75</div>
+                    <div class="label">Decimal</div>
+                </div>
+                <div class="conv-item">
+                    <div class="value" id="percent">75%</div>
+                    <div class="label">Percent</div>
+                </div>
+                <div class="conv-item">
+                    <div class="value" id="mixed">-</div>
+                    <div class="label">Mixed Number</div>
+                </div>
+            </div>
+
+            <div class="simplify-section">
+                <h3>Simplify a Fraction</h3>
+                <div class="simplify-row">
+                    <div class="fraction">
+                        <input type="number" id="simpNum" value="12">
+                        <div class="line"></div>
+                        <input type="number" id="simpDenom" value="18">
+                    </div>
+                    <button class="btn" onclick="simplifyFraction()">Simplify</button>
+                    <div class="equals">=</div>
+                    <div class="result-fraction">
+                        <span class="num" id="simpResultNum">2</span>
+                        <div class="line"></div>
+                        <span class="denom" id="simpResultDenom">3</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Math Tools</h4>
+            <a href="percentage-calc.html">Percentage Calculator</a>
+            <a href="gpa-calculator.html">GPA Calculator</a>
+            <a href="unit-converter.html">Unit Converter</a>
+            <a href="index.html">View All 60+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Fraction Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        let operation = '+';
+
+        function gcd(a, b) {
+            a = Math.abs(a);
+            b = Math.abs(b);
+            while (b) {
+                const t = b;
+                b = a % b;
+                a = t;
+            }
+            return a;
+        }
+
+        function simplify(num, denom) {
+            if (denom === 0) return [num, denom];
+            const g = gcd(num, denom);
+            return [num / g, denom / g];
+        }
+
+        function setOp(op, btn) {
+            operation = op;
+            document.querySelectorAll('.op-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            calculate();
+        }
+
+        function calculate() {
+            const n1 = parseInt(document.getElementById('num1').value) || 0;
+            const d1 = parseInt(document.getElementById('denom1').value) || 1;
+            const n2 = parseInt(document.getElementById('num2').value) || 0;
+            const d2 = parseInt(document.getElementById('denom2').value) || 1;
+
+            let resultNum, resultDenom;
+
+            switch (operation) {
+                case '+':
+                    resultNum = n1 * d2 + n2 * d1;
+                    resultDenom = d1 * d2;
+                    break;
+                case '-':
+                    resultNum = n1 * d2 - n2 * d1;
+                    resultDenom = d1 * d2;
+                    break;
+                case '*':
+                    resultNum = n1 * n2;
+                    resultDenom = d1 * d2;
+                    break;
+                case '/':
+                    resultNum = n1 * d2;
+                    resultDenom = d1 * n2;
+                    break;
+            }
+
+            const [simpNum, simpDenom] = simplify(resultNum, resultDenom);
+
+            document.getElementById('resultNum').textContent = simpNum;
+            document.getElementById('resultDenom').textContent = simpDenom;
+
+            const decimal = simpDenom !== 0 ? simpNum / simpDenom : 0;
+            document.getElementById('decimal').textContent = decimal.toFixed(4);
+            document.getElementById('percent').textContent = (decimal * 100).toFixed(2) + '%';
+
+            if (Math.abs(simpNum) >= Math.abs(simpDenom) && simpDenom !== 0) {
+                const whole = Math.floor(Math.abs(simpNum) / Math.abs(simpDenom));
+                const remainder = Math.abs(simpNum) % Math.abs(simpDenom);
+                const sign = (simpNum < 0) !== (simpDenom < 0) ? '-' : '';
+                if (remainder === 0) {
+                    document.getElementById('mixed').textContent = sign + whole;
+                } else {
+                    document.getElementById('mixed').textContent = `${sign}${whole} ${remainder}/${Math.abs(simpDenom)}`;
+                }
+            } else {
+                document.getElementById('mixed').textContent = '-';
+            }
+        }
+
+        function simplifyFraction() {
+            const num = parseInt(document.getElementById('simpNum').value) || 0;
+            const denom = parseInt(document.getElementById('simpDenom').value) || 1;
+            const [simpNum, simpDenom] = simplify(num, denom);
+            document.getElementById('simpResultNum').textContent = simpNum;
+            document.getElementById('simpResultDenom').textContent = simpDenom;
+        }
+
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', calculate);
+        });
+
+        calculate();
+        simplifyFraction();
+    </script>
+</body>
+</html>
