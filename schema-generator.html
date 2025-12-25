@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Schema Markup Generator - JSON-LD for SEO</title>
+    <meta name="description" content="Generate schema markup (JSON-LD) for your website. Improve SEO with structured data for Google rich snippets.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #7c2d12 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 42px; margin-bottom: 15px; }
+        .subtitle { font-size: 18px; opacity: 0.9; }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            color: #1e293b;
+            margin-bottom: 30px;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .tab {
+            padding: 12px 24px;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+        .tab:hover { background: #e2e8f0; }
+        .tab.active {
+            background: linear-gradient(135deg, #ea580c, #c2410c);
+            color: white;
+        }
+        .form-section { display: none; }
+        .form-section.active { display: block; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #334155;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #ea580c;
+        }
+        .form-group small {
+            display: block;
+            margin-top: 5px;
+            color: #64748b;
+            font-size: 13px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+        button.generate {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button.generate:hover { transform: translateY(-2px); }
+        .output { display: none; }
+        .output.show { display: block; }
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 8px 16px;
+            font-size: 12px;
+            background: #ea580c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .info-box {
+            background: #fff7ed;
+            border-left: 4px solid #ea580c;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .info-box h4 { color: #c2410c; margin-bottom: 5px; }
+        .info-box p { color: #7c2d12; font-size: 14px; }
+        .validator-link {
+            display: inline-block;
+            background: #16a34a;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        .cta-section {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .cta-section a {
+            display: inline-block;
+            background: white;
+            color: #ea580c;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        footer { text-align: center; padding: 40px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fdba74; }
+        .rating-stars { display: flex; gap: 5px; margin: 10px 0; }
+        .star { cursor: pointer; font-size: 24px; color: #e2e8f0; }
+        .star.active { color: #fbbf24; }
+        .hours-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .hours-grid input { font-size: 14px; padding: 8px; }
+        .hours-grid label { font-size: 12px; font-weight: normal; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Schema Markup Generator</h1>
+            <p class="subtitle">Generate JSON-LD structured data to improve your Google rankings with rich snippets.</p>
+        </header>
+
+        <div class="card">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('business')">Local Business</button>
+                <button class="tab" onclick="switchTab('article')">Article</button>
+                <button class="tab" onclick="switchTab('product')">Product</button>
+                <button class="tab" onclick="switchTab('faq')">FAQ</button>
+                <button class="tab" onclick="switchTab('person')">Person</button>
+            </div>
+
+            <!-- Local Business Form -->
+            <div id="business-form" class="form-section active">
+                <div class="form-group">
+                    <label>Business Name *</label>
+                    <input type="text" id="biz-name" placeholder="Your Business Name" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Business Type</label>
+                        <select id="biz-type">
+                            <option value="LocalBusiness">Local Business (General)</option>
+                            <option value="Restaurant">Restaurant</option>
+                            <option value="Store">Store/Retail</option>
+                            <option value="ProfessionalService">Professional Service</option>
+                            <option value="HealthAndBeautyBusiness">Health & Beauty</option>
+                            <option value="LegalService">Legal Service</option>
+                            <option value="FinancialService">Financial Service</option>
+                            <option value="RealEstateAgent">Real Estate</option>
+                            <option value="AutoRepair">Auto Repair</option>
+                            <option value="Dentist">Dentist</option>
+                            <option value="Physician">Doctor/Physician</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="biz-phone" placeholder="+1-555-123-4567">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Street Address *</label>
+                    <input type="text" id="biz-street" placeholder="123 Main Street">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>City *</label>
+                        <input type="text" id="biz-city" placeholder="New York">
+                    </div>
+                    <div class="form-group">
+                        <label>State/Region</label>
+                        <input type="text" id="biz-state" placeholder="NY">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Postal Code</label>
+                        <input type="text" id="biz-zip" placeholder="10001">
+                    </div>
+                    <div class="form-group">
+                        <label>Country</label>
+                        <input type="text" id="biz-country" placeholder="US" value="US">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Website URL</label>
+                    <input type="url" id="biz-url" placeholder="https://yourbusiness.com">
+                </div>
+                <div class="form-group">
+                    <label>Business Description</label>
+                    <textarea id="biz-desc" rows="3" placeholder="Describe what your business does..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Logo URL (optional)</label>
+                    <input type="url" id="biz-logo" placeholder="https://yourbusiness.com/logo.png">
+                </div>
+                <div class="form-group">
+                    <label>Price Range</label>
+                    <select id="biz-price">
+                        <option value="">Select price range</option>
+                        <option value="$">$ - Budget</option>
+                        <option value="$$">$$ - Moderate</option>
+                        <option value="$$$">$$$ - Expensive</option>
+                        <option value="$$$$">$$$$ - Luxury</option>
+                    </select>
+                </div>
+                <button class="generate" onclick="generateBusiness()">Generate Schema Markup</button>
+            </div>
+
+            <!-- Article Form -->
+            <div id="article-form" class="form-section">
+                <div class="form-group">
+                    <label>Article Title *</label>
+                    <input type="text" id="art-title" placeholder="Your Article Headline">
+                </div>
+                <div class="form-group">
+                    <label>Article URL *</label>
+                    <input type="url" id="art-url" placeholder="https://yoursite.com/article">
+                </div>
+                <div class="form-group">
+                    <label>Featured Image URL *</label>
+                    <input type="url" id="art-image" placeholder="https://yoursite.com/image.jpg">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Date Published</label>
+                        <input type="date" id="art-date">
+                    </div>
+                    <div class="form-group">
+                        <label>Date Modified</label>
+                        <input type="date" id="art-modified">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Author Name *</label>
+                    <input type="text" id="art-author" placeholder="John Smith">
+                </div>
+                <div class="form-group">
+                    <label>Publisher Name *</label>
+                    <input type="text" id="art-publisher" placeholder="Your Website Name">
+                </div>
+                <div class="form-group">
+                    <label>Publisher Logo URL</label>
+                    <input type="url" id="art-pub-logo" placeholder="https://yoursite.com/logo.png">
+                </div>
+                <div class="form-group">
+                    <label>Article Description</label>
+                    <textarea id="art-desc" rows="3" placeholder="Brief description of the article..."></textarea>
+                </div>
+                <button class="generate" onclick="generateArticle()">Generate Schema Markup</button>
+            </div>
+
+            <!-- Product Form -->
+            <div id="product-form" class="form-section">
+                <div class="form-group">
+                    <label>Product Name *</label>
+                    <input type="text" id="prod-name" placeholder="Your Product Name">
+                </div>
+                <div class="form-group">
+                    <label>Product URL *</label>
+                    <input type="url" id="prod-url" placeholder="https://yourstore.com/product">
+                </div>
+                <div class="form-group">
+                    <label>Product Image URL *</label>
+                    <input type="url" id="prod-image" placeholder="https://yourstore.com/product.jpg">
+                </div>
+                <div class="form-group">
+                    <label>Product Description *</label>
+                    <textarea id="prod-desc" rows="3" placeholder="Describe your product..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Price *</label>
+                        <input type="number" id="prod-price" placeholder="29.99" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Currency</label>
+                        <select id="prod-currency">
+                            <option value="USD">USD - US Dollar</option>
+                            <option value="EUR">EUR - Euro</option>
+                            <option value="GBP">GBP - British Pound</option>
+                            <option value="CAD">CAD - Canadian Dollar</option>
+                            <option value="AUD">AUD - Australian Dollar</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Availability</label>
+                        <select id="prod-avail">
+                            <option value="https://schema.org/InStock">In Stock</option>
+                            <option value="https://schema.org/OutOfStock">Out of Stock</option>
+                            <option value="https://schema.org/PreOrder">Pre-Order</option>
+                            <option value="https://schema.org/LimitedAvailability">Limited Availability</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Brand Name</label>
+                        <input type="text" id="prod-brand" placeholder="Brand Name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>SKU (optional)</label>
+                    <input type="text" id="prod-sku" placeholder="SKU-12345">
+                </div>
+                <div class="form-group">
+                    <label>Rating (optional)</label>
+                    <div class="rating-stars" id="prod-rating">
+                        <span class="star" onclick="setRating(1)">★</span>
+                        <span class="star" onclick="setRating(2)">★</span>
+                        <span class="star" onclick="setRating(3)">★</span>
+                        <span class="star" onclick="setRating(4)">★</span>
+                        <span class="star" onclick="setRating(5)">★</span>
+                    </div>
+                    <small>Click to set average rating</small>
+                </div>
+                <div class="form-group" id="review-count-group" style="display:none;">
+                    <label>Number of Reviews</label>
+                    <input type="number" id="prod-reviews" placeholder="42" min="1">
+                </div>
+                <button class="generate" onclick="generateProduct()">Generate Schema Markup</button>
+            </div>
+
+            <!-- FAQ Form -->
+            <div id="faq-form" class="form-section">
+                <div class="form-group">
+                    <label>Page URL *</label>
+                    <input type="url" id="faq-url" placeholder="https://yoursite.com/faq">
+                </div>
+                <div id="faq-items">
+                    <div class="faq-item" data-index="0">
+                        <div class="form-group">
+                            <label>Question 1 *</label>
+                            <input type="text" class="faq-question" placeholder="What is your question?">
+                        </div>
+                        <div class="form-group">
+                            <label>Answer 1 *</label>
+                            <textarea class="faq-answer" rows="2" placeholder="Your answer here..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" onclick="addFaqItem()" style="background: #64748b; margin-bottom: 20px; width: auto; padding: 10px 20px;">+ Add Another Question</button>
+                <button class="generate" onclick="generateFaq()">Generate Schema Markup</button>
+            </div>
+
+            <!-- Person Form -->
+            <div id="person-form" class="form-section">
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="person-name" placeholder="John Smith">
+                </div>
+                <div class="form-group">
+                    <label>Job Title</label>
+                    <input type="text" id="person-job" placeholder="CEO, Software Developer, etc.">
+                </div>
+                <div class="form-group">
+                    <label>Profile URL</label>
+                    <input type="url" id="person-url" placeholder="https://yoursite.com/about">
+                </div>
+                <div class="form-group">
+                    <label>Profile Image URL</label>
+                    <input type="url" id="person-image" placeholder="https://yoursite.com/photo.jpg">
+                </div>
+                <div class="form-group">
+                    <label>Works For (Company Name)</label>
+                    <input type="text" id="person-company" placeholder="Company Name">
+                </div>
+                <div class="form-group">
+                    <label>Social Profiles (one per line)</label>
+                    <textarea id="person-social" rows="3" placeholder="https://twitter.com/yourhandle
+https://linkedin.com/in/yourprofile
+https://github.com/yourname"></textarea>
+                </div>
+                <button class="generate" onclick="generatePerson()">Generate Schema Markup</button>
+            </div>
+        </div>
+
+        <div class="output" id="output">
+            <div class="card">
+                <h2 style="margin-bottom: 20px;">Your Schema Markup</h2>
+                <div style="position: relative;">
+                    <button class="copy-btn" onclick="copyCode()">Copy</button>
+                    <div class="code-block" id="codeOutput"></div>
+                </div>
+
+                <div class="info-box">
+                    <h4>How to Add to Your Website</h4>
+                    <p>1. Copy the code above<br>
+                    2. Paste it in your HTML's &lt;head&gt; section<br>
+                    3. Test with Google's Rich Results Test</p>
+                </div>
+
+                <a href="https://search.google.com/test/rich-results" target="_blank" class="validator-link">Validate with Google →</a>
+            </div>
+
+            <div class="cta-section">
+                <h3>Need Complete Technical SEO?</h3>
+                <p>Get professional schema implementation across your entire site.</p>
+                <a href="https://fiverr.com/austron24" target="_blank">Get Professional SEO Audit →</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Schema Markup Generator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> • <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        let currentRating = 0;
+        let faqCount = 1;
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.form-section').forEach(f => f.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(tab + '-form').classList.add('active');
+            document.getElementById('output').classList.remove('show');
+        }
+
+        function setRating(rating) {
+            currentRating = rating;
+            document.querySelectorAll('#prod-rating .star').forEach((star, i) => {
+                star.classList.toggle('active', i < rating);
+            });
+            document.getElementById('review-count-group').style.display = rating > 0 ? 'block' : 'none';
+        }
+
+        function addFaqItem() {
+            const container = document.getElementById('faq-items');
+            const div = document.createElement('div');
+            div.className = 'faq-item';
+            div.dataset.index = faqCount;
+            div.innerHTML = `
+                <div class="form-group">
+                    <label>Question ${faqCount + 1} *</label>
+                    <input type="text" class="faq-question" placeholder="What is your question?">
+                </div>
+                <div class="form-group">
+                    <label>Answer ${faqCount + 1} *</label>
+                    <textarea class="faq-answer" rows="2" placeholder="Your answer here..."></textarea>
+                </div>
+            `;
+            container.appendChild(div);
+            faqCount++;
+        }
+
+        function generateBusiness() {
+            const schema = {
+                "@context": "https://schema.org",
+                "@type": document.getElementById('biz-type').value,
+                "name": document.getElementById('biz-name').value,
+                "address": {
+                    "@type": "PostalAddress",
+                    "streetAddress": document.getElementById('biz-street').value,
+                    "addressLocality": document.getElementById('biz-city').value,
+                    "addressRegion": document.getElementById('biz-state').value,
+                    "postalCode": document.getElementById('biz-zip').value,
+                    "addressCountry": document.getElementById('biz-country').value
+                }
+            };
+
+            if (document.getElementById('biz-phone').value) {
+                schema.telephone = document.getElementById('biz-phone').value;
+            }
+            if (document.getElementById('biz-url').value) {
+                schema.url = document.getElementById('biz-url').value;
+            }
+            if (document.getElementById('biz-desc').value) {
+                schema.description = document.getElementById('biz-desc').value;
+            }
+            if (document.getElementById('biz-logo').value) {
+                schema.logo = document.getElementById('biz-logo').value;
+            }
+            if (document.getElementById('biz-price').value) {
+                schema.priceRange = document.getElementById('biz-price').value;
+            }
+
+            showOutput(schema);
+        }
+
+        function generateArticle() {
+            const schema = {
+                "@context": "https://schema.org",
+                "@type": "Article",
+                "headline": document.getElementById('art-title').value,
+                "url": document.getElementById('art-url').value,
+                "image": document.getElementById('art-image').value,
+                "author": {
+                    "@type": "Person",
+                    "name": document.getElementById('art-author').value
+                },
+                "publisher": {
+                    "@type": "Organization",
+                    "name": document.getElementById('art-publisher').value
+                }
+            };
+
+            if (document.getElementById('art-date').value) {
+                schema.datePublished = document.getElementById('art-date').value;
+            }
+            if (document.getElementById('art-modified').value) {
+                schema.dateModified = document.getElementById('art-modified').value;
+            }
+            if (document.getElementById('art-desc').value) {
+                schema.description = document.getElementById('art-desc').value;
+            }
+            if (document.getElementById('art-pub-logo').value) {
+                schema.publisher.logo = {
+                    "@type": "ImageObject",
+                    "url": document.getElementById('art-pub-logo').value
+                };
+            }
+
+            showOutput(schema);
+        }
+
+        function generateProduct() {
+            const schema = {
+                "@context": "https://schema.org",
+                "@type": "Product",
+                "name": document.getElementById('prod-name').value,
+                "url": document.getElementById('prod-url').value,
+                "image": document.getElementById('prod-image').value,
+                "description": document.getElementById('prod-desc').value,
+                "offers": {
+                    "@type": "Offer",
+                    "price": document.getElementById('prod-price').value,
+                    "priceCurrency": document.getElementById('prod-currency').value,
+                    "availability": document.getElementById('prod-avail').value
+                }
+            };
+
+            if (document.getElementById('prod-brand').value) {
+                schema.brand = {
+                    "@type": "Brand",
+                    "name": document.getElementById('prod-brand').value
+                };
+            }
+            if (document.getElementById('prod-sku').value) {
+                schema.sku = document.getElementById('prod-sku').value;
+            }
+            if (currentRating > 0) {
+                schema.aggregateRating = {
+                    "@type": "AggregateRating",
+                    "ratingValue": currentRating,
+                    "bestRating": "5",
+                    "reviewCount": document.getElementById('prod-reviews').value || "1"
+                };
+            }
+
+            showOutput(schema);
+        }
+
+        function generateFaq() {
+            const questions = document.querySelectorAll('.faq-question');
+            const answers = document.querySelectorAll('.faq-answer');
+            const mainEntity = [];
+
+            questions.forEach((q, i) => {
+                if (q.value && answers[i].value) {
+                    mainEntity.push({
+                        "@type": "Question",
+                        "name": q.value,
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": answers[i].value
+                        }
+                    });
+                }
+            });
+
+            const schema = {
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                "mainEntity": mainEntity
+            };
+
+            showOutput(schema);
+        }
+
+        function generatePerson() {
+            const schema = {
+                "@context": "https://schema.org",
+                "@type": "Person",
+                "name": document.getElementById('person-name').value
+            };
+
+            if (document.getElementById('person-job').value) {
+                schema.jobTitle = document.getElementById('person-job').value;
+            }
+            if (document.getElementById('person-url').value) {
+                schema.url = document.getElementById('person-url').value;
+            }
+            if (document.getElementById('person-image').value) {
+                schema.image = document.getElementById('person-image').value;
+            }
+            if (document.getElementById('person-company').value) {
+                schema.worksFor = {
+                    "@type": "Organization",
+                    "name": document.getElementById('person-company').value
+                };
+            }
+            if (document.getElementById('person-social').value) {
+                schema.sameAs = document.getElementById('person-social').value.split('\n').filter(s => s.trim());
+            }
+
+            showOutput(schema);
+        }
+
+        function showOutput(schema) {
+            const code = '<script type="application/ld+json">\n' +
+                JSON.stringify(schema, null, 2) +
+                '\n<\/script>';
+            document.getElementById('codeOutput').textContent = code;
+            document.getElementById('output').classList.add('show');
+            document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function copyCode() {
+            const code = document.getElementById('codeOutput').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
+
+        // Set default dates
+        document.getElementById('art-date').valueAsDate = new Date();
+        document.getElementById('art-modified').valueAsDate = new Date();
+    </script>
+</body>
+</html>
