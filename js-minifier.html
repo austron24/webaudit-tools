@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free JavaScript Minifier - Compress JS Online</title>
+    <meta name="description" content="Minify JavaScript code instantly. Remove comments and whitespace. Compress JS for faster page loads. Free online JS minifier tool.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #eab308 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 42px; margin-bottom: 15px; }
+        .subtitle { font-size: 18px; opacity: 0.9; }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            color: #1e293b;
+            margin-bottom: 30px;
+        }
+        .editor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 800px) {
+            .editor-grid { grid-template-columns: 1fr; }
+        }
+        .editor-pane h3 { margin-bottom: 10px; color: #1e293b; }
+        .code-editor {
+            width: 100%;
+            height: 400px;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+        .code-editor:focus { outline: none; border-color: #eab308; }
+        .options {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .options label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: #64748b;
+        }
+        .options input[type="checkbox"] { width: 18px; height: 18px; }
+        .btn-row {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-minify { background: linear-gradient(135deg, #eab308, #ca8a04); color: white; }
+        .btn-beautify { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
+        .btn-copy { background: #3b82f6; color: white; }
+        .btn-clear { background: #64748b; color: white; }
+        .stats-bar {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            padding: 20px;
+            background: #fefce8;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .stat { text-align: center; }
+        .stat-value { font-size: 24px; font-weight: bold; color: #ca8a04; }
+        .stat-label { font-size: 12px; color: #64748b; }
+        .stat.savings .stat-value { color: #16a34a; }
+        .error-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fee2e2;
+            border-radius: 8px;
+            color: #dc2626;
+            display: none;
+        }
+        .error-box.show { display: block; }
+        .tools-promo {
+            margin-top: 30px;
+            padding: 20px;
+            background: #fefce8;
+            border-radius: 12px;
+        }
+        .tools-promo h4 { color: #ca8a04; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #a16207;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        .cta-section {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .cta-section a {
+            display: inline-block;
+            background: white;
+            color: #ca8a04;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        footer { text-align: center; padding: 40px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fde047; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>JavaScript Minifier</h1>
+            <p class="subtitle">Compress your JavaScript code for faster loading</p>
+        </header>
+
+        <div class="card">
+            <div class="options">
+                <label><input type="checkbox" id="removeComments" checked> Remove comments</label>
+                <label><input type="checkbox" id="removeConsole"> Remove console.log</label>
+            </div>
+
+            <div class="editor-grid">
+                <div class="editor-pane">
+                    <h3>Input JavaScript</h3>
+                    <textarea class="code-editor" id="inputJs" placeholder="Paste your JavaScript code here..."></textarea>
+                </div>
+                <div class="editor-pane">
+                    <h3>Output</h3>
+                    <textarea class="code-editor" id="outputJs" placeholder="Minified JavaScript will appear here..." readonly></textarea>
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn btn-minify" onclick="minifyJs()">Minify JavaScript</button>
+                <button class="btn btn-beautify" onclick="beautifyJs()">Beautify</button>
+                <button class="btn btn-copy" onclick="copyOutput()">Copy Output</button>
+                <button class="btn btn-clear" onclick="clearAll()">Clear</button>
+            </div>
+
+            <div class="error-box" id="errorBox"></div>
+
+            <div class="stats-bar">
+                <div class="stat">
+                    <div class="stat-value" id="inputSize">0</div>
+                    <div class="stat-label">Input (bytes)</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="outputSize">0</div>
+                    <div class="stat-label">Output (bytes)</div>
+                </div>
+                <div class="stat savings">
+                    <div class="stat-value" id="savings">0%</div>
+                    <div class="stat-label">Savings</div>
+                </div>
+            </div>
+
+            <div class="tools-promo">
+                <h4>More Developer Tools</h4>
+                <a href="css-minifier.html">CSS Minifier</a>
+                <a href="html-formatter.html">HTML Formatter</a>
+                <a href="json-formatter.html">JSON Formatter</a>
+                <a href="index.html">View All 30+ Tools</a>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h3>Need a Website Audit?</h3>
+            <p>Get professional accessibility and SEO analysis.</p>
+            <a href="https://fiverr.com/austron24" target="_blank">Get Professional Audit</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>JavaScript Minifier by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const inputEl = document.getElementById('inputJs');
+        const outputEl = document.getElementById('outputJs');
+        const errorBox = document.getElementById('errorBox');
+
+        function updateStats() {
+            const inputSize = new Blob([inputEl.value]).size;
+            const outputSize = new Blob([outputEl.value]).size;
+            const savings = inputSize > 0 ? Math.round((1 - outputSize / inputSize) * 100) : 0;
+
+            document.getElementById('inputSize').textContent = inputSize.toLocaleString();
+            document.getElementById('outputSize').textContent = outputSize.toLocaleString();
+            document.getElementById('savings').textContent = savings + '%';
+        }
+
+        function minifyJs() {
+            let js = inputEl.value;
+            if (!js.trim()) return;
+
+            errorBox.classList.remove('show');
+
+            try {
+                const removeComments = document.getElementById('removeComments').checked;
+                const removeConsole = document.getElementById('removeConsole').checked;
+
+                // Remove comments
+                if (removeComments) {
+                    // Remove single-line comments (but not URLs like http://)
+                    js = js.replace(/(?<!:)\/\/.*$/gm, '');
+                    // Remove multi-line comments
+                    js = js.replace(/\/\*[\s\S]*?\*\//g, '');
+                }
+
+                // Remove console.log statements
+                if (removeConsole) {
+                    js = js.replace(/console\.(log|warn|error|info|debug|trace)\s*\([^)]*\);?/g, '');
+                }
+
+                // Minify
+                js = js
+                    // Remove newlines and multiple spaces
+                    .replace(/\n+/g, ' ')
+                    .replace(/\s+/g, ' ')
+                    // Remove spaces around operators (basic)
+                    .replace(/\s*([=+\-*/<>!&|,;:?{}[\]()])\s*/g, '$1')
+                    // Add space after keywords that need it
+                    .replace(/(return|var|let|const|if|else|for|while|function|new|typeof|instanceof|in|of|throw|catch|finally|switch|case|break|continue|class|extends|import|export|from|async|await|yield)([^\s\w])/g, '$1 $2')
+                    // Clean up
+                    .trim();
+
+                outputEl.value = js;
+                updateStats();
+
+            } catch (e) {
+                errorBox.textContent = 'Error: ' + e.message;
+                errorBox.classList.add('show');
+            }
+        }
+
+        function beautifyJs() {
+            let js = inputEl.value;
+            if (!js.trim()) return;
+
+            errorBox.classList.remove('show');
+
+            try {
+                let formatted = '';
+                let indent = 0;
+                const indentStr = '    ';
+                let inString = false;
+                let stringChar = '';
+
+                for (let i = 0; i < js.length; i++) {
+                    const char = js[i];
+                    const prevChar = i > 0 ? js[i - 1] : '';
+
+                    // Track strings
+                    if ((char === '"' || char === "'" || char === '`') && prevChar !== '\\') {
+                        if (!inString) {
+                            inString = true;
+                            stringChar = char;
+                        } else if (char === stringChar) {
+                            inString = false;
+                        }
+                        formatted += char;
+                        continue;
+                    }
+
+                    if (inString) {
+                        formatted += char;
+                        continue;
+                    }
+
+                    if (char === '{') {
+                        formatted += ' {\n';
+                        indent++;
+                        formatted += indentStr.repeat(indent);
+                    } else if (char === '}') {
+                        indent = Math.max(0, indent - 1);
+                        formatted = formatted.trimEnd() + '\n' + indentStr.repeat(indent) + '}';
+                    } else if (char === ';') {
+                        formatted += ';\n' + indentStr.repeat(indent);
+                    } else if (char === ',') {
+                        formatted += ', ';
+                    } else {
+                        formatted += char;
+                    }
+                }
+
+                outputEl.value = formatted.trim();
+                updateStats();
+
+            } catch (e) {
+                errorBox.textContent = 'Error: ' + e.message;
+                errorBox.classList.add('show');
+            }
+        }
+
+        function copyOutput() {
+            navigator.clipboard.writeText(outputEl.value).then(() => {
+                const btn = event.target;
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy Output', 2000);
+            });
+        }
+
+        function clearAll() {
+            inputEl.value = '';
+            outputEl.value = '';
+            errorBox.classList.remove('show');
+            updateStats();
+        }
+
+        inputEl.addEventListener('input', updateStats);
+    </script>
+</body>
+</html>
