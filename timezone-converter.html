@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Time Zone Converter - World Clock & Time Converter</title>
+    <meta name="description" content="Convert time between time zones instantly. World clock showing multiple cities. Free online time zone converter.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .current-time {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            color: #1e293b;
+            margin-bottom: 20px;
+        }
+        .current-time .time {
+            font-size: 48px;
+            font-weight: bold;
+            color: #1d4ed8;
+        }
+        .current-time .date {
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .calc-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+        .calc-card h3 {
+            color: #1d4ed8;
+            margin-bottom: 20px;
+        }
+        .convert-row {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 15px;
+            align-items: center;
+        }
+        .tz-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .tz-group label {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+        .tz-group select, .tz-group input {
+            padding: 12px;
+            border: 3px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        .tz-group select:focus, .tz-group input:focus {
+            outline: none;
+            border-color: #1d4ed8;
+        }
+        .arrow {
+            font-size: 24px;
+            color: #1d4ed8;
+        }
+        .result-box {
+            background: #eff6ff;
+            border: 3px solid #1d4ed8;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .result-box .time {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1d4ed8;
+        }
+        .result-box .date {
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .world-clocks h3 {
+            color: #1d4ed8;
+            margin-bottom: 20px;
+        }
+        .clock-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .clock-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+        .clock-item .city {
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .clock-item .time {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1d4ed8;
+            margin: 8px 0;
+        }
+        .clock-item .offset {
+            font-size: 12px;
+            color: #64748b;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #1d4ed8; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #1d4ed8;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #93c5fd; }
+        @media (max-width: 600px) {
+            .convert-row { grid-template-columns: 1fr; }
+            .arrow { transform: rotate(90deg); justify-self: center; }
+            .clock-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Time Zone Converter</h1>
+            <p class="subtitle">Convert time between any time zone</p>
+        </header>
+
+        <div class="current-time">
+            <div class="time" id="currentTime">00:00:00</div>
+            <div class="date" id="currentDate">Loading...</div>
+        </div>
+
+        <div class="calc-card">
+            <h3>Convert Time</h3>
+            <div class="convert-row">
+                <div class="tz-group">
+                    <label>From</label>
+                    <input type="time" id="fromTime" value="12:00">
+                    <select id="fromTz">
+                        <option value="-12">UTC-12 (Baker Island)</option>
+                        <option value="-11">UTC-11 (Samoa)</option>
+                        <option value="-10">UTC-10 (Hawaii)</option>
+                        <option value="-9">UTC-9 (Alaska)</option>
+                        <option value="-8">UTC-8 (Pacific Time)</option>
+                        <option value="-7">UTC-7 (Mountain Time)</option>
+                        <option value="-6">UTC-6 (Central Time)</option>
+                        <option value="-5" selected>UTC-5 (Eastern Time)</option>
+                        <option value="-4">UTC-4 (Atlantic)</option>
+                        <option value="-3">UTC-3 (Buenos Aires)</option>
+                        <option value="-2">UTC-2 (Mid-Atlantic)</option>
+                        <option value="-1">UTC-1 (Azores)</option>
+                        <option value="0">UTC+0 (London)</option>
+                        <option value="1">UTC+1 (Paris, Berlin)</option>
+                        <option value="2">UTC+2 (Cairo)</option>
+                        <option value="3">UTC+3 (Moscow)</option>
+                        <option value="4">UTC+4 (Dubai)</option>
+                        <option value="5">UTC+5 (Karachi)</option>
+                        <option value="5.5">UTC+5:30 (India)</option>
+                        <option value="6">UTC+6 (Dhaka)</option>
+                        <option value="7">UTC+7 (Bangkok)</option>
+                        <option value="8">UTC+8 (Singapore, Beijing)</option>
+                        <option value="9">UTC+9 (Tokyo)</option>
+                        <option value="9.5">UTC+9:30 (Adelaide)</option>
+                        <option value="10">UTC+10 (Sydney)</option>
+                        <option value="11">UTC+11 (Vladivostok)</option>
+                        <option value="12">UTC+12 (Auckland)</option>
+                    </select>
+                </div>
+                <div class="arrow">→</div>
+                <div class="tz-group">
+                    <label>To</label>
+                    <select id="toTz">
+                        <option value="-12">UTC-12 (Baker Island)</option>
+                        <option value="-11">UTC-11 (Samoa)</option>
+                        <option value="-10">UTC-10 (Hawaii)</option>
+                        <option value="-9">UTC-9 (Alaska)</option>
+                        <option value="-8">UTC-8 (Pacific Time)</option>
+                        <option value="-7">UTC-7 (Mountain Time)</option>
+                        <option value="-6">UTC-6 (Central Time)</option>
+                        <option value="-5">UTC-5 (Eastern Time)</option>
+                        <option value="-4">UTC-4 (Atlantic)</option>
+                        <option value="-3">UTC-3 (Buenos Aires)</option>
+                        <option value="-2">UTC-2 (Mid-Atlantic)</option>
+                        <option value="-1">UTC-1 (Azores)</option>
+                        <option value="0" selected>UTC+0 (London)</option>
+                        <option value="1">UTC+1 (Paris, Berlin)</option>
+                        <option value="2">UTC+2 (Cairo)</option>
+                        <option value="3">UTC+3 (Moscow)</option>
+                        <option value="4">UTC+4 (Dubai)</option>
+                        <option value="5">UTC+5 (Karachi)</option>
+                        <option value="5.5">UTC+5:30 (India)</option>
+                        <option value="6">UTC+6 (Dhaka)</option>
+                        <option value="7">UTC+7 (Bangkok)</option>
+                        <option value="8">UTC+8 (Singapore, Beijing)</option>
+                        <option value="9">UTC+9 (Tokyo)</option>
+                        <option value="9.5">UTC+9:30 (Adelaide)</option>
+                        <option value="10">UTC+10 (Sydney)</option>
+                        <option value="11">UTC+11 (Vladivostok)</option>
+                        <option value="12">UTC+12 (Auckland)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="result-box">
+                <div class="time" id="resultTime">17:00</div>
+                <div class="date" id="resultInfo">Same day</div>
+            </div>
+        </div>
+
+        <div class="calc-card world-clocks">
+            <h3>World Clock</h3>
+            <div class="clock-grid" id="worldClocks"></div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Time & Date Tools</h4>
+            <a href="timestamp-converter.html">Unix Timestamp</a>
+            <a href="countdown.html">Countdown Timer</a>
+            <a href="stopwatch.html">Stopwatch</a>
+            <a href="index.html">View All 60+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Time Zone Converter by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const cities = [
+            { name: 'New York', offset: -5 },
+            { name: 'London', offset: 0 },
+            { name: 'Tokyo', offset: 9 },
+            { name: 'Sydney', offset: 10 },
+            { name: 'Dubai', offset: 4 },
+            { name: 'Los Angeles', offset: -8 }
+        ];
+
+        function updateCurrentTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString();
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function updateWorldClocks() {
+            const now = new Date();
+            const container = document.getElementById('worldClocks');
+            container.innerHTML = cities.map(city => {
+                const cityTime = new Date(now.getTime() + (city.offset * 60 + now.getTimezoneOffset()) * 60000);
+                return `
+                    <div class="clock-item">
+                        <div class="city">${city.name}</div>
+                        <div class="time">${cityTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</div>
+                        <div class="offset">UTC${city.offset >= 0 ? '+' : ''}${city.offset}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function convertTime() {
+            const fromTime = document.getElementById('fromTime').value;
+            const fromOffset = parseFloat(document.getElementById('fromTz').value);
+            const toOffset = parseFloat(document.getElementById('toTz').value);
+
+            if (!fromTime) return;
+
+            const [hours, minutes] = fromTime.split(':').map(Number);
+            const diffHours = toOffset - fromOffset;
+
+            let newHours = hours + diffHours;
+            let dayDiff = '';
+
+            if (newHours >= 24) {
+                newHours -= 24;
+                dayDiff = 'Next day';
+            } else if (newHours < 0) {
+                newHours += 24;
+                dayDiff = 'Previous day';
+            } else {
+                dayDiff = 'Same day';
+            }
+
+            const resultHours = Math.floor(newHours);
+            const resultMins = minutes + ((newHours % 1) * 60);
+
+            document.getElementById('resultTime').textContent =
+                `${String(resultHours).padStart(2, '0')}:${String(Math.round(resultMins)).padStart(2, '0')}`;
+            document.getElementById('resultInfo').textContent = dayDiff;
+        }
+
+        document.getElementById('fromTime').addEventListener('input', convertTime);
+        document.getElementById('fromTz').addEventListener('change', convertTime);
+        document.getElementById('toTz').addEventListener('change', convertTime);
+
+        updateCurrentTime();
+        updateWorldClocks();
+        convertTime();
+        setInterval(updateCurrentTime, 1000);
+        setInterval(updateWorldClocks, 60000);
+    </script>
+</body>
+</html>

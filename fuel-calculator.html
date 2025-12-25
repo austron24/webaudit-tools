@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Fuel Cost Calculator - Gas Mileage & Trip Cost</title>
+    <meta name="description" content="Calculate fuel costs for your trip. Find gas mileage, trip cost, and compare fuel efficiency. Free fuel cost calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #ea580c 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .unit-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .unit-btn {
+            padding: 10px 25px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .unit-btn.active { background: white; color: #ea580c; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+        .input-row input {
+            flex: 1;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+            text-align: center;
+        }
+        .input-row input:focus {
+            outline: none;
+            border-color: #ea580c;
+        }
+        .input-row span {
+            display: flex;
+            align-items: center;
+            color: #64748b;
+            font-size: 14px;
+            min-width: 50px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #ea580c;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #c2410c; }
+        .results {
+            margin-top: 25px;
+        }
+        .result-main {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            color: white;
+            margin-bottom: 15px;
+        }
+        .result-main .label { opacity: 0.9; font-size: 14px; }
+        .result-main .value { font-size: 42px; font-weight: bold; }
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .result-item {
+            background: #fff7ed;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .result-item .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ea580c;
+        }
+        .result-item .label {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #ea580c; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #c2410c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fdba74; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Fuel Calculator</h1>
+            <p class="subtitle">Calculate trip fuel costs & gas mileage</p>
+        </header>
+
+        <div class="unit-toggle">
+            <button class="unit-btn active" onclick="setUnit('us')">US (miles/gal)</button>
+            <button class="unit-btn" onclick="setUnit('metric')">Metric (km/L)</button>
+        </div>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Trip Distance</label>
+                <div class="input-row">
+                    <input type="number" id="distance" value="250">
+                    <span id="distUnit">miles</span>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Fuel Efficiency</label>
+                <div class="input-row">
+                    <input type="number" id="efficiency" value="30" step="0.1">
+                    <span id="effUnit">mpg</span>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Fuel Price</label>
+                <div class="input-row">
+                    <input type="number" id="fuelPrice" value="3.50" step="0.01">
+                    <span id="priceUnit">$/gal</span>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Cost</button>
+
+            <div class="results" id="results">
+                <div class="result-main">
+                    <div class="label">Total Trip Cost</div>
+                    <div class="value" id="totalCost">$0.00</div>
+                </div>
+                <div class="result-grid">
+                    <div class="result-item">
+                        <div class="value" id="fuelNeeded">0</div>
+                        <div class="label" id="fuelLabel">Gallons Needed</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="value" id="costPerMile">$0.00</div>
+                        <div class="label" id="costLabel">Cost per Mile</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="value" id="roundTrip">$0.00</div>
+                        <div class="label">Round Trip Cost</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="value" id="co2">0</div>
+                        <div class="label">CO₂ Emissions (kg)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Calculator Tools</h4>
+            <a href="unit-converter.html">Unit Converter</a>
+            <a href="loan-calculator.html">Loan Calculator</a>
+            <a href="tip-calculator.html">Tip Calculator</a>
+            <a href="index.html">View All 60+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Fuel Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        let currentUnit = 'us';
+
+        function setUnit(unit) {
+            currentUnit = unit;
+            document.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (unit === 'us') {
+                document.getElementById('distUnit').textContent = 'miles';
+                document.getElementById('effUnit').textContent = 'mpg';
+                document.getElementById('priceUnit').textContent = '$/gal';
+                document.getElementById('fuelLabel').textContent = 'Gallons Needed';
+                document.getElementById('costLabel').textContent = 'Cost per Mile';
+            } else {
+                document.getElementById('distUnit').textContent = 'km';
+                document.getElementById('effUnit').textContent = 'km/L';
+                document.getElementById('priceUnit').textContent = '$/L';
+                document.getElementById('fuelLabel').textContent = 'Liters Needed';
+                document.getElementById('costLabel').textContent = 'Cost per KM';
+            }
+            calculate();
+        }
+
+        function calculate() {
+            const distance = parseFloat(document.getElementById('distance').value) || 0;
+            const efficiency = parseFloat(document.getElementById('efficiency').value) || 1;
+            const price = parseFloat(document.getElementById('fuelPrice').value) || 0;
+
+            const fuelNeeded = distance / efficiency;
+            const totalCost = fuelNeeded * price;
+            const costPerUnit = totalCost / distance;
+
+            document.getElementById('fuelNeeded').textContent = fuelNeeded.toFixed(2);
+            document.getElementById('totalCost').textContent = '$' + totalCost.toFixed(2);
+            document.getElementById('costPerMile').textContent = '$' + costPerUnit.toFixed(3);
+            document.getElementById('roundTrip').textContent = '$' + (totalCost * 2).toFixed(2);
+
+            // CO2: ~8.89 kg/gallon or ~2.35 kg/liter
+            const co2Factor = currentUnit === 'us' ? 8.89 : 2.35;
+            document.getElementById('co2').textContent = (fuelNeeded * co2Factor).toFixed(1);
+        }
+
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', calculate);
+        });
+
+        calculate();
+    </script>
+</body>
+</html>
