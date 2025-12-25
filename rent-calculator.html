@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rent Affordability Calculator - How Much Rent Can I Afford?</title>
+    <meta name="description" content="Calculate how much rent you can afford based on your income. Uses the 30% rule and other affordability guidelines. Free rent calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0891b2 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #0891b2;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .affordability-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .afford-item {
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .afford-item.tight { background: #fee2e2; }
+        .afford-item.comfortable { background: #dcfce7; }
+        .afford-item.moderate { background: #fef9c3; }
+        .afford-item .value {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .afford-item.tight .value { color: #dc2626; }
+        .afford-item.comfortable .value { color: #16a34a; }
+        .afford-item.moderate .value { color: #ca8a04; }
+        .afford-item .label {
+            font-size: 10px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .afford-item .percent {
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #0891b2;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #0891b2; }
+        .budget-bar {
+            margin-top: 20px;
+        }
+        .budget-bar h4 {
+            color: #0891b2;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .bar-container {
+            height: 30px;
+            background: #e2e8f0;
+            border-radius: 15px;
+            display: flex;
+            overflow: hidden;
+        }
+        .bar-segment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: white;
+        }
+        .bar-segment.rent { background: #0891b2; }
+        .bar-segment.needs { background: #16a34a; }
+        .bar-segment.wants { background: #f97316; }
+        .bar-segment.savings { background: #8b5cf6; }
+        .bar-legend {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+            font-size: 11px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0891b2; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0e7490;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #67e8f9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Rent Calculator</h1>
+            <p class="subtitle">How much rent can you afford?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group full">
+                    <label>Gross Monthly Income (before taxes)</label>
+                    <input type="number" id="income" value="5000" min="1000" max="100000" step="100" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Monthly Debt Payments</label>
+                    <input type="number" id="debt" value="400" min="0" max="20000" step="50" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Monthly Savings Goal</label>
+                    <input type="number" id="savings" value="500" min="0" max="20000" step="50" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Maximum Affordable Rent (30% Rule)</div>
+                <div class="value" id="maxRent">$1,500</div>
+                <div class="sub" id="rentStatus">Based on gross income</div>
+            </div>
+
+            <div class="affordability-grid">
+                <div class="afford-item comfortable">
+                    <div class="value" id="comfortable">$1,250</div>
+                    <div class="percent">25%</div>
+                    <div class="label">Comfortable</div>
+                </div>
+                <div class="afford-item moderate">
+                    <div class="value" id="moderate">$1,500</div>
+                    <div class="percent">30%</div>
+                    <div class="label">Moderate</div>
+                </div>
+                <div class="afford-item tight">
+                    <div class="value" id="stretch">$1,750</div>
+                    <div class="percent">35%</div>
+                    <div class="label">Stretch</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>Monthly Budget Breakdown</h4>
+                <div class="break-row">
+                    <span>Gross Income</span>
+                    <span class="value" id="grossDisplay">$5,000</span>
+                </div>
+                <div class="break-row">
+                    <span>Est. Take-Home (75%)</span>
+                    <span class="value" id="netDisplay">$3,750</span>
+                </div>
+                <div class="break-row">
+                    <span>Rent (30% gross)</span>
+                    <span class="value" id="rentDisplay">$1,500</span>
+                </div>
+                <div class="break-row">
+                    <span>After Rent + Debt + Savings</span>
+                    <span class="value" id="remainingDisplay">$1,350</span>
+                </div>
+                <div class="break-row">
+                    <span>Annual Rent</span>
+                    <span class="value" id="yearlyRent">$18,000</span>
+                </div>
+            </div>
+
+            <div class="budget-bar">
+                <h4>50/30/20 Budget Allocation</h4>
+                <div class="bar-container">
+                    <div class="bar-segment rent" id="rentBar" style="width: 30%;">30%</div>
+                    <div class="bar-segment needs" style="width: 20%;">20%</div>
+                    <div class="bar-segment wants" style="width: 30%;">30%</div>
+                    <div class="bar-segment savings" style="width: 20%;">20%</div>
+                </div>
+                <div class="bar-legend">
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #0891b2;"></div>
+                        <span>Rent</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #16a34a;"></div>
+                        <span>Needs</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #f97316;"></div>
+                        <span>Wants</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #8b5cf6;"></div>
+                        <span>Savings</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Finance Tools</h4>
+            <a href="rent-vs-buy-calculator.html">Rent vs Buy</a>
+            <a href="paycheck-calculator.html">Paycheck Calculator</a>
+            <a href="savings-calculator.html">Savings Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Rent Affordability Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function formatCurrency(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const income = parseFloat(document.getElementById('income').value) || 5000;
+            const debt = parseFloat(document.getElementById('debt').value) || 0;
+            const savings = parseFloat(document.getElementById('savings').value) || 0;
+
+            // Calculate rent at different percentages
+            const comfortable = income * 0.25;
+            const moderate = income * 0.30;
+            const stretch = income * 0.35;
+
+            // Estimated take-home pay (after ~25% taxes)
+            const netIncome = income * 0.75;
+
+            // Remaining after rent, debt, and savings
+            const remaining = netIncome - moderate - debt - savings;
+
+            // Update displays
+            document.getElementById('maxRent').textContent = formatCurrency(moderate);
+            document.getElementById('comfortable').textContent = formatCurrency(comfortable);
+            document.getElementById('moderate').textContent = formatCurrency(moderate);
+            document.getElementById('stretch').textContent = formatCurrency(stretch);
+
+            document.getElementById('grossDisplay').textContent = formatCurrency(income);
+            document.getElementById('netDisplay').textContent = formatCurrency(netIncome);
+            document.getElementById('rentDisplay').textContent = formatCurrency(moderate);
+            document.getElementById('remainingDisplay').textContent = formatCurrency(remaining);
+            document.getElementById('yearlyRent').textContent = formatCurrency(moderate * 12);
+
+            // Status message
+            if (remaining < 500) {
+                document.getElementById('rentStatus').textContent = 'Consider lower rent for more flexibility';
+            } else if (remaining > 1500) {
+                document.getElementById('rentStatus').textContent = 'Comfortable budget - room for higher rent';
+            } else {
+                document.getElementById('rentStatus').textContent = 'Based on 30% gross income rule';
+            }
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

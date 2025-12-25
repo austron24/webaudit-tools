@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caffeine Calculator - How Much Caffeine Is Safe?</title>
+    <meta name="description" content="Calculate your daily caffeine intake and see if you're within safe limits. Track caffeine from coffee, tea, energy drinks, and more. Free caffeine calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #92400e 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .drink-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .drink-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .drink-item:last-child { border: none; }
+        .drink-info {
+            flex: 1;
+        }
+        .drink-name { font-weight: 500; }
+        .drink-mg { font-size: 12px; color: #64748b; }
+        .drink-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .drink-controls button {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .drink-controls .minus {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        .drink-controls .plus {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        .drink-controls .count {
+            width: 30px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .result-box {
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+            transition: background 0.3s;
+        }
+        .result-box.safe { background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); }
+        .result-box.moderate { background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%); }
+        .result-box.high { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+        .result-box.danger { background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 56px; font-weight: bold; }
+        .result-box .sub { opacity: 0.9; font-size: 16px; margin-top: 5px; }
+        .progress-section {
+            margin: 20px 0;
+        }
+        .progress-bar {
+            height: 20px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #22c55e, #eab308, #f97316, #dc2626);
+            transition: width 0.3s;
+        }
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .info-item {
+            background: #fef3c7;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .info-item .value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #92400e;
+        }
+        .info-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .effects {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .effects h4 {
+            color: #92400e;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .effect-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 13px;
+        }
+        .effect-row:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #92400e; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #78350f;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fbbf24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Caffeine Calculator</h1>
+            <p class="subtitle">Track your daily caffeine intake</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="drink-list" id="drinkList">
+                <!-- Drinks will be populated by JS -->
+            </div>
+
+            <div class="result-box safe" id="resultBox">
+                <div class="label">Daily Caffeine Intake</div>
+                <div class="value" id="totalCaffeine">0 mg</div>
+                <div class="sub" id="status">Add drinks to calculate</div>
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%;"></div>
+                </div>
+                <div class="progress-labels">
+                    <span>0 mg</span>
+                    <span>Safe: 400mg</span>
+                    <span>600+ mg</span>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="value" id="percentLimit">0%</div>
+                    <div class="label">Of Daily Limit</div>
+                </div>
+                <div class="info-item">
+                    <div class="value" id="remaining">400 mg</div>
+                    <div class="label">Remaining Safe</div>
+                </div>
+                <div class="info-item">
+                    <div class="value" id="halfLife">~6 hrs</div>
+                    <div class="label">Half-Life</div>
+                </div>
+                <div class="info-item">
+                    <div class="value" id="clearTime">12+ hrs</div>
+                    <div class="label">To Clear System</div>
+                </div>
+            </div>
+
+            <div class="effects">
+                <h4>Caffeine Reference</h4>
+                <div class="effect-row">
+                    <span>Safe limit (healthy adults)</span>
+                    <span>400 mg/day</span>
+                </div>
+                <div class="effect-row">
+                    <span>Pregnant women limit</span>
+                    <span>200 mg/day</span>
+                </div>
+                <div class="effect-row">
+                    <span>Teens (12-18)</span>
+                    <span>100 mg/day</span>
+                </div>
+                <div class="effect-row">
+                    <span>Peak blood levels</span>
+                    <span>30-60 min</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Health Tools</h4>
+            <a href="water-intake-calculator.html">Water Intake</a>
+            <a href="calorie-calculator.html">Calorie Calculator</a>
+            <a href="sleep-calculator.html">Sleep Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Caffeine Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const drinks = [
+            { name: 'Coffee (8 oz)', mg: 95, emoji: '☕' },
+            { name: 'Espresso (1 shot)', mg: 63, emoji: '☕' },
+            { name: 'Cold Brew (12 oz)', mg: 200, emoji: '🧊' },
+            { name: 'Black Tea (8 oz)', mg: 47, emoji: '🍵' },
+            { name: 'Green Tea (8 oz)', mg: 28, emoji: '🍵' },
+            { name: 'Red Bull (8.4 oz)', mg: 80, emoji: '🥤' },
+            { name: 'Monster (16 oz)', mg: 160, emoji: '🥤' },
+            { name: 'Coca-Cola (12 oz)', mg: 34, emoji: '🥤' },
+            { name: 'Diet Coke (12 oz)', mg: 46, emoji: '🥤' },
+            { name: 'Mountain Dew (12 oz)', mg: 54, emoji: '🥤' },
+            { name: 'Dark Chocolate (1 oz)', mg: 23, emoji: '🍫' },
+            { name: '5-Hour Energy', mg: 200, emoji: '⚡' }
+        ];
+
+        const counts = new Array(drinks.length).fill(0);
+
+        function renderDrinks() {
+            const list = document.getElementById('drinkList');
+            list.innerHTML = drinks.map((drink, i) => `
+                <div class="drink-item">
+                    <div class="drink-info">
+                        <div class="drink-name">${drink.emoji} ${drink.name}</div>
+                        <div class="drink-mg">${drink.mg} mg caffeine</div>
+                    </div>
+                    <div class="drink-controls">
+                        <button class="minus" onclick="adjust(${i}, -1)">−</button>
+                        <span class="count" id="count-${i}">${counts[i]}</span>
+                        <button class="plus" onclick="adjust(${i}, 1)">+</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function adjust(index, delta) {
+            counts[index] = Math.max(0, counts[index] + delta);
+            document.getElementById(`count-${index}`).textContent = counts[index];
+            calculate();
+        }
+
+        function calculate() {
+            const total = drinks.reduce((sum, drink, i) => sum + drink.mg * counts[i], 0);
+            const limit = 400;
+
+            document.getElementById('totalCaffeine').textContent = total + ' mg';
+            document.getElementById('percentLimit').textContent = Math.round((total / limit) * 100) + '%';
+            document.getElementById('remaining').textContent = Math.max(0, limit - total) + ' mg';
+
+            // Progress bar
+            const progress = Math.min(100, (total / 600) * 100);
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            // Status and color
+            const resultBox = document.getElementById('resultBox');
+            let status, colorClass;
+
+            if (total === 0) {
+                status = 'Add drinks to calculate';
+                colorClass = 'safe';
+            } else if (total <= 200) {
+                status = 'Low intake - within safe limits';
+                colorClass = 'safe';
+            } else if (total <= 400) {
+                status = 'Moderate intake - within daily limit';
+                colorClass = 'moderate';
+            } else if (total <= 600) {
+                status = 'High intake - above recommended limit';
+                colorClass = 'high';
+            } else {
+                status = 'Very high intake - may cause side effects';
+                colorClass = 'danger';
+            }
+
+            document.getElementById('status').textContent = status;
+            resultBox.className = 'result-box ' + colorClass;
+
+            // Half-life info (caffeine half-life is ~5-6 hours)
+            if (total > 0) {
+                const hoursToHalf = 6;
+                const hoursToClear = Math.ceil(Math.log2(total / 10) * hoursToHalf);
+                document.getElementById('clearTime').textContent = hoursToClear + ' hrs';
+            }
+        }
+
+        renderDrinks();
+        calculate();
+    </script>
+</body>
+</html>

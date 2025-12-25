@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gas Mileage Calculator - MPG Calculator</title>
+    <meta name="description" content="Calculate your car's gas mileage (MPG). Track fuel efficiency, trip costs, and compare to EPA estimates. Free gas mileage calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #059669 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 4px;
+        }
+        .tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 6px;
+            color: #64748b;
+        }
+        .tab.active {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #059669;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 56px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .stat-item {
+            background: #ecfdf5;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .stat-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #059669;
+        }
+        .stat-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .rating {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .rating h4 {
+            color: #059669;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .rating-bar {
+            height: 20px;
+            background: linear-gradient(to right, #dc2626, #f97316, #eab308, #22c55e, #059669);
+            border-radius: 10px;
+            position: relative;
+            margin-bottom: 10px;
+        }
+        .rating-marker {
+            position: absolute;
+            top: -5px;
+            width: 4px;
+            height: 30px;
+            background: #1e293b;
+            border-radius: 2px;
+            transform: translateX(-50%);
+        }
+        .rating-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #64748b;
+        }
+        .annual-section {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .annual-section h4 {
+            color: #059669;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .annual-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .annual-row:last-child { border: none; }
+        .annual-row .value { font-weight: 600; color: #059669; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #059669; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #047857;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #6ee7b7; }
+        .calc-section { display: none; }
+        .calc-section.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Gas Mileage Calculator</h1>
+            <p class="subtitle">Calculate your fuel efficiency</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('mpg')">Calculate MPG</button>
+                <button class="tab" onclick="switchTab('trip')">Trip Cost</button>
+            </div>
+
+            <div class="calc-section active" id="mpgSection">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Miles Driven</label>
+                        <input type="number" id="miles" value="300" min="1" max="10000" step="1" oninput="calculate()">
+                    </div>
+                    <div class="input-group">
+                        <label>Gallons Used</label>
+                        <input type="number" id="gallons" value="10" min="0.1" max="500" step="0.1" oninput="calculate()">
+                    </div>
+                    <div class="input-group full">
+                        <label>Gas Price ($/gallon)</label>
+                        <input type="number" id="gasPrice" value="3.50" min="0.50" max="10" step="0.01" oninput="calculate()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="calc-section" id="tripSection">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Trip Distance (miles)</label>
+                        <input type="number" id="tripMiles" value="500" min="1" max="10000" step="1" oninput="calculate()">
+                    </div>
+                    <div class="input-group">
+                        <label>Your MPG</label>
+                        <input type="number" id="tripMpg" value="30" min="5" max="100" step="1" oninput="calculate()">
+                    </div>
+                    <div class="input-group full">
+                        <label>Gas Price ($/gallon)</label>
+                        <input type="number" id="tripGasPrice" value="3.50" min="0.50" max="10" step="0.01" oninput="calculate()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label" id="resultLabel">Fuel Efficiency</div>
+                <div class="value" id="result">30 MPG</div>
+                <div class="sub" id="resultSub">7.8 L/100km</div>
+            </div>
+
+            <div class="stats-grid" id="mpgStats">
+                <div class="stat-item">
+                    <div class="value" id="costPerMile">$0.12</div>
+                    <div class="label">Cost Per Mile</div>
+                </div>
+                <div class="stat-item">
+                    <div class="value" id="milesPerDollar">8.6 mi</div>
+                    <div class="label">Miles Per Dollar</div>
+                </div>
+                <div class="stat-item">
+                    <div class="value" id="totalCost">$35.00</div>
+                    <div class="label">Fill-Up Cost</div>
+                </div>
+                <div class="stat-item">
+                    <div class="value" id="co2">178 lbs</div>
+                    <div class="label">CO2 Produced</div>
+                </div>
+            </div>
+
+            <div class="stats-grid" id="tripStats" style="display: none;">
+                <div class="stat-item">
+                    <div class="value" id="tripGallons">16.7 gal</div>
+                    <div class="label">Gallons Needed</div>
+                </div>
+                <div class="stat-item">
+                    <div class="value" id="tripCost">$58.33</div>
+                    <div class="label">Fuel Cost</div>
+                </div>
+                <div class="stat-item">
+                    <div class="value" id="tripCostMile">$0.12</div>
+                    <div class="label">Cost Per Mile</div>
+                </div>
+                <div class="stat-item">
+                    <div class="value" id="tripCo2">297 lbs</div>
+                    <div class="label">CO2 Produced</div>
+                </div>
+            </div>
+
+            <div class="rating">
+                <h4>Fuel Efficiency Rating</h4>
+                <div class="rating-bar">
+                    <div class="rating-marker" id="ratingMarker" style="left: 60%;"></div>
+                </div>
+                <div class="rating-labels">
+                    <span>Poor (15)</span>
+                    <span>Average (25)</span>
+                    <span>Good (35)</span>
+                    <span>Excellent (50+)</span>
+                </div>
+            </div>
+
+            <div class="annual-section">
+                <h4>Annual Estimates (12,000 mi/year)</h4>
+                <div class="annual-row">
+                    <span>Gallons Per Year</span>
+                    <span class="value" id="yearGallons">400 gal</span>
+                </div>
+                <div class="annual-row">
+                    <span>Annual Fuel Cost</span>
+                    <span class="value" id="yearCost">$1,400</span>
+                </div>
+                <div class="annual-row">
+                    <span>Monthly Fuel Cost</span>
+                    <span class="value" id="monthCost">$117</span>
+                </div>
+                <div class="annual-row">
+                    <span>CO2 Emissions/Year</span>
+                    <span class="value" id="yearCo2">7,120 lbs</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Auto Tools</h4>
+            <a href="fuel-calculator.html">Fuel Cost</a>
+            <a href="car-loan-calculator.html">Car Loan</a>
+            <a href="speed-calculator.html">Speed Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Gas Mileage Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        let currentTab = 'mpg';
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.querySelectorAll('.calc-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(tab + 'Section').classList.add('active');
+
+            document.getElementById('mpgStats').style.display = tab === 'mpg' ? 'grid' : 'none';
+            document.getElementById('tripStats').style.display = tab === 'trip' ? 'grid' : 'none';
+
+            calculate();
+        }
+
+        function calculate() {
+            if (currentTab === 'mpg') {
+                calculateMpg();
+            } else {
+                calculateTrip();
+            }
+        }
+
+        function calculateMpg() {
+            const miles = parseFloat(document.getElementById('miles').value) || 300;
+            const gallons = parseFloat(document.getElementById('gallons').value) || 10;
+            const gasPrice = parseFloat(document.getElementById('gasPrice').value) || 3.50;
+
+            const mpg = miles / gallons;
+            const lpk = 235.215 / mpg; // L/100km conversion
+            const costPerMile = gasPrice / mpg;
+            const milesPerDollar = mpg / gasPrice;
+            const totalCost = gallons * gasPrice;
+            const co2 = gallons * 17.8; // ~17.8 lbs CO2 per gallon
+
+            // Annual estimates (12,000 miles)
+            const yearMiles = 12000;
+            const yearGallons = yearMiles / mpg;
+            const yearCost = yearGallons * gasPrice;
+            const yearCo2 = yearGallons * 17.8;
+
+            document.getElementById('resultLabel').textContent = 'Fuel Efficiency';
+            document.getElementById('result').textContent = mpg.toFixed(1) + ' MPG';
+            document.getElementById('resultSub').textContent = lpk.toFixed(1) + ' L/100km';
+
+            document.getElementById('costPerMile').textContent = '$' + costPerMile.toFixed(2);
+            document.getElementById('milesPerDollar').textContent = milesPerDollar.toFixed(1) + ' mi';
+            document.getElementById('totalCost').textContent = '$' + totalCost.toFixed(2);
+            document.getElementById('co2').textContent = Math.round(co2) + ' lbs';
+
+            document.getElementById('yearGallons').textContent = Math.round(yearGallons) + ' gal';
+            document.getElementById('yearCost').textContent = '$' + Math.round(yearCost).toLocaleString();
+            document.getElementById('monthCost').textContent = '$' + Math.round(yearCost / 12);
+            document.getElementById('yearCo2').textContent = Math.round(yearCo2).toLocaleString() + ' lbs';
+
+            // Rating marker position (15-50 MPG scale)
+            const ratingPos = Math.min(100, Math.max(0, ((mpg - 15) / 35) * 100));
+            document.getElementById('ratingMarker').style.left = ratingPos + '%';
+        }
+
+        function calculateTrip() {
+            const miles = parseFloat(document.getElementById('tripMiles').value) || 500;
+            const mpg = parseFloat(document.getElementById('tripMpg').value) || 30;
+            const gasPrice = parseFloat(document.getElementById('tripGasPrice').value) || 3.50;
+
+            const gallons = miles / mpg;
+            const cost = gallons * gasPrice;
+            const costPerMile = cost / miles;
+            const co2 = gallons * 17.8;
+
+            document.getElementById('resultLabel').textContent = 'Trip Fuel Cost';
+            document.getElementById('result').textContent = '$' + cost.toFixed(2);
+            document.getElementById('resultSub').textContent = gallons.toFixed(1) + ' gallons needed';
+
+            document.getElementById('tripGallons').textContent = gallons.toFixed(1) + ' gal';
+            document.getElementById('tripCost').textContent = '$' + cost.toFixed(2);
+            document.getElementById('tripCostMile').textContent = '$' + costPerMile.toFixed(2);
+            document.getElementById('tripCo2').textContent = Math.round(co2) + ' lbs';
+
+            // Update annual estimates based on trip MPG
+            const yearMiles = 12000;
+            const yearGallons = yearMiles / mpg;
+            const yearCost = yearGallons * gasPrice;
+            const yearCo2 = yearGallons * 17.8;
+
+            document.getElementById('yearGallons').textContent = Math.round(yearGallons) + ' gal';
+            document.getElementById('yearCost').textContent = '$' + Math.round(yearCost).toLocaleString();
+            document.getElementById('monthCost').textContent = '$' + Math.round(yearCost / 12);
+            document.getElementById('yearCo2').textContent = Math.round(yearCo2).toLocaleString() + ' lbs';
+
+            // Rating marker
+            const ratingPos = Math.min(100, Math.max(0, ((mpg - 15) / 35) * 100));
+            document.getElementById('ratingMarker').style.left = ratingPos + '%';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

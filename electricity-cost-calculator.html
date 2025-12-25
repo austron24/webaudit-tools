@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electricity Cost Calculator - How Much Does It Cost to Run?</title>
+    <meta name="description" content="Calculate electricity costs for any appliance or device. See daily, monthly, and yearly energy costs. Free electricity cost calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #eab308 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #eab308;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .costs-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .cost-item {
+            background: #fef9c3;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .cost-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #a16207;
+        }
+        .cost-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .energy-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+        }
+        .energy-item {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .energy-item .value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ca8a04;
+        }
+        .energy-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .presets {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .presets h4 {
+            color: #ca8a04;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        .preset-btn {
+            padding: 10px;
+            background: #fef3c7;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #92400e;
+            transition: all 0.2s;
+        }
+        .preset-btn:hover {
+            background: #eab308;
+            color: white;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #ca8a04; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #a16207;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fde047; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Electricity Cost</h1>
+            <p class="subtitle">Calculate how much it costs to run any device</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Power (Watts)</label>
+                    <input type="number" id="watts" value="100" min="1" max="10000" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Hours Per Day</label>
+                    <input type="number" id="hours" value="8" min="0.1" max="24" step="0.5" oninput="calculate()">
+                </div>
+                <div class="input-group full">
+                    <label>Electricity Rate ($/kWh) - US average is $0.16</label>
+                    <input type="number" id="rate" value="0.16" min="0.01" max="1" step="0.01" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Monthly Cost</div>
+                <div class="value" id="monthly">$3.84</div>
+                <div class="sub" id="usage">Using 24 kWh/month</div>
+            </div>
+
+            <div class="costs-grid">
+                <div class="cost-item">
+                    <div class="value" id="hourly">$0.02</div>
+                    <div class="label">Per Hour</div>
+                </div>
+                <div class="cost-item">
+                    <div class="value" id="daily">$0.13</div>
+                    <div class="label">Per Day</div>
+                </div>
+                <div class="cost-item">
+                    <div class="value" id="yearly">$46.72</div>
+                    <div class="label">Per Year</div>
+                </div>
+            </div>
+
+            <div class="energy-info">
+                <div class="energy-item">
+                    <div class="value" id="kwhDay">0.8 kWh</div>
+                    <div class="label">kWh Per Day</div>
+                </div>
+                <div class="energy-item">
+                    <div class="value" id="kwhMonth">24 kWh</div>
+                    <div class="label">kWh Per Month</div>
+                </div>
+                <div class="energy-item">
+                    <div class="value" id="kwhYear">292 kWh</div>
+                    <div class="label">kWh Per Year</div>
+                </div>
+                <div class="energy-item">
+                    <div class="value" id="amps">0.8 A</div>
+                    <div class="label">Amps (120V)</div>
+                </div>
+            </div>
+
+            <div class="presets">
+                <h4>Common Appliances (click to calculate)</h4>
+                <div class="preset-grid">
+                    <button class="preset-btn" onclick="setPreset(60, 5)">💡 LED Bulb (60W, 5h)</button>
+                    <button class="preset-btn" onclick="setPreset(1500, 2)">🌡️ Space Heater (1500W)</button>
+                    <button class="preset-btn" onclick="setPreset(150, 24)">🖥️ Desktop PC (150W, 24h)</button>
+                    <button class="preset-btn" onclick="setPreset(300, 6)">📺 TV 65" (300W, 6h)</button>
+                    <button class="preset-btn" onclick="setPreset(500, 0.5)">🍿 Microwave (500W, 30m)</button>
+                    <button class="preset-btn" onclick="setPreset(200, 24)">❄️ Fridge (200W avg, 24h)</button>
+                    <button class="preset-btn" onclick="setPreset(3000, 1)">👕 Dryer (3000W, 1h)</button>
+                    <button class="preset-btn" onclick="setPreset(1200, 1)">💇 Hair Dryer (1200W, 1h)</button>
+                    <button class="preset-btn" onclick="setPreset(5000, 2)">♨️ Electric Oven (5000W)</button>
+                    <button class="preset-btn" onclick="setPreset(100, 24)">📡 Router (100W, 24h)</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Utility Tools</h4>
+            <a href="electric-bill-calculator.html">Electric Bill</a>
+            <a href="fuel-calculator.html">Fuel Calculator</a>
+            <a href="roi-calculator.html">ROI Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Electricity Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function setPreset(watts, hours) {
+            document.getElementById('watts').value = watts;
+            document.getElementById('hours').value = hours;
+            calculate();
+        }
+
+        function calculate() {
+            const watts = parseFloat(document.getElementById('watts').value) || 100;
+            const hours = parseFloat(document.getElementById('hours').value) || 8;
+            const rate = parseFloat(document.getElementById('rate').value) || 0.16;
+
+            // Calculate kWh
+            const kwhPerDay = (watts * hours) / 1000;
+            const kwhPerMonth = kwhPerDay * 30;
+            const kwhPerYear = kwhPerDay * 365;
+
+            // Calculate costs
+            const hourly = (watts / 1000) * rate;
+            const daily = kwhPerDay * rate;
+            const monthly = kwhPerMonth * rate;
+            const yearly = kwhPerYear * rate;
+
+            // Calculate amps (assuming 120V)
+            const amps = watts / 120;
+
+            // Update display
+            document.getElementById('hourly').textContent = '$' + hourly.toFixed(2);
+            document.getElementById('daily').textContent = '$' + daily.toFixed(2);
+            document.getElementById('monthly').textContent = '$' + monthly.toFixed(2);
+            document.getElementById('yearly').textContent = '$' + yearly.toFixed(2);
+            document.getElementById('usage').textContent = 'Using ' + kwhPerMonth.toFixed(1) + ' kWh/month';
+
+            document.getElementById('kwhDay').textContent = kwhPerDay.toFixed(2) + ' kWh';
+            document.getElementById('kwhMonth').textContent = kwhPerMonth.toFixed(1) + ' kWh';
+            document.getElementById('kwhYear').textContent = Math.round(kwhPerYear) + ' kWh';
+            document.getElementById('amps').textContent = amps.toFixed(1) + ' A';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
