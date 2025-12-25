@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free CSS Unit Converter - px, em, rem, %, vw, vh</title>
+    <meta name="description" content="Convert between CSS units: px, em, rem, %, vw, vh. Calculate responsive values. Free online CSS unit converter tool for developers.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #dc2626 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 42px; margin-bottom: 15px; }
+        .subtitle { font-size: 18px; opacity: 0.9; }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            color: #1e293b;
+            margin-bottom: 30px;
+        }
+        .settings-bar {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 20px;
+            background: #fef2f2;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        .setting {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .setting label {
+            font-weight: 600;
+            color: #64748b;
+            white-space: nowrap;
+        }
+        .setting input {
+            width: 80px;
+            padding: 8px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .converter-section {
+            margin-bottom: 30px;
+        }
+        .converter-section h3 {
+            margin-bottom: 20px;
+            color: #1e293b;
+        }
+        .converter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .unit-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .unit-card:focus-within {
+            border-color: #dc2626;
+        }
+        .unit-card label {
+            display: block;
+            font-weight: 600;
+            color: #dc2626;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .unit-card input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 18px;
+            font-family: monospace;
+        }
+        .unit-card input:focus {
+            outline: none;
+            border-color: #dc2626;
+        }
+        .unit-card .hint {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 6px;
+        }
+        .quick-reference {
+            margin-top: 30px;
+        }
+        .quick-reference h4 {
+            margin-bottom: 15px;
+            color: #1e293b;
+        }
+        .ref-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .ref-table th, .ref-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .ref-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .ref-table td {
+            color: #64748b;
+        }
+        .ref-table code {
+            background: #fef2f2;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #dc2626;
+            font-family: monospace;
+        }
+        .formula-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #1e293b;
+            border-radius: 12px;
+        }
+        .formula-section h4 {
+            color: #f8fafc;
+            margin-bottom: 15px;
+        }
+        .formula {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            color: #22d3ee;
+            margin-bottom: 10px;
+        }
+        .tools-promo {
+            margin-top: 30px;
+            padding: 20px;
+            background: #fef2f2;
+            border-radius: 12px;
+        }
+        .tools-promo h4 { color: #dc2626; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #b91c1c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        .cta-section {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .cta-section a {
+            display: inline-block;
+            background: white;
+            color: #dc2626;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        footer { text-align: center; padding: 40px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fca5a5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>CSS Unit Converter</h1>
+            <p class="subtitle">Convert between px, em, rem, %, vw, vh</p>
+        </header>
+
+        <div class="card">
+            <div class="settings-bar">
+                <div class="setting">
+                    <label>Root Font Size:</label>
+                    <input type="number" id="rootSize" value="16" oninput="convert()"> px
+                </div>
+                <div class="setting">
+                    <label>Parent Font Size:</label>
+                    <input type="number" id="parentSize" value="16" oninput="convert()"> px
+                </div>
+                <div class="setting">
+                    <label>Viewport Width:</label>
+                    <input type="number" id="viewportWidth" value="1920" oninput="convert()"> px
+                </div>
+                <div class="setting">
+                    <label>Viewport Height:</label>
+                    <input type="number" id="viewportHeight" value="1080" oninput="convert()"> px
+                </div>
+            </div>
+
+            <div class="converter-section">
+                <h3>Enter any value to convert</h3>
+                <div class="converter-grid">
+                    <div class="unit-card">
+                        <label>Pixels (px)</label>
+                        <input type="number" id="px" value="16" oninput="convertFrom('px')" step="any">
+                        <div class="hint">Absolute unit</div>
+                    </div>
+                    <div class="unit-card">
+                        <label>Em (em)</label>
+                        <input type="number" id="em" step="any" oninput="convertFrom('em')">
+                        <div class="hint">Relative to parent font</div>
+                    </div>
+                    <div class="unit-card">
+                        <label>Rem (rem)</label>
+                        <input type="number" id="rem" step="any" oninput="convertFrom('rem')">
+                        <div class="hint">Relative to root font</div>
+                    </div>
+                    <div class="unit-card">
+                        <label>Percent (%)</label>
+                        <input type="number" id="percent" step="any" oninput="convertFrom('percent')">
+                        <div class="hint">Relative to parent</div>
+                    </div>
+                    <div class="unit-card">
+                        <label>Viewport Width (vw)</label>
+                        <input type="number" id="vw" step="any" oninput="convertFrom('vw')">
+                        <div class="hint">1vw = 1% viewport width</div>
+                    </div>
+                    <div class="unit-card">
+                        <label>Viewport Height (vh)</label>
+                        <input type="number" id="vh" step="any" oninput="convertFrom('vh')">
+                        <div class="hint">1vh = 1% viewport height</div>
+                    </div>
+                    <div class="unit-card">
+                        <label>Points (pt)</label>
+                        <input type="number" id="pt" step="any" oninput="convertFrom('pt')">
+                        <div class="hint">1pt = 1/72 inch</div>
+                    </div>
+                    <div class="unit-card">
+                        <label>Centimeters (cm)</label>
+                        <input type="number" id="cm" step="any" oninput="convertFrom('cm')">
+                        <div class="hint">1cm ≈ 37.8px</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quick-reference">
+                <h4>Quick Reference</h4>
+                <table class="ref-table">
+                    <thead>
+                        <tr>
+                            <th>Unit</th>
+                            <th>Description</th>
+                            <th>Use Case</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>px</code></td>
+                            <td>Pixels - absolute unit</td>
+                            <td>Borders, shadows, fixed elements</td>
+                        </tr>
+                        <tr>
+                            <td><code>em</code></td>
+                            <td>Relative to parent element font size</td>
+                            <td>Component-scoped sizing</td>
+                        </tr>
+                        <tr>
+                            <td><code>rem</code></td>
+                            <td>Relative to root element font size</td>
+                            <td>Global sizing, accessibility</td>
+                        </tr>
+                        <tr>
+                            <td><code>%</code></td>
+                            <td>Percentage of parent</td>
+                            <td>Fluid layouts, widths</td>
+                        </tr>
+                        <tr>
+                            <td><code>vw</code></td>
+                            <td>1% of viewport width</td>
+                            <td>Responsive typography, full-width</td>
+                        </tr>
+                        <tr>
+                            <td><code>vh</code></td>
+                            <td>1% of viewport height</td>
+                            <td>Full-height sections, heroes</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="formula-section">
+                <h4>Conversion Formulas</h4>
+                <div class="formula">px to rem: px ÷ root-font-size = rem</div>
+                <div class="formula">px to em: px ÷ parent-font-size = em</div>
+                <div class="formula">px to vw: (px ÷ viewport-width) × 100 = vw</div>
+                <div class="formula">px to vh: (px ÷ viewport-height) × 100 = vh</div>
+            </div>
+
+            <div class="tools-promo">
+                <h4>More Developer Tools</h4>
+                <a href="css-minifier.html">CSS Minifier</a>
+                <a href="color-converter.html">Color Converter</a>
+                <a href="gradient-generator.html">Gradient Generator</a>
+                <a href="index.html">View All 40+ Tools</a>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h3>Need a Website Audit?</h3>
+            <p>Get professional accessibility and SEO analysis.</p>
+            <a href="https://fiverr.com/austron24" target="_blank">Get Professional Audit</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>CSS Unit Converter by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        let isConverting = false;
+
+        function getSettings() {
+            return {
+                rootSize: parseFloat(document.getElementById('rootSize').value) || 16,
+                parentSize: parseFloat(document.getElementById('parentSize').value) || 16,
+                viewportWidth: parseFloat(document.getElementById('viewportWidth').value) || 1920,
+                viewportHeight: parseFloat(document.getElementById('viewportHeight').value) || 1080
+            };
+        }
+
+        function convertFrom(unit) {
+            if (isConverting) return;
+            isConverting = true;
+
+            const settings = getSettings();
+            const value = parseFloat(document.getElementById(unit).value) || 0;
+
+            // First convert to px
+            let px;
+            switch (unit) {
+                case 'px': px = value; break;
+                case 'em': px = value * settings.parentSize; break;
+                case 'rem': px = value * settings.rootSize; break;
+                case 'percent': px = (value / 100) * settings.parentSize; break;
+                case 'vw': px = (value / 100) * settings.viewportWidth; break;
+                case 'vh': px = (value / 100) * settings.viewportHeight; break;
+                case 'pt': px = value * 1.333333; break;
+                case 'cm': px = value * 37.7952755906; break;
+            }
+
+            // Then convert px to all units
+            if (unit !== 'px') document.getElementById('px').value = round(px);
+            if (unit !== 'em') document.getElementById('em').value = round(px / settings.parentSize);
+            if (unit !== 'rem') document.getElementById('rem').value = round(px / settings.rootSize);
+            if (unit !== 'percent') document.getElementById('percent').value = round((px / settings.parentSize) * 100);
+            if (unit !== 'vw') document.getElementById('vw').value = round((px / settings.viewportWidth) * 100);
+            if (unit !== 'vh') document.getElementById('vh').value = round((px / settings.viewportHeight) * 100);
+            if (unit !== 'pt') document.getElementById('pt').value = round(px / 1.333333);
+            if (unit !== 'cm') document.getElementById('cm').value = round(px / 37.7952755906);
+
+            isConverting = false;
+        }
+
+        function convert() {
+            convertFrom('px');
+        }
+
+        function round(value) {
+            return Math.round(value * 10000) / 10000;
+        }
+
+        // Initialize
+        convert();
+    </script>
+</body>
+</html>

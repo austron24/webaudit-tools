@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Aspect Ratio Calculator - Calculate Image & Video Dimensions</title>
+    <meta name="description" content="Calculate aspect ratios for images and videos. Find dimensions, resize proportionally. Common ratios: 16:9, 4:3, 1:1. Free online aspect ratio calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0ea5e9 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 42px; margin-bottom: 15px; }
+        .subtitle { font-size: 18px; opacity: 0.9; }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            color: #1e293b;
+            margin-bottom: 30px;
+        }
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        @media (max-width: 700px) {
+            .calculator-grid { grid-template-columns: 1fr; }
+        }
+        .calc-section h3 {
+            margin-bottom: 20px;
+            color: #1e293b;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #64748b;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .input-row input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: center;
+        }
+        .input-row input:focus {
+            outline: none;
+            border-color: #0ea5e9;
+        }
+        .input-row span {
+            font-size: 20px;
+            color: #64748b;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .result-box .ratio {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .result-box .decimal {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        .presets-section {
+            margin-bottom: 30px;
+        }
+        .presets-section h4 {
+            margin-bottom: 15px;
+            color: #1e293b;
+        }
+        .presets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+        }
+        .preset {
+            background: #f8fafc;
+            padding: 15px 10px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        .preset:hover {
+            border-color: #0ea5e9;
+            transform: translateY(-2px);
+        }
+        .preset.active {
+            background: #e0f2fe;
+            border-color: #0ea5e9;
+        }
+        .preset-ratio {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0ea5e9;
+        }
+        .preset-name {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+        .preview-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+        .preview-section h4 {
+            margin-bottom: 15px;
+            color: #1e293b;
+        }
+        .preview-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .preview-box {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            max-width: 100%;
+            max-height: 200px;
+        }
+        .common-sizes {
+            margin-top: 30px;
+        }
+        .common-sizes h4 {
+            margin-bottom: 15px;
+            color: #1e293b;
+        }
+        .sizes-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .sizes-table th, .sizes-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .sizes-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .sizes-table td {
+            color: #64748b;
+        }
+        .copy-btn {
+            padding: 6px 12px;
+            background: #0ea5e9;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .tools-promo {
+            margin-top: 30px;
+            padding: 20px;
+            background: #e0f2fe;
+            border-radius: 12px;
+        }
+        .tools-promo h4 { color: #0ea5e9; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0284c7;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        .cta-section {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .cta-section a {
+            display: inline-block;
+            background: white;
+            color: #0ea5e9;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        footer { text-align: center; padding: 40px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #7dd3fc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Aspect Ratio Calculator</h1>
+            <p class="subtitle">Calculate and convert image & video dimensions</p>
+        </header>
+
+        <div class="card">
+            <div class="presets-section">
+                <h4>Common Aspect Ratios</h4>
+                <div class="presets-grid" id="presets"></div>
+            </div>
+
+            <div class="calculator-grid">
+                <div class="calc-section">
+                    <h3>Calculate Ratio</h3>
+                    <div class="input-group">
+                        <label>Original Dimensions</label>
+                        <div class="input-row">
+                            <input type="number" id="origWidth" placeholder="Width" value="1920" oninput="calculateRatio()">
+                            <span>×</span>
+                            <input type="number" id="origHeight" placeholder="Height" value="1080" oninput="calculateRatio()">
+                        </div>
+                    </div>
+                    <div class="result-box">
+                        <div class="ratio" id="ratioResult">16:9</div>
+                        <div class="decimal" id="decimalResult">1.778</div>
+                    </div>
+                </div>
+
+                <div class="calc-section">
+                    <h3>Resize Proportionally</h3>
+                    <div class="input-group">
+                        <label>New Width (px)</label>
+                        <input type="number" id="newWidth" placeholder="Enter width" value="1280" oninput="calculateNewHeight()" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px;">
+                    </div>
+                    <div class="input-group">
+                        <label>Calculated Height</label>
+                        <div class="input-row">
+                            <input type="number" id="newHeight" value="720" readonly style="background: #f8fafc;">
+                            <button class="copy-btn" onclick="copyDimensions()">Copy</button>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Or enter height to calculate width</label>
+                        <input type="number" id="targetHeight" placeholder="Enter height" oninput="calculateNewWidth()" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px;">
+                    </div>
+                    <div class="input-group">
+                        <label>Calculated Width</label>
+                        <input type="number" id="calcWidth" readonly style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; background: #f8fafc;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-section">
+                <h4>Visual Preview</h4>
+                <div class="preview-container">
+                    <div class="preview-box" id="previewBox">16:9</div>
+                </div>
+            </div>
+
+            <div class="common-sizes">
+                <h4>Common Screen Sizes</h4>
+                <table class="sizes-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Resolution</th>
+                            <th>Ratio</th>
+                            <th>Use</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>4K UHD</td><td>3840 × 2160</td><td>16:9</td><td>TV, Monitors</td></tr>
+                        <tr><td>1080p Full HD</td><td>1920 × 1080</td><td>16:9</td><td>TV, YouTube</td></tr>
+                        <tr><td>720p HD</td><td>1280 × 720</td><td>16:9</td><td>Web Video</td></tr>
+                        <tr><td>Instagram Square</td><td>1080 × 1080</td><td>1:1</td><td>Social Media</td></tr>
+                        <tr><td>Instagram Story</td><td>1080 × 1920</td><td>9:16</td><td>Stories, Reels</td></tr>
+                        <tr><td>Twitter Header</td><td>1500 × 500</td><td>3:1</td><td>Profile Banner</td></tr>
+                        <tr><td>Facebook Cover</td><td>820 × 312</td><td>2.63:1</td><td>Page Cover</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tools-promo">
+                <h4>More Tools</h4>
+                <a href="image-compressor.html">Image Compressor</a>
+                <a href="color-converter.html">Color Converter</a>
+                <a href="qr-generator.html">QR Code Generator</a>
+                <a href="index.html">View All 40+ Tools</a>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h3>Need a Website Audit?</h3>
+            <p>Get professional accessibility and SEO analysis.</p>
+            <a href="https://fiverr.com/austron24" target="_blank">Get Professional Audit</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Aspect Ratio Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const presets = [
+            { ratio: '1:1', name: 'Square', w: 1, h: 1 },
+            { ratio: '4:3', name: 'Classic', w: 4, h: 3 },
+            { ratio: '3:2', name: 'Photo', w: 3, h: 2 },
+            { ratio: '16:9', name: 'Widescreen', w: 16, h: 9 },
+            { ratio: '21:9', name: 'Ultrawide', w: 21, h: 9 },
+            { ratio: '9:16', name: 'Portrait', w: 9, h: 16 },
+            { ratio: '4:5', name: 'Instagram', w: 4, h: 5 },
+            { ratio: '2:3', name: 'Pinterest', w: 2, h: 3 }
+        ];
+
+        let currentRatio = { w: 16, h: 9 };
+
+        function init() {
+            renderPresets();
+            calculateRatio();
+        }
+
+        function renderPresets() {
+            const container = document.getElementById('presets');
+            container.innerHTML = presets.map((p, i) => `
+                <div class="preset ${p.ratio === '16:9' ? 'active' : ''}" onclick="applyPreset(${i})" data-index="${i}">
+                    <div class="preset-ratio">${p.ratio}</div>
+                    <div class="preset-name">${p.name}</div>
+                </div>
+            `).join('');
+        }
+
+        function applyPreset(index) {
+            const preset = presets[index];
+            currentRatio = { w: preset.w, h: preset.h };
+
+            // Update active state
+            document.querySelectorAll('.preset').forEach(p => p.classList.remove('active'));
+            document.querySelector(`[data-index="${index}"]`).classList.add('active');
+
+            // Set example dimensions
+            const baseWidth = 1920;
+            const height = Math.round(baseWidth * preset.h / preset.w);
+            document.getElementById('origWidth').value = baseWidth;
+            document.getElementById('origHeight').value = height;
+
+            calculateRatio();
+        }
+
+        function gcd(a, b) {
+            a = Math.abs(a);
+            b = Math.abs(b);
+            while (b) {
+                const t = b;
+                b = a % b;
+                a = t;
+            }
+            return a;
+        }
+
+        function calculateRatio() {
+            const width = parseInt(document.getElementById('origWidth').value) || 0;
+            const height = parseInt(document.getElementById('origHeight').value) || 0;
+
+            if (width && height) {
+                const divisor = gcd(width, height);
+                const ratioW = width / divisor;
+                const ratioH = height / divisor;
+
+                // Simplify if numbers are too large
+                let displayW = ratioW;
+                let displayH = ratioH;
+                if (ratioW > 100 || ratioH > 100) {
+                    // Use decimal approximation
+                    const decimal = width / height;
+                    for (const preset of presets) {
+                        if (Math.abs(preset.w / preset.h - decimal) < 0.01) {
+                            displayW = preset.w;
+                            displayH = preset.h;
+                            break;
+                        }
+                    }
+                    if (displayW > 100) {
+                        displayW = Math.round(decimal * 10) / 10;
+                        displayH = 1;
+                    }
+                }
+
+                currentRatio = { w: width, h: height };
+
+                document.getElementById('ratioResult').textContent = `${displayW}:${displayH}`;
+                document.getElementById('decimalResult').textContent = (width / height).toFixed(3);
+
+                updatePreview(width, height);
+                calculateNewHeight();
+            }
+        }
+
+        function calculateNewHeight() {
+            const origWidth = parseInt(document.getElementById('origWidth').value) || 1;
+            const origHeight = parseInt(document.getElementById('origHeight').value) || 1;
+            const newWidth = parseInt(document.getElementById('newWidth').value) || 0;
+
+            if (newWidth) {
+                const newHeight = Math.round(newWidth * origHeight / origWidth);
+                document.getElementById('newHeight').value = newHeight;
+            }
+        }
+
+        function calculateNewWidth() {
+            const origWidth = parseInt(document.getElementById('origWidth').value) || 1;
+            const origHeight = parseInt(document.getElementById('origHeight').value) || 1;
+            const targetHeight = parseInt(document.getElementById('targetHeight').value) || 0;
+
+            if (targetHeight) {
+                const calcWidth = Math.round(targetHeight * origWidth / origHeight);
+                document.getElementById('calcWidth').value = calcWidth;
+            }
+        }
+
+        function updatePreview(width, height) {
+            const preview = document.getElementById('previewBox');
+            const maxSize = 200;
+            const ratio = width / height;
+
+            let previewWidth, previewHeight;
+            if (ratio > 1) {
+                previewWidth = maxSize;
+                previewHeight = maxSize / ratio;
+            } else {
+                previewHeight = maxSize;
+                previewWidth = maxSize * ratio;
+            }
+
+            preview.style.width = previewWidth + 'px';
+            preview.style.height = previewHeight + 'px';
+
+            const divisor = gcd(width, height);
+            let displayRatio = `${width/divisor}:${height/divisor}`;
+            if (width/divisor > 100) {
+                displayRatio = ratio.toFixed(2) + ':1';
+            }
+            preview.textContent = displayRatio;
+        }
+
+        function copyDimensions() {
+            const width = document.getElementById('newWidth').value;
+            const height = document.getElementById('newHeight').value;
+            navigator.clipboard.writeText(`${width} × ${height}`).then(() => {
+                const btn = event.target;
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>
