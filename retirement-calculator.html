@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Retirement Calculator - How Much Do I Need to Retire?</title>
+    <meta name="description" content="Calculate how much you need to save for retirement. See if you're on track and how long your money will last. Free retirement planning calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #7c3aed 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .section-title {
+            color: #7c3aed;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 20px 0 15px;
+            text-transform: uppercase;
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 0;
+        }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #7c3aed;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .status {
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .status.on-track { background: #dcfce7; color: #16a34a; }
+        .status.behind { background: #fef2f2; color: #dc2626; }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .stat-item {
+            background: #f5f3ff;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .stat-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #7c3aed;
+        }
+        .stat-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #7c3aed; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #6d28d9;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #c4b5fd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Retirement Calculator</h1>
+            <p class="subtitle">Plan your path to financial freedom</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="section-title">Your Information</div>
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Current Age</label>
+                    <input type="number" id="currentAge" value="30" min="18" max="80" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Retirement Age</label>
+                    <input type="number" id="retireAge" value="65" min="40" max="90" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Current Savings ($)</label>
+                    <input type="number" id="savings" value="50000" min="0" step="1000" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Monthly Contribution ($)</label>
+                    <input type="number" id="monthly" value="1000" min="0" step="100" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="section-title">Retirement Goals</div>
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Monthly Income Needed ($)</label>
+                    <input type="number" id="income" value="5000" min="0" step="100" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Expected Return (%)</label>
+                    <input type="number" id="returnRate" value="7" min="0" max="20" step="0.5" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Projected Retirement Savings</div>
+                <div class="value" id="projected">$0</div>
+                <div class="sub" id="atAge">At age 65</div>
+            </div>
+
+            <div class="status on-track" id="status">
+                You're on track for retirement!
+            </div>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="value" id="needed">$0</div>
+                    <div class="label">Amount Needed</div>
+                </div>
+                <div class="stat-item">
+                    <div class="value" id="shortfall">$0</div>
+                    <div class="label">Surplus/Shortfall</div>
+                </div>
+                <div class="stat-item">
+                    <div class="value" id="yearsLast">0</div>
+                    <div class="label">Years Money Lasts</div>
+                </div>
+                <div class="stat-item">
+                    <div class="value" id="monthlyNeeded">$0</div>
+                    <div class="label">Monthly Needed to Hit Goal</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Financial Tools</h4>
+            <a href="savings-calculator.html">Savings Calculator</a>
+            <a href="compound-interest.html">Compound Interest</a>
+            <a href="inflation-calculator.html">Inflation Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Retirement Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const currentAge = parseInt(document.getElementById('currentAge').value) || 30;
+            const retireAge = parseInt(document.getElementById('retireAge').value) || 65;
+            const savings = parseFloat(document.getElementById('savings').value) || 0;
+            const monthly = parseFloat(document.getElementById('monthly').value) || 0;
+            const incomeNeeded = parseFloat(document.getElementById('income').value) || 0;
+            const returnRate = parseFloat(document.getElementById('returnRate').value) / 100 / 12;
+
+            const yearsToRetire = Math.max(0, retireAge - currentAge);
+            const months = yearsToRetire * 12;
+
+            // Calculate projected savings at retirement
+            let projected = savings;
+            for (let i = 0; i < months; i++) {
+                projected = projected * (1 + returnRate) + monthly;
+            }
+
+            // Amount needed (25x annual expenses - 4% rule)
+            const annualNeeded = incomeNeeded * 12;
+            const amountNeeded = annualNeeded * 25;
+
+            // Shortfall or surplus
+            const shortfall = projected - amountNeeded;
+
+            // How long money will last (simple calculation)
+            const yearsLast = projected > 0 ? Math.floor(projected / annualNeeded) : 0;
+
+            // Monthly needed to hit goal
+            let monthlyNeeded = 0;
+            if (amountNeeded > savings) {
+                // Simplified calculation
+                const futureNeed = amountNeeded;
+                const fvPrincipal = savings * Math.pow(1 + returnRate, months);
+                const remaining = futureNeed - fvPrincipal;
+                if (returnRate > 0 && months > 0) {
+                    monthlyNeeded = remaining / ((Math.pow(1 + returnRate, months) - 1) / returnRate);
+                } else {
+                    monthlyNeeded = remaining / months;
+                }
+                monthlyNeeded = Math.max(0, monthlyNeeded);
+            }
+
+            document.getElementById('projected').textContent = '$' + projected.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('atAge').textContent = `At age ${retireAge}`;
+            document.getElementById('needed').textContent = '$' + amountNeeded.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('shortfall').textContent = (shortfall >= 0 ? '+$' : '-$') + Math.abs(shortfall).toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('yearsLast').textContent = yearsLast + ' years';
+            document.getElementById('monthlyNeeded').textContent = '$' + monthlyNeeded.toLocaleString('en-US', {maximumFractionDigits: 0});
+
+            const statusEl = document.getElementById('status');
+            if (shortfall >= 0) {
+                statusEl.className = 'status on-track';
+                statusEl.textContent = "You're on track for retirement!";
+            } else {
+                statusEl.className = 'status behind';
+                statusEl.textContent = "You may need to save more or adjust goals";
+            }
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
