@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Paycheck Calculator - Salary & Hourly Pay Converter</title>
+    <meta name="description" content="Calculate your paycheck. Convert hourly to salary, annual to monthly. Estimate taxes and take-home pay. Free paycheck calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #059669 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .pay-type {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .pay-btn {
+            flex: 1;
+            padding: 12px;
+            border: 3px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .pay-btn.active {
+            border-color: #059669;
+            background: #dcfce7;
+            color: #059669;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+        .input-row input {
+            flex: 1;
+            padding: 14px;
+            border: 3px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 18px;
+            text-align: center;
+        }
+        .input-row input:focus {
+            outline: none;
+            border-color: #059669;
+        }
+        .input-row span {
+            display: flex;
+            align-items: center;
+            color: #64748b;
+        }
+        .results {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            border-radius: 16px;
+            padding: 25px;
+            color: white;
+            margin-top: 20px;
+        }
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .result-item {
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .result-item .value {
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .result-item .label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-top: 3px;
+        }
+        .tax-section {
+            background: #f0fdf4;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tax-section h4 {
+            color: #059669;
+            margin-bottom: 15px;
+        }
+        .tax-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #dcfce7;
+        }
+        .tax-row:last-child { border: none; }
+        .tax-row .label { color: #64748b; }
+        .tax-row .value { font-weight: 600; }
+        .tax-row.total { color: #059669; font-size: 18px; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #059669; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #047857;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #6ee7b7; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Paycheck Calculator</h1>
+            <p class="subtitle">Calculate your take-home pay</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="pay-type">
+                <button class="pay-btn active" onclick="setPayType('hourly')">Hourly</button>
+                <button class="pay-btn" onclick="setPayType('salary')">Salary</button>
+            </div>
+
+            <div id="hourlyInputs">
+                <div class="input-group">
+                    <label>Hourly Rate</label>
+                    <div class="input-row">
+                        <span>$</span>
+                        <input type="number" id="hourlyRate" value="25" step="0.01">
+                        <span>/hour</span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Hours Per Week</label>
+                    <input type="number" id="hoursWeek" value="40" style="width: 100%; padding: 14px; border: 3px solid #e2e8f0; border-radius: 10px; font-size: 18px; text-align: center;">
+                </div>
+            </div>
+
+            <div id="salaryInputs" style="display: none;">
+                <div class="input-group">
+                    <label>Annual Salary</label>
+                    <div class="input-row">
+                        <span>$</span>
+                        <input type="number" id="annualSalary" value="52000" step="1000">
+                        <span>/year</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Pay Frequency</label>
+                <select id="frequency" style="width: 100%; padding: 14px; border: 3px solid #e2e8f0; border-radius: 10px; font-size: 16px;">
+                    <option value="52">Weekly</option>
+                    <option value="26" selected>Bi-weekly (every 2 weeks)</option>
+                    <option value="24">Semi-monthly (twice a month)</option>
+                    <option value="12">Monthly</option>
+                </select>
+            </div>
+
+            <div class="results">
+                <div class="result-grid">
+                    <div class="result-item">
+                        <div class="value" id="hourlyEq">$25.00</div>
+                        <div class="label">Hourly</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="value" id="weeklyPay">$1,000</div>
+                        <div class="label">Weekly</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="value" id="biweeklyPay">$2,000</div>
+                        <div class="label">Bi-Weekly</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="value" id="monthlyPay">$4,333</div>
+                        <div class="label">Monthly</div>
+                    </div>
+                    <div class="result-item" style="grid-column: span 2;">
+                        <div class="value" id="annualPay">$52,000</div>
+                        <div class="label">Annual Gross</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tax-section">
+                <h4>Estimated Take-Home (Single, US)</h4>
+                <div class="tax-row">
+                    <span class="label">Gross Pay (per paycheck)</span>
+                    <span class="value" id="grossCheck">$2,000</span>
+                </div>
+                <div class="tax-row">
+                    <span class="label">Federal Tax (~12%)</span>
+                    <span class="value" id="fedTax">-$240</span>
+                </div>
+                <div class="tax-row">
+                    <span class="label">State Tax (~5%)</span>
+                    <span class="value" id="stateTax">-$100</span>
+                </div>
+                <div class="tax-row">
+                    <span class="label">Social Security (6.2%)</span>
+                    <span class="value" id="ssTax">-$124</span>
+                </div>
+                <div class="tax-row">
+                    <span class="label">Medicare (1.45%)</span>
+                    <span class="value" id="medTax">-$29</span>
+                </div>
+                <div class="tax-row total">
+                    <span class="label">Take-Home Pay</span>
+                    <span class="value" id="takeHome">$1,507</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Finance Tools</h4>
+            <a href="loan-calculator.html">Loan Calculator</a>
+            <a href="sales-tax.html">Sales Tax</a>
+            <a href="tip-calculator.html">Tip Calculator</a>
+            <a href="index.html">View All 60+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Paycheck Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        let payType = 'hourly';
+
+        function setPayType(type) {
+            payType = type;
+            document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('hourlyInputs').style.display = type === 'hourly' ? 'block' : 'none';
+            document.getElementById('salaryInputs').style.display = type === 'salary' ? 'block' : 'none';
+            calculate();
+        }
+
+        function calculate() {
+            let annualGross;
+
+            if (payType === 'hourly') {
+                const rate = parseFloat(document.getElementById('hourlyRate').value) || 0;
+                const hours = parseFloat(document.getElementById('hoursWeek').value) || 40;
+                annualGross = rate * hours * 52;
+            } else {
+                annualGross = parseFloat(document.getElementById('annualSalary').value) || 0;
+            }
+
+            const frequency = parseInt(document.getElementById('frequency').value);
+            const perPaycheck = annualGross / frequency;
+            const weekly = annualGross / 52;
+            const hourly = weekly / 40;
+
+            document.getElementById('hourlyEq').textContent = '$' + hourly.toFixed(2);
+            document.getElementById('weeklyPay').textContent = '$' + weekly.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('biweeklyPay').textContent = '$' + (annualGross / 26).toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('monthlyPay').textContent = '$' + (annualGross / 12).toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('annualPay').textContent = '$' + annualGross.toLocaleString('en-US', {maximumFractionDigits: 0});
+
+            // Tax estimates
+            const fedRate = annualGross > 89075 ? 0.22 : (annualGross > 41775 ? 0.12 : 0.10);
+            const stateRate = 0.05;
+            const ssRate = 0.062;
+            const medRate = 0.0145;
+
+            const fed = perPaycheck * fedRate;
+            const state = perPaycheck * stateRate;
+            const ss = perPaycheck * ssRate;
+            const med = perPaycheck * medRate;
+            const takeHome = perPaycheck - fed - state - ss - med;
+
+            document.getElementById('grossCheck').textContent = '$' + perPaycheck.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('fedTax').textContent = '-$' + fed.toFixed(0);
+            document.getElementById('stateTax').textContent = '-$' + state.toFixed(0);
+            document.getElementById('ssTax').textContent = '-$' + ss.toFixed(0);
+            document.getElementById('medTax').textContent = '-$' + med.toFixed(0);
+            document.getElementById('takeHome').textContent = '$' + takeHome.toLocaleString('en-US', {maximumFractionDigits: 0});
+        }
+
+        document.querySelectorAll('input, select').forEach(el => {
+            el.addEventListener('input', calculate);
+            el.addEventListener('change', calculate);
+        });
+
+        calculate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Square Footage Calculator - Area Calculator</title>
+    <meta name="description" content="Calculate square footage for rooms, floors, and yards. Multiple shapes supported. Free square footage and area calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0369a1 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .shape-tabs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+        .shape-tab {
+            padding: 12px 8px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+        }
+        .shape-tab.active {
+            border-color: #0369a1;
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+        .inputs-section {
+            margin-bottom: 25px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+        .input-row input {
+            flex: 1;
+            padding: 14px;
+            border: 3px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 18px;
+            text-align: center;
+        }
+        .input-row input:focus {
+            outline: none;
+            border-color: #0369a1;
+        }
+        .input-row select {
+            padding: 14px;
+            border: 3px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+        .results {
+            background: linear-gradient(135deg, #0369a1 0%, #0c4a6e 100%);
+            border-radius: 16px;
+            padding: 25px;
+            color: white;
+        }
+        .result-main {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .result-main .value { font-size: 48px; font-weight: bold; }
+        .result-main .unit { font-size: 18px; opacity: 0.9; }
+        .conversions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .conv-item {
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+        .conv-item .value { font-size: 18px; font-weight: 600; }
+        .conv-item .label { font-size: 12px; opacity: 0.8; margin-top: 3px; }
+        .cost-calc {
+            background: #f0f9ff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .cost-calc h4 { color: #0369a1; margin-bottom: 15px; }
+        .cost-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .cost-row input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+        }
+        .cost-result {
+            margin-top: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #0369a1;
+            text-align: center;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0369a1; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0c4a6e;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #7dd3fc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Square Footage Calculator</h1>
+            <p class="subtitle">Calculate area for any shape</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="shape-tabs">
+                <button class="shape-tab active" onclick="setShape('rectangle')">Rectangle</button>
+                <button class="shape-tab" onclick="setShape('circle')">Circle</button>
+                <button class="shape-tab" onclick="setShape('triangle')">Triangle</button>
+                <button class="shape-tab" onclick="setShape('trapezoid')">Trapezoid</button>
+            </div>
+
+            <div class="inputs-section" id="inputs">
+                <!-- Dynamic inputs -->
+            </div>
+
+            <div class="results">
+                <div class="result-main">
+                    <div class="value" id="sqft">0</div>
+                    <div class="unit">square feet</div>
+                </div>
+                <div class="conversions">
+                    <div class="conv-item">
+                        <div class="value" id="sqm">0</div>
+                        <div class="label">sq meters</div>
+                    </div>
+                    <div class="conv-item">
+                        <div class="value" id="sqyd">0</div>
+                        <div class="label">sq yards</div>
+                    </div>
+                    <div class="conv-item">
+                        <div class="value" id="acres">0</div>
+                        <div class="label">acres</div>
+                    </div>
+                    <div class="conv-item">
+                        <div class="value" id="sqin">0</div>
+                        <div class="label">sq inches</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cost-calc">
+                <h4>Cost Estimator</h4>
+                <div class="cost-row">
+                    <span>$</span>
+                    <input type="number" id="pricePerSqft" value="5" placeholder="Price per sq ft">
+                    <span>per sq ft</span>
+                </div>
+                <div class="cost-result">Total: $<span id="totalCost">0</span></div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Calculator Tools</h4>
+            <a href="unit-converter.html">Unit Converter</a>
+            <a href="percentage-calc.html">Percentage Calculator</a>
+            <a href="loan-calculator.html">Loan Calculator</a>
+            <a href="index.html">View All 60+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Square Footage Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        let currentShape = 'rectangle';
+
+        const shapeInputs = {
+            rectangle: `
+                <div class="input-group">
+                    <label>Length</label>
+                    <div class="input-row">
+                        <input type="number" id="length" value="20" oninput="calculate()">
+                        <select id="lengthUnit" onchange="calculate()">
+                            <option value="1">feet</option>
+                            <option value="12">inches</option>
+                            <option value="3.281">meters</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Width</label>
+                    <div class="input-row">
+                        <input type="number" id="width" value="15" oninput="calculate()">
+                        <select id="widthUnit" onchange="calculate()">
+                            <option value="1">feet</option>
+                            <option value="12">inches</option>
+                            <option value="3.281">meters</option>
+                        </select>
+                    </div>
+                </div>
+            `,
+            circle: `
+                <div class="input-group">
+                    <label>Radius (or Diameter ÷ 2)</label>
+                    <div class="input-row">
+                        <input type="number" id="radius" value="10" oninput="calculate()">
+                        <select id="radiusUnit" onchange="calculate()">
+                            <option value="1">feet</option>
+                            <option value="12">inches</option>
+                            <option value="3.281">meters</option>
+                        </select>
+                    </div>
+                </div>
+            `,
+            triangle: `
+                <div class="input-group">
+                    <label>Base</label>
+                    <div class="input-row">
+                        <input type="number" id="base" value="20" oninput="calculate()">
+                        <select id="baseUnit" onchange="calculate()">
+                            <option value="1">feet</option>
+                            <option value="12">inches</option>
+                            <option value="3.281">meters</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Height</label>
+                    <div class="input-row">
+                        <input type="number" id="height" value="10" oninput="calculate()">
+                        <select id="heightUnit" onchange="calculate()">
+                            <option value="1">feet</option>
+                            <option value="12">inches</option>
+                            <option value="3.281">meters</option>
+                        </select>
+                    </div>
+                </div>
+            `,
+            trapezoid: `
+                <div class="input-group">
+                    <label>Base 1 (top)</label>
+                    <div class="input-row">
+                        <input type="number" id="base1" value="10" oninput="calculate()">
+                        <select id="base1Unit" onchange="calculate()">
+                            <option value="1">feet</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Base 2 (bottom)</label>
+                    <div class="input-row">
+                        <input type="number" id="base2" value="20" oninput="calculate()">
+                        <select id="base2Unit" onchange="calculate()">
+                            <option value="1">feet</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Height</label>
+                    <div class="input-row">
+                        <input type="number" id="trapHeight" value="8" oninput="calculate()">
+                        <select id="trapHeightUnit" onchange="calculate()">
+                            <option value="1">feet</option>
+                        </select>
+                    </div>
+                </div>
+            `
+        };
+
+        function setShape(shape) {
+            currentShape = shape;
+            document.querySelectorAll('.shape-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('inputs').innerHTML = shapeInputs[shape];
+            calculate();
+        }
+
+        function getValue(id, unitId) {
+            const val = parseFloat(document.getElementById(id)?.value) || 0;
+            const unit = parseFloat(document.getElementById(unitId)?.value) || 1;
+            return val / unit;
+        }
+
+        function calculate() {
+            let sqft = 0;
+
+            switch (currentShape) {
+                case 'rectangle':
+                    sqft = getValue('length', 'lengthUnit') * getValue('width', 'widthUnit');
+                    break;
+                case 'circle':
+                    const r = getValue('radius', 'radiusUnit');
+                    sqft = Math.PI * r * r;
+                    break;
+                case 'triangle':
+                    sqft = 0.5 * getValue('base', 'baseUnit') * getValue('height', 'heightUnit');
+                    break;
+                case 'trapezoid':
+                    const b1 = getValue('base1', 'base1Unit');
+                    const b2 = getValue('base2', 'base2Unit');
+                    const h = getValue('trapHeight', 'trapHeightUnit');
+                    sqft = 0.5 * (b1 + b2) * h;
+                    break;
+            }
+
+            document.getElementById('sqft').textContent = sqft.toFixed(2);
+            document.getElementById('sqm').textContent = (sqft * 0.0929).toFixed(2);
+            document.getElementById('sqyd').textContent = (sqft / 9).toFixed(2);
+            document.getElementById('acres').textContent = (sqft / 43560).toFixed(4);
+            document.getElementById('sqin').textContent = (sqft * 144).toFixed(0);
+
+            const price = parseFloat(document.getElementById('pricePerSqft').value) || 0;
+            document.getElementById('totalCost').textContent = (sqft * price).toFixed(2);
+        }
+
+        document.getElementById('pricePerSqft').addEventListener('input', calculate);
+
+        setShape('rectangle');
+    </script>
+</body>
+</html>
