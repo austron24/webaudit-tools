@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shed Calculator - How Much Material Do I Need?</title>
+    <meta name="description" content="Calculate materials for building a shed. Estimate lumber, siding, and roofing. Free shed calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #78350f 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #78350f;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #78350f 0%, #451a03 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .break-item {
+            background: #fef3c7;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .break-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #78350f;
+        }
+        .break-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .materials {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .materials h4 {
+            color: #78350f;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .material-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .material-row:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #78350f; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #92400e;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fcd34d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Shed Calculator</h1>
+            <p class="subtitle">Estimate materials for your shed</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Shed Length (ft)</label>
+                    <input type="number" id="length" value="12" min="4" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Shed Width (ft)</label>
+                    <input type="number" id="width" value="10" min="4" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Wall Height (ft)</label>
+                    <input type="number" id="height" value="8" min="6" step="0.5" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Roof Pitch</label>
+                    <select id="pitch" onchange="calculate()">
+                        <option value="1.08">4/12 (Low)</option>
+                        <option value="1.12" selected>5/12 (Standard)</option>
+                        <option value="1.17">6/12 (Medium)</option>
+                        <option value="1.25">8/12 (Steep)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Number of Doors</label>
+                    <input type="number" id="doors" value="1" min="1" max="4" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Number of Windows</label>
+                    <input type="number" id="windows" value="2" min="0" max="8" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Total Cost</div>
+                <div class="value" id="totalCost">$2,500</div>
+                <div class="sub" id="sqFt">120 sq ft floor area</div>
+            </div>
+
+            <div class="breakdown">
+                <div class="break-item">
+                    <div class="value" id="lumberCost">$800</div>
+                    <div class="label">Framing Lumber</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="sidingCost">$400</div>
+                    <div class="label">Siding</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="roofingCost">$350</div>
+                    <div class="label">Roofing</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="floorCost">$250</div>
+                    <div class="label">Floor/Foundation</div>
+                </div>
+            </div>
+
+            <div class="materials">
+                <h4>Materials List</h4>
+                <div class="material-row">
+                    <span>2x4 Studs (8 ft)</span>
+                    <span id="studs">48</span>
+                </div>
+                <div class="material-row">
+                    <span>2x6 Rafters/Joists</span>
+                    <span id="rafters">24</span>
+                </div>
+                <div class="material-row">
+                    <span>Plywood Sheets (4x8)</span>
+                    <span id="plywood">20</span>
+                </div>
+                <div class="material-row">
+                    <span>Siding Sheets/Panels</span>
+                    <span id="siding">12</span>
+                </div>
+                <div class="material-row">
+                    <span>Roofing Shingles (bundles)</span>
+                    <span id="shingles">6</span>
+                </div>
+                <div class="material-row">
+                    <span>Concrete Blocks (for pier)</span>
+                    <span id="blocks">12</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Construction Tools</h4>
+            <a href="deck-calculator.html">Deck Calculator</a>
+            <a href="roofing-calculator.html">Roofing Calculator</a>
+            <a href="concrete-calculator.html">Concrete Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Shed Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const length = parseFloat(document.getElementById('length').value) || 12;
+            const width = parseFloat(document.getElementById('width').value) || 10;
+            const height = parseFloat(document.getElementById('height').value) || 8;
+            const pitch = parseFloat(document.getElementById('pitch').value) || 1.12;
+            const doors = parseInt(document.getElementById('doors').value) || 1;
+            const windows = parseInt(document.getElementById('windows').value) || 2;
+
+            const floorArea = length * width;
+            const perimeter = 2 * (length + width);
+
+            // Wall area
+            const wallArea = perimeter * height;
+            const openingsArea = (doors * 21) + (windows * 12);
+            const netWallArea = wallArea - openingsArea;
+
+            // Roof area
+            const roofArea = length * width * pitch;
+
+            // Framing: studs every 16"
+            const studs = Math.ceil(perimeter * 12 / 16) + 10; // +10 for corners, headers
+
+            // Floor/roof joists every 16"
+            const joists = Math.ceil(length * 12 / 16) * 2;
+
+            // Rafters
+            const rafters = Math.ceil(length * 12 / 24) * 2 + 4;
+
+            // Plywood: floor + roof + wall sheathing
+            const floorSheets = Math.ceil(floorArea / 32);
+            const roofSheets = Math.ceil(roofArea / 32);
+            const wallSheets = Math.ceil(netWallArea / 32);
+            const totalPlywood = floorSheets + roofSheets + wallSheets;
+
+            // Siding panels
+            const sidingPanels = Math.ceil(netWallArea / 32);
+
+            // Roofing: 3 bundles per 100 sq ft
+            const shingles = Math.ceil(roofArea / 100 * 3);
+
+            // Concrete blocks for pier foundation
+            const blocks = Math.ceil(perimeter / 4);
+
+            // Cost estimates
+            const lumberCost = (studs * 5) + (joists * 8) + (rafters * 10);
+            const plywoodCost = totalPlywood * 40;
+            const sidingCost = sidingPanels * 35;
+            const roofingCost = shingles * 35 + 100; // +100 for underlayment
+            const floorCost = blocks * 8 + 150; // blocks + hardware
+            const hardwareCost = 200; // nails, screws, hinges
+            const doorWindowCost = (doors * 150) + (windows * 100);
+
+            const totalCost = lumberCost + plywoodCost + sidingCost + roofingCost + floorCost + hardwareCost + doorWindowCost;
+
+            document.getElementById('sqFt').textContent = floorArea + ' sq ft floor area';
+            document.getElementById('totalCost').textContent = '$' + Math.round(totalCost).toLocaleString();
+            document.getElementById('lumberCost').textContent = '$' + Math.round(lumberCost + plywoodCost);
+            document.getElementById('sidingCost').textContent = '$' + Math.round(sidingCost);
+            document.getElementById('roofingCost').textContent = '$' + Math.round(roofingCost);
+            document.getElementById('floorCost').textContent = '$' + Math.round(floorCost);
+            document.getElementById('studs').textContent = studs;
+            document.getElementById('rafters').textContent = joists + rafters;
+            document.getElementById('plywood').textContent = totalPlywood;
+            document.getElementById('siding').textContent = sidingPanels;
+            document.getElementById('shingles').textContent = shingles;
+            document.getElementById('blocks').textContent = blocks;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

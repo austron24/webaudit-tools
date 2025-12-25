@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stair Calculator - Rise and Run Calculator</title>
+    <meta name="description" content="Calculate stair dimensions. Find the perfect rise and run for your stairs. Free stair calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #6366f1 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .break-item {
+            background: #eef2ff;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .break-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #4f46e5;
+        }
+        .break-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .code-check {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .code-check h4 {
+            color: #4f46e5;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .check-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .check-row:last-child { border: none; }
+        .check-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .check-status.pass { background: #dcfce7; color: #16a34a; }
+        .check-status.fail { background: #fee2e2; color: #dc2626; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #4f46e5; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #6366f1;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #c7d2fe; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Stair Calculator</h1>
+            <p class="subtitle">Calculate rise and run for your stairs</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Total Rise (inches)</label>
+                    <input type="number" id="totalRise" value="108" min="0" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Available Run (inches)</label>
+                    <input type="number" id="totalRun" value="144" min="0" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group full">
+                    <label>Target Rise Height (inches)</label>
+                    <select id="targetRise" onchange="calculate()">
+                        <option value="7">7" (Comfortable)</option>
+                        <option value="7.5" selected>7.5" (Standard)</option>
+                        <option value="7.75">7.75" (Maximum IRC)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Tread Width (inches)</label>
+                    <input type="number" id="treadWidth" value="36" min="24" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Stringer Width (inches)</label>
+                    <input type="number" id="stringerWidth" value="12" min="10" step="1" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Number of Steps</div>
+                <div class="value" id="steps">14</div>
+                <div class="sub" id="stepsNote">+1 riser (landing counts as last tread)</div>
+            </div>
+
+            <div class="breakdown">
+                <div class="break-item">
+                    <div class="value" id="riseHeight">7.71"</div>
+                    <div class="label">Each Rise</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="runDepth">10.3"</div>
+                    <div class="label">Each Run</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="angle">37°</div>
+                    <div class="label">Stair Angle</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="stringerLength">15.3 ft</div>
+                    <div class="label">Stringer Length</div>
+                </div>
+            </div>
+
+            <div class="code-check">
+                <h4>Building Code Check (IRC)</h4>
+                <div class="check-row">
+                    <span>Rise Height (max 7.75")</span>
+                    <span class="check-status" id="riseCheck">PASS</span>
+                </div>
+                <div class="check-row">
+                    <span>Run Depth (min 10")</span>
+                    <span class="check-status" id="runCheck">PASS</span>
+                </div>
+                <div class="check-row">
+                    <span>Tread Width (min 36")</span>
+                    <span class="check-status" id="widthCheck">PASS</span>
+                </div>
+                <div class="check-row">
+                    <span>Rise + Run Rule (17-18")</span>
+                    <span class="check-status" id="comfortCheck">PASS</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Construction Tools</h4>
+            <a href="deck-calculator.html">Deck Calculator</a>
+            <a href="concrete-calculator.html">Concrete Calculator</a>
+            <a href="square-footage.html">Square Footage</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Stair Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const totalRise = parseFloat(document.getElementById('totalRise').value) || 0;
+            const totalRun = parseFloat(document.getElementById('totalRun').value) || 0;
+            const targetRise = parseFloat(document.getElementById('targetRise').value) || 7.5;
+            const treadWidth = parseFloat(document.getElementById('treadWidth').value) || 36;
+
+            // Calculate number of risers
+            const risers = Math.round(totalRise / targetRise);
+            const steps = risers - 1; // One less tread than risers
+
+            // Calculate actual rise per step
+            const riseHeight = totalRise / risers;
+
+            // Calculate run per step
+            const runDepth = totalRun / steps;
+
+            // Calculate angle
+            const angleRad = Math.atan(totalRise / totalRun);
+            const angle = Math.round(angleRad * 180 / Math.PI);
+
+            // Stringer length
+            const stringerLength = Math.sqrt(totalRise * totalRise + totalRun * totalRun) / 12;
+
+            // Comfort rule: rise + run should be 17-18 inches
+            const comfortSum = riseHeight + runDepth;
+
+            document.getElementById('steps').textContent = steps;
+            document.getElementById('riseHeight').textContent = riseHeight.toFixed(2) + '"';
+            document.getElementById('runDepth').textContent = runDepth.toFixed(1) + '"';
+            document.getElementById('angle').textContent = angle + '°';
+            document.getElementById('stringerLength').textContent = stringerLength.toFixed(1) + ' ft';
+
+            // Code checks
+            const risePass = riseHeight <= 7.75;
+            const runPass = runDepth >= 10;
+            const widthPass = treadWidth >= 36;
+            const comfortPass = comfortSum >= 17 && comfortSum <= 18;
+
+            document.getElementById('riseCheck').textContent = risePass ? 'PASS' : 'FAIL';
+            document.getElementById('riseCheck').className = 'check-status ' + (risePass ? 'pass' : 'fail');
+
+            document.getElementById('runCheck').textContent = runPass ? 'PASS' : 'FAIL';
+            document.getElementById('runCheck').className = 'check-status ' + (runPass ? 'pass' : 'fail');
+
+            document.getElementById('widthCheck').textContent = widthPass ? 'PASS' : 'FAIL';
+            document.getElementById('widthCheck').className = 'check-status ' + (widthPass ? 'pass' : 'fail');
+
+            document.getElementById('comfortCheck').textContent = comfortPass ? 'PASS' : 'FAIL';
+            document.getElementById('comfortCheck').className = 'check-status ' + (comfortPass ? 'pass' : 'fail');
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

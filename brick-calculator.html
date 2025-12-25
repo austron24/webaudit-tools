@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brick Calculator - How Many Bricks Do I Need?</title>
+    <meta name="description" content="Calculate how many bricks you need for your wall or patio. Estimate bricks and mortar. Free brick calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #c2410c 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #c2410c;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #c2410c 0%, #9a3412 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .break-item {
+            background: #fff7ed;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .break-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #c2410c;
+        }
+        .break-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .materials {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .materials h4 {
+            color: #c2410c;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .material-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .material-row:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #c2410c; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #ea580c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fdba74; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Brick Calculator</h1>
+            <p class="subtitle">How many bricks do you need?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Wall Length (ft)</label>
+                    <input type="number" id="length" value="20" min="0" step="0.5" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Wall Height (ft)</label>
+                    <input type="number" id="height" value="8" min="0" step="0.5" oninput="calculate()">
+                </div>
+                <div class="input-group full">
+                    <label>Brick Size</label>
+                    <select id="brickSize" onchange="calculate()">
+                        <option value="7" selected>Standard (8" x 2.25" x 4")</option>
+                        <option value="5">Modular (7.625" x 2.25" x 3.625")</option>
+                        <option value="4.5">King Size (9.625" x 2.75" x 2.75")</option>
+                        <option value="3">Queen Size (7.625" x 2.75" x 2.75")</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Waste Factor (%)</label>
+                    <input type="number" id="waste" value="10" min="5" max="20" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Price per Brick ($)</label>
+                    <input type="number" id="price" value="0.75" min="0" step="0.05" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Bricks Needed</div>
+                <div class="value" id="bricks">1,232</div>
+                <div class="sub" id="bricksNote">Including 10% waste</div>
+            </div>
+
+            <div class="breakdown">
+                <div class="break-item">
+                    <div class="value" id="wallArea">160 ft²</div>
+                    <div class="label">Wall Area</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="bricksPerSqFt">7</div>
+                    <div class="label">Bricks per Sq Ft</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="brickCost">$924</div>
+                    <div class="label">Brick Cost</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="totalCost">$1,200</div>
+                    <div class="label">Est. Total</div>
+                </div>
+            </div>
+
+            <div class="materials">
+                <h4>Mortar & Supplies</h4>
+                <div class="material-row">
+                    <span>Mortar Mix (80 lb bags)</span>
+                    <span id="mortar">24</span>
+                </div>
+                <div class="material-row">
+                    <span>Sand (cubic yards)</span>
+                    <span id="sand">0.5</span>
+                </div>
+                <div class="material-row">
+                    <span>Wall Ties (if needed)</span>
+                    <span id="ties">48</span>
+                </div>
+                <div class="material-row">
+                    <span>Mortar Cost (~$8/bag)</span>
+                    <span id="mortarCost">$192</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Construction Tools</h4>
+            <a href="concrete-calculator.html">Concrete Calculator</a>
+            <a href="drywall-calculator.html">Drywall Calculator</a>
+            <a href="square-footage.html">Square Footage</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Brick Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const length = parseFloat(document.getElementById('length').value) || 0;
+            const height = parseFloat(document.getElementById('height').value) || 0;
+            const bricksPerSqFt = parseFloat(document.getElementById('brickSize').value) || 7;
+            const waste = parseFloat(document.getElementById('waste').value) || 10;
+            const pricePerBrick = parseFloat(document.getElementById('price').value) || 0.75;
+
+            const wallArea = length * height;
+            const baseBricks = wallArea * bricksPerSqFt;
+            const bricks = Math.ceil(baseBricks * (1 + waste / 100));
+
+            // Mortar: ~7 bags per 100 sq ft
+            const mortar = Math.ceil(wallArea / 100 * 7);
+
+            // Sand: ~0.5 cubic yard per 200 sq ft
+            const sand = (wallArea / 200 * 0.5).toFixed(1);
+
+            // Wall ties: 1 per 3 sq ft for veneer
+            const ties = Math.ceil(wallArea / 3);
+
+            // Costs
+            const brickCost = bricks * pricePerBrick;
+            const mortarCost = mortar * 8;
+            const totalCost = brickCost + mortarCost;
+
+            document.getElementById('wallArea').textContent = Math.round(wallArea) + ' ft²';
+            document.getElementById('bricksPerSqFt').textContent = bricksPerSqFt;
+            document.getElementById('bricks').textContent = bricks.toLocaleString();
+            document.getElementById('bricksNote').textContent = 'Including ' + waste + '% waste';
+            document.getElementById('brickCost').textContent = '$' + Math.round(brickCost).toLocaleString();
+            document.getElementById('totalCost').textContent = '$' + Math.round(totalCost).toLocaleString();
+            document.getElementById('mortar').textContent = mortar;
+            document.getElementById('sand').textContent = sand;
+            document.getElementById('ties').textContent = ties;
+            document.getElementById('mortarCost').textContent = '$' + mortarCost;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

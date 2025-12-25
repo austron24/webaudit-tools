@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paver Calculator - How Many Pavers Do I Need?</title>
+    <meta name="description" content="Calculate how many pavers you need for your patio or walkway. Estimate pavers and base material. Free paver calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #991b1b 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #991b1b;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .break-item {
+            background: #fef2f2;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .break-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #991b1b;
+        }
+        .break-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .materials {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .materials h4 {
+            color: #991b1b;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .material-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .material-row:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #991b1b; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #b91c1c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fca5a5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Paver Calculator</h1>
+            <p class="subtitle">How many pavers do you need?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Area Length (ft)</label>
+                    <input type="number" id="length" value="12" min="0" step="0.5" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Area Width (ft)</label>
+                    <input type="number" id="width" value="10" min="0" step="0.5" oninput="calculate()">
+                </div>
+                <div class="input-group full">
+                    <label>Paver Size</label>
+                    <select id="paverSize" onchange="calculate()">
+                        <option value="0.25">4" x 8" (0.22 sq ft)</option>
+                        <option value="0.44" selected>6" x 9" (0.38 sq ft)</option>
+                        <option value="0.56">8" x 8" (0.44 sq ft)</option>
+                        <option value="1">12" x 12" (1 sq ft)</option>
+                        <option value="2.25">18" x 18" (2.25 sq ft)</option>
+                        <option value="4">24" x 24" (4 sq ft)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Waste Factor (%)</label>
+                    <input type="number" id="waste" value="10" min="5" max="20" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Price per Paver ($)</label>
+                    <input type="number" id="price" value="2" min="0" step="0.25" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Base Depth (inches)</label>
+                    <select id="baseDepth" onchange="calculate()">
+                        <option value="4" selected>4" (walkways)</option>
+                        <option value="6">6" (patios)</option>
+                        <option value="8">8" (driveways)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Pavers Needed</div>
+                <div class="value" id="pavers">300</div>
+                <div class="sub" id="paversNote">Including 10% waste</div>
+            </div>
+
+            <div class="breakdown">
+                <div class="break-item">
+                    <div class="value" id="area">120 ft²</div>
+                    <div class="label">Total Area</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="paversPerSqFt">2.3</div>
+                    <div class="label">Pavers per Sq Ft</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="paverCost">$600</div>
+                    <div class="label">Paver Cost</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="totalCost">$850</div>
+                    <div class="label">Est. Total</div>
+                </div>
+            </div>
+
+            <div class="materials">
+                <h4>Base Materials</h4>
+                <div class="material-row">
+                    <span>Gravel Base (tons)</span>
+                    <span id="gravel">2.5</span>
+                </div>
+                <div class="material-row">
+                    <span>Sand Bedding (tons)</span>
+                    <span id="sand">0.7</span>
+                </div>
+                <div class="material-row">
+                    <span>Edge Restraint (linear ft)</span>
+                    <span id="edging">44</span>
+                </div>
+                <div class="material-row">
+                    <span>Polymeric Sand (bags)</span>
+                    <span id="polySand">3</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Landscaping Tools</h4>
+            <a href="gravel-calculator.html">Gravel Calculator</a>
+            <a href="concrete-calculator.html">Concrete Calculator</a>
+            <a href="square-footage.html">Square Footage</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Paver Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const length = parseFloat(document.getElementById('length').value) || 0;
+            const width = parseFloat(document.getElementById('width').value) || 0;
+            const paverSqFt = parseFloat(document.getElementById('paverSize').value) || 0.44;
+            const waste = parseFloat(document.getElementById('waste').value) || 10;
+            const pricePerPaver = parseFloat(document.getElementById('price').value) || 2;
+            const baseDepth = parseFloat(document.getElementById('baseDepth').value) || 4;
+
+            const area = length * width;
+            const paversPerSqFt = 1 / paverSqFt;
+            const basePavers = area * paversPerSqFt;
+            const pavers = Math.ceil(basePavers * (1 + waste / 100));
+
+            // Perimeter for edging
+            const perimeter = 2 * (length + width);
+
+            // Gravel base: cubic yards, convert to tons (~1.4 tons/yd)
+            const gravelCubicFt = area * (baseDepth / 12);
+            const gravelTons = (gravelCubicFt / 27) * 1.4;
+
+            // Sand bedding: 1" layer
+            const sandCubicFt = area * (1 / 12);
+            const sandTons = (sandCubicFt / 27) * 1.4;
+
+            // Polymeric sand: 1 bag per 40 sq ft
+            const polySand = Math.ceil(area / 40);
+
+            // Costs
+            const paverCost = pavers * pricePerPaver;
+            const baseCost = (gravelTons * 35) + (sandTons * 40) + (polySand * 20);
+            const totalCost = paverCost + baseCost;
+
+            document.getElementById('area').textContent = Math.round(area) + ' ft²';
+            document.getElementById('paversPerSqFt').textContent = paversPerSqFt.toFixed(1);
+            document.getElementById('pavers').textContent = pavers.toLocaleString();
+            document.getElementById('paversNote').textContent = 'Including ' + waste + '% waste';
+            document.getElementById('paverCost').textContent = '$' + Math.round(paverCost).toLocaleString();
+            document.getElementById('totalCost').textContent = '$' + Math.round(totalCost).toLocaleString();
+            document.getElementById('gravel').textContent = gravelTons.toFixed(1);
+            document.getElementById('sand').textContent = sandTons.toFixed(1);
+            document.getElementById('edging').textContent = Math.round(perimeter);
+            document.getElementById('polySand').textContent = polySand;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
