@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Emoji Picker - Copy Emojis for Social Media</title>
+    <meta name="description" content="Browse and copy emojis easily. Search emojis by name. Perfect for social media, messaging, and websites. Free online emoji picker tool.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #fbbf24 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 42px; margin-bottom: 15px; }
+        .subtitle { font-size: 18px; opacity: 0.9; }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            color: #1e293b;
+            margin-bottom: 30px;
+        }
+        .search-section {
+            margin-bottom: 30px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: #fbbf24;
+        }
+        .categories {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .category-btn {
+            padding: 8px 16px;
+            border: none;
+            background: #f8fafc;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .category-btn:hover {
+            background: #fef3c7;
+        }
+        .category-btn.active {
+            background: #fbbf24;
+            color: white;
+        }
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            gap: 5px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        .emoji-btn {
+            font-size: 28px;
+            padding: 10px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .emoji-btn:hover {
+            background: #fef3c7;
+            transform: scale(1.2);
+        }
+        .selected-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #fef3c7;
+            border-radius: 12px;
+        }
+        .selected-section h4 {
+            margin-bottom: 15px;
+            color: #92400e;
+        }
+        .selected-display {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .selected-emoji {
+            font-size: 48px;
+            min-width: 60px;
+            text-align: center;
+        }
+        .selected-info {
+            flex: 1;
+        }
+        .selected-name {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+        .selected-code {
+            font-family: monospace;
+            font-size: 13px;
+            color: #64748b;
+        }
+        .copy-btn {
+            padding: 10px 20px;
+            background: #fbbf24;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .copy-btn:hover {
+            background: #f59e0b;
+        }
+        .recent-section {
+            margin-top: 30px;
+        }
+        .recent-section h4 {
+            margin-bottom: 15px;
+            color: #1e293b;
+        }
+        .recent-grid {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .recent-emoji {
+            font-size: 24px;
+            padding: 8px;
+            background: #f8fafc;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .recent-emoji:hover {
+            background: #fef3c7;
+        }
+        .tools-promo {
+            margin-top: 30px;
+            padding: 20px;
+            background: #fef3c7;
+            border-radius: 12px;
+        }
+        .tools-promo h4 { color: #92400e; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #b45309;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        .cta-section {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .cta-section a {
+            display: inline-block;
+            background: white;
+            color: #f59e0b;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        footer { text-align: center; padding: 40px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fde68a; }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            display: none;
+        }
+        .toast.show { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Emoji Picker</h1>
+            <p class="subtitle">Browse and copy emojis instantly</p>
+        </header>
+
+        <div class="card">
+            <div class="search-section">
+                <input type="text" class="search-input" id="search" placeholder="Search emojis..." oninput="searchEmojis()">
+            </div>
+
+            <div class="categories" id="categories"></div>
+
+            <div class="emoji-grid" id="emojiGrid"></div>
+
+            <div class="selected-section" id="selectedSection" style="display: none;">
+                <h4>Selected Emoji</h4>
+                <div class="selected-display">
+                    <div class="selected-emoji" id="selectedEmoji"></div>
+                    <div class="selected-info">
+                        <div class="selected-name" id="selectedName"></div>
+                        <div class="selected-code" id="selectedCode"></div>
+                    </div>
+                    <button class="copy-btn" onclick="copySelected()">Copy</button>
+                </div>
+            </div>
+
+            <div class="recent-section">
+                <h4>Recently Used</h4>
+                <div class="recent-grid" id="recentGrid">
+                    <span style="color: #94a3b8; font-size: 14px;">Click an emoji to add it here</span>
+                </div>
+            </div>
+
+            <div class="tools-promo">
+                <h4>More Tools</h4>
+                <a href="word-counter.html">Word Counter</a>
+                <a href="case-converter.html">Case Converter</a>
+                <a href="lorem-ipsum.html">Lorem Ipsum Generator</a>
+                <a href="index.html">View All 45+ Tools</a>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h3>Need a Website Audit?</h3>
+            <p>Get professional accessibility and SEO analysis.</p>
+            <a href="https://fiverr.com/austron24" target="_blank">Get Professional Audit</a>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Copied!</div>
+
+    <footer>
+        <p>Emoji Picker by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const emojiData = {
+            'Smileys': ['😀','😃','😄','😁','😆','😅','🤣','😂','🙂','😊','😇','🥰','😍','🤩','😘','😗','😚','😋','😛','😜','🤪','😝','🤑','🤗','🤭','🤫','🤔','🤐','🤨','😐','😑','😶','😏','😒','🙄','😬','🤥','😌','😔','😪','🤤','😴','😷','🤒','🤕','🤢','🤮','🤧','🥵','🥶','🥴','😵','🤯','🤠','🥳','🥸','😎','🤓','🧐','😕','😟','🙁','☹️','😮','😯','😲','😳','🥺','😦','😧','😨','😰','😥','😢','😭','😱','😖','😣','😞','😓','😩','😫','🥱','😤','😡','😠','🤬','😈','👿','💀','☠️','💩','🤡','👹','👺','👻','👽','👾','🤖'],
+            'Gestures': ['👋','🤚','🖐️','✋','🖖','👌','🤌','🤏','✌️','🤞','🤟','🤘','🤙','👈','👉','👆','🖕','👇','☝️','👍','👎','✊','👊','🤛','🤜','👏','🙌','👐','🤲','🤝','🙏','✍️','💪','🦾','🦿','🦵','🦶','👂','🦻','👃','🧠','🫀','🫁','🦷','🦴','👀','👁️','👅','👄'],
+            'People': ['👶','🧒','👦','👧','🧑','👱','👨','🧔','👩','🧓','👴','👵','🙍','🙎','🙅','🙆','💁','🙋','🧏','🙇','🤦','🤷','👮','🕵️','💂','🥷','👷','🤴','👸','👳','👲','🧕','🤵','👰','🤰','🤱','👼','🎅','🤶','🦸','🦹','🧙','🧚','🧛','🧜','🧝','🧞','🧟','💆','💇','🚶','🧍','🧎','🏃','💃','🕺','🕴️','👯','🧖','🧗','🤺','🏇','⛷️','🏂','🏌️','🏄','🚣','🏊','⛹️','🏋️','🚴','🚵','🤸','🤼','🤽','🤾','🤹','🧘'],
+            'Animals': ['🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐻‍❄️','🐨','🐯','🦁','🐮','🐷','🐽','🐸','🐵','🙈','🙉','🙊','🐒','🐔','🐧','🐦','🐤','🐣','🐥','🦆','🦅','🦉','🦇','🐺','🐗','🐴','🦄','🐝','🪱','🐛','🦋','🐌','🐞','🐜','🪰','🪲','🪳','🦟','🦗','🕷️','🕸️','🦂','🐢','🐍','🦎','🦖','🦕','🐙','🦑','🦐','🦞','🦀','🐡','🐠','🐟','🐬','🐳','🐋','🦈','🐊','🐅','🐆','🦓','🦍','🦧','🦣','🐘','🦛','🦏','🐪','🐫','🦒','🦘','🦬','🐃','🐂','🐄','🐎','🐖','🐏','🐑','🦙','🐐','🦌','🐕','🐩','🦮','🐕‍🦺','🐈','🐈‍⬛','🪶','🐓','🦃','🦤','🦚','🦜','🦢','🦩','🕊️','🐇','🦝','🦨','🦡','🦫','🦦','🦥','🐁','🐀','🐿️','🦔'],
+            'Food': ['🍏','🍎','🍐','🍊','🍋','🍌','🍉','🍇','🍓','🫐','🍈','🍒','🍑','🥭','🍍','🥥','🥝','🍅','🍆','🥑','🥦','🥬','🥒','🌶️','🫑','🌽','🥕','🫒','🧄','🧅','🥔','🍠','🥐','🥖','🍞','🥨','🥯','🧀','🥚','🍳','🧈','🥞','🧇','🥓','🥩','🍗','🍖','🦴','🌭','🍔','🍟','🍕','🫓','🥪','🥙','🧆','🌮','🌯','🫔','🥗','🥘','🫕','🥫','🍝','🍜','🍲','🍛','🍣','🍱','🥟','🦪','🍤','🍙','🍚','🍘','🍥','🥠','🥮','🍢','🍡','🍧','🍨','🍦','🥧','🧁','🍰','🎂','🍮','🍭','🍬','🍫','🍿','🍩','🍪','🌰','🥜','🍯','🥛','🍼','🫖','☕','🍵','🧃','🥤','🧋','🍶','🍺','🍻','🥂','🍷','🥃','🍸','🍹','🧉','🍾','🧊','🥄','🍴','🍽️','🥣','🥡','🥢','🧂'],
+            'Activities': ['⚽','🏀','🏈','⚾','🥎','🎾','🏐','🏉','🥏','🎱','🪀','🏓','🏸','🏒','🏑','🥍','🏏','🪃','🥅','⛳','🪁','🏹','🎣','🤿','🥊','🥋','🎽','🛹','🛼','🛷','⛸️','🥌','🎿','⛷️','🏂','🪂','🏋️','🤼','🤸','⛹️','🤺','🤾','🏌️','🏇','⛷️','🏂','🏄','🚣','🏊','🚴','🚵','🎖️','🏆','🥇','🥈','🥉','🎃','🎄','🎆','🎇','🧨','✨','🎈','🎉','🎊','🎋','🎍','🎎','🎏','🎐','🎑','🧧','🎀','🎁','🎗️','🎟️','🎫','🎮','🕹️','🎰','🎲','🧩','🧸','🪆','🪅','🎭','🖼️','🎨','🧵','🪡','🧶','🪢'],
+            'Travel': ['🚗','🚕','🚙','🚌','🚎','🏎️','🚓','🚑','🚒','🚐','🛻','🚚','🚛','🚜','🦯','🦽','🦼','🛴','🚲','🛵','🏍️','🛺','🚨','🚔','🚍','🚘','🚖','🚡','🚠','🚟','🚃','🚋','🚞','🚝','🚄','🚅','🚈','🚂','🚆','🚇','🚊','🚉','✈️','🛫','🛬','🛩️','💺','🛰️','🚀','🛸','🚁','🛶','⛵','🚤','🛥️','🛳️','⛴️','🚢','⚓','🪝','⛽','🚧','🚦','🚥','🚏','🗺️','🗿','🗽','🗼','🏰','🏯','🏟️','🎡','🎢','🎠','⛲','⛱️','🏖️','🏝️','🏜️','🌋','⛰️','🏔️','🗻','🏕️','⛺','🛖','🏠','🏡','🏘️','🏚️','🏗️','🏭','🏢','🏬','🏣','🏤','🏥','🏦','🏨','🏪','🏫','🏩','💒','🏛️','⛪','🕌','🕍','🛕','🕋','⛩️','🛤️','🛣️','🗾','🎑','🏞️','🌅','🌄','🌠','🎇','🎆','🌇','🌆','🏙️','🌃','🌌','🌉','🌁'],
+            'Objects': ['⌚','📱','📲','💻','⌨️','🖥️','🖨️','🖱️','🖲️','🕹️','🗜️','💽','💾','💿','📀','📼','📷','📸','📹','🎥','📽️','🎞️','📞','☎️','📟','📠','📺','📻','🎙️','🎚️','🎛️','🧭','⏱️','⏲️','⏰','🕰️','⌛','⏳','📡','🔋','🔌','💡','🔦','🕯️','🪔','🧯','🛢️','💸','💵','💴','💶','💷','🪙','💰','💳','💎','⚖️','🪜','🧰','🪛','🔧','🔨','⚒️','🛠️','⛏️','🪚','🔩','⚙️','🪤','🧱','⛓️','🧲','🔫','💣','🧨','🪓','🔪','🗡️','⚔️','🛡️','🚬','⚰️','🪦','⚱️','🏺','🔮','📿','🧿','💈','⚗️','🔭','🔬','🕳️','🩹','🩺','💊','💉','🩸','🧬','🦠','🧫','🧪','🌡️','🧹','🪠','🧺','🧻','🚽','🚰','🚿','🛁','🛀','🧼','🪥','🪒','🧽','🪣','🧴','🛎️','🔑','🗝️','🚪','🪑','🛋️','🛏️','🛌','🧸','🪆','🖼️','🪞','🪟','🛍️','🛒','🎁','🎈','🎏','🎀','🪄','🪅','🎊','🎉','🎎','🏮','🎐','🧧','✉️','📩','📨','📧','💌','📥','📤','📦','🏷️','🪧','📪','📫','📬','📭','📮','📯','📜','📃','📄','📑','🧾','📊','📈','📉','🗒️','🗓️','📆','📅','🗑️','📇','🗃️','🗳️','🗄️','📋','📁','📂','🗂️','🗞️','📰','📓','📔','📒','📕','📗','📘','📙','📚','📖','🔖','🧷','🔗','📎','🖇️','📐','📏','🧮','📌','📍','✂️','🖊️','🖋️','✒️','🖌️','🖍️','📝','✏️','🔍','🔎','🔏','🔐','🔒','🔓'],
+            'Symbols': ['❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❣️','💕','💞','💓','💗','💖','💘','💝','💟','☮️','✝️','☪️','🕉️','☸️','✡️','🔯','🕎','☯️','☦️','🛐','⛎','♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓','🆔','⚛️','🉑','☢️','☣️','📴','📳','🈶','🈚','🈸','🈺','🈷️','✴️','🆚','💮','🉐','㊙️','㊗️','🈴','🈵','🈹','🈲','🅰️','🅱️','🆎','🆑','🅾️','🆘','❌','⭕','🛑','⛔','📛','🚫','💯','💢','♨️','🚷','🚯','🚳','🚱','🔞','📵','🚭','❗','❕','❓','❔','‼️','⁉️','🔅','🔆','〽️','⚠️','🚸','🔱','⚜️','🔰','♻️','✅','🈯','💹','❇️','✳️','❎','🌐','💠','Ⓜ️','🌀','💤','🏧','🚾','♿','🅿️','🛗','🈳','🈂️','🛂','🛃','🛄','🛅','🚹','🚺','🚼','⚧','🚻','🚮','🎦','📶','🈁','🔣','ℹ️','🔤','🔡','🔠','🆖','🆗','🆙','🆒','🆕','🆓','0️⃣','1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','🔟','🔢','#️⃣','*️⃣','⏏️','▶️','⏸️','⏯️','⏹️','⏺️','⏭️','⏮️','⏩','⏪','⏫','⏬','◀️','🔼','🔽','➡️','⬅️','⬆️','⬇️','↗️','↘️','↙️','↖️','↕️','↔️','↪️','↩️','⤴️','⤵️','🔀','🔁','🔂','🔄','🔃','🎵','🎶','➕','➖','➗','✖️','🟰','♾️','💲','💱','™️','©️','®️','〰️','➰','➿','🔚','🔙','🔛','🔝','🔜','✔️','☑️','🔘','🔴','🟠','🟡','🟢','🔵','🟣','⚫','⚪','🟤','🔺','🔻','🔸','🔹','🔶','🔷','🔳','🔲','▪️','▫️','◾','◽','◼️','◻️','🟥','🟧','🟨','🟩','🟦','🟪','⬛','⬜','🟫','🔈','🔇','🔉','🔊','🔔','🔕','📣','📢','💬','💭','🗯️','♠️','♣️','♥️','♦️','🃏','🎴','🀄','🕐','🕑','🕒','🕓','🕔','🕕','🕖','🕗','🕘','🕙','🕚','🕛','🕜','🕝','🕞','🕟','🕠','🕡','🕢','🕣','🕤','🕥','🕦','🕧']
+        };
+
+        let currentCategory = 'Smileys';
+        let selectedEmoji = null;
+        let recentEmojis = JSON.parse(localStorage.getItem('recentEmojis') || '[]');
+
+        function init() {
+            renderCategories();
+            renderEmojis();
+            renderRecent();
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('categories');
+            container.innerHTML = Object.keys(emojiData).map(cat => `
+                <button class="category-btn ${cat === currentCategory ? 'active' : ''}" onclick="selectCategory('${cat}')">${cat}</button>
+            `).join('');
+        }
+
+        function selectCategory(category) {
+            currentCategory = category;
+            document.getElementById('search').value = '';
+            renderCategories();
+            renderEmojis();
+        }
+
+        function renderEmojis() {
+            const container = document.getElementById('emojiGrid');
+            const emojis = emojiData[currentCategory] || [];
+            container.innerHTML = emojis.map(emoji => `
+                <button class="emoji-btn" onclick="selectEmoji('${emoji}')" title="Click to copy">${emoji}</button>
+            `).join('');
+        }
+
+        function searchEmojis() {
+            const query = document.getElementById('search').value.toLowerCase();
+            const container = document.getElementById('emojiGrid');
+
+            if (!query) {
+                renderEmojis();
+                return;
+            }
+
+            // Search all categories
+            let results = [];
+            for (const [category, emojis] of Object.entries(emojiData)) {
+                results = results.concat(emojis);
+            }
+
+            // Simple filter (in a real app you'd have emoji names to search)
+            container.innerHTML = results.slice(0, 100).map(emoji => `
+                <button class="emoji-btn" onclick="selectEmoji('${emoji}')">${emoji}</button>
+            `).join('');
+        }
+
+        function selectEmoji(emoji) {
+            selectedEmoji = emoji;
+            document.getElementById('selectedSection').style.display = 'block';
+            document.getElementById('selectedEmoji').textContent = emoji;
+            document.getElementById('selectedName').textContent = 'Emoji';
+            document.getElementById('selectedCode').textContent = `Unicode: ${[...emoji].map(c => 'U+' + c.codePointAt(0).toString(16).toUpperCase()).join(' ')}`;
+
+            // Add to recent
+            addToRecent(emoji);
+
+            // Copy immediately
+            copyToClipboard(emoji);
+        }
+
+        function copySelected() {
+            if (selectedEmoji) {
+                copyToClipboard(selectedEmoji);
+            }
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast();
+            });
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 1500);
+        }
+
+        function addToRecent(emoji) {
+            recentEmojis = recentEmojis.filter(e => e !== emoji);
+            recentEmojis.unshift(emoji);
+            recentEmojis = recentEmojis.slice(0, 20);
+            localStorage.setItem('recentEmojis', JSON.stringify(recentEmojis));
+            renderRecent();
+        }
+
+        function renderRecent() {
+            const container = document.getElementById('recentGrid');
+            if (recentEmojis.length === 0) {
+                container.innerHTML = '<span style="color: #94a3b8; font-size: 14px;">Click an emoji to add it here</span>';
+            } else {
+                container.innerHTML = recentEmojis.map(emoji => `
+                    <span class="recent-emoji" onclick="selectEmoji('${emoji}')">${emoji}</span>
+                `).join('');
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>

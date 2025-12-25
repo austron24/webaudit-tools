@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Viewport Resizer - Test Responsive Designs</title>
+    <meta name="description" content="Test your website at different screen sizes. Preview responsive designs on mobile, tablet, desktop. Free online viewport testing tool.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #059669 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 100%; margin: 0 auto; padding: 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .controls {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-bottom: 20px;
+        }
+        .control-row {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .control-group label {
+            font-weight: 600;
+            color: #64748b;
+            white-space: nowrap;
+        }
+        .control-group input[type="text"],
+        .control-group input[type="number"] {
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .control-group input[type="number"] {
+            width: 80px;
+        }
+        .control-group input[type="text"] {
+            width: 300px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: #059669;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #047857;
+        }
+        .presets {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .preset {
+            padding: 8px 16px;
+            background: #f8fafc;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .preset:hover {
+            background: #d1fae5;
+        }
+        .preset.active {
+            background: #059669;
+            color: white;
+        }
+        .preset-icon {
+            margin-right: 5px;
+        }
+        .viewport-container {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            background: #1e293b;
+            border-radius: 12px;
+            min-height: 600px;
+            overflow: auto;
+        }
+        .device-frame {
+            background: #000;
+            border-radius: 20px;
+            padding: 10px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+        .device-frame.phone {
+            border-radius: 30px;
+            padding: 15px 10px;
+        }
+        .device-frame.tablet {
+            border-radius: 25px;
+            padding: 15px;
+        }
+        .viewport-frame {
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .viewport-frame iframe {
+            border: none;
+            display: block;
+        }
+        .size-display {
+            text-align: center;
+            margin-top: 15px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+        .info-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 20px;
+        }
+        .info-section h4 {
+            margin-bottom: 15px;
+            color: #059669;
+        }
+        .breakpoints-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .breakpoints-table th, .breakpoints-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakpoints-table th {
+            background: #f8fafc;
+            font-weight: 600;
+        }
+        .breakpoints-table code {
+            background: #d1fae5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #059669;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .tools-promo {
+            margin-top: 20px;
+            padding: 20px;
+            background: #d1fae5;
+            border-radius: 12px;
+        }
+        .tools-promo h4 { color: #059669; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #047857;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        .cta-section {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .cta-section a {
+            display: inline-block;
+            background: white;
+            color: #059669;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #6ee7b7; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Viewport Resizer</h1>
+            <p class="subtitle">Test responsive designs at different screen sizes</p>
+        </header>
+
+        <div class="controls">
+            <div class="control-row">
+                <div class="control-group">
+                    <label>URL:</label>
+                    <input type="text" id="urlInput" placeholder="https://example.com" value="https://example.com">
+                    <button class="btn btn-primary" onclick="loadUrl()">Load</button>
+                </div>
+                <div class="control-group">
+                    <label>Width:</label>
+                    <input type="number" id="widthInput" value="375" min="200" max="2560">
+                    <span>×</span>
+                    <input type="number" id="heightInput" value="667" min="200" max="1440">
+                    <button class="btn btn-primary" onclick="applySize()">Apply</button>
+                </div>
+            </div>
+
+            <div class="presets">
+                <button class="preset active" onclick="setPreset(375, 667, 'phone', this)">
+                    <span class="preset-icon">📱</span>iPhone SE
+                </button>
+                <button class="preset" onclick="setPreset(390, 844, 'phone', this)">
+                    <span class="preset-icon">📱</span>iPhone 14
+                </button>
+                <button class="preset" onclick="setPreset(412, 915, 'phone', this)">
+                    <span class="preset-icon">📱</span>Pixel 7
+                </button>
+                <button class="preset" onclick="setPreset(360, 740, 'phone', this)">
+                    <span class="preset-icon">📱</span>Galaxy S21
+                </button>
+                <button class="preset" onclick="setPreset(768, 1024, 'tablet', this)">
+                    <span class="preset-icon">📱</span>iPad Mini
+                </button>
+                <button class="preset" onclick="setPreset(820, 1180, 'tablet', this)">
+                    <span class="preset-icon">📱</span>iPad Air
+                </button>
+                <button class="preset" onclick="setPreset(1024, 1366, 'tablet', this)">
+                    <span class="preset-icon">📱</span>iPad Pro
+                </button>
+                <button class="preset" onclick="setPreset(1280, 720, 'desktop', this)">
+                    <span class="preset-icon">🖥️</span>Laptop
+                </button>
+                <button class="preset" onclick="setPreset(1920, 1080, 'desktop', this)">
+                    <span class="preset-icon">🖥️</span>Desktop HD
+                </button>
+                <button class="preset" onclick="setPreset(2560, 1440, 'desktop', this)">
+                    <span class="preset-icon">🖥️</span>4K Display
+                </button>
+            </div>
+        </div>
+
+        <div class="viewport-container">
+            <div class="device-frame phone" id="deviceFrame">
+                <div class="viewport-frame" id="viewportFrame">
+                    <iframe id="previewFrame" src="about:blank"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div class="size-display" id="sizeDisplay">375 × 667 (iPhone SE)</div>
+
+        <div class="info-section">
+            <h4>Common CSS Breakpoints</h4>
+            <table class="breakpoints-table">
+                <thead>
+                    <tr>
+                        <th>Device</th>
+                        <th>Breakpoint</th>
+                        <th>CSS Media Query</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Mobile (Portrait)</td>
+                        <td>320px - 480px</td>
+                        <td><code>@media (max-width: 480px)</code></td>
+                    </tr>
+                    <tr>
+                        <td>Mobile (Landscape)</td>
+                        <td>481px - 767px</td>
+                        <td><code>@media (max-width: 767px)</code></td>
+                    </tr>
+                    <tr>
+                        <td>Tablet</td>
+                        <td>768px - 1023px</td>
+                        <td><code>@media (max-width: 1023px)</code></td>
+                    </tr>
+                    <tr>
+                        <td>Desktop</td>
+                        <td>1024px - 1279px</td>
+                        <td><code>@media (min-width: 1024px)</code></td>
+                    </tr>
+                    <tr>
+                        <td>Large Desktop</td>
+                        <td>1280px+</td>
+                        <td><code>@media (min-width: 1280px)</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="tools-promo">
+                <h4>More Developer Tools</h4>
+                <a href="css-units.html">CSS Unit Converter</a>
+                <a href="aspect-ratio.html">Aspect Ratio Calculator</a>
+                <a href="css-minifier.html">CSS Minifier</a>
+                <a href="index.html">View All 45+ Tools</a>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h3>Need a Website Audit?</h3>
+            <p>Get professional accessibility and SEO analysis.</p>
+            <a href="https://fiverr.com/austron24" target="_blank">Get Professional Audit</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Viewport Resizer by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        let currentWidth = 375;
+        let currentHeight = 667;
+        let currentDevice = 'phone';
+        let currentName = 'iPhone SE';
+
+        function loadUrl() {
+            const url = document.getElementById('urlInput').value;
+            if (!url) return;
+
+            // Add https if missing
+            let finalUrl = url;
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                finalUrl = 'https://' + url;
+            }
+
+            document.getElementById('previewFrame').src = finalUrl;
+        }
+
+        function setPreset(width, height, device, btn) {
+            currentWidth = width;
+            currentHeight = height;
+            currentDevice = device;
+            currentName = btn.textContent.trim();
+
+            document.getElementById('widthInput').value = width;
+            document.getElementById('heightInput').value = height;
+
+            // Update active state
+            document.querySelectorAll('.preset').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+
+            applySize();
+        }
+
+        function applySize() {
+            currentWidth = parseInt(document.getElementById('widthInput').value) || 375;
+            currentHeight = parseInt(document.getElementById('heightInput').value) || 667;
+
+            // Determine device type based on width
+            if (currentWidth <= 480) {
+                currentDevice = 'phone';
+            } else if (currentWidth <= 1024) {
+                currentDevice = 'tablet';
+            } else {
+                currentDevice = 'desktop';
+            }
+
+            const frame = document.getElementById('viewportFrame');
+            const deviceFrame = document.getElementById('deviceFrame');
+            const iframe = document.getElementById('previewFrame');
+
+            // Set frame size
+            frame.style.width = currentWidth + 'px';
+            frame.style.height = currentHeight + 'px';
+            iframe.style.width = currentWidth + 'px';
+            iframe.style.height = currentHeight + 'px';
+
+            // Update device frame style
+            deviceFrame.className = 'device-frame ' + currentDevice;
+
+            // Update size display
+            document.getElementById('sizeDisplay').textContent =
+                `${currentWidth} × ${currentHeight}` + (currentName ? ` (${currentName})` : '');
+        }
+
+        // Initialize
+        applySize();
+    </script>
+</body>
+</html>
