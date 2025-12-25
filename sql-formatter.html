@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free SQL Formatter & Beautifier - Format SQL Online</title>
+    <meta name="description" content="Format and beautify SQL queries instantly. Indent SQL for readability. Free online SQL formatter and prettifier tool.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0891b2 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 42px; margin-bottom: 15px; }
+        .subtitle { font-size: 18px; opacity: 0.9; }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            color: #1e293b;
+            margin-bottom: 30px;
+        }
+        .editor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 800px) {
+            .editor-grid { grid-template-columns: 1fr; }
+        }
+        .editor-pane h3 { margin-bottom: 10px; color: #1e293b; }
+        .code-editor {
+            width: 100%;
+            height: 400px;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+        .code-editor:focus { outline: none; border-color: #0891b2; }
+        .options {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .options label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #64748b;
+        }
+        .options select {
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .btn-row {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-format { background: linear-gradient(135deg, #0891b2, #0e7490); color: white; }
+        .btn-minify { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; }
+        .btn-copy { background: #16a34a; color: white; }
+        .btn-clear { background: #64748b; color: white; }
+        .stats-bar {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            padding: 20px;
+            background: #ecfeff;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .stat { text-align: center; }
+        .stat-value { font-size: 24px; font-weight: bold; color: #0891b2; }
+        .stat-label { font-size: 12px; color: #64748b; }
+        .tools-promo {
+            margin-top: 30px;
+            padding: 20px;
+            background: #ecfeff;
+            border-radius: 12px;
+        }
+        .tools-promo h4 { color: #0891b2; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0e7490;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        .cta-section {
+            background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .cta-section a {
+            display: inline-block;
+            background: white;
+            color: #0891b2;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        footer { text-align: center; padding: 40px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #67e8f9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SQL Formatter</h1>
+            <p class="subtitle">Format and beautify your SQL queries instantly</p>
+        </header>
+
+        <div class="card">
+            <div class="options">
+                <label>
+                    Keywords:
+                    <select id="keywordCase">
+                        <option value="upper">UPPERCASE</option>
+                        <option value="lower">lowercase</option>
+                        <option value="preserve">Preserve</option>
+                    </select>
+                </label>
+                <label>
+                    Indent:
+                    <select id="indentSize">
+                        <option value="2">2 spaces</option>
+                        <option value="4" selected>4 spaces</option>
+                        <option value="tab">Tab</option>
+                    </select>
+                </label>
+            </div>
+
+            <div class="editor-grid">
+                <div class="editor-pane">
+                    <h3>Input SQL</h3>
+                    <textarea class="code-editor" id="inputSql" placeholder="Paste your SQL query here..."></textarea>
+                </div>
+                <div class="editor-pane">
+                    <h3>Output</h3>
+                    <textarea class="code-editor" id="outputSql" placeholder="Formatted SQL will appear here..." readonly></textarea>
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn btn-format" onclick="formatSql()">Format SQL</button>
+                <button class="btn btn-minify" onclick="minifySql()">Minify SQL</button>
+                <button class="btn btn-copy" onclick="copyOutput()">Copy Output</button>
+                <button class="btn btn-clear" onclick="clearAll()">Clear</button>
+            </div>
+
+            <div class="stats-bar">
+                <div class="stat">
+                    <div class="stat-value" id="inputSize">0</div>
+                    <div class="stat-label">Input (chars)</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="outputSize">0</div>
+                    <div class="stat-label">Output (chars)</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="lineCount">0</div>
+                    <div class="stat-label">Lines</div>
+                </div>
+            </div>
+
+            <div class="tools-promo">
+                <h4>More Developer Tools</h4>
+                <a href="json-formatter.html">JSON Formatter</a>
+                <a href="css-minifier.html">CSS Minifier</a>
+                <a href="regex-tester.html">Regex Tester</a>
+                <a href="index.html">View All 30+ Tools</a>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h3>Need a Website Audit?</h3>
+            <p>Get professional accessibility and SEO analysis.</p>
+            <a href="https://fiverr.com/austron24" target="_blank">Get Professional Audit</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>SQL Formatter by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const inputEl = document.getElementById('inputSql');
+        const outputEl = document.getElementById('outputSql');
+
+        const keywords = [
+            'SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'NOT', 'IN', 'LIKE', 'BETWEEN',
+            'JOIN', 'INNER', 'LEFT', 'RIGHT', 'OUTER', 'CROSS', 'FULL', 'ON',
+            'ORDER', 'BY', 'ASC', 'DESC', 'GROUP', 'HAVING', 'LIMIT', 'OFFSET',
+            'INSERT', 'INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE', 'CREATE',
+            'TABLE', 'DROP', 'ALTER', 'ADD', 'COLUMN', 'INDEX', 'PRIMARY', 'KEY',
+            'FOREIGN', 'REFERENCES', 'CONSTRAINT', 'UNIQUE', 'DEFAULT', 'NULL',
+            'AS', 'DISTINCT', 'ALL', 'UNION', 'EXCEPT', 'INTERSECT', 'CASE',
+            'WHEN', 'THEN', 'ELSE', 'END', 'EXISTS', 'COALESCE', 'CAST', 'COUNT',
+            'SUM', 'AVG', 'MAX', 'MIN', 'WITH', 'RECURSIVE', 'OVER', 'PARTITION',
+            'ROW_NUMBER', 'RANK', 'DENSE_RANK', 'HAVING', 'IS', 'TRUE', 'FALSE'
+        ];
+
+        const mainClauses = ['SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'ORDER BY', 'GROUP BY', 'HAVING', 'LIMIT', 'JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'OUTER JOIN', 'INSERT INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE FROM', 'CREATE TABLE', 'DROP TABLE', 'ALTER TABLE'];
+
+        function updateStats() {
+            const inputSize = inputEl.value.length;
+            const outputSize = outputEl.value.length;
+            const lineCount = outputEl.value ? outputEl.value.split('\n').length : 0;
+
+            document.getElementById('inputSize').textContent = inputSize.toLocaleString();
+            document.getElementById('outputSize').textContent = outputSize.toLocaleString();
+            document.getElementById('lineCount').textContent = lineCount;
+        }
+
+        function formatSql() {
+            let sql = inputEl.value.trim();
+            if (!sql) return;
+
+            const keywordCase = document.getElementById('keywordCase').value;
+            const indentSetting = document.getElementById('indentSize').value;
+            const indent = indentSetting === 'tab' ? '\t' : ' '.repeat(parseInt(indentSetting));
+
+            // Normalize whitespace
+            sql = sql.replace(/\s+/g, ' ');
+
+            // Apply keyword case
+            if (keywordCase !== 'preserve') {
+                keywords.forEach(kw => {
+                    const regex = new RegExp('\\b' + kw + '\\b', 'gi');
+                    sql = sql.replace(regex, keywordCase === 'upper' ? kw.toUpperCase() : kw.toLowerCase());
+                });
+            }
+
+            // Format main clauses on new lines
+            const formatted = sql
+                .replace(/\bSELECT\b/gi, '\nSELECT')
+                .replace(/\bFROM\b/gi, '\nFROM')
+                .replace(/\bWHERE\b/gi, '\nWHERE')
+                .replace(/\bAND\b/gi, '\n' + indent + 'AND')
+                .replace(/\bOR\b/gi, '\n' + indent + 'OR')
+                .replace(/\bORDER BY\b/gi, '\nORDER BY')
+                .replace(/\bGROUP BY\b/gi, '\nGROUP BY')
+                .replace(/\bHAVING\b/gi, '\nHAVING')
+                .replace(/\bLIMIT\b/gi, '\nLIMIT')
+                .replace(/\bINNER JOIN\b/gi, '\nINNER JOIN')
+                .replace(/\bLEFT JOIN\b/gi, '\nLEFT JOIN')
+                .replace(/\bRIGHT JOIN\b/gi, '\nRIGHT JOIN')
+                .replace(/\bFULL JOIN\b/gi, '\nFULL JOIN')
+                .replace(/\bCROSS JOIN\b/gi, '\nCROSS JOIN')
+                .replace(/\bJOIN\b/gi, '\nJOIN')
+                .replace(/\bON\b/gi, '\n' + indent + 'ON')
+                .replace(/\bINSERT INTO\b/gi, '\nINSERT INTO')
+                .replace(/\bVALUES\b/gi, '\nVALUES')
+                .replace(/\bUPDATE\b/gi, '\nUPDATE')
+                .replace(/\bSET\b/gi, '\nSET')
+                .replace(/\bDELETE FROM\b/gi, '\nDELETE FROM')
+                .replace(/,/g, ',\n' + indent)
+                .trim();
+
+            outputEl.value = formatted;
+            updateStats();
+        }
+
+        function minifySql() {
+            let sql = inputEl.value.trim();
+            if (!sql) return;
+
+            // Remove comments
+            sql = sql.replace(/--.*$/gm, '');
+            sql = sql.replace(/\/\*[\s\S]*?\*\//g, '');
+
+            // Normalize whitespace
+            sql = sql.replace(/\s+/g, ' ').trim();
+
+            outputEl.value = sql;
+            updateStats();
+        }
+
+        function copyOutput() {
+            navigator.clipboard.writeText(outputEl.value).then(() => {
+                const btn = event.target;
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy Output', 2000);
+            });
+        }
+
+        function clearAll() {
+            inputEl.value = '';
+            outputEl.value = '';
+            updateStats();
+        }
+
+        inputEl.addEventListener('input', updateStats);
+    </script>
+</body>
+</html>
