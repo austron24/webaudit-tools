@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Random Number Generator - Generate Random Numbers</title>
+    <meta name="description" content="Generate random numbers instantly. Set min/max range, generate multiple numbers, no duplicates option. Free random number generator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #dc2626 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .generator-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .result-display {
+            font-size: 80px;
+            font-weight: bold;
+            color: #dc2626;
+            margin: 30px 0;
+            font-variant-numeric: tabular-nums;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .result-display .number {
+            background: #fef2f2;
+            padding: 10px 25px;
+            border-radius: 16px;
+        }
+        .result-display.multiple {
+            font-size: 36px;
+        }
+        .range-inputs {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            text-align: center;
+        }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .input-group input {
+            width: 120px;
+            padding: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #dc2626;
+        }
+        .options {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .option input[type="number"] {
+            width: 60px;
+            padding: 8px;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+        }
+        .btn {
+            padding: 18px 50px;
+            border: none;
+            border-radius: 50px;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #dc2626;
+            color: white;
+        }
+        .btn:hover { background: #b91c1c; transform: scale(1.05); }
+        .btn:active { transform: scale(0.95); }
+        .history {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            text-align: left;
+        }
+        .history h4 {
+            color: #dc2626;
+            margin-bottom: 15px;
+        }
+        .history-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .history-item {
+            background: #f8fafc;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #dc2626; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #b91c1c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        .cta-section {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 25px;
+        }
+        .cta-section a {
+            display: inline-block;
+            background: white;
+            color: #dc2626;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fca5a5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Random Number Generator</h1>
+            <p class="subtitle">Generate random numbers in any range</p>
+        </header>
+
+        <div class="generator-card">
+            <div class="range-inputs">
+                <div class="input-group">
+                    <label>Minimum</label>
+                    <input type="number" id="minValue" value="1">
+                </div>
+                <div class="input-group">
+                    <label>Maximum</label>
+                    <input type="number" id="maxValue" value="100">
+                </div>
+            </div>
+
+            <div class="options">
+                <div class="option">
+                    <label>Count:</label>
+                    <input type="number" id="count" value="1" min="1" max="100">
+                </div>
+                <div class="option">
+                    <input type="checkbox" id="noDuplicates">
+                    <label for="noDuplicates">No duplicates</label>
+                </div>
+            </div>
+
+            <div class="result-display" id="result">
+                <span class="number">?</span>
+            </div>
+
+            <button class="btn" onclick="generate()">🎲 Generate</button>
+
+            <div class="history" id="historySection" style="display: none;">
+                <h4>History</h4>
+                <div class="history-list" id="historyList"></div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Random Tools</h4>
+            <a href="uuid-generator.html">UUID Generator</a>
+            <a href="password-generator.html">Password Generator</a>
+            <a href="lorem-ipsum.html">Lorem Ipsum</a>
+            <a href="index.html">View All 60+ Tools</a>
+        </div>
+
+        <div class="cta-section">
+            <h3>Need a Website Audit?</h3>
+            <p>Get professional accessibility and SEO analysis.</p>
+            <a href="https://fiverr.com/austron24" target="_blank">Get Professional Audit</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Random Number Generator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const history = [];
+
+        function generate() {
+            const min = parseInt(document.getElementById('minValue').value);
+            const max = parseInt(document.getElementById('maxValue').value);
+            const count = parseInt(document.getElementById('count').value) || 1;
+            const noDuplicates = document.getElementById('noDuplicates').checked;
+
+            if (min > max) {
+                alert('Minimum must be less than maximum');
+                return;
+            }
+
+            if (noDuplicates && count > (max - min + 1)) {
+                alert('Cannot generate that many unique numbers in this range');
+                return;
+            }
+
+            let numbers = [];
+
+            if (noDuplicates) {
+                const pool = [];
+                for (let i = min; i <= max; i++) pool.push(i);
+                for (let i = 0; i < count; i++) {
+                    const idx = Math.floor(Math.random() * pool.length);
+                    numbers.push(pool.splice(idx, 1)[0]);
+                }
+            } else {
+                for (let i = 0; i < count; i++) {
+                    numbers.push(Math.floor(Math.random() * (max - min + 1)) + min);
+                }
+            }
+
+            // Display
+            const resultEl = document.getElementById('result');
+            resultEl.className = count > 1 ? 'result-display multiple' : 'result-display';
+            resultEl.innerHTML = numbers.map(n => `<span class="number">${n}</span>`).join('');
+
+            // Add to history
+            history.unshift(numbers.join(', '));
+            if (history.length > 10) history.pop();
+            updateHistory();
+        }
+
+        function updateHistory() {
+            const section = document.getElementById('historySection');
+            const list = document.getElementById('historyList');
+
+            if (history.length > 0) {
+                section.style.display = 'block';
+                list.innerHTML = history.map(h => `<span class="history-item">${h}</span>`).join('');
+            }
+        }
+
+        // Animate on generate
+        document.querySelector('.btn').addEventListener('click', function() {
+            const resultEl = document.getElementById('result');
+            resultEl.style.transform = 'scale(1.1)';
+            setTimeout(() => resultEl.style.transform = 'scale(1)', 150);
+        });
+    </script>
+</body>
+</html>

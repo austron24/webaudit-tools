@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Online Stopwatch - Timer & Lap Counter</title>
+    <meta name="description" content="Free online stopwatch with lap times. Start, stop, reset with millisecond precision. Track multiple laps. No downloads required.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0ea5e9 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .timer-card {
+            background: white;
+            border-radius: 24px;
+            padding: 50px 30px;
+            text-align: center;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .time-display {
+            font-size: 72px;
+            font-weight: bold;
+            font-variant-numeric: tabular-nums;
+            font-family: 'Monaco', 'Consolas', monospace;
+            color: #0ea5e9;
+            margin-bottom: 10px;
+        }
+        .milliseconds {
+            font-size: 36px;
+            color: #64748b;
+        }
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        .btn {
+            padding: 18px 35px;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-start { background: #22c55e; color: white; }
+        .btn-start:hover { background: #16a34a; }
+        .btn-stop { background: #dc2626; color: white; }
+        .btn-stop:hover { background: #b91c1c; }
+        .btn-lap { background: #0ea5e9; color: white; }
+        .btn-lap:hover { background: #0284c7; }
+        .btn-reset { background: #e2e8f0; color: #475569; }
+        .btn-reset:hover { background: #cbd5e1; }
+        .laps-section {
+            margin-top: 30px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .laps-section h3 {
+            color: #0ea5e9;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .lap {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-family: monospace;
+        }
+        .lap:nth-child(odd) { background: #f1f5f9; }
+        .lap .number { color: #64748b; }
+        .lap .time { font-weight: 600; color: #1e293b; }
+        .lap .diff { color: #0ea5e9; font-size: 14px; }
+        .lap.best .time { color: #22c55e; }
+        .lap.worst .time { color: #dc2626; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0ea5e9; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0284c7;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        .cta-section {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 25px;
+        }
+        .cta-section a {
+            display: inline-block;
+            background: white;
+            color: #0ea5e9;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #7dd3fc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Stopwatch</h1>
+            <p class="subtitle">Precise timing with lap tracking</p>
+        </header>
+
+        <div class="timer-card">
+            <div class="time-display">
+                <span id="hours">00</span>:<span id="minutes">00</span>:<span id="seconds">00</span><span class="milliseconds">.<span id="ms">00</span></span>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-start" id="startBtn" onclick="startStop()">Start</button>
+                <button class="btn btn-lap" onclick="recordLap()" id="lapBtn" disabled>Lap</button>
+                <button class="btn btn-reset" onclick="reset()">Reset</button>
+            </div>
+
+            <div class="laps-section" id="lapsSection" style="display: none;">
+                <h3>Lap Times</h3>
+                <div id="lapsList"></div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Timer Tools</h4>
+            <a href="pomodoro.html">Pomodoro Timer</a>
+            <a href="timestamp-converter.html">Timestamp Converter</a>
+            <a href="typing-test.html">Typing Speed Test</a>
+            <a href="index.html">View All 60+ Tools</a>
+        </div>
+
+        <div class="cta-section">
+            <h3>Need a Website Audit?</h3>
+            <p>Get professional accessibility and SEO analysis.</p>
+            <a href="https://fiverr.com/austron24" target="_blank">Get Professional Audit</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Online Stopwatch by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        let running = false;
+        let startTime = 0;
+        let elapsedTime = 0;
+        let timerInterval = null;
+        let laps = [];
+        let lastLapTime = 0;
+
+        function startStop() {
+            const btn = document.getElementById('startBtn');
+            const lapBtn = document.getElementById('lapBtn');
+
+            if (running) {
+                // Stop
+                clearInterval(timerInterval);
+                elapsedTime += Date.now() - startTime;
+                btn.textContent = 'Resume';
+                btn.className = 'btn btn-start';
+                running = false;
+            } else {
+                // Start
+                startTime = Date.now();
+                timerInterval = setInterval(updateDisplay, 10);
+                btn.textContent = 'Stop';
+                btn.className = 'btn btn-stop';
+                lapBtn.disabled = false;
+                running = true;
+            }
+        }
+
+        function updateDisplay() {
+            const time = elapsedTime + (Date.now() - startTime);
+            const hours = Math.floor(time / 3600000);
+            const minutes = Math.floor((time % 3600000) / 60000);
+            const seconds = Math.floor((time % 60000) / 1000);
+            const ms = Math.floor((time % 1000) / 10);
+
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+            document.getElementById('ms').textContent = String(ms).padStart(2, '0');
+        }
+
+        function recordLap() {
+            if (!running) return;
+
+            const currentTime = elapsedTime + (Date.now() - startTime);
+            const lapTime = currentTime - lastLapTime;
+            lastLapTime = currentTime;
+
+            laps.push({ total: currentTime, lap: lapTime });
+            renderLaps();
+
+            document.getElementById('lapsSection').style.display = 'block';
+        }
+
+        function renderLaps() {
+            const list = document.getElementById('lapsList');
+            const lapTimes = laps.map(l => l.lap);
+            const best = Math.min(...lapTimes);
+            const worst = Math.max(...lapTimes);
+
+            list.innerHTML = laps.map((lap, i) => {
+                let className = 'lap';
+                if (laps.length > 1) {
+                    if (lap.lap === best) className += ' best';
+                    if (lap.lap === worst) className += ' worst';
+                }
+
+                return `
+                    <div class="${className}">
+                        <span class="number">Lap ${i + 1}</span>
+                        <span class="time">${formatTime(lap.lap)}</span>
+                        <span class="diff">${formatTime(lap.total)}</span>
+                    </div>
+                `;
+            }).reverse().join('');
+        }
+
+        function formatTime(ms) {
+            const hours = Math.floor(ms / 3600000);
+            const minutes = Math.floor((ms % 3600000) / 60000);
+            const seconds = Math.floor((ms % 60000) / 1000);
+            const millis = Math.floor((ms % 1000) / 10);
+
+            if (hours > 0) {
+                return `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(millis).padStart(2, '0')}`;
+            }
+            return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(millis).padStart(2, '0')}`;
+        }
+
+        function reset() {
+            clearInterval(timerInterval);
+            running = false;
+            elapsedTime = 0;
+            lastLapTime = 0;
+            laps = [];
+
+            document.getElementById('hours').textContent = '00';
+            document.getElementById('minutes').textContent = '00';
+            document.getElementById('seconds').textContent = '00';
+            document.getElementById('ms').textContent = '00';
+
+            document.getElementById('startBtn').textContent = 'Start';
+            document.getElementById('startBtn').className = 'btn btn-start';
+            document.getElementById('lapBtn').disabled = true;
+            document.getElementById('lapsSection').style.display = 'none';
+            document.getElementById('lapsList').innerHTML = '';
+        }
+    </script>
+</body>
+</html>

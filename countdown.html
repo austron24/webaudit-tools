@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Countdown Timer - Set Timer Online</title>
+    <meta name="description" content="Free online countdown timer. Set hours, minutes, seconds. Audio alert when complete. Full-screen mode available. No downloads.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #9333ea 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .timer-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px 30px;
+            text-align: center;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .time-inputs {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        .time-input-group {
+            text-align: center;
+        }
+        .time-input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .time-input-group input {
+            width: 80px;
+            padding: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-family: 'Monaco', monospace;
+        }
+        .time-input-group input:focus {
+            outline: none;
+            border-color: #9333ea;
+        }
+        .time-display {
+            font-size: 80px;
+            font-weight: bold;
+            font-variant-numeric: tabular-nums;
+            font-family: 'Monaco', 'Consolas', monospace;
+            color: #9333ea;
+            margin: 30px 0;
+            display: none;
+        }
+        .time-display.finished {
+            color: #dc2626;
+            animation: pulse 0.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: #9333ea; color: white; }
+        .btn-primary:hover { background: #7e22ce; }
+        .btn-secondary { background: #e2e8f0; color: #475569; }
+        .btn-secondary:hover { background: #cbd5e1; }
+        .btn-danger { background: #dc2626; color: white; }
+        .btn-danger:hover { background: #b91c1c; }
+        .presets {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .presets label {
+            display: block;
+            color: #64748b;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        .preset-btns {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .preset-btn {
+            padding: 10px 20px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .preset-btn:hover { background: #f3e8ff; border-color: #9333ea; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #9333ea; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #7e22ce;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        .cta-section {
+            background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 25px;
+        }
+        .cta-section a {
+            display: inline-block;
+            background: white;
+            color: #9333ea;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #d8b4fe; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Countdown Timer</h1>
+            <p class="subtitle">Set a timer with audio alert</p>
+        </header>
+
+        <div class="timer-card">
+            <div class="time-inputs" id="timeInputs">
+                <div class="time-input-group">
+                    <label>Hours</label>
+                    <input type="number" id="hoursInput" value="0" min="0" max="99">
+                </div>
+                <div class="time-input-group">
+                    <label>Minutes</label>
+                    <input type="number" id="minutesInput" value="5" min="0" max="59">
+                </div>
+                <div class="time-input-group">
+                    <label>Seconds</label>
+                    <input type="number" id="secondsInput" value="0" min="0" max="59">
+                </div>
+            </div>
+
+            <div class="time-display" id="timeDisplay">00:00:00</div>
+
+            <div class="controls" id="setupControls">
+                <button class="btn btn-primary" onclick="startTimer()">▶ Start</button>
+            </div>
+
+            <div class="controls" id="runningControls" style="display: none;">
+                <button class="btn btn-secondary" id="pauseBtn" onclick="pauseResume()">⏸ Pause</button>
+                <button class="btn btn-danger" onclick="stopTimer()">⏹ Stop</button>
+            </div>
+
+            <div class="presets">
+                <label>Quick Presets</label>
+                <div class="preset-btns">
+                    <button class="preset-btn" onclick="setPreset(0, 1, 0)">1 min</button>
+                    <button class="preset-btn" onclick="setPreset(0, 3, 0)">3 min</button>
+                    <button class="preset-btn" onclick="setPreset(0, 5, 0)">5 min</button>
+                    <button class="preset-btn" onclick="setPreset(0, 10, 0)">10 min</button>
+                    <button class="preset-btn" onclick="setPreset(0, 15, 0)">15 min</button>
+                    <button class="preset-btn" onclick="setPreset(0, 25, 0)">25 min</button>
+                    <button class="preset-btn" onclick="setPreset(0, 30, 0)">30 min</button>
+                    <button class="preset-btn" onclick="setPreset(1, 0, 0)">1 hour</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Timer Tools</h4>
+            <a href="stopwatch.html">Stopwatch</a>
+            <a href="pomodoro.html">Pomodoro Timer</a>
+            <a href="timestamp-converter.html">Timestamp Converter</a>
+            <a href="index.html">View All 60+ Tools</a>
+        </div>
+
+        <div class="cta-section">
+            <h3>Need a Website Audit?</h3>
+            <p>Get professional accessibility and SEO analysis.</p>
+            <a href="https://fiverr.com/austron24" target="_blank">Get Professional Audit</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Countdown Timer by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        let totalSeconds = 0;
+        let remainingSeconds = 0;
+        let timerInterval = null;
+        let isPaused = false;
+
+        function setPreset(h, m, s) {
+            document.getElementById('hoursInput').value = h;
+            document.getElementById('minutesInput').value = m;
+            document.getElementById('secondsInput').value = s;
+        }
+
+        function startTimer() {
+            const h = parseInt(document.getElementById('hoursInput').value) || 0;
+            const m = parseInt(document.getElementById('minutesInput').value) || 0;
+            const s = parseInt(document.getElementById('secondsInput').value) || 0;
+
+            totalSeconds = h * 3600 + m * 60 + s;
+            if (totalSeconds <= 0) {
+                alert('Please set a time greater than 0');
+                return;
+            }
+
+            remainingSeconds = totalSeconds;
+            isPaused = false;
+
+            document.getElementById('timeInputs').style.display = 'none';
+            document.getElementById('timeDisplay').style.display = 'block';
+            document.getElementById('setupControls').style.display = 'none';
+            document.getElementById('runningControls').style.display = 'flex';
+            document.getElementById('pauseBtn').textContent = '⏸ Pause';
+
+            updateDisplay();
+            timerInterval = setInterval(tick, 1000);
+        }
+
+        function tick() {
+            if (isPaused) return;
+
+            remainingSeconds--;
+            updateDisplay();
+
+            if (remainingSeconds <= 0) {
+                clearInterval(timerInterval);
+                timerComplete();
+            }
+        }
+
+        function updateDisplay() {
+            const h = Math.floor(remainingSeconds / 3600);
+            const m = Math.floor((remainingSeconds % 3600) / 60);
+            const s = remainingSeconds % 60;
+
+            document.getElementById('timeDisplay').textContent =
+                `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+
+        function pauseResume() {
+            isPaused = !isPaused;
+            document.getElementById('pauseBtn').textContent = isPaused ? '▶ Resume' : '⏸ Pause';
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            document.getElementById('timeInputs').style.display = 'flex';
+            document.getElementById('timeDisplay').style.display = 'none';
+            document.getElementById('timeDisplay').classList.remove('finished');
+            document.getElementById('setupControls').style.display = 'flex';
+            document.getElementById('runningControls').style.display = 'none';
+        }
+
+        function timerComplete() {
+            document.getElementById('timeDisplay').classList.add('finished');
+            document.getElementById('timeDisplay').textContent = "TIME'S UP!";
+
+            // Play sound
+            playAlarm();
+
+            // Notification
+            if (Notification.permission === 'granted') {
+                new Notification('Timer Complete!', { body: 'Your countdown has finished.' });
+            }
+        }
+
+        function playAlarm() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+            function beep(freq, duration) {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.frequency.value = freq;
+                oscillator.type = 'sine';
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + duration);
+            }
+
+            beep(800, 0.2);
+            setTimeout(() => beep(800, 0.2), 300);
+            setTimeout(() => beep(800, 0.2), 600);
+        }
+
+        // Request notification permission
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+    </script>
+</body>
+</html>
