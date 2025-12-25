@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ring Size Calculator - Find Your Ring Size</title>
+    <meta name="description" content="Find your ring size using finger circumference or existing ring diameter. Convert between US, UK, EU ring sizes. Free ring size calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #be185d 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 4px;
+        }
+        .tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 6px;
+            color: #64748b;
+        }
+        .tab.active {
+            background: white;
+            color: #be185d;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #be185d;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #be185d 0%, #9f1239 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 56px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .sizes-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .size-item {
+            background: #fdf2f8;
+            border-radius: 10px;
+            padding: 15px 10px;
+            text-align: center;
+        }
+        .size-item .value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #be185d;
+        }
+        .size-item .label {
+            font-size: 10px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .measure-guide {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .measure-guide h4 {
+            color: #be185d;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .guide-step {
+            display: flex;
+            gap: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .guide-step:last-child { border: none; }
+        .step-num {
+            width: 24px;
+            height: 24px;
+            background: #be185d;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        .step-text { font-size: 14px; }
+        .size-chart {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        .size-chart h4 {
+            color: #be185d;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .chart-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        .chart-table th, .chart-table td {
+            padding: 8px 6px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .chart-table th {
+            background: #fdf2f8;
+            color: #be185d;
+            font-weight: 600;
+        }
+        .chart-table tr.highlight { background: #fdf2f8; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #be185d; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #9f1239;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #f9a8d4; }
+        .calc-section { display: none; }
+        .calc-section.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Ring Size Calculator</h1>
+            <p class="subtitle">Find your perfect ring size</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('circumference')">By Finger</button>
+                <button class="tab" onclick="switchTab('diameter')">By Ring</button>
+                <button class="tab" onclick="switchTab('convert')">Convert</button>
+            </div>
+
+            <div class="calc-section active" id="circumferenceSection">
+                <div class="input-group">
+                    <label>Finger Circumference (mm)</label>
+                    <input type="number" id="circumference" value="60" min="40" max="80" step="0.5" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="calc-section" id="diameterSection">
+                <div class="input-group">
+                    <label>Ring Inner Diameter (mm)</label>
+                    <input type="number" id="diameter" value="19" min="12" max="26" step="0.1" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="calc-section" id="convertSection">
+                <div class="input-group">
+                    <label>Size System</label>
+                    <select id="convertSystem" onchange="calculate()">
+                        <option value="us" selected>US</option>
+                        <option value="uk">UK</option>
+                        <option value="eu">EU</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Your Size</label>
+                    <input type="number" id="convertSize" value="7" min="1" max="30" step="0.5" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Your Ring Size</div>
+                <div class="value" id="result">US 9</div>
+                <div class="sub" id="subtext">19.1mm diameter</div>
+            </div>
+
+            <div class="sizes-grid">
+                <div class="size-item">
+                    <div class="value" id="usSize">9</div>
+                    <div class="label">US</div>
+                </div>
+                <div class="size-item">
+                    <div class="value" id="ukSize">R</div>
+                    <div class="label">UK</div>
+                </div>
+                <div class="size-item">
+                    <div class="value" id="euSize">59</div>
+                    <div class="label">EU</div>
+                </div>
+                <div class="size-item">
+                    <div class="value" id="mmDiam">19.1</div>
+                    <div class="label">mm Ø</div>
+                </div>
+            </div>
+
+            <div class="measure-guide">
+                <h4>How to Measure Your Finger</h4>
+                <div class="guide-step">
+                    <div class="step-num">1</div>
+                    <div class="step-text">Wrap a strip of paper or string around your finger</div>
+                </div>
+                <div class="guide-step">
+                    <div class="step-num">2</div>
+                    <div class="step-text">Mark where the ends meet</div>
+                </div>
+                <div class="guide-step">
+                    <div class="step-num">3</div>
+                    <div class="step-text">Measure the length in mm - this is your circumference</div>
+                </div>
+                <div class="guide-step">
+                    <div class="step-num">💡</div>
+                    <div class="step-text">Measure at end of day when fingers are largest. Get a size that slides on easily but doesn't fall off.</div>
+                </div>
+            </div>
+
+            <div class="size-chart">
+                <h4>Ring Size Chart</h4>
+                <table class="chart-table">
+                    <thead>
+                        <tr>
+                            <th>US</th>
+                            <th>UK</th>
+                            <th>EU</th>
+                            <th>Diameter</th>
+                            <th>Circum</th>
+                        </tr>
+                    </thead>
+                    <tbody id="chartBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Size Tools</h4>
+            <a href="shoe-size-converter.html">Shoe Size</a>
+            <a href="unit-converter.html">Unit Converter</a>
+            <a href="wedding-budget-calculator.html">Wedding Budget</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Ring Size Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        let currentTab = 'circumference';
+
+        // Ring size data
+        const sizeChart = [
+            { us: 3, uk: 'F', eu: 44, diam: 14.1, circ: 44.2 },
+            { us: 3.5, uk: 'G', eu: 45, diam: 14.5, circ: 45.5 },
+            { us: 4, uk: 'H', eu: 46.5, diam: 14.9, circ: 46.8 },
+            { us: 4.5, uk: 'I', eu: 48, diam: 15.3, circ: 48.0 },
+            { us: 5, uk: 'J', eu: 49, diam: 15.7, circ: 49.3 },
+            { us: 5.5, uk: 'K', eu: 50, diam: 16.1, circ: 50.6 },
+            { us: 6, uk: 'L', eu: 51.5, diam: 16.5, circ: 51.9 },
+            { us: 6.5, uk: 'M', eu: 53, diam: 16.9, circ: 53.1 },
+            { us: 7, uk: 'N', eu: 54, diam: 17.3, circ: 54.4 },
+            { us: 7.5, uk: 'O', eu: 55.5, diam: 17.7, circ: 55.7 },
+            { us: 8, uk: 'P', eu: 57, diam: 18.1, circ: 57.0 },
+            { us: 8.5, uk: 'Q', eu: 58, diam: 18.5, circ: 58.3 },
+            { us: 9, uk: 'R', eu: 59, diam: 18.9, circ: 59.5 },
+            { us: 9.5, uk: 'S', eu: 61, diam: 19.4, circ: 60.8 },
+            { us: 10, uk: 'T', eu: 62, diam: 19.8, circ: 62.1 },
+            { us: 10.5, uk: 'U', eu: 63.5, diam: 20.2, circ: 63.4 },
+            { us: 11, uk: 'V', eu: 64.5, diam: 20.6, circ: 64.6 },
+            { us: 11.5, uk: 'W', eu: 66, diam: 21.0, circ: 65.9 },
+            { us: 12, uk: 'X', eu: 67, diam: 21.4, circ: 67.2 },
+            { us: 12.5, uk: 'Y', eu: 68.5, diam: 21.8, circ: 68.5 },
+            { us: 13, uk: 'Z', eu: 70, diam: 22.2, circ: 69.7 }
+        ];
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            document.querySelectorAll('.calc-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(tab + 'Section').classList.add('active');
+            calculate();
+        }
+
+        function findByCirc(circ) {
+            let closest = sizeChart[0];
+            let minDiff = Infinity;
+            for (const entry of sizeChart) {
+                const diff = Math.abs(entry.circ - circ);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closest = entry;
+                }
+            }
+            return closest;
+        }
+
+        function findByDiam(diam) {
+            let closest = sizeChart[0];
+            let minDiff = Infinity;
+            for (const entry of sizeChart) {
+                const diff = Math.abs(entry.diam - diam);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closest = entry;
+                }
+            }
+            return closest;
+        }
+
+        function findBySize(system, size) {
+            let closest = sizeChart[0];
+            let minDiff = Infinity;
+            for (const entry of sizeChart) {
+                let val = entry[system];
+                if (system === 'uk') {
+                    val = sizeChart.indexOf(entry);
+                    size = document.getElementById('convertSize').value.charCodeAt(0) - 65;
+                }
+                const diff = Math.abs(entry.us - size);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closest = entry;
+                }
+            }
+            return closest;
+        }
+
+        function calculate() {
+            let size;
+
+            if (currentTab === 'circumference') {
+                const circ = parseFloat(document.getElementById('circumference').value) || 60;
+                size = findByCirc(circ);
+            } else if (currentTab === 'diameter') {
+                const diam = parseFloat(document.getElementById('diameter').value) || 19;
+                size = findByDiam(diam);
+            } else {
+                const system = document.getElementById('convertSystem').value;
+                const sizeVal = parseFloat(document.getElementById('convertSize').value) || 7;
+                size = findBySize(system, sizeVal);
+            }
+
+            document.getElementById('result').textContent = 'US ' + size.us;
+            document.getElementById('subtext').textContent = size.diam + 'mm diameter';
+            document.getElementById('usSize').textContent = size.us;
+            document.getElementById('ukSize').textContent = size.uk;
+            document.getElementById('euSize').textContent = size.eu;
+            document.getElementById('mmDiam').textContent = size.diam;
+
+            // Build chart
+            const tbody = document.getElementById('chartBody');
+            tbody.innerHTML = sizeChart.map(row => {
+                const isHighlight = row.us === size.us;
+                return `<tr class="${isHighlight ? 'highlight' : ''}">
+                    <td>${row.us}</td>
+                    <td>${row.uk}</td>
+                    <td>${row.eu}</td>
+                    <td>${row.diam}mm</td>
+                    <td>${row.circ}mm</td>
+                </tr>`;
+            }).join('');
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

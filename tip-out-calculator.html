@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tip Out Calculator - Server Tip Distribution</title>
+    <meta name="description" content="Calculate tip out for restaurant staff. Split tips between servers, bussers, bartenders, and hosts. Free tip out calculator for restaurants.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #16a34a 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #16a34a;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .tip-section {
+            margin: 20px 0;
+        }
+        .tip-section h4 {
+            color: #16a34a;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-row {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .tip-row .role {
+            flex: 1;
+            font-weight: 500;
+        }
+        .tip-row .percent-input {
+            width: 60px;
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .tip-row .amount {
+            width: 80px;
+            text-align: right;
+            font-weight: bold;
+            color: #16a34a;
+        }
+        .summary {
+            background: #dcfce7;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .summary h4 {
+            color: #15803d;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #bbf7d0;
+            font-size: 14px;
+        }
+        .summary-row:last-child { border: none; }
+        .summary-row .value { font-weight: 600; color: #15803d; }
+        .summary-row.total {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #15803d; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #16a34a;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #86efac; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Tip Out Calculator</h1>
+            <p class="subtitle">Calculate restaurant tip distribution</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group full">
+                    <label>Total Tips Collected ($)</label>
+                    <input type="number" id="totalTips" value="250" min="0" max="10000" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Total Sales ($)</label>
+                    <input type="number" id="totalSales" value="1500" min="0" max="100000" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Tip Out Method</label>
+                    <select id="method" onchange="calculate()">
+                        <option value="percent" selected>% of Tips</option>
+                        <option value="sales">% of Sales</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="tip-section">
+                <h4>Tip Out Percentages</h4>
+
+                <div class="tip-row">
+                    <span class="role">🧑‍🍳 Busser</span>
+                    <input type="number" class="percent-input" id="busserPct" value="10" min="0" max="100" step="1" oninput="calculate()">
+                    <span>%</span>
+                    <span class="amount" id="busserAmt">$25</span>
+                </div>
+
+                <div class="tip-row">
+                    <span class="role">🍸 Bartender</span>
+                    <input type="number" class="percent-input" id="bartenderPct" value="5" min="0" max="100" step="1" oninput="calculate()">
+                    <span>%</span>
+                    <span class="amount" id="bartenderAmt">$12.50</span>
+                </div>
+
+                <div class="tip-row">
+                    <span class="role">👋 Host</span>
+                    <input type="number" class="percent-input" id="hostPct" value="3" min="0" max="100" step="1" oninput="calculate()">
+                    <span>%</span>
+                    <span class="amount" id="hostAmt">$7.50</span>
+                </div>
+
+                <div class="tip-row">
+                    <span class="role">🍽️ Food Runner</span>
+                    <input type="number" class="percent-input" id="runnerPct" value="2" min="0" max="100" step="1" oninput="calculate()">
+                    <span>%</span>
+                    <span class="amount" id="runnerAmt">$5</span>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Server Take-Home</div>
+                <div class="value" id="serverTakeHome">$200</div>
+                <div class="sub" id="serverPercent">80% of total tips</div>
+            </div>
+
+            <div class="summary">
+                <h4>Distribution Summary</h4>
+                <div class="summary-row">
+                    <span>Total Tips</span>
+                    <span class="value" id="summaryTotal">$250.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Total Tip Out</span>
+                    <span class="value" id="summaryTipOut">-$50.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Tip % on Sales</span>
+                    <span class="value" id="tipPercent">16.7%</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Server Keeps</span>
+                    <span class="value" id="summaryKeeps">$200.00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Money Tools</h4>
+            <a href="tip-calculator.html">Tip Calculator</a>
+            <a href="paycheck-calculator.html">Paycheck Calculator</a>
+            <a href="hourly-salary-calculator.html">Hourly to Salary</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Tip Out Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const totalTips = parseFloat(document.getElementById('totalTips').value) || 0;
+            const totalSales = parseFloat(document.getElementById('totalSales').value) || 0;
+            const method = document.getElementById('method').value;
+
+            const busserPct = parseFloat(document.getElementById('busserPct').value) || 0;
+            const bartenderPct = parseFloat(document.getElementById('bartenderPct').value) || 0;
+            const hostPct = parseFloat(document.getElementById('hostPct').value) || 0;
+            const runnerPct = parseFloat(document.getElementById('runnerPct').value) || 0;
+
+            let busserAmt, bartenderAmt, hostAmt, runnerAmt;
+
+            if (method === 'percent') {
+                // Percentage of tips
+                busserAmt = totalTips * (busserPct / 100);
+                bartenderAmt = totalTips * (bartenderPct / 100);
+                hostAmt = totalTips * (hostPct / 100);
+                runnerAmt = totalTips * (runnerPct / 100);
+            } else {
+                // Percentage of sales
+                busserAmt = totalSales * (busserPct / 100);
+                bartenderAmt = totalSales * (bartenderPct / 100);
+                hostAmt = totalSales * (hostPct / 100);
+                runnerAmt = totalSales * (runnerPct / 100);
+            }
+
+            const totalTipOut = busserAmt + bartenderAmt + hostAmt + runnerAmt;
+            const serverKeeps = totalTips - totalTipOut;
+            const serverPercent = totalTips > 0 ? (serverKeeps / totalTips * 100) : 0;
+            const tipPercentOnSales = totalSales > 0 ? (totalTips / totalSales * 100) : 0;
+
+            // Update amounts
+            document.getElementById('busserAmt').textContent = '$' + busserAmt.toFixed(2);
+            document.getElementById('bartenderAmt').textContent = '$' + bartenderAmt.toFixed(2);
+            document.getElementById('hostAmt').textContent = '$' + hostAmt.toFixed(2);
+            document.getElementById('runnerAmt').textContent = '$' + runnerAmt.toFixed(2);
+
+            // Update result
+            document.getElementById('serverTakeHome').textContent = '$' + serverKeeps.toFixed(2);
+            document.getElementById('serverPercent').textContent = serverPercent.toFixed(0) + '% of total tips';
+
+            // Update summary
+            document.getElementById('summaryTotal').textContent = '$' + totalTips.toFixed(2);
+            document.getElementById('summaryTipOut').textContent = '-$' + totalTipOut.toFixed(2);
+            document.getElementById('tipPercent').textContent = tipPercentOnSales.toFixed(1) + '%';
+            document.getElementById('summaryKeeps').textContent = '$' + serverKeeps.toFixed(2);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shoe Size Converter - US, UK, EU Size Chart</title>
+    <meta name="description" content="Convert shoe sizes between US, UK, EU, and CM. Men's, women's, and kids' shoe size chart. Free shoe size converter.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #7c3aed 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #7c3aed;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .sizes-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .size-item {
+            background: #f3e8ff;
+            border-radius: 10px;
+            padding: 15px 10px;
+            text-align: center;
+        }
+        .size-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #7c3aed;
+        }
+        .size-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .size-chart {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        .size-chart h4 {
+            color: #7c3aed;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .chart-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        .chart-table th, .chart-table td {
+            padding: 8px 6px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .chart-table th {
+            background: #f3e8ff;
+            color: #7c3aed;
+            font-weight: 600;
+        }
+        .chart-table tr:last-child td { border: none; }
+        .chart-table tr.highlight {
+            background: #f3e8ff;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #7c3aed; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #6d28d9;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #c4b5fd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Shoe Size Converter</h1>
+            <p class="subtitle">Convert between US, UK, EU sizes</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Gender/Type</label>
+                    <select id="gender" onchange="calculate()">
+                        <option value="men" selected>Men's</option>
+                        <option value="women">Women's</option>
+                        <option value="kids">Kids'</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Size System</label>
+                    <select id="system" onchange="calculate()">
+                        <option value="us" selected>US</option>
+                        <option value="uk">UK</option>
+                        <option value="eu">EU</option>
+                        <option value="cm">CM (Foot Length)</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Your Size</label>
+                    <input type="number" id="size" value="10" min="1" max="50" step="0.5" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Converted Size</div>
+                <div class="value" id="result">EU 44</div>
+                <div class="sub" id="subtext">Men's US 10 = UK 9.5</div>
+            </div>
+
+            <div class="sizes-grid">
+                <div class="size-item">
+                    <div class="value" id="usSize">10</div>
+                    <div class="label">US</div>
+                </div>
+                <div class="size-item">
+                    <div class="value" id="ukSize">9.5</div>
+                    <div class="label">UK</div>
+                </div>
+                <div class="size-item">
+                    <div class="value" id="euSize">44</div>
+                    <div class="label">EU</div>
+                </div>
+                <div class="size-item">
+                    <div class="value" id="cmSize">28</div>
+                    <div class="label">CM</div>
+                </div>
+            </div>
+
+            <div class="size-chart">
+                <h4>Size Chart</h4>
+                <table class="chart-table" id="chartTable">
+                    <thead>
+                        <tr>
+                            <th>US</th>
+                            <th>UK</th>
+                            <th>EU</th>
+                            <th>CM</th>
+                        </tr>
+                    </thead>
+                    <tbody id="chartBody">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Converters</h4>
+            <a href="unit-converter.html">Unit Converter</a>
+            <a href="temperature-converter.html">Temperature</a>
+            <a href="height-converter.html">Height Converter</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Shoe Size Converter by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        // Size charts - US as base
+        const menChart = [
+            { us: 6, uk: 5.5, eu: 39, cm: 24 },
+            { us: 6.5, uk: 6, eu: 39.5, cm: 24.5 },
+            { us: 7, uk: 6.5, eu: 40, cm: 25 },
+            { us: 7.5, uk: 7, eu: 40.5, cm: 25.5 },
+            { us: 8, uk: 7.5, eu: 41, cm: 26 },
+            { us: 8.5, uk: 8, eu: 42, cm: 26.5 },
+            { us: 9, uk: 8.5, eu: 42.5, cm: 27 },
+            { us: 9.5, uk: 9, eu: 43, cm: 27.5 },
+            { us: 10, uk: 9.5, eu: 44, cm: 28 },
+            { us: 10.5, uk: 10, eu: 44.5, cm: 28.5 },
+            { us: 11, uk: 10.5, eu: 45, cm: 29 },
+            { us: 11.5, uk: 11, eu: 45.5, cm: 29.5 },
+            { us: 12, uk: 11.5, eu: 46, cm: 30 },
+            { us: 13, uk: 12.5, eu: 47, cm: 31 },
+            { us: 14, uk: 13.5, eu: 48, cm: 32 }
+        ];
+
+        const womenChart = [
+            { us: 5, uk: 2.5, eu: 35, cm: 22 },
+            { us: 5.5, uk: 3, eu: 35.5, cm: 22.5 },
+            { us: 6, uk: 3.5, eu: 36, cm: 23 },
+            { us: 6.5, uk: 4, eu: 37, cm: 23.5 },
+            { us: 7, uk: 4.5, eu: 37.5, cm: 24 },
+            { us: 7.5, uk: 5, eu: 38, cm: 24.5 },
+            { us: 8, uk: 5.5, eu: 38.5, cm: 25 },
+            { us: 8.5, uk: 6, eu: 39, cm: 25.5 },
+            { us: 9, uk: 6.5, eu: 40, cm: 26 },
+            { us: 9.5, uk: 7, eu: 40.5, cm: 26.5 },
+            { us: 10, uk: 7.5, eu: 41, cm: 27 },
+            { us: 10.5, uk: 8, eu: 42, cm: 27.5 },
+            { us: 11, uk: 8.5, eu: 42.5, cm: 28 }
+        ];
+
+        const kidsChart = [
+            { us: 1, uk: 0.5, eu: 16, cm: 9 },
+            { us: 2, uk: 1, eu: 17, cm: 10 },
+            { us: 3, uk: 2, eu: 18, cm: 11 },
+            { us: 4, uk: 3, eu: 19, cm: 12 },
+            { us: 5, uk: 4, eu: 20, cm: 12.5 },
+            { us: 6, uk: 5, eu: 22, cm: 14 },
+            { us: 7, uk: 6, eu: 23, cm: 15 },
+            { us: 8, uk: 7, eu: 24, cm: 16 },
+            { us: 9, uk: 8, eu: 25, cm: 16.5 },
+            { us: 10, uk: 9, eu: 27, cm: 17.5 },
+            { us: 11, uk: 10, eu: 28, cm: 18 },
+            { us: 12, uk: 11, eu: 30, cm: 19 },
+            { us: 13, uk: 12, eu: 31, cm: 20 }
+        ];
+
+        function getChart() {
+            const gender = document.getElementById('gender').value;
+            if (gender === 'men') return menChart;
+            if (gender === 'women') return womenChart;
+            return kidsChart;
+        }
+
+        function findClosest(chart, system, size) {
+            let closest = chart[0];
+            let minDiff = Infinity;
+
+            for (const entry of chart) {
+                const diff = Math.abs(entry[system] - size);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closest = entry;
+                }
+            }
+            return closest;
+        }
+
+        function calculate() {
+            const gender = document.getElementById('gender').value;
+            const system = document.getElementById('system').value;
+            const size = parseFloat(document.getElementById('size').value) || 10;
+
+            const chart = getChart();
+            const converted = findClosest(chart, system, size);
+
+            // Update displays
+            document.getElementById('usSize').textContent = converted.us;
+            document.getElementById('ukSize').textContent = converted.uk;
+            document.getElementById('euSize').textContent = converted.eu;
+            document.getElementById('cmSize').textContent = converted.cm;
+
+            // Primary result shows EU
+            document.getElementById('result').textContent = 'EU ' + converted.eu;
+
+            const genderLabel = gender.charAt(0).toUpperCase() + gender.slice(1) + "'s";
+            document.getElementById('subtext').textContent = `${genderLabel} US ${converted.us} = UK ${converted.uk}`;
+
+            // Build chart table
+            const tbody = document.getElementById('chartBody');
+            tbody.innerHTML = chart.map(row => {
+                const isHighlight = row.us === converted.us;
+                return `<tr class="${isHighlight ? 'highlight' : ''}">
+                    <td>${row.us}</td>
+                    <td>${row.uk}</td>
+                    <td>${row.eu}</td>
+                    <td>${row.cm}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
