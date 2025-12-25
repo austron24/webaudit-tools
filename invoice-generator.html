@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Invoice Generator - Create Professional Invoices</title>
+    <meta name="description" content="Create professional invoices instantly. Add line items, tax, discounts. Download as PDF. Free invoice generator for freelancers and small business.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #059669 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .invoice-form {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        .section-title {
+            font-size: 14px;
+            color: #059669;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        .row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 12px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group textarea, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .input-group input:focus, .input-group textarea:focus {
+            outline: none;
+            border-color: #059669;
+        }
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        .items-table th {
+            background: #059669;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-size: 12px;
+        }
+        .items-table td {
+            padding: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .items-table input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .remove-btn {
+            background: #fee2e2;
+            color: #dc2626;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .add-item-btn {
+            background: #ecfdf5;
+            color: #059669;
+            border: 2px dashed #6ee7b7;
+            padding: 12px;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .add-item-btn:hover { background: #d1fae5; }
+        .totals {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .total-row:last-child { border: none; }
+        .total-row.grand {
+            font-size: 20px;
+            font-weight: bold;
+            color: #059669;
+            padding-top: 15px;
+        }
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background: #059669;
+            color: white;
+        }
+        .btn-primary:hover { background: #047857; }
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+        .btn-secondary:hover { background: #e2e8f0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #059669; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #047857;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #6ee7b7; }
+        @media (max-width: 600px) {
+            .row { grid-template-columns: 1fr; }
+        }
+        @media print {
+            body { background: white; }
+            .invoice-form { box-shadow: none; }
+            .actions, .tools-promo, header, footer { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Invoice Generator</h1>
+            <p class="subtitle">Create professional invoices in seconds</p>
+        </header>
+
+        <div class="invoice-form">
+            <div class="row">
+                <div class="section">
+                    <div class="section-title">Your Business</div>
+                    <div class="input-group">
+                        <label>Business Name</label>
+                        <input type="text" id="businessName" value="Your Company Name" oninput="updatePreview()">
+                    </div>
+                    <div class="input-group">
+                        <label>Address</label>
+                        <textarea id="businessAddress" rows="2" oninput="updatePreview()">123 Business St, City, State 12345</textarea>
+                    </div>
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="businessEmail" value="hello@company.com" oninput="updatePreview()">
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Bill To</div>
+                    <div class="input-group">
+                        <label>Client Name</label>
+                        <input type="text" id="clientName" value="Client Name" oninput="updatePreview()">
+                    </div>
+                    <div class="input-group">
+                        <label>Client Address</label>
+                        <textarea id="clientAddress" rows="2" oninput="updatePreview()">456 Client Ave, City, State 67890</textarea>
+                    </div>
+                    <div class="input-group">
+                        <label>Client Email</label>
+                        <input type="email" id="clientEmail" value="client@example.com" oninput="updatePreview()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="input-group">
+                    <label>Invoice Number</label>
+                    <input type="text" id="invoiceNumber" value="INV-001" oninput="updatePreview()">
+                </div>
+                <div class="input-group">
+                    <label>Invoice Date</label>
+                    <input type="date" id="invoiceDate" oninput="updatePreview()">
+                </div>
+                <div class="input-group">
+                    <label>Due Date</label>
+                    <input type="date" id="dueDate" oninput="updatePreview()">
+                </div>
+                <div class="input-group">
+                    <label>Currency</label>
+                    <select id="currency" onchange="updatePreview()">
+                        <option value="$">USD ($)</option>
+                        <option value="€">EUR (€)</option>
+                        <option value="£">GBP (£)</option>
+                        <option value="¥">JPY (¥)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Items</div>
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th style="width: 80px;">Qty</th>
+                            <th style="width: 100px;">Price</th>
+                            <th style="width: 100px;">Amount</th>
+                            <th style="width: 40px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="itemsBody"></tbody>
+                </table>
+                <button class="add-item-btn" onclick="addItem()">+ Add Line Item</button>
+            </div>
+
+            <div class="row">
+                <div class="input-group">
+                    <label>Tax Rate (%)</label>
+                    <input type="number" id="taxRate" value="0" min="0" max="100" step="0.1" oninput="calculateTotals()">
+                </div>
+                <div class="input-group">
+                    <label>Discount (%)</label>
+                    <input type="number" id="discount" value="0" min="0" max="100" step="0.1" oninput="calculateTotals()">
+                </div>
+            </div>
+
+            <div class="totals">
+                <div class="total-row">
+                    <span>Subtotal</span>
+                    <span id="subtotal">$0.00</span>
+                </div>
+                <div class="total-row">
+                    <span>Discount</span>
+                    <span id="discountAmount">-$0.00</span>
+                </div>
+                <div class="total-row">
+                    <span>Tax</span>
+                    <span id="taxAmount">$0.00</span>
+                </div>
+                <div class="total-row grand">
+                    <span>Total</span>
+                    <span id="grandTotal">$0.00</span>
+                </div>
+            </div>
+
+            <div class="input-group" style="margin-top: 20px;">
+                <label>Notes / Payment Terms</label>
+                <textarea id="notes" rows="3" placeholder="Payment is due within 30 days. Thank you for your business!"></textarea>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-secondary" onclick="window.print()">Print Invoice</button>
+                <button class="btn btn-primary" onclick="downloadPDF()">Download PDF</button>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Business Tools</h4>
+            <a href="percentage-calc.html">Percentage Calculator</a>
+            <a href="sales-tax.html">Sales Tax Calculator</a>
+            <a href="currency-converter.html">Currency Converter</a>
+            <a href="index.html">View All 85+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Invoice Generator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        let items = [];
+        let itemId = 0;
+
+        // Set default dates
+        const today = new Date();
+        document.getElementById('invoiceDate').value = today.toISOString().split('T')[0];
+        const dueDate = new Date(today);
+        dueDate.setDate(dueDate.getDate() + 30);
+        document.getElementById('dueDate').value = dueDate.toISOString().split('T')[0];
+
+        function addItem() {
+            items.push({
+                id: itemId++,
+                description: 'Service or product',
+                qty: 1,
+                price: 100
+            });
+            renderItems();
+        }
+
+        function removeItem(id) {
+            items = items.filter(item => item.id !== id);
+            renderItems();
+        }
+
+        function updateItem(id, field, value) {
+            const item = items.find(i => i.id === id);
+            if (item) {
+                item[field] = field === 'description' ? value : parseFloat(value) || 0;
+                calculateTotals();
+            }
+        }
+
+        function renderItems() {
+            const tbody = document.getElementById('itemsBody');
+            const currency = document.getElementById('currency').value;
+
+            tbody.innerHTML = items.map(item => `
+                <tr>
+                    <td><input type="text" value="${item.description}" onchange="updateItem(${item.id}, 'description', this.value)"></td>
+                    <td><input type="number" value="${item.qty}" min="0" step="1" onchange="updateItem(${item.id}, 'qty', this.value)"></td>
+                    <td><input type="number" value="${item.price}" min="0" step="0.01" onchange="updateItem(${item.id}, 'price', this.value)"></td>
+                    <td>${currency}${(item.qty * item.price).toFixed(2)}</td>
+                    <td><button class="remove-btn" onclick="removeItem(${item.id})">×</button></td>
+                </tr>
+            `).join('');
+
+            calculateTotals();
+        }
+
+        function calculateTotals() {
+            const currency = document.getElementById('currency').value;
+            const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
+            const discountRate = parseFloat(document.getElementById('discount').value) || 0;
+
+            const subtotal = items.reduce((sum, item) => sum + (item.qty * item.price), 0);
+            const discountAmount = subtotal * (discountRate / 100);
+            const afterDiscount = subtotal - discountAmount;
+            const taxAmount = afterDiscount * (taxRate / 100);
+            const grandTotal = afterDiscount + taxAmount;
+
+            document.getElementById('subtotal').textContent = currency + subtotal.toFixed(2);
+            document.getElementById('discountAmount').textContent = '-' + currency + discountAmount.toFixed(2);
+            document.getElementById('taxAmount').textContent = currency + taxAmount.toFixed(2);
+            document.getElementById('grandTotal').textContent = currency + grandTotal.toFixed(2);
+        }
+
+        function downloadPDF() {
+            alert('For PDF generation, use Print (Ctrl+P) and select "Save as PDF" as the destination. This works in all modern browsers!');
+            window.print();
+        }
+
+        function updatePreview() {
+            calculateTotals();
+        }
+
+        // Add initial items
+        addItem();
+        addItem();
+    </script>
+</body>
+</html>

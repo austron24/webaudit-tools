@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Sleep Calculator - What Time Should I Wake Up or Go to Bed?</title>
+    <meta name="description" content="Calculate the best time to wake up or go to sleep based on sleep cycles. Wake up refreshed, not groggy. Free sleep calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #312e81 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .mode-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .mode-btn {
+            flex: 1;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            background: white;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .mode-btn.active {
+            border-color: #6366f1;
+            background: #eef2ff;
+            color: #4338ca;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 18px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 24px;
+            text-align: center;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            background: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn:hover { background: #4f46e5; }
+        .results {
+            margin-top: 25px;
+            display: none;
+        }
+        .results-title {
+            text-align: center;
+            font-size: 18px;
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+        .time-cards {
+            display: grid;
+            gap: 12px;
+        }
+        .time-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .time-card.optimal {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+        }
+        .time-card .time {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .time-card .cycles {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        .time-card.optimal .cycles {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        .info-box {
+            background: #eef2ff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+        .info-box h4 {
+            color: #4338ca;
+            margin-bottom: 10px;
+        }
+        .info-box p {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.6;
+        }
+        .cycle-visual {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        .cycle-dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #c7d2fe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4338ca;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #6366f1; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #4f46e5;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #a5b4fc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sleep Calculator</h1>
+            <p class="subtitle">Wake up at the right time to feel refreshed</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="mode-toggle">
+                <button class="mode-btn active" onclick="setMode('wake')">When to wake up</button>
+                <button class="mode-btn" onclick="setMode('sleep')">When to go to bed</button>
+            </div>
+
+            <div id="wakeInput">
+                <div class="input-group">
+                    <label>I plan to fall asleep at:</label>
+                    <input type="time" id="sleepTime" value="23:00">
+                </div>
+            </div>
+
+            <div id="sleepInput" style="display: none;">
+                <div class="input-group">
+                    <label>I need to wake up at:</label>
+                    <input type="time" id="wakeTime" value="07:00">
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Best Times</button>
+
+            <div class="results" id="results">
+                <div class="results-title" id="resultsTitle">Best times to wake up:</div>
+                <div class="time-cards" id="timeCards"></div>
+            </div>
+
+            <div class="info-box">
+                <h4>How Sleep Cycles Work</h4>
+                <p>Each sleep cycle lasts about 90 minutes. Waking up between cycles (not during deep sleep) helps you feel more rested. Most people need 5-6 complete cycles (7.5-9 hours) per night.</p>
+                <div class="cycle-visual">
+                    <div class="cycle-dot">1</div>
+                    <div class="cycle-dot">2</div>
+                    <div class="cycle-dot">3</div>
+                    <div class="cycle-dot">4</div>
+                    <div class="cycle-dot">5</div>
+                    <div class="cycle-dot">6</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Health Tools</h4>
+            <a href="bmi-calculator.html">BMI Calculator</a>
+            <a href="calorie-calculator.html">Calorie Calculator</a>
+            <a href="age-calculator.html">Age Calculator</a>
+            <a href="index.html">View All 85+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Sleep Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        let mode = 'wake';
+        const CYCLE_MINUTES = 90;
+        const FALL_ASLEEP_MINUTES = 15;
+
+        function setMode(m) {
+            mode = m;
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('wakeInput').style.display = m === 'wake' ? 'block' : 'none';
+            document.getElementById('sleepInput').style.display = m === 'sleep' ? 'block' : 'none';
+            document.getElementById('results').style.display = 'none';
+        }
+
+        function formatTime(date) {
+            return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+        }
+
+        function calculate() {
+            const times = [];
+
+            if (mode === 'wake') {
+                // Calculate wake times from sleep time
+                const sleepTimeInput = document.getElementById('sleepTime').value;
+                const [hours, minutes] = sleepTimeInput.split(':').map(Number);
+                const sleepTime = new Date();
+                sleepTime.setHours(hours, minutes, 0, 0);
+
+                // Add time to fall asleep
+                sleepTime.setMinutes(sleepTime.getMinutes() + FALL_ASLEEP_MINUTES);
+
+                // Calculate 6, 5, 4, and 3 sleep cycles
+                for (let cycles = 6; cycles >= 3; cycles--) {
+                    const wakeTime = new Date(sleepTime);
+                    wakeTime.setMinutes(wakeTime.getMinutes() + (cycles * CYCLE_MINUTES));
+                    times.push({
+                        time: formatTime(wakeTime),
+                        cycles: cycles,
+                        hours: (cycles * CYCLE_MINUTES) / 60
+                    });
+                }
+
+                document.getElementById('resultsTitle').textContent = 'Best times to wake up:';
+            } else {
+                // Calculate bed times from wake time
+                const wakeTimeInput = document.getElementById('wakeTime').value;
+                const [hours, minutes] = wakeTimeInput.split(':').map(Number);
+                const wakeTime = new Date();
+                wakeTime.setHours(hours, minutes, 0, 0);
+
+                // Calculate backwards for 6, 5, 4, and 3 sleep cycles
+                for (let cycles = 6; cycles >= 3; cycles--) {
+                    const sleepTime = new Date(wakeTime);
+                    sleepTime.setMinutes(sleepTime.getMinutes() - (cycles * CYCLE_MINUTES) - FALL_ASLEEP_MINUTES);
+                    times.push({
+                        time: formatTime(sleepTime),
+                        cycles: cycles,
+                        hours: (cycles * CYCLE_MINUTES) / 60
+                    });
+                }
+
+                document.getElementById('resultsTitle').textContent = 'Best times to go to bed:';
+            }
+
+            // Display results
+            let cardsHTML = '';
+            times.forEach((t, i) => {
+                const isOptimal = t.cycles >= 5;
+                cardsHTML += `
+                    <div class="time-card ${isOptimal ? 'optimal' : ''}">
+                        <div>
+                            <div class="time">${t.time}</div>
+                        </div>
+                        <div class="cycles">${t.cycles} cycles (${t.hours} hours)</div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('timeCards').innerHTML = cardsHTML;
+            document.getElementById('results').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

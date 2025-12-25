@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Random Name Generator - Generate First & Last Names</title>
+    <meta name="description" content="Generate random names for characters, stories, games, or testing. First names, last names, or full names. Male, female, or any gender.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #7c3aed 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .option-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+        .option-group select, .option-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        .option-group select:focus, .option-group input:focus {
+            outline: none;
+            border-color: #7c3aed;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            background: #7c3aed;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn:hover { background: #6d28d9; }
+        .results {
+            margin-top: 25px;
+        }
+        .result-main {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin-bottom: 15px;
+        }
+        .result-main .name {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .copy-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .copy-btn:hover { background: rgba(255,255,255,0.3); }
+        .name-list {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 15px;
+        }
+        .name-list h4 {
+            color: #7c3aed;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .name-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .name-item:last-child { border: none; }
+        .name-item .text { font-size: 16px; }
+        .name-item button {
+            background: #ede9fe;
+            border: none;
+            color: #7c3aed;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .name-item button:hover { background: #ddd6fe; }
+        .export-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .export-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .export-btn:hover {
+            border-color: #7c3aed;
+            color: #7c3aed;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #7c3aed; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #6d28d9;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #c4b5fd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Random Name Generator</h1>
+            <p class="subtitle">Generate random names for any purpose</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="options-grid">
+                <div class="option-group">
+                    <label>Name Type</label>
+                    <select id="nameType">
+                        <option value="full">Full Name</option>
+                        <option value="first">First Name Only</option>
+                        <option value="last">Last Name Only</option>
+                    </select>
+                </div>
+                <div class="option-group">
+                    <label>Gender</label>
+                    <select id="gender">
+                        <option value="any">Any</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+                <div class="option-group">
+                    <label>Number of Names</label>
+                    <input type="number" id="count" value="5" min="1" max="100">
+                </div>
+                <div class="option-group">
+                    <label>Origin Style</label>
+                    <select id="origin">
+                        <option value="american">American</option>
+                        <option value="british">British</option>
+                        <option value="international">International Mix</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="generate()">
+                <span>Generate Names</span>
+            </button>
+
+            <div class="results" id="results" style="display: none;">
+                <div class="result-main">
+                    <div class="name" id="mainName">-</div>
+                    <button class="copy-btn" onclick="copyMain()">Copy Name</button>
+                </div>
+
+                <div class="name-list">
+                    <h4>Generated Names</h4>
+                    <div id="nameList"></div>
+                </div>
+
+                <div class="export-btns">
+                    <button class="export-btn" onclick="copyAll()">Copy All</button>
+                    <button class="export-btn" onclick="downloadCSV()">Download CSV</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Generator Tools</h4>
+            <a href="lorem-ipsum.html">Lorem Ipsum</a>
+            <a href="password-generator.html">Password Generator</a>
+            <a href="uuid-generator.html">UUID Generator</a>
+            <a href="index.html">View All 85+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Random Name Generator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const maleNames = ['James', 'John', 'Robert', 'Michael', 'William', 'David', 'Richard', 'Joseph', 'Thomas', 'Christopher', 'Daniel', 'Matthew', 'Anthony', 'Mark', 'Steven', 'Paul', 'Andrew', 'Joshua', 'Kenneth', 'Kevin', 'Brian', 'George', 'Timothy', 'Ronald', 'Edward', 'Jason', 'Jeffrey', 'Ryan', 'Jacob', 'Gary', 'Nicholas', 'Eric', 'Jonathan', 'Stephen', 'Larry', 'Justin', 'Scott', 'Brandon', 'Benjamin', 'Samuel'];
+
+        const femaleNames = ['Mary', 'Patricia', 'Jennifer', 'Linda', 'Barbara', 'Elizabeth', 'Susan', 'Jessica', 'Sarah', 'Karen', 'Lisa', 'Nancy', 'Betty', 'Margaret', 'Sandra', 'Ashley', 'Kimberly', 'Emily', 'Donna', 'Michelle', 'Dorothy', 'Carol', 'Amanda', 'Melissa', 'Deborah', 'Stephanie', 'Rebecca', 'Sharon', 'Laura', 'Cynthia', 'Kathleen', 'Amy', 'Angela', 'Shirley', 'Anna', 'Brenda', 'Pamela', 'Emma', 'Nicole', 'Helen'];
+
+        const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez', 'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin', 'Lee', 'Perez', 'Thompson', 'White', 'Harris', 'Sanchez', 'Clark', 'Ramirez', 'Lewis', 'Robinson', 'Walker', 'Young', 'Allen', 'King', 'Wright', 'Scott', 'Torres', 'Nguyen', 'Hill', 'Flores', 'Green', 'Adams', 'Nelson', 'Baker', 'Hall', 'Rivera', 'Campbell', 'Mitchell', 'Carter', 'Roberts'];
+
+        let generatedNames = [];
+
+        function getRandomItem(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function generateName(type, gender) {
+            let firstName = '';
+            let lastName = '';
+
+            if (type !== 'last') {
+                if (gender === 'male') {
+                    firstName = getRandomItem(maleNames);
+                } else if (gender === 'female') {
+                    firstName = getRandomItem(femaleNames);
+                } else {
+                    firstName = Math.random() > 0.5 ? getRandomItem(maleNames) : getRandomItem(femaleNames);
+                }
+            }
+
+            if (type !== 'first') {
+                lastName = getRandomItem(lastNames);
+            }
+
+            if (type === 'first') return firstName;
+            if (type === 'last') return lastName;
+            return firstName + ' ' + lastName;
+        }
+
+        function generate() {
+            const type = document.getElementById('nameType').value;
+            const gender = document.getElementById('gender').value;
+            const count = parseInt(document.getElementById('count').value) || 5;
+
+            generatedNames = [];
+            for (let i = 0; i < count; i++) {
+                generatedNames.push(generateName(type, gender));
+            }
+
+            // Show main name
+            document.getElementById('mainName').textContent = generatedNames[0];
+
+            // Show list
+            let listHTML = '';
+            generatedNames.forEach((name, i) => {
+                listHTML += `
+                    <div class="name-item">
+                        <span class="text">${name}</span>
+                        <button onclick="copyName('${name}')">Copy</button>
+                    </div>
+                `;
+            });
+            document.getElementById('nameList').innerHTML = listHTML;
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function copyName(name) {
+            navigator.clipboard.writeText(name);
+        }
+
+        function copyMain() {
+            navigator.clipboard.writeText(generatedNames[0]);
+        }
+
+        function copyAll() {
+            navigator.clipboard.writeText(generatedNames.join('\n'));
+        }
+
+        function downloadCSV() {
+            const csv = 'Name\n' + generatedNames.join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'random-names.csv';
+            a.click();
+        }
+
+        // Generate on load
+        generate();
+    </script>
+</body>
+</html>
