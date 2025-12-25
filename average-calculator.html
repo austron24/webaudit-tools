@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Average Calculator - Mean, Median, Mode Calculator</title>
+    <meta name="description" content="Calculate average (mean), median, mode, range, sum, and more. Enter numbers and get instant statistics. Free average calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0891b2 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        .input-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+            min-height: 100px;
+            resize: vertical;
+        }
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #0891b2;
+        }
+        .input-hint {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 5px;
+        }
+        .results {
+            margin-top: 25px;
+        }
+        .result-main {
+            background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+        .result-main .label { opacity: 0.9; }
+        .result-main .value { font-size: 48px; font-weight: bold; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .stat-item {
+            background: #f0fdfa;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+        .stat-item .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0891b2;
+        }
+        .stat-item .label {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .sorted-numbers {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .sorted-numbers h4 {
+            color: #0891b2;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .sorted-numbers .numbers {
+            font-family: monospace;
+            font-size: 14px;
+            word-break: break-all;
+        }
+        .presets {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .preset-btn {
+            padding: 8px 16px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .preset-btn:hover {
+            border-color: #0891b2;
+            background: #f0fdfa;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0891b2; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0e7490;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #67e8f9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Average Calculator</h1>
+            <p class="subtitle">Calculate mean, median, mode & more</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="presets">
+                <button class="preset-btn" onclick="setPreset('1, 2, 3, 4, 5')">Example Set</button>
+                <button class="preset-btn" onclick="setPreset('85, 90, 78, 92, 88')">Test Scores</button>
+                <button class="preset-btn" onclick="clearInput()">Clear</button>
+            </div>
+
+            <div class="input-group">
+                <label>Enter Numbers</label>
+                <textarea id="numbers" placeholder="Enter numbers separated by commas, spaces, or new lines...">85, 90, 78, 92, 88, 95, 82</textarea>
+                <div class="input-hint">Separate numbers with commas, spaces, or new lines</div>
+            </div>
+
+            <div class="results" id="results">
+                <div class="result-main">
+                    <div class="label">Average (Mean)</div>
+                    <div class="value" id="mean">0</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="value" id="median">0</div>
+                        <div class="label">Median</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="value" id="mode">0</div>
+                        <div class="label">Mode</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="value" id="range">0</div>
+                        <div class="label">Range</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="value" id="sum">0</div>
+                        <div class="label">Sum</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="value" id="count">0</div>
+                        <div class="label">Count</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="value" id="min">0</div>
+                        <div class="label">Minimum</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="value" id="max">0</div>
+                        <div class="label">Maximum</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="value" id="stddev">0</div>
+                        <div class="label">Std Deviation</div>
+                    </div>
+                </div>
+
+                <div class="sorted-numbers">
+                    <h4>Sorted Numbers</h4>
+                    <div class="numbers" id="sorted">-</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Math Tools</h4>
+            <a href="percentage-calc.html">Percentage Calculator</a>
+            <a href="fraction-calculator.html">Fraction Calculator</a>
+            <a href="grade-calculator.html">Grade Calculator</a>
+            <a href="index.html">View All 80+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Average Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function setPreset(text) {
+            document.getElementById('numbers').value = text;
+            calculate();
+        }
+
+        function clearInput() {
+            document.getElementById('numbers').value = '';
+            calculate();
+        }
+
+        function calculate() {
+            const input = document.getElementById('numbers').value;
+            const numbers = input.split(/[\s,\n]+/)
+                .map(n => parseFloat(n.trim()))
+                .filter(n => !isNaN(n));
+
+            if (numbers.length === 0) {
+                document.getElementById('mean').textContent = '0';
+                document.getElementById('median').textContent = '0';
+                document.getElementById('mode').textContent = '-';
+                document.getElementById('range').textContent = '0';
+                document.getElementById('sum').textContent = '0';
+                document.getElementById('count').textContent = '0';
+                document.getElementById('min').textContent = '-';
+                document.getElementById('max').textContent = '-';
+                document.getElementById('stddev').textContent = '0';
+                document.getElementById('sorted').textContent = '-';
+                return;
+            }
+
+            const sorted = [...numbers].sort((a, b) => a - b);
+            const sum = numbers.reduce((a, b) => a + b, 0);
+            const mean = sum / numbers.length;
+            const min = Math.min(...numbers);
+            const max = Math.max(...numbers);
+            const range = max - min;
+
+            // Median
+            const mid = Math.floor(sorted.length / 2);
+            const median = sorted.length % 2 !== 0
+                ? sorted[mid]
+                : (sorted[mid - 1] + sorted[mid]) / 2;
+
+            // Mode
+            const frequency = {};
+            numbers.forEach(n => frequency[n] = (frequency[n] || 0) + 1);
+            const maxFreq = Math.max(...Object.values(frequency));
+            const modes = Object.keys(frequency).filter(n => frequency[n] === maxFreq);
+            const mode = maxFreq === 1 ? 'No mode' : modes.join(', ');
+
+            // Standard deviation
+            const squaredDiffs = numbers.map(n => Math.pow(n - mean, 2));
+            const avgSquaredDiff = squaredDiffs.reduce((a, b) => a + b, 0) / numbers.length;
+            const stddev = Math.sqrt(avgSquaredDiff);
+
+            document.getElementById('mean').textContent = mean.toFixed(2);
+            document.getElementById('median').textContent = median.toFixed(2);
+            document.getElementById('mode').textContent = mode;
+            document.getElementById('range').textContent = range.toFixed(2);
+            document.getElementById('sum').textContent = sum.toLocaleString();
+            document.getElementById('count').textContent = numbers.length;
+            document.getElementById('min').textContent = min;
+            document.getElementById('max').textContent = max;
+            document.getElementById('stddev').textContent = stddev.toFixed(2);
+            document.getElementById('sorted').textContent = sorted.join(', ');
+        }
+
+        document.getElementById('numbers').addEventListener('input', calculate);
+        calculate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Scientific Calculator - Online Calculator with Functions</title>
+    <meta name="description" content="Free online scientific calculator. Sin, cos, tan, log, exponents, square roots, and more. Advanced math functions.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .calculator {
+            background: #1e293b;
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 400px;
+        }
+        .display {
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .expression {
+            font-size: 16px;
+            color: #94a3b8;
+            min-height: 24px;
+            text-align: right;
+            word-break: break-all;
+        }
+        .result {
+            font-size: 42px;
+            font-weight: bold;
+            text-align: right;
+            min-height: 50px;
+            word-break: break-all;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+        button {
+            padding: 18px 10px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+        button:active { transform: scale(0.95); }
+        .btn-number {
+            background: #334155;
+            color: white;
+        }
+        .btn-number:hover { background: #475569; }
+        .btn-op {
+            background: #3b82f6;
+            color: white;
+        }
+        .btn-op:hover { background: #2563eb; }
+        .btn-func {
+            background: #1e40af;
+            color: white;
+            font-size: 14px;
+        }
+        .btn-func:hover { background: #1d4ed8; }
+        .btn-special {
+            background: #64748b;
+            color: white;
+        }
+        .btn-special:hover { background: #475569; }
+        .btn-equals {
+            background: #22c55e;
+            color: white;
+            grid-column: span 1;
+        }
+        .btn-equals:hover { background: #16a34a; }
+        .btn-clear {
+            background: #ef4444;
+            color: white;
+        }
+        .btn-clear:hover { background: #dc2626; }
+        .mode-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .mode-btn {
+            flex: 1;
+            padding: 10px;
+            background: #334155;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .mode-btn.active {
+            background: #3b82f6;
+        }
+        .history {
+            margin-top: 20px;
+            padding: 15px;
+            background: #0f172a;
+            border-radius: 12px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .history-title {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 10px;
+        }
+        .history-item {
+            font-size: 14px;
+            color: #94a3b8;
+            padding: 5px 0;
+            border-bottom: 1px solid #1e293b;
+        }
+        .history-item:last-child { border: none; }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #60a5fa;
+            text-decoration: none;
+        }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="calculator">
+            <div class="mode-toggle">
+                <button class="mode-btn active" onclick="setMode('deg')">DEG</button>
+                <button class="mode-btn" onclick="setMode('rad')">RAD</button>
+            </div>
+
+            <div class="display">
+                <div class="expression" id="expression"></div>
+                <div class="result" id="result">0</div>
+            </div>
+
+            <div class="buttons">
+                <button class="btn-func" onclick="addFunc('sin(')">sin</button>
+                <button class="btn-func" onclick="addFunc('cos(')">cos</button>
+                <button class="btn-func" onclick="addFunc('tan(')">tan</button>
+                <button class="btn-func" onclick="addFunc('log(')">log</button>
+                <button class="btn-func" onclick="addFunc('ln(')">ln</button>
+
+                <button class="btn-func" onclick="addFunc('asin(')">sin⁻¹</button>
+                <button class="btn-func" onclick="addFunc('acos(')">cos⁻¹</button>
+                <button class="btn-func" onclick="addFunc('atan(')">tan⁻¹</button>
+                <button class="btn-func" onclick="addFunc('sqrt(')">√</button>
+                <button class="btn-func" onclick="append('^')">x^y</button>
+
+                <button class="btn-func" onclick="append('Math.PI')">π</button>
+                <button class="btn-func" onclick="append('Math.E')">e</button>
+                <button class="btn-func" onclick="append('('))">(</button>
+                <button class="btn-func" onclick="append(')')">)</button>
+                <button class="btn-func" onclick="addFunc('abs(')">|x|</button>
+
+                <button class="btn-clear" onclick="clearAll()">AC</button>
+                <button class="btn-special" onclick="backspace()">⌫</button>
+                <button class="btn-special" onclick="append('%')">%</button>
+                <button class="btn-op" onclick="append('/')">÷</button>
+                <button class="btn-func" onclick="addFunc('factorial(')">n!</button>
+
+                <button class="btn-number" onclick="append('7')">7</button>
+                <button class="btn-number" onclick="append('8')">8</button>
+                <button class="btn-number" onclick="append('9')">9</button>
+                <button class="btn-op" onclick="append('*')">×</button>
+                <button class="btn-func" onclick="square()">x²</button>
+
+                <button class="btn-number" onclick="append('4')">4</button>
+                <button class="btn-number" onclick="append('5')">5</button>
+                <button class="btn-number" onclick="append('6')">6</button>
+                <button class="btn-op" onclick="append('-')">−</button>
+                <button class="btn-func" onclick="append('^(1/3)')">∛</button>
+
+                <button class="btn-number" onclick="append('1')">1</button>
+                <button class="btn-number" onclick="append('2')">2</button>
+                <button class="btn-number" onclick="append('3')">3</button>
+                <button class="btn-op" onclick="append('+')">+</button>
+                <button class="btn-func" onclick="inverse()">1/x</button>
+
+                <button class="btn-number" onclick="append('0')">0</button>
+                <button class="btn-number" onclick="append('00')">00</button>
+                <button class="btn-number" onclick="append('.')">.</button>
+                <button class="btn-equals" onclick="calculate()">=</button>
+                <button class="btn-special" onclick="negate()">±</button>
+            </div>
+
+            <div class="history">
+                <div class="history-title">HISTORY</div>
+                <div id="history"></div>
+            </div>
+        </div>
+        <a href="index.html" class="back-link">← Back to All Tools</a>
+    </div>
+
+    <script>
+        let expression = '';
+        let mode = 'deg';
+        const history = [];
+
+        function setMode(m) {
+            mode = m;
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function append(val) {
+            expression += val;
+            document.getElementById('expression').textContent = expression;
+        }
+
+        function addFunc(func) {
+            expression += func;
+            document.getElementById('expression').textContent = expression;
+        }
+
+        function clearAll() {
+            expression = '';
+            document.getElementById('expression').textContent = '';
+            document.getElementById('result').textContent = '0';
+        }
+
+        function backspace() {
+            expression = expression.slice(0, -1);
+            document.getElementById('expression').textContent = expression;
+        }
+
+        function square() {
+            expression += '^2';
+            document.getElementById('expression').textContent = expression;
+        }
+
+        function inverse() {
+            expression = '1/(' + expression + ')';
+            document.getElementById('expression').textContent = expression;
+        }
+
+        function negate() {
+            if (expression.startsWith('-')) {
+                expression = expression.slice(1);
+            } else {
+                expression = '-' + expression;
+            }
+            document.getElementById('expression').textContent = expression;
+        }
+
+        function factorial(n) {
+            if (n < 0) return NaN;
+            if (n === 0 || n === 1) return 1;
+            let result = 1;
+            for (let i = 2; i <= n; i++) result *= i;
+            return result;
+        }
+
+        function calculate() {
+            try {
+                let expr = expression
+                    .replace(/sin\(/g, mode === 'deg' ? 'Math.sin(Math.PI/180*' : 'Math.sin(')
+                    .replace(/cos\(/g, mode === 'deg' ? 'Math.cos(Math.PI/180*' : 'Math.cos(')
+                    .replace(/tan\(/g, mode === 'deg' ? 'Math.tan(Math.PI/180*' : 'Math.tan(')
+                    .replace(/asin\(/g, mode === 'deg' ? '(180/Math.PI)*Math.asin(' : 'Math.asin(')
+                    .replace(/acos\(/g, mode === 'deg' ? '(180/Math.PI)*Math.acos(' : 'Math.acos(')
+                    .replace(/atan\(/g, mode === 'deg' ? '(180/Math.PI)*Math.atan(' : 'Math.atan(')
+                    .replace(/log\(/g, 'Math.log10(')
+                    .replace(/ln\(/g, 'Math.log(')
+                    .replace(/sqrt\(/g, 'Math.sqrt(')
+                    .replace(/abs\(/g, 'Math.abs(')
+                    .replace(/\^/g, '**');
+
+                const result = eval(expr);
+                const displayResult = Number.isInteger(result) ? result : result.toFixed(8).replace(/\.?0+$/, '');
+
+                document.getElementById('result').textContent = displayResult;
+
+                history.unshift(`${expression} = ${displayResult}`);
+                if (history.length > 10) history.pop();
+                updateHistory();
+
+                expression = displayResult.toString();
+            } catch (e) {
+                document.getElementById('result').textContent = 'Error';
+            }
+        }
+
+        function updateHistory() {
+            document.getElementById('history').innerHTML = history
+                .map(h => `<div class="history-item">${h}</div>`)
+                .join('');
+        }
+
+        // Keyboard support
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '0' && e.key <= '9') append(e.key);
+            else if (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') append(e.key);
+            else if (e.key === '.') append('.');
+            else if (e.key === 'Enter' || e.key === '=') calculate();
+            else if (e.key === 'Escape') clearAll();
+            else if (e.key === 'Backspace') backspace();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Grade Calculator - Calculate Your Class Grade</title>
+    <meta name="description" content="Calculate your final grade. Weighted grade calculator for assignments, tests, and exams. What grade do I need? Free grade calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #2563eb 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+        .calc-card h3 {
+            color: #2563eb;
+            margin-bottom: 20px;
+        }
+        .grade-display {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            color: white;
+            margin-bottom: 25px;
+        }
+        .grade-display .percent { font-size: 48px; font-weight: bold; }
+        .grade-display .letter { font-size: 32px; margin-top: 5px; }
+        .items-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 40px;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 2px solid #e2e8f0;
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+        .grade-item {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 40px;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
+            align-items: center;
+        }
+        .grade-item input {
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .grade-item input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+        .remove-btn {
+            background: #fee2e2;
+            color: #dc2626;
+            border: none;
+            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .add-btn {
+            width: 100%;
+            padding: 12px;
+            background: #eff6ff;
+            color: #2563eb;
+            border: 2px dashed #93c5fd;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .add-btn:hover { background: #dbeafe; }
+        .what-need {
+            background: #eff6ff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .what-need h4 { color: #2563eb; margin-bottom: 15px; }
+        .need-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .need-row span { color: #64748b; }
+        .need-row input, .need-row select {
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .need-result {
+            margin-top: 15px;
+            font-size: 20px;
+            font-weight: 600;
+            color: #2563eb;
+        }
+        .scale-info {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .scale-info h4 { color: #2563eb; margin-bottom: 10px; font-size: 14px; }
+        .scale-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            font-size: 13px;
+        }
+        .scale-item {
+            background: white;
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .scale-item .letter { font-weight: 600; color: #2563eb; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #2563eb; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #1d4ed8;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #93c5fd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Grade Calculator</h1>
+            <p class="subtitle">Calculate your weighted class grade</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="grade-display">
+                <div class="percent" id="finalPercent">0%</div>
+                <div class="letter" id="finalLetter">N/A</div>
+            </div>
+
+            <h3>Your Grades</h3>
+            <div class="items-header">
+                <span>Assignment</span>
+                <span>Grade (%)</span>
+                <span>Weight (%)</span>
+                <span></span>
+            </div>
+            <div id="gradeItems"></div>
+            <button class="add-btn" onclick="addItem()">+ Add Assignment</button>
+
+            <div class="what-need">
+                <h4>What Grade Do I Need?</h4>
+                <div class="need-row">
+                    <span>I want a</span>
+                    <select id="targetGrade">
+                        <option value="90">A (90%)</option>
+                        <option value="80">B (80%)</option>
+                        <option value="70">C (70%)</option>
+                        <option value="60">D (60%)</option>
+                    </select>
+                    <span>and the final is worth</span>
+                    <input type="number" id="finalWeight" value="20" style="width: 60px;">
+                    <span>%</span>
+                </div>
+                <div class="need-result" id="needResult">Add grades above to calculate</div>
+            </div>
+
+            <div class="scale-info">
+                <h4>Grading Scale</h4>
+                <div class="scale-grid">
+                    <div class="scale-item"><div class="letter">A</div>90-100</div>
+                    <div class="scale-item"><div class="letter">B</div>80-89</div>
+                    <div class="scale-item"><div class="letter">C</div>70-79</div>
+                    <div class="scale-item"><div class="letter">D</div>60-69</div>
+                    <div class="scale-item"><div class="letter">F</div>0-59</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Education Tools</h4>
+            <a href="gpa-calculator.html">GPA Calculator</a>
+            <a href="percentage-calc.html">Percentage Calculator</a>
+            <a href="fraction-calculator.html">Fraction Calculator</a>
+            <a href="index.html">View All 80+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Grade Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        let itemId = 0;
+
+        function addItem() {
+            const container = document.getElementById('gradeItems');
+            const id = itemId++;
+            const div = document.createElement('div');
+            div.className = 'grade-item';
+            div.id = `item-${id}`;
+            div.innerHTML = `
+                <input type="text" placeholder="Assignment name" oninput="calculate()">
+                <input type="number" placeholder="Grade" value="85" min="0" max="100" oninput="calculate()">
+                <input type="number" placeholder="Weight" value="20" min="0" max="100" oninput="calculate()">
+                <button class="remove-btn" onclick="removeItem(${id})">×</button>
+            `;
+            container.appendChild(div);
+            calculate();
+        }
+
+        function removeItem(id) {
+            document.getElementById(`item-${id}`).remove();
+            calculate();
+        }
+
+        function getLetterGrade(percent) {
+            if (percent >= 90) return 'A';
+            if (percent >= 80) return 'B';
+            if (percent >= 70) return 'C';
+            if (percent >= 60) return 'D';
+            return 'F';
+        }
+
+        function calculate() {
+            const items = document.querySelectorAll('.grade-item');
+            let totalWeighted = 0;
+            let totalWeight = 0;
+
+            items.forEach(item => {
+                const inputs = item.querySelectorAll('input');
+                const grade = parseFloat(inputs[1].value) || 0;
+                const weight = parseFloat(inputs[2].value) || 0;
+                totalWeighted += grade * weight;
+                totalWeight += weight;
+            });
+
+            const finalGrade = totalWeight > 0 ? totalWeighted / totalWeight : 0;
+
+            document.getElementById('finalPercent').textContent = finalGrade.toFixed(1) + '%';
+            document.getElementById('finalLetter').textContent = getLetterGrade(finalGrade);
+
+            // What grade do I need calculation
+            const targetGrade = parseFloat(document.getElementById('targetGrade').value);
+            const finalWeight = parseFloat(document.getElementById('finalWeight').value) || 0;
+
+            if (totalWeight > 0 && finalWeight > 0) {
+                const currentWeight = totalWeight;
+                const currentPoints = totalWeighted / 100;
+                const neededPoints = (targetGrade / 100) * (currentWeight + finalWeight);
+                const neededOnFinal = ((neededPoints - currentPoints) / finalWeight) * 100;
+
+                if (neededOnFinal > 100) {
+                    document.getElementById('needResult').textContent = `You need more than 100% on the final. Target may not be achievable.`;
+                } else if (neededOnFinal < 0) {
+                    document.getElementById('needResult').textContent = `You've already achieved this grade!`;
+                } else {
+                    document.getElementById('needResult').textContent = `You need ${neededOnFinal.toFixed(1)}% on the final to get a ${getLetterGrade(targetGrade)}`;
+                }
+            }
+        }
+
+        // Add initial items
+        addItem();
+        addItem();
+        addItem();
+
+        document.getElementById('targetGrade').addEventListener('change', calculate);
+        document.getElementById('finalWeight').addEventListener('input', calculate);
+    </script>
+</body>
+</html>
