@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Character Counter - Count Characters Online</title>
+    <meta name="description" content="Count characters, words, sentences, and paragraphs. Track Twitter, Instagram, Facebook limits. Free online character counter tool.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #8b5cf6 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 15px;
+            text-align: center;
+            color: #1e293b;
+        }
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #8b5cf6;
+        }
+        .stat-card .label {
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+        .editor-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            color: #1e293b;
+        }
+        .editor-card textarea {
+            width: 100%;
+            height: 250px;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            line-height: 1.6;
+            resize: vertical;
+        }
+        .editor-card textarea:focus {
+            outline: none;
+            border-color: #8b5cf6;
+        }
+        .limits-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .limits-section h4 {
+            color: #8b5cf6;
+            margin-bottom: 15px;
+        }
+        .limits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .limit-card {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .limit-card .platform {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .limit-card .progress-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .limit-card .progress {
+            height: 100%;
+            background: #8b5cf6;
+            transition: width 0.3s, background 0.3s;
+        }
+        .limit-card .progress.warning { background: #f59e0b; }
+        .limit-card .progress.danger { background: #dc2626; }
+        .limit-card .count {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: #8b5cf6; color: white; }
+        .btn-primary:hover { background: #7c3aed; }
+        .btn-secondary { background: #e2e8f0; color: #475569; }
+        .btn-secondary:hover { background: #cbd5e1; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #8b5cf6; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #7c3aed;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        .cta-section {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 25px;
+        }
+        .cta-section a {
+            display: inline-block;
+            background: white;
+            color: #8b5cf6;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #c4b5fd; }
+        @media (max-width: 600px) {
+            .stats-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Character Counter</h1>
+            <p class="subtitle">Count characters with social media limits</p>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="value" id="charCount">0</div>
+                <div class="label">Characters</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="charNoSpace">0</div>
+                <div class="label">No Spaces</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="wordCount">0</div>
+                <div class="label">Words</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="sentenceCount">0</div>
+                <div class="label">Sentences</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="paraCount">0</div>
+                <div class="label">Paragraphs</div>
+            </div>
+        </div>
+
+        <div class="editor-card">
+            <textarea id="textInput" placeholder="Start typing or paste your text here..." oninput="updateCounts()"></textarea>
+
+            <div class="btn-row">
+                <button class="btn btn-primary" onclick="copyText()">📋 Copy</button>
+                <button class="btn btn-secondary" onclick="clearText()">🗑️ Clear</button>
+                <button class="btn btn-secondary" onclick="pasteText()">📥 Paste</button>
+            </div>
+
+            <div class="limits-section">
+                <h4>Social Media Limits</h4>
+                <div class="limits-grid">
+                    <div class="limit-card">
+                        <div class="platform">🐦 Twitter/X Post</div>
+                        <div class="progress-bar">
+                            <div class="progress" id="twitterProgress"></div>
+                        </div>
+                        <div class="count" id="twitterCount">0 / 280</div>
+                    </div>
+                    <div class="limit-card">
+                        <div class="platform">📸 Instagram Caption</div>
+                        <div class="progress-bar">
+                            <div class="progress" id="instagramProgress"></div>
+                        </div>
+                        <div class="count" id="instagramCount">0 / 2,200</div>
+                    </div>
+                    <div class="limit-card">
+                        <div class="platform">📘 Facebook Post</div>
+                        <div class="progress-bar">
+                            <div class="progress" id="facebookProgress"></div>
+                        </div>
+                        <div class="count" id="facebookCount">0 / 63,206</div>
+                    </div>
+                    <div class="limit-card">
+                        <div class="platform">💼 LinkedIn Post</div>
+                        <div class="progress-bar">
+                            <div class="progress" id="linkedinProgress"></div>
+                        </div>
+                        <div class="count" id="linkedinCount">0 / 3,000</div>
+                    </div>
+                    <div class="limit-card">
+                        <div class="platform">📧 Email Subject</div>
+                        <div class="progress-bar">
+                            <div class="progress" id="emailProgress"></div>
+                        </div>
+                        <div class="count" id="emailCount">0 / 60</div>
+                    </div>
+                    <div class="limit-card">
+                        <div class="platform">🔍 Meta Description</div>
+                        <div class="progress-bar">
+                            <div class="progress" id="metaProgress"></div>
+                        </div>
+                        <div class="count" id="metaCount">0 / 160</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Text Tools</h4>
+            <a href="word-counter.html">Word Counter</a>
+            <a href="case-converter.html">Case Converter</a>
+            <a href="lorem-ipsum.html">Lorem Ipsum Generator</a>
+            <a href="index.html">View All 50+ Tools</a>
+        </div>
+
+        <div class="cta-section">
+            <h3>Need SEO Optimization?</h3>
+            <p>Get professional website audit and content analysis.</p>
+            <a href="https://fiverr.com/austron24" target="_blank">Get Professional Audit</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Character Counter by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const limits = {
+            twitter: { max: 280, el: 'twitter' },
+            instagram: { max: 2200, el: 'instagram' },
+            facebook: { max: 63206, el: 'facebook' },
+            linkedin: { max: 3000, el: 'linkedin' },
+            email: { max: 60, el: 'email' },
+            meta: { max: 160, el: 'meta' }
+        };
+
+        function updateCounts() {
+            const text = document.getElementById('textInput').value;
+
+            // Basic counts
+            const chars = text.length;
+            const charsNoSpace = text.replace(/\s/g, '').length;
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            const sentences = text.split(/[.!?]+/).filter(s => s.trim()).length;
+            const paragraphs = text.split(/\n\n+/).filter(p => p.trim()).length;
+
+            document.getElementById('charCount').textContent = chars.toLocaleString();
+            document.getElementById('charNoSpace').textContent = charsNoSpace.toLocaleString();
+            document.getElementById('wordCount').textContent = words.toLocaleString();
+            document.getElementById('sentenceCount').textContent = sentences;
+            document.getElementById('paraCount').textContent = paragraphs || (text.trim() ? 1 : 0);
+
+            // Update platform limits
+            for (const [key, limit] of Object.entries(limits)) {
+                const progress = document.getElementById(limit.el + 'Progress');
+                const count = document.getElementById(limit.el + 'Count');
+                const percent = Math.min((chars / limit.max) * 100, 100);
+
+                progress.style.width = percent + '%';
+                progress.className = 'progress';
+                if (percent >= 100) {
+                    progress.classList.add('danger');
+                } else if (percent >= 80) {
+                    progress.classList.add('warning');
+                }
+
+                count.textContent = `${chars.toLocaleString()} / ${limit.max.toLocaleString()}`;
+            }
+        }
+
+        function copyText() {
+            const text = document.getElementById('textInput').value;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Text copied!');
+            });
+        }
+
+        function clearText() {
+            document.getElementById('textInput').value = '';
+            updateCounts();
+        }
+
+        async function pasteText() {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('textInput').value = text;
+                updateCounts();
+            } catch (e) {
+                alert('Could not access clipboard');
+            }
+        }
+
+        // Initialize
+        updateCounts();
+    </script>
+</body>
+</html>
