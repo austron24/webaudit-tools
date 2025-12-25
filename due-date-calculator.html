@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Due Date Calculator - When Is My Baby Due?</title>
+    <meta name="description" content="Calculate your pregnancy due date based on last menstrual period or conception date. Track pregnancy milestones and trimester progress. Free due date calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #ec4899 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #ec4899;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 36px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .progress-section {
+            background: #fdf2f8;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .progress-section h4 {
+            color: #db2777;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .progress-bar {
+            height: 20px;
+            background: #fce7f3;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #ec4899, #db2777);
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #64748b;
+        }
+        .milestones {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .milestone-item {
+            background: #fdf2f8;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .milestone-item .value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #db2777;
+        }
+        .milestone-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .trimester-info {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .trimester-info h4 {
+            color: #db2777;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tri-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .tri-row:last-child { border: none; }
+        .tri-row.active {
+            color: #db2777;
+            font-weight: bold;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #db2777; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #ec4899;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #f9a8d4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Due Date Calculator</h1>
+            <p class="subtitle">When is your baby due?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Calculate Based On</label>
+                <select id="method" onchange="calculate()">
+                    <option value="lmp" selected>Last Menstrual Period (LMP)</option>
+                    <option value="conception">Conception Date</option>
+                    <option value="ultrasound">Ultrasound Date</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label id="dateLabel">First Day of Last Period</label>
+                <input type="date" id="startDate" onchange="calculate()">
+            </div>
+
+            <div class="input-group" id="weeksGroup" style="display: none;">
+                <label>Weeks Pregnant at Ultrasound</label>
+                <input type="number" id="weeks" value="8" min="4" max="40" step="1" oninput="calculate()">
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Due Date</div>
+                <div class="value" id="dueDate">Select a date</div>
+                <div class="sub" id="weeksPregnant">-</div>
+            </div>
+
+            <div class="progress-section">
+                <h4>Pregnancy Progress</h4>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%;"></div>
+                </div>
+                <div class="progress-labels">
+                    <span>Week 1</span>
+                    <span id="currentWeek">Week 0</span>
+                    <span>Week 40</span>
+                </div>
+            </div>
+
+            <div class="milestones">
+                <div class="milestone-item">
+                    <div class="value" id="conceptionDate">-</div>
+                    <div class="label">Conception Date</div>
+                </div>
+                <div class="milestone-item">
+                    <div class="value" id="daysLeft">-</div>
+                    <div class="label">Days Until Due</div>
+                </div>
+                <div class="milestone-item">
+                    <div class="value" id="trimester">-</div>
+                    <div class="label">Current Trimester</div>
+                </div>
+                <div class="milestone-item">
+                    <div class="value" id="fetalAge">-</div>
+                    <div class="label">Fetal Age</div>
+                </div>
+            </div>
+
+            <div class="trimester-info">
+                <h4>Trimester Breakdown</h4>
+                <div class="tri-row" id="tri1">
+                    <span>1st Trimester (Weeks 1-12)</span>
+                    <span id="tri1dates">-</span>
+                </div>
+                <div class="tri-row" id="tri2">
+                    <span>2nd Trimester (Weeks 13-26)</span>
+                    <span id="tri2dates">-</span>
+                </div>
+                <div class="tri-row" id="tri3">
+                    <span>3rd Trimester (Weeks 27-40)</span>
+                    <span id="tri3dates">-</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Health Tools</h4>
+            <a href="ovulation-calculator.html">Ovulation Calculator</a>
+            <a href="pregnancy-calculator.html">Pregnancy Weight</a>
+            <a href="age-calculator.html">Age Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Due Date Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        // Set default date to today
+        document.getElementById('startDate').valueAsDate = new Date();
+
+        function formatDate(date) {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        function formatShortDate(date) {
+            const options = { month: 'short', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        function calculate() {
+            const method = document.getElementById('method').value;
+            const startDateInput = document.getElementById('startDate').value;
+            const weeksAtUltrasound = parseInt(document.getElementById('weeks').value) || 8;
+
+            // Update labels based on method
+            if (method === 'lmp') {
+                document.getElementById('dateLabel').textContent = 'First Day of Last Period';
+                document.getElementById('weeksGroup').style.display = 'none';
+            } else if (method === 'conception') {
+                document.getElementById('dateLabel').textContent = 'Conception Date';
+                document.getElementById('weeksGroup').style.display = 'none';
+            } else {
+                document.getElementById('dateLabel').textContent = 'Ultrasound Date';
+                document.getElementById('weeksGroup').style.display = 'block';
+            }
+
+            if (!startDateInput) {
+                document.getElementById('dueDate').textContent = 'Select a date';
+                document.getElementById('weeksPregnant').textContent = '-';
+                return;
+            }
+
+            const startDate = new Date(startDateInput + 'T00:00:00');
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            let lmpDate, dueDate, conceptionDate;
+
+            if (method === 'lmp') {
+                lmpDate = new Date(startDate);
+                dueDate = new Date(lmpDate);
+                dueDate.setDate(dueDate.getDate() + 280); // 40 weeks
+                conceptionDate = new Date(lmpDate);
+                conceptionDate.setDate(conceptionDate.getDate() + 14);
+            } else if (method === 'conception') {
+                conceptionDate = new Date(startDate);
+                lmpDate = new Date(conceptionDate);
+                lmpDate.setDate(lmpDate.getDate() - 14);
+                dueDate = new Date(lmpDate);
+                dueDate.setDate(dueDate.getDate() + 280);
+            } else {
+                // Ultrasound
+                const ultrasoundDate = new Date(startDate);
+                lmpDate = new Date(ultrasoundDate);
+                lmpDate.setDate(lmpDate.getDate() - (weeksAtUltrasound * 7));
+                dueDate = new Date(lmpDate);
+                dueDate.setDate(dueDate.getDate() + 280);
+                conceptionDate = new Date(lmpDate);
+                conceptionDate.setDate(conceptionDate.getDate() + 14);
+            }
+
+            // Calculate current progress
+            const daysSinceLMP = Math.floor((today - lmpDate) / (1000 * 60 * 60 * 24));
+            const weeksPregnant = Math.floor(daysSinceLMP / 7);
+            const daysExtra = daysSinceLMP % 7;
+            const daysUntilDue = Math.floor((dueDate - today) / (1000 * 60 * 60 * 24));
+
+            // Fetal age (2 weeks less than gestational age)
+            const fetalWeeks = Math.max(0, weeksPregnant - 2);
+            const fetalDays = daysExtra;
+
+            // Determine trimester
+            let trimester = '1st';
+            if (weeksPregnant >= 27) trimester = '3rd';
+            else if (weeksPregnant >= 13) trimester = '2nd';
+
+            // Update display
+            document.getElementById('dueDate').textContent = formatDate(dueDate);
+
+            if (daysSinceLMP < 0) {
+                document.getElementById('weeksPregnant').textContent = 'Date is in the future';
+            } else if (weeksPregnant > 42) {
+                document.getElementById('weeksPregnant').textContent = 'Past due date';
+            } else {
+                document.getElementById('weeksPregnant').textContent = `Currently ${weeksPregnant} weeks and ${daysExtra} days pregnant`;
+            }
+
+            document.getElementById('conceptionDate').textContent = formatShortDate(conceptionDate);
+            document.getElementById('daysLeft').textContent = daysUntilDue > 0 ? daysUntilDue + ' days' : 'Due!';
+            document.getElementById('trimester').textContent = trimester;
+            document.getElementById('fetalAge').textContent = fetalWeeks + 'w ' + fetalDays + 'd';
+            document.getElementById('currentWeek').textContent = 'Week ' + Math.min(40, Math.max(0, weeksPregnant));
+
+            // Progress bar
+            const progress = Math.min(100, Math.max(0, (daysSinceLMP / 280) * 100));
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            // Trimester dates
+            const tri1End = new Date(lmpDate);
+            tri1End.setDate(tri1End.getDate() + 84);
+            const tri2End = new Date(lmpDate);
+            tri2End.setDate(tri2End.getDate() + 182);
+
+            document.getElementById('tri1dates').textContent = formatShortDate(lmpDate) + ' - ' + formatShortDate(tri1End);
+            document.getElementById('tri2dates').textContent = formatShortDate(new Date(tri1End.getTime() + 86400000)) + ' - ' + formatShortDate(tri2End);
+            document.getElementById('tri3dates').textContent = formatShortDate(new Date(tri2End.getTime() + 86400000)) + ' - ' + formatShortDate(dueDate);
+
+            // Highlight current trimester
+            document.getElementById('tri1').classList.toggle('active', weeksPregnant <= 12);
+            document.getElementById('tri2').classList.toggle('active', weeksPregnant >= 13 && weeksPregnant <= 26);
+            document.getElementById('tri3').classList.toggle('active', weeksPregnant >= 27);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

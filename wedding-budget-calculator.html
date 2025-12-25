@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Budget Calculator - Plan Your Dream Wedding</title>
+    <meta name="description" content="Plan your wedding budget with our free calculator. See how to allocate funds across venue, catering, photography, and more. Average wedding costs included.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #be185d 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #be185d;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #be185d 0%, #9f1239 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .budget-breakdown {
+            background: #fdf2f8;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .budget-breakdown h4 {
+            color: #be185d;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .budget-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #fce7f3;
+        }
+        .budget-item:last-child { border: none; }
+        .budget-item .name {
+            font-size: 14px;
+            color: #1e293b;
+        }
+        .budget-item .percent {
+            font-size: 12px;
+            color: #64748b;
+            margin-left: 8px;
+        }
+        .budget-item .amount {
+            font-weight: bold;
+            color: #be185d;
+        }
+        .bar-container {
+            width: 100%;
+            height: 8px;
+            background: #fce7f3;
+            border-radius: 4px;
+            margin-top: 8px;
+        }
+        .bar-fill {
+            height: 100%;
+            background: #be185d;
+            border-radius: 4px;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .summary-item .value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #be185d;
+        }
+        .summary-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #be185d; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #9f1239;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #f9a8d4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Wedding Budget</h1>
+            <p class="subtitle">Plan your dream wedding within budget</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group full">
+                    <label>Total Wedding Budget ($)</label>
+                    <input type="number" id="budget" value="30000" min="1000" max="500000" step="1000" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Guest Count</label>
+                    <input type="number" id="guests" value="100" min="10" max="500" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Wedding Style</label>
+                    <select id="style" onchange="calculate()">
+                        <option value="budget">Budget-Friendly</option>
+                        <option value="moderate" selected>Moderate</option>
+                        <option value="luxury">Luxury</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Cost Per Guest</div>
+                <div class="value" id="perGuest">$300</div>
+                <div class="sub" id="comparison">National average: $250/guest</div>
+            </div>
+
+            <div class="budget-breakdown">
+                <h4>Recommended Budget Allocation</h4>
+
+                <div class="budget-item">
+                    <div>
+                        <span class="name">Venue & Catering</span>
+                        <span class="percent">(45%)</span>
+                    </div>
+                    <span class="amount" id="venue">$13,500</span>
+                </div>
+                <div class="bar-container"><div class="bar-fill" style="width: 45%"></div></div>
+
+                <div class="budget-item">
+                    <div>
+                        <span class="name">Photography & Video</span>
+                        <span class="percent">(12%)</span>
+                    </div>
+                    <span class="amount" id="photo">$3,600</span>
+                </div>
+                <div class="bar-container"><div class="bar-fill" style="width: 12%"></div></div>
+
+                <div class="budget-item">
+                    <div>
+                        <span class="name">Attire & Beauty</span>
+                        <span class="percent">(10%)</span>
+                    </div>
+                    <span class="amount" id="attire">$3,000</span>
+                </div>
+                <div class="bar-container"><div class="bar-fill" style="width: 10%"></div></div>
+
+                <div class="budget-item">
+                    <div>
+                        <span class="name">Flowers & Decor</span>
+                        <span class="percent">(10%)</span>
+                    </div>
+                    <span class="amount" id="flowers">$3,000</span>
+                </div>
+                <div class="bar-container"><div class="bar-fill" style="width: 10%"></div></div>
+
+                <div class="budget-item">
+                    <div>
+                        <span class="name">Music & Entertainment</span>
+                        <span class="percent">(8%)</span>
+                    </div>
+                    <span class="amount" id="music">$2,400</span>
+                </div>
+                <div class="bar-container"><div class="bar-fill" style="width: 8%"></div></div>
+
+                <div class="budget-item">
+                    <div>
+                        <span class="name">Stationery & Invites</span>
+                        <span class="percent">(3%)</span>
+                    </div>
+                    <span class="amount" id="stationery">$900</span>
+                </div>
+                <div class="bar-container"><div class="bar-fill" style="width: 3%"></div></div>
+
+                <div class="budget-item">
+                    <div>
+                        <span class="name">Rings</span>
+                        <span class="percent">(3%)</span>
+                    </div>
+                    <span class="amount" id="rings">$900</span>
+                </div>
+                <div class="bar-container"><div class="bar-fill" style="width: 3%"></div></div>
+
+                <div class="budget-item">
+                    <div>
+                        <span class="name">Miscellaneous/Buffer</span>
+                        <span class="percent">(9%)</span>
+                    </div>
+                    <span class="amount" id="misc">$2,700</span>
+                </div>
+                <div class="bar-container"><div class="bar-fill" style="width: 9%"></div></div>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="value" id="foodPerGuest">$150</div>
+                    <div class="label">Food & Drink/Guest</div>
+                </div>
+                <div class="summary-item">
+                    <div class="value" id="avgVenue">$8,000</div>
+                    <div class="label">Venue Only</div>
+                </div>
+                <div class="summary-item">
+                    <div class="value" id="honeymoon">$3,000</div>
+                    <div class="label">Suggested Honeymoon</div>
+                </div>
+                <div class="summary-item">
+                    <div class="value" id="savings">$500/mo</div>
+                    <div class="label">Save for 12 months</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Planning Tools</h4>
+            <a href="savings-calculator.html">Savings Calculator</a>
+            <a href="date-calculator.html">Date Calculator</a>
+            <a href="tip-calculator.html">Tip Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Wedding Budget Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        // Budget percentages
+        const allocations = {
+            venue: 0.45,
+            photo: 0.12,
+            attire: 0.10,
+            flowers: 0.10,
+            music: 0.08,
+            stationery: 0.03,
+            rings: 0.03,
+            misc: 0.09
+        };
+
+        function formatCurrency(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const budget = parseFloat(document.getElementById('budget').value) || 30000;
+            const guests = parseInt(document.getElementById('guests').value) || 100;
+            const style = document.getElementById('style').value;
+
+            // Per guest calculation
+            const perGuest = budget / guests;
+
+            // Allocate budget
+            document.getElementById('venue').textContent = formatCurrency(budget * allocations.venue);
+            document.getElementById('photo').textContent = formatCurrency(budget * allocations.photo);
+            document.getElementById('attire').textContent = formatCurrency(budget * allocations.attire);
+            document.getElementById('flowers').textContent = formatCurrency(budget * allocations.flowers);
+            document.getElementById('music').textContent = formatCurrency(budget * allocations.music);
+            document.getElementById('stationery').textContent = formatCurrency(budget * allocations.stationery);
+            document.getElementById('rings').textContent = formatCurrency(budget * allocations.rings);
+            document.getElementById('misc').textContent = formatCurrency(budget * allocations.misc);
+
+            // Per guest display
+            document.getElementById('perGuest').textContent = formatCurrency(perGuest);
+
+            // Comparison text
+            const nationalAvg = 250;
+            if (perGuest > nationalAvg * 1.5) {
+                document.getElementById('comparison').textContent = 'Above average: luxury experience';
+            } else if (perGuest > nationalAvg) {
+                document.getElementById('comparison').textContent = 'Slightly above national average ($250/guest)';
+            } else if (perGuest > nationalAvg * 0.7) {
+                document.getElementById('comparison').textContent = 'Right around national average ($250/guest)';
+            } else {
+                document.getElementById('comparison').textContent = 'Budget-friendly: below average ($250/guest)';
+            }
+
+            // Food per guest (roughly 60% of venue allocation)
+            const foodBudget = budget * allocations.venue * 0.6;
+            document.getElementById('foodPerGuest').textContent = formatCurrency(foodBudget / guests);
+
+            // Venue only (40% of venue allocation)
+            document.getElementById('avgVenue').textContent = formatCurrency(budget * allocations.venue * 0.4);
+
+            // Honeymoon suggestion (10% of total budget)
+            document.getElementById('honeymoon').textContent = formatCurrency(budget * 0.1);
+
+            // Monthly savings for 12 months
+            document.getElementById('savings').textContent = formatCurrency(budget / 12) + '/mo';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
