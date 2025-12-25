@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Hex Converter - Hexadecimal to Decimal, Binary, Text</title>
+    <meta name="description" content="Convert hexadecimal to decimal, binary, octal, and text. Instant hex conversion for programmers and developers. Free hex converter.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #059669 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .mode-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .mode-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .mode-btn.active {
+            border-color: #059669;
+            background: #ecfdf5;
+            color: #059669;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 18px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+            font-family: 'Monaco', 'Consolas', monospace;
+        }
+        .input-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .input-group input:focus, .input-group textarea:focus {
+            outline: none;
+            border-color: #059669;
+        }
+        .results {
+            margin-top: 25px;
+        }
+        .result-item {
+            background: #ecfdf5;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 12px;
+        }
+        .result-item .label {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        .result-item .value {
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 18px;
+            font-weight: 600;
+            color: #059669;
+            word-break: break-all;
+        }
+        .copy-btn {
+            float: right;
+            padding: 5px 12px;
+            background: #059669;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .copy-btn:hover { background: #047857; }
+        .quick-hex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        .hex-btn {
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 6px;
+            font-size: 12px;
+            font-family: monospace;
+            cursor: pointer;
+        }
+        .hex-btn:hover {
+            border-color: #059669;
+            color: #059669;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #059669; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #047857;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #6ee7b7; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Hex Converter</h1>
+            <p class="subtitle">Convert between hex, decimal, binary & text</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="mode-toggle">
+                <button class="mode-btn active" onclick="setMode('hex')">From Hex</button>
+                <button class="mode-btn" onclick="setMode('dec')">From Decimal</button>
+                <button class="mode-btn" onclick="setMode('text')">From Text</button>
+            </div>
+
+            <div class="input-group">
+                <label id="inputLabel">Hexadecimal (e.g., FF, 1A2B)</label>
+                <input type="text" id="inputValue" value="48656C6C6F" oninput="convert()" placeholder="Enter hex value...">
+            </div>
+
+            <div class="results">
+                <div class="result-item">
+                    <button class="copy-btn" onclick="copyResult('hexResult')">Copy</button>
+                    <div class="label">Hexadecimal</div>
+                    <div class="value" id="hexResult">48656C6C6F</div>
+                </div>
+                <div class="result-item">
+                    <button class="copy-btn" onclick="copyResult('decResult')">Copy</button>
+                    <div class="label">Decimal</div>
+                    <div class="value" id="decResult">310939249775</div>
+                </div>
+                <div class="result-item">
+                    <button class="copy-btn" onclick="copyResult('binResult')">Copy</button>
+                    <div class="label">Binary</div>
+                    <div class="value" id="binResult">01001000 01100101 01101100 01101100 01101111</div>
+                </div>
+                <div class="result-item">
+                    <button class="copy-btn" onclick="copyResult('octResult')">Copy</button>
+                    <div class="label">Octal</div>
+                    <div class="value" id="octResult">4432126154157</div>
+                </div>
+                <div class="result-item">
+                    <button class="copy-btn" onclick="copyResult('textResult')">Copy</button>
+                    <div class="label">Text (ASCII)</div>
+                    <div class="value" id="textResult">Hello</div>
+                </div>
+            </div>
+
+            <div class="quick-hex">
+                <button class="hex-btn" onclick="setInput('FF')">FF (255)</button>
+                <button class="hex-btn" onclick="setInput('100')">100 (256)</button>
+                <button class="hex-btn" onclick="setInput('FFFF')">FFFF (65535)</button>
+                <button class="hex-btn" onclick="setInput('48656C6C6F')">Hello</button>
+                <button class="hex-btn" onclick="setInput('DEADBEEF')">DEADBEEF</button>
+                <button class="hex-btn" onclick="setInput('CAFEBABE')">CAFEBABE</button>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Developer Tools</h4>
+            <a href="binary-text.html">Binary Converter</a>
+            <a href="base64.html">Base64 Encoder</a>
+            <a href="color-converter.html">Color Converter</a>
+            <a href="index.html">View All 100 Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Hex Converter by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        let mode = 'hex';
+
+        function setMode(m) {
+            mode = m;
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const labels = {
+                hex: 'Hexadecimal (e.g., FF, 1A2B)',
+                dec: 'Decimal (e.g., 255, 1000)',
+                text: 'Text (e.g., Hello)'
+            };
+            document.getElementById('inputLabel').textContent = labels[m];
+            document.getElementById('inputValue').value = '';
+            clearResults();
+        }
+
+        function setInput(val) {
+            document.getElementById('inputValue').value = val;
+            convert();
+        }
+
+        function clearResults() {
+            document.getElementById('hexResult').textContent = '-';
+            document.getElementById('decResult').textContent = '-';
+            document.getElementById('binResult').textContent = '-';
+            document.getElementById('octResult').textContent = '-';
+            document.getElementById('textResult').textContent = '-';
+        }
+
+        function hexToBytes(hex) {
+            hex = hex.replace(/\s/g, '');
+            const bytes = [];
+            for (let i = 0; i < hex.length; i += 2) {
+                bytes.push(parseInt(hex.substr(i, 2), 16));
+            }
+            return bytes;
+        }
+
+        function bytesToHex(bytes) {
+            return bytes.map(b => b.toString(16).padStart(2, '0').toUpperCase()).join('');
+        }
+
+        function convert() {
+            const input = document.getElementById('inputValue').value.trim();
+            if (!input) {
+                clearResults();
+                return;
+            }
+
+            let bytes = [];
+
+            try {
+                if (mode === 'hex') {
+                    const cleanHex = input.replace(/[^0-9A-Fa-f]/g, '');
+                    if (cleanHex.length % 2 !== 0) {
+                        bytes = hexToBytes('0' + cleanHex);
+                    } else {
+                        bytes = hexToBytes(cleanHex);
+                    }
+                } else if (mode === 'dec') {
+                    const num = BigInt(input);
+                    let hex = num.toString(16);
+                    if (hex.length % 2 !== 0) hex = '0' + hex;
+                    bytes = hexToBytes(hex);
+                } else if (mode === 'text') {
+                    bytes = Array.from(input).map(c => c.charCodeAt(0));
+                }
+
+                // Hex
+                const hex = bytesToHex(bytes);
+                document.getElementById('hexResult').textContent = hex || '-';
+
+                // Decimal
+                const dec = bytes.length > 0 ? BigInt('0x' + hex).toString() : '-';
+                document.getElementById('decResult').textContent = dec;
+
+                // Binary
+                const bin = bytes.map(b => b.toString(2).padStart(8, '0')).join(' ');
+                document.getElementById('binResult').textContent = bin || '-';
+
+                // Octal
+                const oct = bytes.length > 0 ? BigInt('0x' + hex).toString(8) : '-';
+                document.getElementById('octResult').textContent = oct;
+
+                // Text
+                const text = bytes.map(b => b >= 32 && b <= 126 ? String.fromCharCode(b) : '.').join('');
+                document.getElementById('textResult').textContent = text || '-';
+
+            } catch (e) {
+                clearResults();
+            }
+        }
+
+        function copyResult(id) {
+            const text = document.getElementById(id).textContent;
+            navigator.clipboard.writeText(text);
+        }
+
+        convert();
+    </script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Heart Rate Calculator - Target Heart Rate Zones</title>
+    <meta name="description" content="Calculate your maximum heart rate and target heart rate zones for exercise. Fat burning zone, cardio zone, and more. Free heart rate calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #dc2626 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 500px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 18px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 24px;
+            text-align: center;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #dc2626;
+        }
+        .result-main {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-main .label { opacity: 0.9; font-size: 14px; }
+        .result-main .value { font-size: 56px; font-weight: bold; }
+        .result-main .unit { opacity: 0.8; font-size: 14px; }
+        .zones {
+            margin-top: 20px;
+        }
+        .zones h4 {
+            color: #dc2626;
+            margin-bottom: 15px;
+        }
+        .zone {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+        }
+        .zone-bar {
+            width: 8px;
+            height: 50px;
+            border-radius: 4px;
+        }
+        .zone-info { flex: 1; }
+        .zone-name { font-weight: 600; font-size: 15px; }
+        .zone-desc { font-size: 12px; color: #64748b; }
+        .zone-range { font-weight: 600; color: #dc2626; min-width: 90px; text-align: right; }
+        .zone-1 { background: #fef2f2; }
+        .zone-1 .zone-bar { background: #fca5a5; }
+        .zone-2 { background: #fef2f2; }
+        .zone-2 .zone-bar { background: #f87171; }
+        .zone-3 { background: #fef2f2; }
+        .zone-3 .zone-bar { background: #ef4444; }
+        .zone-4 { background: #fef2f2; }
+        .zone-4 .zone-bar { background: #dc2626; }
+        .zone-5 { background: #fef2f2; }
+        .zone-5 .zone-bar { background: #b91c1c; }
+        .formula {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #64748b;
+        }
+        .formula strong { color: #dc2626; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #dc2626; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #b91c1c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fca5a5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Heart Rate Zones</h1>
+            <p class="subtitle">Calculate your target heart rate for exercise</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Your Age</label>
+                <input type="number" id="age" value="30" min="10" max="100" oninput="calculate()">
+            </div>
+
+            <div class="result-main">
+                <div class="label">Maximum Heart Rate</div>
+                <div class="value" id="maxHR">190</div>
+                <div class="unit">beats per minute (BPM)</div>
+            </div>
+
+            <div class="zones">
+                <h4>Target Heart Rate Zones</h4>
+
+                <div class="zone zone-1">
+                    <div class="zone-bar"></div>
+                    <div class="zone-info">
+                        <div class="zone-name">Zone 1: Recovery</div>
+                        <div class="zone-desc">Very light, warm up/cool down</div>
+                    </div>
+                    <div class="zone-range" id="zone1">95-114 BPM</div>
+                </div>
+
+                <div class="zone zone-2">
+                    <div class="zone-bar"></div>
+                    <div class="zone-info">
+                        <div class="zone-name">Zone 2: Fat Burning</div>
+                        <div class="zone-desc">Light, comfortable pace</div>
+                    </div>
+                    <div class="zone-range" id="zone2">114-133 BPM</div>
+                </div>
+
+                <div class="zone zone-3">
+                    <div class="zone-bar"></div>
+                    <div class="zone-info">
+                        <div class="zone-name">Zone 3: Aerobic</div>
+                        <div class="zone-desc">Moderate, steady cardio</div>
+                    </div>
+                    <div class="zone-range" id="zone3">133-152 BPM</div>
+                </div>
+
+                <div class="zone zone-4">
+                    <div class="zone-bar"></div>
+                    <div class="zone-info">
+                        <div class="zone-name">Zone 4: Anaerobic</div>
+                        <div class="zone-desc">Hard, threshold training</div>
+                    </div>
+                    <div class="zone-range" id="zone4">152-171 BPM</div>
+                </div>
+
+                <div class="zone zone-5">
+                    <div class="zone-bar"></div>
+                    <div class="zone-info">
+                        <div class="zone-name">Zone 5: Maximum</div>
+                        <div class="zone-desc">Very hard, short bursts only</div>
+                    </div>
+                    <div class="zone-range" id="zone5">171-190 BPM</div>
+                </div>
+            </div>
+
+            <div class="formula">
+                <strong>Max HR = 220 - Age</strong><br>
+                This is the standard formula for estimating maximum heart rate.
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Health Tools</h4>
+            <a href="bmi-calculator.html">BMI Calculator</a>
+            <a href="calorie-calculator.html">Calorie Calculator</a>
+            <a href="body-fat-calculator.html">Body Fat Calculator</a>
+            <a href="index.html">View All 95+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Heart Rate Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const age = parseInt(document.getElementById('age').value) || 30;
+            const maxHR = 220 - age;
+
+            document.getElementById('maxHR').textContent = maxHR;
+
+            // Zone calculations (percentage of max HR)
+            const z1Low = Math.round(maxHR * 0.50);
+            const z1High = Math.round(maxHR * 0.60);
+            const z2Low = Math.round(maxHR * 0.60);
+            const z2High = Math.round(maxHR * 0.70);
+            const z3Low = Math.round(maxHR * 0.70);
+            const z3High = Math.round(maxHR * 0.80);
+            const z4Low = Math.round(maxHR * 0.80);
+            const z4High = Math.round(maxHR * 0.90);
+            const z5Low = Math.round(maxHR * 0.90);
+            const z5High = maxHR;
+
+            document.getElementById('zone1').textContent = `${z1Low}-${z1High} BPM`;
+            document.getElementById('zone2').textContent = `${z2Low}-${z2High} BPM`;
+            document.getElementById('zone3').textContent = `${z3Low}-${z3High} BPM`;
+            document.getElementById('zone4').textContent = `${z4Low}-${z4High} BPM`;
+            document.getElementById('zone5').textContent = `${z5Low}-${z5High} BPM`;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

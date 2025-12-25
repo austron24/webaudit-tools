@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Body Fat Calculator - Estimate Body Fat Percentage</title>
+    <meta name="description" content="Calculate your body fat percentage using the US Navy method. Get fitness category and health insights. Free body fat calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #f97316 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 500px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .gender-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .gender-btn {
+            flex: 1;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            background: white;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .gender-btn.active {
+            border-color: #f97316;
+            background: #fff7ed;
+            color: #f97316;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 6px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #f97316;
+        }
+        .unit-toggle {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+        .unit-btn {
+            padding: 8px 15px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .unit-btn.active {
+            border-color: #f97316;
+            background: #fff7ed;
+            color: #f97316;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 56px; font-weight: bold; }
+        .result-box .category { font-size: 18px; margin-top: 5px; opacity: 0.9; }
+        .categories {
+            background: #fff7ed;
+            border-radius: 12px;
+            padding: 15px;
+        }
+        .categories h4 {
+            color: #f97316;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .cat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #fed7aa;
+            font-size: 13px;
+        }
+        .cat-row:last-child { border: none; }
+        .cat-row.current {
+            background: #f97316;
+            color: white;
+            margin: 0 -15px;
+            padding: 8px 15px;
+            border-radius: 6px;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #f97316; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #ea580c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fdba74; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Body Fat Calculator</h1>
+            <p class="subtitle">Estimate your body fat percentage</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="gender-toggle">
+                <button class="gender-btn active" onclick="setGender('male')">Male</button>
+                <button class="gender-btn" onclick="setGender('female')">Female</button>
+            </div>
+
+            <div class="unit-toggle">
+                <button class="unit-btn active" onclick="setUnit('imperial')">Imperial (in/lbs)</button>
+                <button class="unit-btn" onclick="setUnit('metric')">Metric (cm/kg)</button>
+            </div>
+
+            <div class="input-group">
+                <label id="heightLabel">Height (inches)</label>
+                <input type="number" id="height" value="70" min="0" step="0.5" oninput="calculate()">
+            </div>
+
+            <div class="input-group">
+                <label id="waistLabel">Waist at Navel (inches)</label>
+                <input type="number" id="waist" value="34" min="0" step="0.5" oninput="calculate()">
+            </div>
+
+            <div class="input-group" id="neckGroup">
+                <label id="neckLabel">Neck Circumference (inches)</label>
+                <input type="number" id="neck" value="15" min="0" step="0.5" oninput="calculate()">
+            </div>
+
+            <div class="input-group" id="hipGroup" style="display: none;">
+                <label id="hipLabel">Hip Circumference (inches)</label>
+                <input type="number" id="hip" value="38" min="0" step="0.5" oninput="calculate()">
+            </div>
+
+            <div class="result-box">
+                <div class="label">Body Fat Percentage</div>
+                <div class="value" id="bodyFat">0%</div>
+                <div class="category" id="category">-</div>
+            </div>
+
+            <div class="categories" id="maleCategories">
+                <h4>Body Fat Categories (Men)</h4>
+                <div class="cat-row" data-min="2" data-max="5"><span>Essential Fat</span><span>2-5%</span></div>
+                <div class="cat-row" data-min="6" data-max="13"><span>Athletes</span><span>6-13%</span></div>
+                <div class="cat-row" data-min="14" data-max="17"><span>Fitness</span><span>14-17%</span></div>
+                <div class="cat-row" data-min="18" data-max="24"><span>Average</span><span>18-24%</span></div>
+                <div class="cat-row" data-min="25" data-max="100"><span>Obese</span><span>25%+</span></div>
+            </div>
+
+            <div class="categories" id="femaleCategories" style="display: none;">
+                <h4>Body Fat Categories (Women)</h4>
+                <div class="cat-row" data-min="10" data-max="13"><span>Essential Fat</span><span>10-13%</span></div>
+                <div class="cat-row" data-min="14" data-max="20"><span>Athletes</span><span>14-20%</span></div>
+                <div class="cat-row" data-min="21" data-max="24"><span>Fitness</span><span>21-24%</span></div>
+                <div class="cat-row" data-min="25" data-max="31"><span>Average</span><span>25-31%</span></div>
+                <div class="cat-row" data-min="32" data-max="100"><span>Obese</span><span>32%+</span></div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Health Tools</h4>
+            <a href="bmi-calculator.html">BMI Calculator</a>
+            <a href="calorie-calculator.html">Calorie Calculator</a>
+            <a href="sleep-calculator.html">Sleep Calculator</a>
+            <a href="index.html">View All 95+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Body Fat Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        let gender = 'male';
+        let unit = 'imperial';
+
+        function setGender(g) {
+            gender = g;
+            document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.getElementById('hipGroup').style.display = g === 'female' ? 'block' : 'none';
+            document.getElementById('maleCategories').style.display = g === 'male' ? 'block' : 'none';
+            document.getElementById('femaleCategories').style.display = g === 'female' ? 'block' : 'none';
+
+            calculate();
+        }
+
+        function setUnit(u) {
+            unit = u;
+            document.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const suffix = u === 'imperial' ? 'inches' : 'cm';
+            document.getElementById('heightLabel').textContent = `Height (${suffix})`;
+            document.getElementById('waistLabel').textContent = `Waist at Navel (${suffix})`;
+            document.getElementById('neckLabel').textContent = `Neck Circumference (${suffix})`;
+            document.getElementById('hipLabel').textContent = `Hip Circumference (${suffix})`;
+
+            calculate();
+        }
+
+        function calculate() {
+            let height = parseFloat(document.getElementById('height').value) || 0;
+            let waist = parseFloat(document.getElementById('waist').value) || 0;
+            let neck = parseFloat(document.getElementById('neck').value) || 0;
+            let hip = parseFloat(document.getElementById('hip').value) || 0;
+
+            // Convert to cm if imperial
+            if (unit === 'imperial') {
+                height *= 2.54;
+                waist *= 2.54;
+                neck *= 2.54;
+                hip *= 2.54;
+            }
+
+            let bodyFat;
+            if (gender === 'male') {
+                // US Navy formula for men
+                bodyFat = 86.010 * Math.log10(waist - neck) - 70.041 * Math.log10(height) + 36.76;
+            } else {
+                // US Navy formula for women
+                bodyFat = 163.205 * Math.log10(waist + hip - neck) - 97.684 * Math.log10(height) - 78.387;
+            }
+
+            bodyFat = Math.max(0, Math.min(60, bodyFat));
+
+            document.getElementById('bodyFat').textContent = bodyFat.toFixed(1) + '%';
+
+            // Determine category
+            const categories = gender === 'male' ?
+                document.querySelectorAll('#maleCategories .cat-row') :
+                document.querySelectorAll('#femaleCategories .cat-row');
+
+            let categoryName = '';
+            categories.forEach(row => {
+                row.classList.remove('current');
+                const min = parseFloat(row.dataset.min);
+                const max = parseFloat(row.dataset.max);
+                if (bodyFat >= min && bodyFat <= max) {
+                    row.classList.add('current');
+                    categoryName = row.querySelector('span').textContent;
+                }
+            });
+
+            document.getElementById('category').textContent = categoryName;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

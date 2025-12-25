@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Subnet Calculator - IP Address & CIDR Calculator</title>
+    <meta name="description" content="Calculate subnet masks, network addresses, broadcast addresses, and usable host ranges. Free IP subnet calculator for network engineers.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0ea5e9 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .ip-inputs {
+            display: flex;
+            gap: 5px;
+            flex: 1;
+        }
+        .ip-inputs input {
+            width: 60px;
+            padding: 15px 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 18px;
+            text-align: center;
+        }
+        .ip-inputs input:focus {
+            outline: none;
+            border-color: #0ea5e9;
+        }
+        .ip-inputs .dot {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            color: #64748b;
+        }
+        .cidr-input {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .cidr-input span {
+            font-size: 24px;
+            color: #64748b;
+        }
+        .cidr-input input {
+            width: 60px;
+            padding: 15px 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 18px;
+            text-align: center;
+        }
+        .results {
+            margin-top: 25px;
+        }
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .result-row:last-child { border: none; }
+        .result-row .label {
+            color: #64748b;
+            font-size: 14px;
+        }
+        .result-row .value {
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-weight: 600;
+            color: #0ea5e9;
+        }
+        .result-row.highlight {
+            background: #f0f9ff;
+            border-radius: 10px;
+            margin: 5px 0;
+        }
+        .cidr-presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        .preset-btn {
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .preset-btn:hover {
+            border-color: #0ea5e9;
+            color: #0ea5e9;
+        }
+        .binary-view {
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #94a3b8;
+            overflow-x: auto;
+        }
+        .binary-view .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+        }
+        .binary-view .label { color: #64748b; }
+        .binary-view .binary { color: #22d3ee; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0ea5e9; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0284c7;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #7dd3fc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Subnet Calculator</h1>
+            <p class="subtitle">Calculate IP subnets and CIDR notation</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="ip-inputs">
+                    <input type="number" id="oct1" value="192" min="0" max="255" oninput="calculate()">
+                    <span class="dot">.</span>
+                    <input type="number" id="oct2" value="168" min="0" max="255" oninput="calculate()">
+                    <span class="dot">.</span>
+                    <input type="number" id="oct3" value="1" min="0" max="255" oninput="calculate()">
+                    <span class="dot">.</span>
+                    <input type="number" id="oct4" value="100" min="0" max="255" oninput="calculate()">
+                </div>
+                <div class="cidr-input">
+                    <span>/</span>
+                    <input type="number" id="cidr" value="24" min="0" max="32" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="cidr-presets">
+                <button class="preset-btn" onclick="setCIDR(8)">/8 (Class A)</button>
+                <button class="preset-btn" onclick="setCIDR(16)">/16 (Class B)</button>
+                <button class="preset-btn" onclick="setCIDR(24)">/24 (Class C)</button>
+                <button class="preset-btn" onclick="setCIDR(25)">/25</button>
+                <button class="preset-btn" onclick="setCIDR(26)">/26</button>
+                <button class="preset-btn" onclick="setCIDR(27)">/27</button>
+                <button class="preset-btn" onclick="setCIDR(28)">/28</button>
+                <button class="preset-btn" onclick="setCIDR(30)">/30</button>
+            </div>
+
+            <div class="results">
+                <div class="result-row highlight">
+                    <span class="label">Network Address</span>
+                    <span class="value" id="network">192.168.1.0</span>
+                </div>
+                <div class="result-row">
+                    <span class="label">Subnet Mask</span>
+                    <span class="value" id="mask">255.255.255.0</span>
+                </div>
+                <div class="result-row">
+                    <span class="label">Wildcard Mask</span>
+                    <span class="value" id="wildcard">0.0.0.255</span>
+                </div>
+                <div class="result-row highlight">
+                    <span class="label">Broadcast Address</span>
+                    <span class="value" id="broadcast">192.168.1.255</span>
+                </div>
+                <div class="result-row">
+                    <span class="label">First Usable Host</span>
+                    <span class="value" id="firstHost">192.168.1.1</span>
+                </div>
+                <div class="result-row">
+                    <span class="label">Last Usable Host</span>
+                    <span class="value" id="lastHost">192.168.1.254</span>
+                </div>
+                <div class="result-row highlight">
+                    <span class="label">Total Hosts</span>
+                    <span class="value" id="totalHosts">256</span>
+                </div>
+                <div class="result-row">
+                    <span class="label">Usable Hosts</span>
+                    <span class="value" id="usableHosts">254</span>
+                </div>
+                <div class="result-row">
+                    <span class="label">IP Class</span>
+                    <span class="value" id="ipClass">Class C</span>
+                </div>
+            </div>
+
+            <div class="binary-view">
+                <div class="row">
+                    <span class="label">IP Address:</span>
+                    <span class="binary" id="ipBinary">11000000.10101000.00000001.01100100</span>
+                </div>
+                <div class="row">
+                    <span class="label">Subnet Mask:</span>
+                    <span class="binary" id="maskBinary">11111111.11111111.11111111.00000000</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Network Tools</h4>
+            <a href="ip-info.html">What's My IP</a>
+            <a href="dns-lookup.html">DNS Lookup</a>
+            <a href="binary-text.html">Binary Converter</a>
+            <a href="index.html">View All 95+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Subnet Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function setCIDR(cidr) {
+            document.getElementById('cidr').value = cidr;
+            calculate();
+        }
+
+        function toBinary(num) {
+            return num.toString(2).padStart(8, '0');
+        }
+
+        function toIP(num) {
+            return [
+                (num >>> 24) & 255,
+                (num >>> 16) & 255,
+                (num >>> 8) & 255,
+                num & 255
+            ].join('.');
+        }
+
+        function ipToNum(o1, o2, o3, o4) {
+            return ((o1 << 24) | (o2 << 16) | (o3 << 8) | o4) >>> 0;
+        }
+
+        function calculate() {
+            const o1 = parseInt(document.getElementById('oct1').value) || 0;
+            const o2 = parseInt(document.getElementById('oct2').value) || 0;
+            const o3 = parseInt(document.getElementById('oct3').value) || 0;
+            const o4 = parseInt(document.getElementById('oct4').value) || 0;
+            const cidr = parseInt(document.getElementById('cidr').value) || 24;
+
+            const ip = ipToNum(o1, o2, o3, o4);
+            const mask = cidr === 0 ? 0 : (0xFFFFFFFF << (32 - cidr)) >>> 0;
+            const wildcard = (~mask) >>> 0;
+            const network = (ip & mask) >>> 0;
+            const broadcast = (network | wildcard) >>> 0;
+
+            const totalHosts = Math.pow(2, 32 - cidr);
+            const usableHosts = cidr >= 31 ? totalHosts : totalHosts - 2;
+            const firstHost = cidr >= 31 ? network : network + 1;
+            const lastHost = cidr >= 31 ? broadcast : broadcast - 1;
+
+            // IP Class
+            let ipClass = 'Class A';
+            if (o1 >= 128 && o1 <= 191) ipClass = 'Class B';
+            else if (o1 >= 192 && o1 <= 223) ipClass = 'Class C';
+            else if (o1 >= 224 && o1 <= 239) ipClass = 'Class D (Multicast)';
+            else if (o1 >= 240) ipClass = 'Class E (Reserved)';
+
+            document.getElementById('network').textContent = toIP(network);
+            document.getElementById('mask').textContent = toIP(mask);
+            document.getElementById('wildcard').textContent = toIP(wildcard);
+            document.getElementById('broadcast').textContent = toIP(broadcast);
+            document.getElementById('firstHost').textContent = toIP(firstHost);
+            document.getElementById('lastHost').textContent = toIP(lastHost);
+            document.getElementById('totalHosts').textContent = totalHosts.toLocaleString();
+            document.getElementById('usableHosts').textContent = usableHosts.toLocaleString();
+            document.getElementById('ipClass').textContent = ipClass;
+
+            document.getElementById('ipBinary').textContent =
+                `${toBinary(o1)}.${toBinary(o2)}.${toBinary(o3)}.${toBinary(o4)}`;
+            document.getElementById('maskBinary').textContent =
+                `${toBinary((mask >>> 24) & 255)}.${toBinary((mask >>> 16) & 255)}.${toBinary((mask >>> 8) & 255)}.${toBinary(mask & 255)}`;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

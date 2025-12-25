@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Time Calculator - Add Subtract Hours Minutes Seconds</title>
+    <meta name="description" content="Add or subtract hours, minutes, and seconds. Calculate total time, convert between time formats. Free time calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0891b2 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .time-inputs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        .time-group {
+            flex: 1;
+            text-align: center;
+        }
+        .time-group label {
+            display: block;
+            font-size: 11px;
+            color: #64748b;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        .time-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 24px;
+            text-align: center;
+        }
+        .time-group input:focus {
+            outline: none;
+            border-color: #0891b2;
+        }
+        .colon {
+            font-size: 28px;
+            font-weight: bold;
+            color: #64748b;
+            padding-top: 20px;
+        }
+        .operation-row {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .op-btn {
+            flex: 1;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .op-btn.active {
+            border-color: #0891b2;
+            background: #ecfeff;
+            color: #0891b2;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .time {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .result-box .details {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        .conversions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .conv-item {
+            background: #f0fdfa;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .conv-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #0891b2;
+        }
+        .conv-item .label {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0891b2; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0e7490;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #67e8f9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Time Calculator</h1>
+            <p class="subtitle">Add or subtract time durations</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="time-inputs">
+                <div class="time-group">
+                    <label>Hours</label>
+                    <input type="number" id="hours1" value="2" min="0" oninput="calculate()">
+                </div>
+                <span class="colon">:</span>
+                <div class="time-group">
+                    <label>Minutes</label>
+                    <input type="number" id="mins1" value="30" min="0" max="59" oninput="calculate()">
+                </div>
+                <span class="colon">:</span>
+                <div class="time-group">
+                    <label>Seconds</label>
+                    <input type="number" id="secs1" value="0" min="0" max="59" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="operation-row">
+                <button class="op-btn active" onclick="setOp('add')">+ Add</button>
+                <button class="op-btn" onclick="setOp('sub')">− Subtract</button>
+            </div>
+
+            <div class="time-inputs">
+                <div class="time-group">
+                    <label>Hours</label>
+                    <input type="number" id="hours2" value="1" min="0" oninput="calculate()">
+                </div>
+                <span class="colon">:</span>
+                <div class="time-group">
+                    <label>Minutes</label>
+                    <input type="number" id="mins2" value="45" min="0" max="59" oninput="calculate()">
+                </div>
+                <span class="colon">:</span>
+                <div class="time-group">
+                    <label>Seconds</label>
+                    <input type="number" id="secs2" value="30" min="0" max="59" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Result</div>
+                <div class="time" id="resultTime">4:15:30</div>
+                <div class="details" id="resultDetails">4 hours, 15 minutes, 30 seconds</div>
+            </div>
+
+            <div class="conversions">
+                <div class="conv-item">
+                    <div class="value" id="totalHours">0</div>
+                    <div class="label">Total Hours</div>
+                </div>
+                <div class="conv-item">
+                    <div class="value" id="totalMins">0</div>
+                    <div class="label">Total Minutes</div>
+                </div>
+                <div class="conv-item">
+                    <div class="value" id="totalSecs">0</div>
+                    <div class="label">Total Seconds</div>
+                </div>
+                <div class="conv-item">
+                    <div class="value" id="totalDays">0</div>
+                    <div class="label">Decimal Days</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Time Tools</h4>
+            <a href="stopwatch.html">Stopwatch</a>
+            <a href="countdown.html">Countdown Timer</a>
+            <a href="date-calculator.html">Date Calculator</a>
+            <a href="index.html">View All 90+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Time Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        let operation = 'add';
+
+        function setOp(op) {
+            operation = op;
+            document.querySelectorAll('.op-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            calculate();
+        }
+
+        function calculate() {
+            const h1 = parseInt(document.getElementById('hours1').value) || 0;
+            const m1 = parseInt(document.getElementById('mins1').value) || 0;
+            const s1 = parseInt(document.getElementById('secs1').value) || 0;
+
+            const h2 = parseInt(document.getElementById('hours2').value) || 0;
+            const m2 = parseInt(document.getElementById('mins2').value) || 0;
+            const s2 = parseInt(document.getElementById('secs2').value) || 0;
+
+            let totalSecs1 = h1 * 3600 + m1 * 60 + s1;
+            let totalSecs2 = h2 * 3600 + m2 * 60 + s2;
+
+            let resultSecs;
+            if (operation === 'add') {
+                resultSecs = totalSecs1 + totalSecs2;
+            } else {
+                resultSecs = totalSecs1 - totalSecs2;
+            }
+
+            const isNegative = resultSecs < 0;
+            resultSecs = Math.abs(resultSecs);
+
+            const hours = Math.floor(resultSecs / 3600);
+            const mins = Math.floor((resultSecs % 3600) / 60);
+            const secs = resultSecs % 60;
+
+            const sign = isNegative ? '-' : '';
+            document.getElementById('resultTime').textContent =
+                `${sign}${hours}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            document.getElementById('resultDetails').textContent =
+                `${sign}${hours} hour${hours !== 1 ? 's' : ''}, ${mins} minute${mins !== 1 ? 's' : ''}, ${secs} second${secs !== 1 ? 's' : ''}`;
+
+            const totalSeconds = isNegative ? -resultSecs : resultSecs;
+            document.getElementById('totalHours').textContent = (totalSeconds / 3600).toFixed(2);
+            document.getElementById('totalMins').textContent = (totalSeconds / 60).toFixed(1);
+            document.getElementById('totalSecs').textContent = totalSeconds.toLocaleString();
+            document.getElementById('totalDays').textContent = (totalSeconds / 86400).toFixed(4);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Roman Numeral Converter - Convert Numbers to Roman Numerals</title>
+    <meta name="description" content="Convert numbers to Roman numerals and vice versa. Instant conversion with explanation. Free Roman numeral converter.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #7c2d12 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 500px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .mode-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .mode-btn {
+            flex: 1;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .mode-btn.active {
+            border-color: #ea580c;
+            background: #fff7ed;
+            color: #ea580c;
+        }
+        .input-group {
+            margin-bottom: 25px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 20px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 28px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #ea580c;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 10px 0;
+            font-family: 'Times New Roman', serif;
+        }
+        .result-box .copy-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .reference {
+            background: #fff7ed;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+        .reference h4 {
+            color: #ea580c;
+            margin-bottom: 15px;
+        }
+        .ref-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .ref-item {
+            text-align: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+        .ref-item .roman {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ea580c;
+            font-family: 'Times New Roman', serif;
+        }
+        .ref-item .number {
+            font-size: 12px;
+            color: #64748b;
+        }
+        .examples {
+            margin-top: 20px;
+        }
+        .example-btn {
+            padding: 8px 15px;
+            margin: 5px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .example-btn:hover {
+            border-color: #ea580c;
+            color: #ea580c;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #ea580c; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #c2410c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fdba74; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Roman Numerals</h1>
+            <p class="subtitle">Convert to and from Roman numerals</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="mode-toggle">
+                <button class="mode-btn active" onclick="setMode('toRoman')">Number → Roman</button>
+                <button class="mode-btn" onclick="setMode('toNumber')">Roman → Number</button>
+            </div>
+
+            <div class="input-group">
+                <label id="inputLabel">Enter a Number (1-3999)</label>
+                <input type="text" id="inputValue" value="2024" oninput="convert()">
+            </div>
+
+            <div class="result-box">
+                <div class="label" id="resultLabel">Roman Numeral</div>
+                <div class="value" id="resultValue">MMXXIV</div>
+                <button class="copy-btn" onclick="copyResult()">Copy Result</button>
+            </div>
+
+            <div class="examples">
+                <button class="example-btn" onclick="setExample('2024')">2024</button>
+                <button class="example-btn" onclick="setExample('1999')">1999</button>
+                <button class="example-btn" onclick="setExample('500')">500</button>
+                <button class="example-btn" onclick="setExample('MCMLXXXIV')">MCMLXXXIV</button>
+                <button class="example-btn" onclick="setExample('XIV')">XIV</button>
+            </div>
+
+            <div class="reference">
+                <h4>Roman Numeral Reference</h4>
+                <div class="ref-grid">
+                    <div class="ref-item"><div class="roman">I</div><div class="number">1</div></div>
+                    <div class="ref-item"><div class="roman">V</div><div class="number">5</div></div>
+                    <div class="ref-item"><div class="roman">X</div><div class="number">10</div></div>
+                    <div class="ref-item"><div class="roman">L</div><div class="number">50</div></div>
+                    <div class="ref-item"><div class="roman">C</div><div class="number">100</div></div>
+                    <div class="ref-item"><div class="roman">D</div><div class="number">500</div></div>
+                    <div class="ref-item"><div class="roman">M</div><div class="number">1000</div></div>
+                    <div class="ref-item"><div class="roman">IV</div><div class="number">4</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Converter Tools</h4>
+            <a href="binary-text.html">Binary Converter</a>
+            <a href="base64.html">Base64 Encoder</a>
+            <a href="case-converter.html">Case Converter</a>
+            <a href="index.html">View All 90+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Roman Numeral Converter by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        let mode = 'toRoman';
+
+        const romanMap = [
+            { value: 1000, numeral: 'M' },
+            { value: 900, numeral: 'CM' },
+            { value: 500, numeral: 'D' },
+            { value: 400, numeral: 'CD' },
+            { value: 100, numeral: 'C' },
+            { value: 90, numeral: 'XC' },
+            { value: 50, numeral: 'L' },
+            { value: 40, numeral: 'XL' },
+            { value: 10, numeral: 'X' },
+            { value: 9, numeral: 'IX' },
+            { value: 5, numeral: 'V' },
+            { value: 4, numeral: 'IV' },
+            { value: 1, numeral: 'I' }
+        ];
+
+        function setMode(m) {
+            mode = m;
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (mode === 'toRoman') {
+                document.getElementById('inputLabel').textContent = 'Enter a Number (1-3999)';
+                document.getElementById('resultLabel').textContent = 'Roman Numeral';
+                document.getElementById('inputValue').value = '2024';
+            } else {
+                document.getElementById('inputLabel').textContent = 'Enter Roman Numeral';
+                document.getElementById('resultLabel').textContent = 'Number';
+                document.getElementById('inputValue').value = 'MMXXIV';
+            }
+            convert();
+        }
+
+        function toRoman(num) {
+            if (num < 1 || num > 3999) return 'Out of range';
+            let result = '';
+            for (const { value, numeral } of romanMap) {
+                while (num >= value) {
+                    result += numeral;
+                    num -= value;
+                }
+            }
+            return result;
+        }
+
+        function toNumber(roman) {
+            roman = roman.toUpperCase().trim();
+            const romanValues = { I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000 };
+            let result = 0;
+
+            for (let i = 0; i < roman.length; i++) {
+                const current = romanValues[roman[i]];
+                const next = romanValues[roman[i + 1]];
+
+                if (!current) return 'Invalid';
+                if (next && current < next) {
+                    result -= current;
+                } else {
+                    result += current;
+                }
+            }
+            return result;
+        }
+
+        function convert() {
+            const input = document.getElementById('inputValue').value;
+            let result;
+
+            if (mode === 'toRoman') {
+                const num = parseInt(input);
+                result = isNaN(num) ? 'Invalid' : toRoman(num);
+            } else {
+                result = toNumber(input);
+            }
+
+            document.getElementById('resultValue').textContent = result;
+        }
+
+        function setExample(val) {
+            document.getElementById('inputValue').value = val;
+            // Auto-detect mode
+            if (/^\d+$/.test(val)) {
+                if (mode !== 'toRoman') {
+                    mode = 'toRoman';
+                    document.querySelectorAll('.mode-btn')[0].classList.add('active');
+                    document.querySelectorAll('.mode-btn')[1].classList.remove('active');
+                    document.getElementById('inputLabel').textContent = 'Enter a Number (1-3999)';
+                    document.getElementById('resultLabel').textContent = 'Roman Numeral';
+                }
+            } else {
+                if (mode !== 'toNumber') {
+                    mode = 'toNumber';
+                    document.querySelectorAll('.mode-btn')[0].classList.remove('active');
+                    document.querySelectorAll('.mode-btn')[1].classList.add('active');
+                    document.getElementById('inputLabel').textContent = 'Enter Roman Numeral';
+                    document.getElementById('resultLabel').textContent = 'Number';
+                }
+            }
+            convert();
+        }
+
+        function copyResult() {
+            navigator.clipboard.writeText(document.getElementById('resultValue').textContent);
+        }
+
+        convert();
+    </script>
+</body>
+</html>
