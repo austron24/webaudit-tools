@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Robots.txt Tester - Test URL Blocking Rules</title>
+    <meta name="description" content="Test your robots.txt file. Check if URLs are blocked or allowed for different user agents. Free online robots.txt validator and tester.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #6366f1 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 42px; margin-bottom: 15px; }
+        .subtitle { font-size: 18px; opacity: 0.9; }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            color: #1e293b;
+            margin-bottom: 30px;
+        }
+        .editor-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        @media (max-width: 800px) {
+            .editor-section { grid-template-columns: 1fr; }
+        }
+        .editor-pane h3 {
+            margin-bottom: 15px;
+            color: #1e293b;
+        }
+        .robots-editor {
+            width: 100%;
+            height: 300px;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+        .robots-editor:focus { outline: none; border-color: #6366f1; }
+        .test-section {
+            margin-bottom: 30px;
+        }
+        .test-section h3 {
+            margin-bottom: 15px;
+            color: #1e293b;
+        }
+        .test-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .test-row select {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            min-width: 200px;
+        }
+        .test-row input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .test-row select:focus, .test-row input:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-test { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; }
+        .result-box {
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            display: none;
+        }
+        .result-box.show { display: block; }
+        .result-box.allowed {
+            background: #f0fdf4;
+            border: 2px solid #22c55e;
+        }
+        .result-box.blocked {
+            background: #fef2f2;
+            border: 2px solid #ef4444;
+        }
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .result-box.allowed .result-header { color: #16a34a; }
+        .result-box.blocked .result-header { color: #dc2626; }
+        .result-details {
+            font-size: 14px;
+            color: #64748b;
+        }
+        .result-details code {
+            background: rgba(0,0,0,0.05);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .bulk-test {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .bulk-test h3 {
+            margin-bottom: 15px;
+            color: #1e293b;
+        }
+        .urls-input {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+        .bulk-results {
+            margin-top: 20px;
+        }
+        .bulk-result-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .bulk-result-item .status {
+            width: 80px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .bulk-result-item .status.allowed {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        .bulk-result-item .status.blocked {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        .bulk-result-item .url {
+            flex: 1;
+            font-family: monospace;
+            font-size: 13px;
+            word-break: break-all;
+        }
+        .syntax-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+        .syntax-section h4 {
+            margin-bottom: 15px;
+            color: #1e293b;
+        }
+        .syntax-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .syntax-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #6366f1;
+        }
+        .syntax-card h5 {
+            color: #1e293b;
+            margin-bottom: 8px;
+            font-family: monospace;
+        }
+        .syntax-card p {
+            font-size: 13px;
+            color: #64748b;
+        }
+        .tools-promo {
+            margin-top: 30px;
+            padding: 20px;
+            background: #eef2ff;
+            border-radius: 12px;
+        }
+        .tools-promo h4 { color: #6366f1; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #4f46e5;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        .cta-section {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .cta-section a {
+            display: inline-block;
+            background: white;
+            color: #6366f1;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        footer { text-align: center; padding: 40px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #a5b4fc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Robots.txt Tester</h1>
+            <p class="subtitle">Test if URLs are blocked or allowed by your robots.txt</p>
+        </header>
+
+        <div class="card">
+            <div class="editor-section">
+                <div class="editor-pane">
+                    <h3>Robots.txt Content</h3>
+                    <textarea class="robots-editor" id="robotsTxt" placeholder="Paste your robots.txt content here...">User-agent: *
+Disallow: /admin/
+Disallow: /private/
+Disallow: /api/internal/
+Allow: /api/public/
+
+User-agent: Googlebot
+Disallow: /tmp/
+Allow: /
+
+Sitemap: https://example.com/sitemap.xml</textarea>
+                </div>
+                <div class="editor-pane">
+                    <h3>Quick Templates</h3>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <button class="btn" style="background: #f8fafc; color: #1e293b;" onclick="loadTemplate('allow')">Allow All Bots</button>
+                        <button class="btn" style="background: #f8fafc; color: #1e293b;" onclick="loadTemplate('block')">Block All Bots</button>
+                        <button class="btn" style="background: #f8fafc; color: #1e293b;" onclick="loadTemplate('standard')">Standard Website</button>
+                        <button class="btn" style="background: #f8fafc; color: #1e293b;" onclick="loadTemplate('ecommerce')">E-commerce Site</button>
+                        <button class="btn" style="background: #f8fafc; color: #1e293b;" onclick="loadTemplate('wordpress')">WordPress Site</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="test-section">
+                <h3>Test a URL</h3>
+                <div class="test-row">
+                    <select id="userAgent">
+                        <option value="*">All User Agents (*)</option>
+                        <option value="Googlebot">Googlebot</option>
+                        <option value="Bingbot">Bingbot</option>
+                        <option value="Slurp">Yahoo Slurp</option>
+                        <option value="DuckDuckBot">DuckDuckBot</option>
+                        <option value="Baiduspider">Baiduspider</option>
+                        <option value="YandexBot">YandexBot</option>
+                        <option value="facebookexternalhit">Facebook Bot</option>
+                        <option value="Twitterbot">Twitter Bot</option>
+                    </select>
+                    <input type="text" id="testUrl" placeholder="/path/to/page" value="/admin/dashboard">
+                    <button class="btn btn-test" onclick="testUrl()">Test URL</button>
+                </div>
+
+                <div class="result-box" id="resultBox">
+                    <div class="result-header" id="resultHeader"></div>
+                    <div class="result-details" id="resultDetails"></div>
+                </div>
+            </div>
+
+            <div class="bulk-test">
+                <h3>Bulk URL Test</h3>
+                <textarea class="urls-input" id="bulkUrls" placeholder="Enter URLs to test (one per line)...
+/admin/
+/api/public/
+/products/
+/private/settings">/admin/
+/api/public/
+/products/
+/private/settings</textarea>
+                <button class="btn btn-test" onclick="testBulk()">Test All URLs</button>
+                <div class="bulk-results" id="bulkResults"></div>
+            </div>
+
+            <div class="syntax-section">
+                <h4>Robots.txt Syntax Reference</h4>
+                <div class="syntax-grid">
+                    <div class="syntax-card">
+                        <h5>User-agent: *</h5>
+                        <p>Applies rules to all bots. Use specific names like "Googlebot" for targeted rules.</p>
+                    </div>
+                    <div class="syntax-card">
+                        <h5>Disallow: /path/</h5>
+                        <p>Blocks access to specified path. Leave empty to allow all.</p>
+                    </div>
+                    <div class="syntax-card">
+                        <h5>Allow: /path/</h5>
+                        <p>Explicitly allows access. Useful for allowing subdirectories of blocked paths.</p>
+                    </div>
+                    <div class="syntax-card">
+                        <h5>Sitemap: URL</h5>
+                        <p>Points to your XML sitemap. Can include multiple sitemaps.</p>
+                    </div>
+                    <div class="syntax-card">
+                        <h5>* (wildcard)</h5>
+                        <p>Matches any sequence of characters. Example: Disallow: /*.pdf</p>
+                    </div>
+                    <div class="syntax-card">
+                        <h5>$ (end anchor)</h5>
+                        <p>Matches end of URL. Example: Disallow: /*.pdf$ blocks .pdf files only.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tools-promo">
+                <h4>More SEO Tools</h4>
+                <a href="robots-generator.html">Robots.txt Generator</a>
+                <a href="sitemap-generator.html">Sitemap Generator</a>
+                <a href="seo-checker.html">SEO Analyzer</a>
+                <a href="index.html">View All 30+ Tools</a>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h3>Need a Website Audit?</h3>
+            <p>Get professional accessibility and SEO analysis.</p>
+            <a href="https://fiverr.com/austron24" target="_blank">Get Professional Audit</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Robots.txt Tester by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const templates = {
+            allow: `User-agent: *
+Allow: /
+
+Sitemap: https://example.com/sitemap.xml`,
+
+            block: `User-agent: *
+Disallow: /`,
+
+            standard: `User-agent: *
+Disallow: /admin/
+Disallow: /private/
+Disallow: /tmp/
+Disallow: /cgi-bin/
+Disallow: /*.json$
+Disallow: /api/internal/
+Allow: /api/public/
+
+Sitemap: https://example.com/sitemap.xml`,
+
+            ecommerce: `User-agent: *
+Disallow: /cart/
+Disallow: /checkout/
+Disallow: /account/
+Disallow: /wishlist/
+Disallow: /search?
+Disallow: /*?sort=
+Disallow: /*?filter=
+Disallow: /admin/
+Allow: /
+
+Sitemap: https://example.com/sitemap.xml`,
+
+            wordpress: `User-agent: *
+Disallow: /wp-admin/
+Disallow: /wp-includes/
+Disallow: /wp-content/plugins/
+Disallow: /wp-content/cache/
+Disallow: /trackback/
+Disallow: /feed/
+Disallow: /*?s=
+Disallow: /*?p=
+Allow: /wp-admin/admin-ajax.php
+Allow: /wp-content/uploads/
+
+Sitemap: https://example.com/sitemap.xml
+Sitemap: https://example.com/sitemap_index.xml`
+        };
+
+        function loadTemplate(name) {
+            document.getElementById('robotsTxt').value = templates[name];
+        }
+
+        function parseRobotsTxt(content) {
+            const rules = {};
+            let currentAgent = null;
+
+            const lines = content.split('\n');
+
+            for (const line of lines) {
+                const trimmed = line.trim();
+                if (!trimmed || trimmed.startsWith('#')) continue;
+
+                const colonIndex = trimmed.indexOf(':');
+                if (colonIndex === -1) continue;
+
+                const directive = trimmed.substring(0, colonIndex).toLowerCase().trim();
+                const value = trimmed.substring(colonIndex + 1).trim();
+
+                if (directive === 'user-agent') {
+                    currentAgent = value.toLowerCase();
+                    if (!rules[currentAgent]) {
+                        rules[currentAgent] = { allow: [], disallow: [] };
+                    }
+                } else if (currentAgent && (directive === 'allow' || directive === 'disallow')) {
+                    rules[currentAgent][directive].push(value);
+                }
+            }
+
+            return rules;
+        }
+
+        function matchesPattern(url, pattern) {
+            if (!pattern) return false;
+
+            // Convert robots.txt pattern to regex
+            let regex = pattern
+                .replace(/[.+?^${}()|[\]\\]/g, '\\$&') // Escape special chars
+                .replace(/\*/g, '.*') // * becomes .*
+                .replace(/\\$$/g, '$'); // $ at end is anchor
+
+            // If pattern doesn't end with $ or *, add .* to match rest
+            if (!pattern.endsWith('$') && !pattern.endsWith('*')) {
+                regex += '.*';
+            }
+
+            try {
+                return new RegExp('^' + regex).test(url);
+            } catch {
+                return false;
+            }
+        }
+
+        function testUrlAgainstRules(url, userAgent, rules) {
+            // Normalize URL
+            if (!url.startsWith('/')) url = '/' + url;
+
+            // Get applicable rules (specific agent + wildcard)
+            const agentRules = rules[userAgent.toLowerCase()] || { allow: [], disallow: [] };
+            const wildcardRules = rules['*'] || { allow: [], disallow: [] };
+
+            // Combine rules, agent-specific first
+            const allRules = [];
+
+            agentRules.disallow.forEach(p => allRules.push({ type: 'disallow', pattern: p, agent: userAgent }));
+            agentRules.allow.forEach(p => allRules.push({ type: 'allow', pattern: p, agent: userAgent }));
+
+            if (userAgent.toLowerCase() !== '*') {
+                wildcardRules.disallow.forEach(p => allRules.push({ type: 'disallow', pattern: p, agent: '*' }));
+                wildcardRules.allow.forEach(p => allRules.push({ type: 'allow', pattern: p, agent: '*' }));
+            }
+
+            // Find most specific matching rule (longest pattern wins)
+            let matchingRule = null;
+            let matchLength = -1;
+
+            for (const rule of allRules) {
+                if (matchesPattern(url, rule.pattern)) {
+                    if (rule.pattern.length > matchLength) {
+                        matchLength = rule.pattern.length;
+                        matchingRule = rule;
+                    }
+                }
+            }
+
+            if (matchingRule) {
+                return {
+                    allowed: matchingRule.type === 'allow',
+                    rule: matchingRule
+                };
+            }
+
+            // Default: allowed
+            return { allowed: true, rule: null };
+        }
+
+        function testUrl() {
+            const robotsTxt = document.getElementById('robotsTxt').value;
+            const userAgent = document.getElementById('userAgent').value;
+            const url = document.getElementById('testUrl').value;
+
+            const rules = parseRobotsTxt(robotsTxt);
+            const result = testUrlAgainstRules(url, userAgent, rules);
+
+            const resultBox = document.getElementById('resultBox');
+            const resultHeader = document.getElementById('resultHeader');
+            const resultDetails = document.getElementById('resultDetails');
+
+            resultBox.classList.remove('allowed', 'blocked');
+            resultBox.classList.add('show', result.allowed ? 'allowed' : 'blocked');
+
+            resultHeader.innerHTML = result.allowed
+                ? '✓ URL is ALLOWED'
+                : '✗ URL is BLOCKED';
+
+            if (result.rule) {
+                resultDetails.innerHTML = `
+                    Matched rule: <code>${result.rule.type}: ${result.rule.pattern}</code><br>
+                    For user-agent: <code>${result.rule.agent}</code>
+                `;
+            } else {
+                resultDetails.innerHTML = 'No matching rules found. URL is allowed by default.';
+            }
+        }
+
+        function testBulk() {
+            const robotsTxt = document.getElementById('robotsTxt').value;
+            const userAgent = document.getElementById('userAgent').value;
+            const urls = document.getElementById('bulkUrls').value.split('\n').filter(u => u.trim());
+
+            const rules = parseRobotsTxt(robotsTxt);
+            const container = document.getElementById('bulkResults');
+
+            container.innerHTML = urls.map(url => {
+                const result = testUrlAgainstRules(url.trim(), userAgent, rules);
+                return `
+                    <div class="bulk-result-item">
+                        <span class="status ${result.allowed ? 'allowed' : 'blocked'}">
+                            ${result.allowed ? 'ALLOWED' : 'BLOCKED'}
+                        </span>
+                        <span class="url">${escapeHtml(url.trim())}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Handle Enter key
+        document.getElementById('testUrl').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') testUrl();
+        });
+    </script>
+</body>
+</html>
