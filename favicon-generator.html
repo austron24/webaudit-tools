@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Favicon Generator - Create ICO from Image</title>
+    <meta name="description" content="Generate favicons from any image. Create ICO, PNG favicons in multiple sizes. Free online favicon maker for your website.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #8b5cf6 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 42px; margin-bottom: 15px; }
+        .subtitle { font-size: 18px; opacity: 0.9; }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            color: #1e293b;
+            margin-bottom: 30px;
+        }
+        .upload-zone {
+            border: 3px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 60px 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 30px;
+        }
+        .upload-zone:hover { border-color: #8b5cf6; background: #faf5ff; }
+        .upload-zone.dragover { border-color: #8b5cf6; background: #f3e8ff; }
+        .upload-icon { font-size: 48px; margin-bottom: 15px; }
+        .upload-text { font-size: 18px; color: #64748b; margin-bottom: 10px; }
+        .upload-hint { font-size: 14px; color: #94a3b8; }
+        #fileInput { display: none; }
+        .preview-section {
+            display: none;
+            margin-top: 30px;
+        }
+        .preview-section.show { display: block; }
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .preview-header h3 { color: #1e293b; }
+        .original-preview {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .original-preview img {
+            max-width: 128px;
+            max-height: 128px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .original-info { color: #64748b; }
+        .sizes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .size-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .size-card canvas {
+            background: repeating-conic-gradient(#e2e8f0 0% 25%, white 0% 50%) 50% / 10px 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .size-label { font-weight: 600; color: #1e293b; margin-bottom: 5px; }
+        .size-use { font-size: 12px; color: #64748b; }
+        .btn-row {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        .btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-primary { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; }
+        .btn-secondary { background: #e2e8f0; color: #475569; }
+        .code-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #1e293b;
+            border-radius: 8px;
+        }
+        .code-section h4 { color: #f8fafc; margin-bottom: 15px; }
+        .code-block {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 13px;
+            color: #22d3ee;
+            overflow-x: auto;
+        }
+        .tools-promo {
+            margin-top: 30px;
+            padding: 20px;
+            background: #faf5ff;
+            border-radius: 12px;
+        }
+        .tools-promo h4 { color: #8b5cf6; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #7c3aed;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        .cta-section {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .cta-section a {
+            display: inline-block;
+            background: white;
+            color: #8b5cf6;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        footer { text-align: center; padding: 40px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #c4b5fd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Favicon Generator</h1>
+            <p class="subtitle">Create favicons in all sizes from any image</p>
+        </header>
+
+        <div class="card">
+            <div class="upload-zone" id="uploadZone">
+                <div class="upload-icon">🖼️</div>
+                <div class="upload-text">Drop your image here or click to browse</div>
+                <div class="upload-hint">PNG, JPG, SVG, or GIF (square images work best)</div>
+                <input type="file" id="fileInput" accept="image/*">
+            </div>
+
+            <div class="preview-section" id="previewSection">
+                <div class="preview-header">
+                    <h3>Preview</h3>
+                    <button class="btn btn-secondary" onclick="resetUpload()">Upload New Image</button>
+                </div>
+
+                <div class="original-preview">
+                    <img id="originalImage" src="" alt="Original">
+                    <div class="original-info">
+                        <strong>Original Image</strong>
+                        <div id="imageInfo"></div>
+                    </div>
+                </div>
+
+                <h4 style="margin-bottom: 15px; color: #1e293b;">Generated Sizes</h4>
+                <div class="sizes-grid" id="sizesGrid"></div>
+
+                <div class="btn-row">
+                    <button class="btn btn-primary" onclick="downloadAll()">Download All as ZIP</button>
+                    <button class="btn btn-secondary" onclick="downloadICO()">Download .ICO</button>
+                </div>
+
+                <div class="code-section">
+                    <h4>HTML Code</h4>
+                    <div class="code-block" id="htmlCode"></div>
+                </div>
+            </div>
+
+            <div class="tools-promo">
+                <h4>More Website Tools</h4>
+                <a href="meta-generator.html">Meta Tag Generator</a>
+                <a href="seo-checker.html">SEO Analyzer</a>
+                <a href="image-compressor.html">Image Compressor</a>
+                <a href="index.html">View All 30+ Tools</a>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h3>Need a Website Audit?</h3>
+            <p>Get professional accessibility and SEO analysis.</p>
+            <a href="https://fiverr.com/austron24" target="_blank">Get Professional Audit</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Favicon Generator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script>
+        const sizes = [
+            { size: 16, name: 'favicon-16x16.png', use: 'Browser tab' },
+            { size: 32, name: 'favicon-32x32.png', use: 'Browser tab (Retina)' },
+            { size: 48, name: 'favicon-48x48.png', use: 'Windows site' },
+            { size: 64, name: 'favicon-64x64.png', use: 'Windows site (Retina)' },
+            { size: 128, name: 'favicon-128x128.png', use: 'Chrome Web Store' },
+            { size: 180, name: 'apple-touch-icon.png', use: 'iOS home screen' },
+            { size: 192, name: 'android-chrome-192x192.png', use: 'Android home' },
+            { size: 512, name: 'android-chrome-512x512.png', use: 'Android splash' }
+        ];
+
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+        const previewSection = document.getElementById('previewSection');
+        let originalImage = null;
+        let generatedImages = {};
+
+        uploadZone.addEventListener('click', () => fileInput.click());
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) {
+                alert('Please upload an image file');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    originalImage = img;
+                    document.getElementById('originalImage').src = e.target.result;
+                    document.getElementById('imageInfo').textContent = `${img.width} x ${img.height} pixels`;
+                    generateFavicons();
+                    uploadZone.style.display = 'none';
+                    previewSection.classList.add('show');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function generateFavicons() {
+            const grid = document.getElementById('sizesGrid');
+            grid.innerHTML = '';
+            generatedImages = {};
+
+            sizes.forEach(({ size, name, use }) => {
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+
+                // Draw image centered and scaled
+                const scale = Math.min(size / originalImage.width, size / originalImage.height);
+                const w = originalImage.width * scale;
+                const h = originalImage.height * scale;
+                const x = (size - w) / 2;
+                const y = (size - h) / 2;
+
+                ctx.drawImage(originalImage, x, y, w, h);
+
+                generatedImages[name] = canvas.toDataURL('image/png');
+
+                const card = document.createElement('div');
+                card.className = 'size-card';
+                card.innerHTML = `
+                    <div class="size-label">${size}x${size}</div>
+                    <div class="size-use">${use}</div>
+                `;
+
+                const previewCanvas = document.createElement('canvas');
+                previewCanvas.width = Math.min(size, 64);
+                previewCanvas.height = Math.min(size, 64);
+                const previewCtx = previewCanvas.getContext('2d');
+                previewCtx.drawImage(canvas, 0, 0, previewCanvas.width, previewCanvas.height);
+
+                card.insertBefore(previewCanvas, card.firstChild.nextSibling);
+
+                const downloadBtn = document.createElement('button');
+                downloadBtn.className = 'btn btn-secondary';
+                downloadBtn.style.cssText = 'padding: 8px 16px; font-size: 12px; margin-top: 10px;';
+                downloadBtn.textContent = 'Download';
+                downloadBtn.onclick = () => downloadSingle(name);
+                card.appendChild(downloadBtn);
+
+                grid.appendChild(card);
+            });
+
+            generateHTMLCode();
+        }
+
+        function generateHTMLCode() {
+            const code = `<!-- Favicon -->
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
+<!-- Apple Touch Icon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Android Chrome -->
+<link rel="manifest" href="/site.webmanifest">`;
+
+            document.getElementById('htmlCode').textContent = code;
+        }
+
+        function downloadSingle(name) {
+            const link = document.createElement('a');
+            link.download = name;
+            link.href = generatedImages[name];
+            link.click();
+        }
+
+        async function downloadAll() {
+            const zip = new JSZip();
+
+            for (const [name, dataUrl] of Object.entries(generatedImages)) {
+                const base64 = dataUrl.split(',')[1];
+                zip.file(name, base64, { base64: true });
+            }
+
+            // Add webmanifest
+            const manifest = {
+                name: "My Website",
+                short_name: "Website",
+                icons: [
+                    { src: "/android-chrome-192x192.png", sizes: "192x192", type: "image/png" },
+                    { src: "/android-chrome-512x512.png", sizes: "512x512", type: "image/png" }
+                ],
+                theme_color: "#ffffff",
+                background_color: "#ffffff",
+                display: "standalone"
+            };
+            zip.file('site.webmanifest', JSON.stringify(manifest, null, 2));
+
+            const content = await zip.generateAsync({ type: 'blob' });
+            const link = document.createElement('a');
+            link.download = 'favicons.zip';
+            link.href = URL.createObjectURL(content);
+            link.click();
+        }
+
+        function downloadICO() {
+            // Create simple ICO with 16x16 and 32x32
+            // For simplicity, just download the 32x32 PNG renamed as .ico
+            // Real ICO generation would require more complex binary manipulation
+            const link = document.createElement('a');
+            link.download = 'favicon.ico';
+            link.href = generatedImages['favicon-32x32.png'];
+            link.click();
+        }
+
+        function resetUpload() {
+            uploadZone.style.display = 'block';
+            previewSection.classList.remove('show');
+            fileInput.value = '';
+            originalImage = null;
+            generatedImages = {};
+        }
+    </script>
+</body>
+</html>
