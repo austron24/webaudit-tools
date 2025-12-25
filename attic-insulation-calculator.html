@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attic Insulation Calculator - R-Value & Coverage</title>
+    <meta name="description" content="Calculate how much attic insulation you need. Blown-in, batt, R-value recommendations. Free attic insulation calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #f59e0b 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #f59e0b;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .break-item {
+            background: #fef3c7;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .break-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #d97706;
+        }
+        .break-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .rvalue-info {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .rvalue-info h4 {
+            color: #d97706;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .rvalue-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .rvalue-row:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #d97706; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #f59e0b;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fcd34d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Attic Insulation Calculator</h1>
+            <p class="subtitle">How much attic insulation do you need?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Attic Length (ft)</label>
+                    <input type="number" id="length" value="40" min="0" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Attic Width (ft)</label>
+                    <input type="number" id="width" value="30" min="0" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group full">
+                    <label>Insulation Type</label>
+                    <select id="insType" onchange="calculate()">
+                        <option value="blown-fiber" selected>Blown Fiberglass</option>
+                        <option value="blown-cellulose">Blown Cellulose</option>
+                        <option value="batt">Fiberglass Batts</option>
+                        <option value="spray">Spray Foam</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Target R-Value</label>
+                    <select id="rvalue" onchange="calculate()">
+                        <option value="30">R-30 (Mild Climate)</option>
+                        <option value="38" selected>R-38 (Moderate)</option>
+                        <option value="49">R-49 (Cold Climate)</option>
+                        <option value="60">R-60 (Very Cold)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Current R-Value</label>
+                    <input type="number" id="currentR" value="11" min="0" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Price per Bag ($)</label>
+                    <input type="number" id="price" value="35" min="0" step="1" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Insulation Needed</div>
+                <div class="value" id="bags">30 bags</div>
+                <div class="sub" id="sqFt">1,200 sq ft coverage</div>
+            </div>
+
+            <div class="breakdown">
+                <div class="break-item">
+                    <div class="value" id="depth">10.8"</div>
+                    <div class="label">Depth Needed</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="addR">R-27</div>
+                    <div class="label">R-Value to Add</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="savings">~25%</div>
+                    <div class="label">Energy Savings</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="cost">$1,050</div>
+                    <div class="label">Material Cost</div>
+                </div>
+            </div>
+
+            <div class="rvalue-info">
+                <h4>R-Value Guide by Climate Zone</h4>
+                <div class="rvalue-row">
+                    <span>Zone 1 (Hot)</span>
+                    <span>R-30 to R-49</span>
+                </div>
+                <div class="rvalue-row">
+                    <span>Zone 2-3 (Warm)</span>
+                    <span>R-30 to R-60</span>
+                </div>
+                <div class="rvalue-row">
+                    <span>Zone 4-5 (Mixed)</span>
+                    <span>R-38 to R-60</span>
+                </div>
+                <div class="rvalue-row">
+                    <span>Zone 6-7 (Cold)</span>
+                    <span>R-49 to R-60</span>
+                </div>
+                <div class="rvalue-row">
+                    <span>Blown Fiberglass</span>
+                    <span>R-2.5 per inch</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Tools</h4>
+            <a href="insulation-calculator.html">Wall Insulation</a>
+            <a href="roofing-calculator.html">Roofing Calculator</a>
+            <a href="electricity-calculator.html">Electricity Cost</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Attic Insulation Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const insSpecs = {
+            'blown-fiber': { rPerInch: 2.5, sqFtPerBag: 40, bagLabel: 'bags' },
+            'blown-cellulose': { rPerInch: 3.7, sqFtPerBag: 35, bagLabel: 'bags' },
+            'batt': { rPerInch: 3.2, sqFtPerBag: 48, bagLabel: 'rolls' },
+            'spray': { rPerInch: 6.5, sqFtPerBag: 200, bagLabel: 'kits' }
+        };
+
+        function calculate() {
+            const length = parseFloat(document.getElementById('length').value) || 0;
+            const width = parseFloat(document.getElementById('width').value) || 0;
+            const insType = document.getElementById('insType').value;
+            const targetR = parseFloat(document.getElementById('rvalue').value) || 38;
+            const currentR = parseFloat(document.getElementById('currentR').value) || 0;
+            const price = parseFloat(document.getElementById('price').value) || 35;
+
+            const specs = insSpecs[insType];
+            const sqFt = length * width;
+
+            // R-value needed
+            const addR = Math.max(0, targetR - currentR);
+
+            // Depth needed
+            const depth = addR / specs.rPerInch;
+
+            // Bags needed (at target depth)
+            const bags = Math.ceil(sqFt / specs.sqFtPerBag * (depth / 10)); // normalized to 10" coverage
+
+            // Cost
+            const cost = bags * price;
+
+            // Energy savings estimate (rough)
+            const savingsPercent = Math.min(35, Math.round((addR / targetR) * 30));
+
+            document.getElementById('sqFt').textContent = sqFt.toLocaleString() + ' sq ft coverage';
+            document.getElementById('depth').textContent = depth.toFixed(1) + '"';
+            document.getElementById('addR').textContent = 'R-' + addR;
+            document.getElementById('bags').textContent = bags + ' ' + specs.bagLabel;
+            document.getElementById('cost').textContent = '$' + cost.toLocaleString();
+            document.getElementById('savings').textContent = '~' + savingsPercent + '%';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

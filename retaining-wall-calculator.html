@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retaining Wall Calculator - Block & Material Estimator</title>
+    <meta name="description" content="Calculate retaining wall blocks and materials. Estimate blocks, base, and backfill. Free retaining wall calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #78716c 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #78716c;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #78716c 0%, #57534e 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .break-item {
+            background: #f5f5f4;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .break-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #57534e;
+        }
+        .break-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .materials {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .materials h4 {
+            color: #57534e;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .material-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .material-row:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #57534e; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #78716c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #d6d3d1; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Retaining Wall Calculator</h1>
+            <p class="subtitle">How many blocks do you need?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Wall Length (ft)</label>
+                    <input type="number" id="length" value="30" min="0" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Wall Height (ft)</label>
+                    <input type="number" id="height" value="3" min="0" step="0.5" oninput="calculate()">
+                </div>
+                <div class="input-group full">
+                    <label>Block Type</label>
+                    <select id="blockType" onchange="calculate()">
+                        <option value="standard" selected>Standard Block (12" x 4" x 7")</option>
+                        <option value="large">Large Block (18" x 6" x 12")</option>
+                        <option value="small">Small Block (8" x 4" x 6")</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Price per Block ($)</label>
+                    <input type="number" id="blockPrice" value="3.50" min="0" step="0.25" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Waste Factor (%)</label>
+                    <input type="number" id="waste" value="10" min="5" max="20" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Blocks Needed</div>
+                <div class="value" id="totalBlocks">396</div>
+                <div class="sub" id="sqFt">90 sq ft wall area</div>
+            </div>
+
+            <div class="breakdown">
+                <div class="break-item">
+                    <div class="value" id="rows">9</div>
+                    <div class="label">Rows High</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="perRow">40</div>
+                    <div class="label">Blocks per Row</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="capBlocks">40</div>
+                    <div class="label">Cap Blocks</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="blockCost">$1,386</div>
+                    <div class="label">Block Cost</div>
+                </div>
+            </div>
+
+            <div class="materials">
+                <h4>Materials List</h4>
+                <div class="material-row">
+                    <span>Base Gravel (tons)</span>
+                    <span id="baseGravel">1.5</span>
+                </div>
+                <div class="material-row">
+                    <span>Backfill Gravel (tons)</span>
+                    <span id="backfill">3.0</span>
+                </div>
+                <div class="material-row">
+                    <span>Drainage Pipe (ft)</span>
+                    <span id="drainPipe">35</span>
+                </div>
+                <div class="material-row">
+                    <span>Landscape Fabric (sq ft)</span>
+                    <span id="fabric">135</span>
+                </div>
+                <div class="material-row">
+                    <span>Block Adhesive (tubes)</span>
+                    <span id="adhesive">5</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Landscaping Tools</h4>
+            <a href="paver-calculator.html">Paver Calculator</a>
+            <a href="gravel-calculator.html">Gravel Calculator</a>
+            <a href="mulch-calculator.html">Mulch Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Retaining Wall Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const blockSizes = {
+            standard: { length: 12, height: 4, depth: 7 },
+            large: { length: 18, height: 6, depth: 12 },
+            small: { length: 8, height: 4, depth: 6 }
+        };
+
+        function calculate() {
+            const length = parseFloat(document.getElementById('length').value) || 0;
+            const height = parseFloat(document.getElementById('height').value) || 0;
+            const blockType = document.getElementById('blockType').value;
+            const blockPrice = parseFloat(document.getElementById('blockPrice').value) || 3.50;
+            const waste = parseFloat(document.getElementById('waste').value) || 10;
+
+            const block = blockSizes[blockType];
+
+            // Convert wall dimensions to inches
+            const lengthIn = length * 12;
+            const heightIn = height * 12;
+
+            // Calculate blocks needed
+            const blocksPerRow = Math.ceil(lengthIn / block.length);
+            const rows = Math.ceil(heightIn / block.height);
+            const baseBlocks = blocksPerRow * rows;
+            const wasteBlocks = Math.ceil(baseBlocks * (waste / 100));
+            const totalBlocks = baseBlocks + wasteBlocks;
+
+            // Cap blocks (one row on top)
+            const capBlocks = blocksPerRow;
+
+            // Wall area
+            const sqFt = length * height;
+
+            // Costs
+            const blockCost = totalBlocks * blockPrice;
+
+            // Base gravel: 6" deep, 18" wide trench
+            const baseGravelCuFt = (length * 1.5 * 0.5);
+            const baseGravel = baseGravelCuFt / 27 * 1.4; // convert to tons
+
+            // Backfill gravel: behind wall
+            const backfillCuFt = length * height * (block.depth / 12);
+            const backfill = backfillCuFt / 27 * 1.4;
+
+            // Drainage pipe (length + extra)
+            const drainPipe = Math.ceil(length * 1.1);
+
+            // Landscape fabric
+            const fabric = Math.ceil(length * (height + 1.5));
+
+            // Adhesive (1 tube per 30 blocks for top 2 rows)
+            const adhesive = Math.ceil((blocksPerRow * 2) / 30);
+
+            document.getElementById('totalBlocks').textContent = totalBlocks;
+            document.getElementById('sqFt').textContent = Math.round(sqFt) + ' sq ft wall area';
+            document.getElementById('rows').textContent = rows;
+            document.getElementById('perRow').textContent = blocksPerRow;
+            document.getElementById('capBlocks').textContent = capBlocks;
+            document.getElementById('blockCost').textContent = '$' + Math.round(blockCost).toLocaleString();
+            document.getElementById('baseGravel').textContent = baseGravel.toFixed(1);
+            document.getElementById('backfill').textContent = backfill.toFixed(1);
+            document.getElementById('drainPipe').textContent = drainPipe;
+            document.getElementById('fabric').textContent = fabric;
+            document.getElementById('adhesive').textContent = adhesive;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

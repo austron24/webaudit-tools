@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rebar Calculator - How Much Rebar Do I Need?</title>
+    <meta name="description" content="Calculate how much rebar you need for concrete slabs and foundations. Estimate linear feet and cost. Free rebar calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #374151 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #6b7280;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .break-item {
+            background: #f3f4f6;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .break-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #4b5563;
+        }
+        .break-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .rebar-info {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .rebar-info h4 {
+            color: #4b5563;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .rebar-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .rebar-row:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #4b5563; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #6b7280;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #9ca3af; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Rebar Calculator</h1>
+            <p class="subtitle">How much rebar do you need?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Slab Length (ft)</label>
+                    <input type="number" id="length" value="20" min="0" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Slab Width (ft)</label>
+                    <input type="number" id="width" value="20" min="0" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Rebar Spacing (inches)</label>
+                    <select id="spacing" onchange="calculate()">
+                        <option value="12" selected>12" on center</option>
+                        <option value="16">16" on center</option>
+                        <option value="18">18" on center</option>
+                        <option value="24">24" on center</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Rebar Size</label>
+                    <select id="size" onchange="calculate()">
+                        <option value="3">#3 (3/8")</option>
+                        <option value="4" selected>#4 (1/2")</option>
+                        <option value="5">#5 (5/8")</option>
+                        <option value="6">#6 (3/4")</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Rebar Length (ft)</label>
+                    <select id="barLength" onchange="calculate()">
+                        <option value="10">10 ft</option>
+                        <option value="20" selected>20 ft</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Price per Bar ($)</label>
+                    <input type="number" id="price" value="8" min="0" step="0.5" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Total Rebar Needed</div>
+                <div class="value" id="linearFeet">800 ft</div>
+                <div class="sub" id="bars">40 bars (20 ft each)</div>
+            </div>
+
+            <div class="breakdown">
+                <div class="break-item">
+                    <div class="value" id="lengthBars">20</div>
+                    <div class="label">Lengthwise Bars</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="widthBars">20</div>
+                    <div class="label">Widthwise Bars</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="weight">533 lbs</div>
+                    <div class="label">Total Weight</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="cost">$320</div>
+                    <div class="label">Material Cost</div>
+                </div>
+            </div>
+
+            <div class="rebar-info">
+                <h4>Rebar Size Reference</h4>
+                <div class="rebar-row">
+                    <span>#3 (3/8")</span>
+                    <span>0.376 lbs/ft</span>
+                </div>
+                <div class="rebar-row">
+                    <span>#4 (1/2")</span>
+                    <span>0.668 lbs/ft</span>
+                </div>
+                <div class="rebar-row">
+                    <span>#5 (5/8")</span>
+                    <span>1.043 lbs/ft</span>
+                </div>
+                <div class="rebar-row">
+                    <span>#6 (3/4")</span>
+                    <span>1.502 lbs/ft</span>
+                </div>
+                <div class="rebar-row">
+                    <span>Overlap</span>
+                    <span>40 bar diameters min</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Construction Tools</h4>
+            <a href="concrete-calculator.html">Concrete Calculator</a>
+            <a href="brick-calculator.html">Brick Calculator</a>
+            <a href="stair-calculator.html">Stair Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Rebar Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const rebarWeight = {
+            3: 0.376,
+            4: 0.668,
+            5: 1.043,
+            6: 1.502
+        };
+
+        function calculate() {
+            const length = parseFloat(document.getElementById('length').value) || 0;
+            const width = parseFloat(document.getElementById('width').value) || 0;
+            const spacing = parseFloat(document.getElementById('spacing').value) || 12;
+            const size = parseInt(document.getElementById('size').value) || 4;
+            const barLength = parseFloat(document.getElementById('barLength').value) || 20;
+            const price = parseFloat(document.getElementById('price').value) || 8;
+
+            // Convert spacing to feet
+            const spacingFt = spacing / 12;
+
+            // Number of bars running lengthwise (across the width)
+            const lengthBars = Math.ceil(width / spacingFt) + 1;
+
+            // Number of bars running widthwise (across the length)
+            const widthBars = Math.ceil(length / spacingFt) + 1;
+
+            // Total linear feet
+            const lengthwiseFeet = lengthBars * length;
+            const widthwiseFeet = widthBars * width;
+            const totalLinearFeet = lengthwiseFeet + widthwiseFeet;
+
+            // Number of stock bars needed
+            const totalBars = Math.ceil(totalLinearFeet / barLength);
+
+            // Weight
+            const weight = totalLinearFeet * rebarWeight[size];
+
+            // Cost
+            const cost = totalBars * price;
+
+            document.getElementById('linearFeet').textContent = Math.round(totalLinearFeet) + ' ft';
+            document.getElementById('bars').textContent = totalBars + ' bars (' + barLength + ' ft each)';
+            document.getElementById('lengthBars').textContent = lengthBars;
+            document.getElementById('widthBars').textContent = widthBars;
+            document.getElementById('weight').textContent = Math.round(weight) + ' lbs';
+            document.getElementById('cost').textContent = '$' + Math.round(cost);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
