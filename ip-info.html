@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Is My IP Address - Free IP Lookup Tool</title>
+    <meta name="description" content="Find your public IP address instantly. See your location, ISP, timezone, and network details. Free IP lookup tool.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #3b82f6 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .main-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            color: #1e293b;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .ip-display {
+            font-size: 48px;
+            font-weight: bold;
+            color: #3b82f6;
+            margin: 20px 0;
+            font-family: monospace;
+        }
+        .ip-label {
+            color: #64748b;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .copy-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.2s;
+        }
+        .copy-btn:hover { background: #2563eb; }
+        .copy-btn.copied { background: #16a34a; }
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .detail-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            color: #1e293b;
+        }
+        .detail-card h3 {
+            color: #64748b;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .detail-card .value {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .detail-card .icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .loading {
+            color: #94a3b8;
+            font-style: italic;
+        }
+        .info-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            color: #1e293b;
+            margin-top: 30px;
+        }
+        .info-section h4 {
+            color: #3b82f6;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #64748b;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        .tools-promo {
+            margin-top: 20px;
+            padding: 20px;
+            background: #dbeafe;
+            border-radius: 12px;
+        }
+        .tools-promo h4 { color: #3b82f6; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #1d4ed8;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        .cta-section {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .cta-section a {
+            display: inline-block;
+            background: white;
+            color: #3b82f6;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #93c5fd; }
+        .refresh-btn {
+            background: transparent;
+            border: 2px solid #e2e8f0;
+            color: #64748b;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .refresh-btn:hover { border-color: #3b82f6; color: #3b82f6; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>What Is My IP Address?</h1>
+            <p class="subtitle">Your public IP and network information</p>
+        </header>
+
+        <div class="main-card">
+            <div class="ip-label">Your Public IP Address</div>
+            <div class="ip-display" id="ipAddress">Loading...</div>
+            <button class="copy-btn" id="copyBtn" onclick="copyIP()">Copy IP Address</button>
+            <button class="refresh-btn" onclick="fetchIPInfo()">↻ Refresh</button>
+        </div>
+
+        <div class="details-grid">
+            <div class="detail-card">
+                <div class="icon">📍</div>
+                <h3>Location</h3>
+                <div class="value" id="location"><span class="loading">Detecting...</span></div>
+            </div>
+            <div class="detail-card">
+                <div class="icon">🌐</div>
+                <h3>Country</h3>
+                <div class="value" id="country"><span class="loading">Detecting...</span></div>
+            </div>
+            <div class="detail-card">
+                <div class="icon">🏢</div>
+                <h3>ISP / Organization</h3>
+                <div class="value" id="isp"><span class="loading">Detecting...</span></div>
+            </div>
+            <div class="detail-card">
+                <div class="icon">🕐</div>
+                <h3>Timezone</h3>
+                <div class="value" id="timezone"><span class="loading">Detecting...</span></div>
+            </div>
+            <div class="detail-card">
+                <div class="icon">📊</div>
+                <h3>IP Type</h3>
+                <div class="value" id="ipType"><span class="loading">Detecting...</span></div>
+            </div>
+            <div class="detail-card">
+                <div class="icon">🔢</div>
+                <h3>ASN</h3>
+                <div class="value" id="asn"><span class="loading">Detecting...</span></div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h4>About Your IP Address</h4>
+            <p>Your IP (Internet Protocol) address is a unique number assigned by your Internet Service Provider. It identifies your device on the internet and enables communication with websites and services.</p>
+            <p><strong>IPv4</strong> addresses are 32-bit numbers like 192.168.1.1. <strong>IPv6</strong> addresses are 128-bit and look like 2001:0db8:85a3:0000:0000:8a2e:0370:7334.</p>
+            <p>Your IP can reveal your approximate location, ISP, and network type. For privacy, consider using a VPN to mask your real IP address.</p>
+
+            <div class="tools-promo">
+                <h4>Related Developer Tools</h4>
+                <a href="redirect-checker.html">Redirect Checker</a>
+                <a href="robots-tester.html">Robots.txt Tester</a>
+                <a href="health-check.html">Website Health Check</a>
+                <a href="index.html">View All 50+ Tools</a>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h3>Need a Website Security Audit?</h3>
+            <p>Get professional analysis of your website's security, performance, and accessibility.</p>
+            <a href="https://fiverr.com/austron24" target="_blank">Get Professional Audit</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>IP Info Tool by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        let currentIP = '';
+
+        async function fetchIPInfo() {
+            document.getElementById('ipAddress').textContent = 'Loading...';
+
+            try {
+                // Use ipapi.co for IP info (free tier: 1000/day)
+                const response = await fetch('https://ipapi.co/json/');
+                const data = await response.json();
+
+                currentIP = data.ip || 'Unknown';
+                document.getElementById('ipAddress').textContent = currentIP;
+                document.getElementById('location').textContent = `${data.city || 'Unknown'}, ${data.region || ''}`;
+                document.getElementById('country').textContent = `${data.country_name || 'Unknown'} ${data.country_code ? getFlag(data.country_code) : ''}`;
+                document.getElementById('isp').textContent = data.org || 'Unknown';
+                document.getElementById('timezone').textContent = data.timezone || 'Unknown';
+                document.getElementById('ipType').textContent = data.version === 'IPv6' ? 'IPv6' : 'IPv4';
+                document.getElementById('asn').textContent = data.asn || 'Unknown';
+            } catch (error) {
+                // Fallback to simpler API
+                try {
+                    const response = await fetch('https://api.ipify.org?format=json');
+                    const data = await response.json();
+                    currentIP = data.ip;
+                    document.getElementById('ipAddress').textContent = currentIP;
+                    document.getElementById('location').textContent = 'N/A (basic lookup)';
+                    document.getElementById('country').textContent = 'N/A';
+                    document.getElementById('isp').textContent = 'N/A';
+                    document.getElementById('timezone').textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                    document.getElementById('ipType').textContent = currentIP.includes(':') ? 'IPv6' : 'IPv4';
+                    document.getElementById('asn').textContent = 'N/A';
+                } catch (e) {
+                    document.getElementById('ipAddress').textContent = 'Could not detect';
+                }
+            }
+        }
+
+        function getFlag(countryCode) {
+            const codePoints = countryCode
+                .toUpperCase()
+                .split('')
+                .map(char => 127397 + char.charCodeAt());
+            return String.fromCodePoint(...codePoints);
+        }
+
+        function copyIP() {
+            if (!currentIP) return;
+
+            navigator.clipboard.writeText(currentIP).then(() => {
+                const btn = document.getElementById('copyBtn');
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = 'Copy IP Address';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Initialize
+        fetchIPInfo();
+    </script>
+</body>
+</html>
