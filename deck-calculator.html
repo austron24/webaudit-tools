@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deck Calculator - How Much Decking Do I Need?</title>
+    <meta name="description" content="Calculate how much decking material you need. Estimate deck boards, joists, and posts. Free deck calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #b45309 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #b45309;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #b45309 0%, #92400e 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .break-item {
+            background: #ffedd5;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .break-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #b45309;
+        }
+        .break-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .materials {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .materials h4 {
+            color: #b45309;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .material-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .material-row:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #b45309; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #92400e;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fed7aa; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Deck Calculator</h1>
+            <p class="subtitle">How much decking material do you need?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Deck Length (ft)</label>
+                    <input type="number" id="length" value="16" min="0" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Deck Width (ft)</label>
+                    <input type="number" id="width" value="12" min="0" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group full">
+                    <label>Decking Material</label>
+                    <select id="material" onchange="calculate()">
+                        <option value="pt" selected>Pressure-Treated ($2-4/ft)</option>
+                        <option value="cedar">Cedar ($4-8/ft)</option>
+                        <option value="composite">Composite ($6-12/ft)</option>
+                        <option value="pvc">PVC ($8-15/ft)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Board Width</label>
+                    <select id="boardWidth" onchange="calculate()">
+                        <option value="5.5" selected>5.5" (Standard)</option>
+                        <option value="3.5">3.5" (Narrow)</option>
+                        <option value="7.25">7.25" (Wide)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Joist Spacing</label>
+                    <select id="joistSpacing" onchange="calculate()">
+                        <option value="12">12" on center</option>
+                        <option value="16" selected>16" on center</option>
+                        <option value="24">24" on center</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Deck Height (ft)</label>
+                    <input type="number" id="deckHeight" value="3" min="0" step="0.5" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Include Railing?</label>
+                    <select id="railing" onchange="calculate()">
+                        <option value="yes" selected>Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Deck Area</div>
+                <div class="value" id="sqFt">192 ft²</div>
+                <div class="sub" id="totalCost">Estimated: $1,500 - $3,000</div>
+            </div>
+
+            <div class="breakdown">
+                <div class="break-item">
+                    <div class="value" id="deckBoards">50</div>
+                    <div class="label">Deck Boards (12 ft)</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="joists">13</div>
+                    <div class="label">Joists (2x8)</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="posts">6</div>
+                    <div class="label">Support Posts</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="beams">2</div>
+                    <div class="label">Beams (2x10)</div>
+                </div>
+            </div>
+
+            <div class="materials">
+                <h4>Complete Materials List</h4>
+                <div class="material-row">
+                    <span>Deck Boards (5/4 x 6 x 12')</span>
+                    <span id="boardList">50</span>
+                </div>
+                <div class="material-row">
+                    <span>Joists (2x8 x 12')</span>
+                    <span id="joistList">13</span>
+                </div>
+                <div class="material-row">
+                    <span>Beams (2x10 x 16')</span>
+                    <span id="beamList">2</span>
+                </div>
+                <div class="material-row">
+                    <span>Posts (4x4 x 8')</span>
+                    <span id="postList">6</span>
+                </div>
+                <div class="material-row">
+                    <span>Ledger Board (2x10)</span>
+                    <span id="ledgerList">1</span>
+                </div>
+                <div class="material-row">
+                    <span>Railing (linear ft)</span>
+                    <span id="railingList">56</span>
+                </div>
+                <div class="material-row">
+                    <span>Deck Screws (lbs)</span>
+                    <span id="screwList">8</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Outdoor Tools</h4>
+            <a href="fence-calculator.html">Fence Calculator</a>
+            <a href="concrete-calculator.html">Concrete Calculator</a>
+            <a href="square-footage.html">Square Footage</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Deck Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const materialPrices = {
+            pt: { min: 2, max: 4 },
+            cedar: { min: 4, max: 8 },
+            composite: { min: 6, max: 12 },
+            pvc: { min: 8, max: 15 }
+        };
+
+        function calculate() {
+            const length = parseFloat(document.getElementById('length').value) || 0;
+            const width = parseFloat(document.getElementById('width').value) || 0;
+            const material = document.getElementById('material').value;
+            const boardWidth = parseFloat(document.getElementById('boardWidth').value) || 5.5;
+            const joistSpacing = parseFloat(document.getElementById('joistSpacing').value) || 16;
+            const deckHeight = parseFloat(document.getElementById('deckHeight').value) || 3;
+            const includeRailing = document.getElementById('railing').value === 'yes';
+
+            const sqFt = length * width;
+
+            // Deck boards: convert width to feet, calculate rows, add 10% waste
+            const boardWidthFt = boardWidth / 12;
+            const rowsNeeded = Math.ceil(width / boardWidthFt);
+            const deckBoards = Math.ceil(rowsNeeded * (length / 12) * 1.1); // 12ft boards, 10% waste
+
+            // Joists: one every spacing inches + 1
+            const joists = Math.ceil((length * 12) / joistSpacing) + 1;
+
+            // Support posts: one every 6-8 feet in each direction
+            const postsPerRow = Math.ceil(length / 8) + 1;
+            const rows = Math.ceil(width / 8);
+            const posts = postsPerRow * Math.max(2, rows);
+
+            // Beams: typically 2 running length of deck
+            const beams = Math.ceil(length / 16) * 2;
+
+            // Railing: perimeter minus house side
+            const railingFt = includeRailing ? (length + (width * 2)) : 0;
+
+            // Screws: ~1 lb per 5 sq ft
+            const screws = Math.ceil(sqFt / 5);
+
+            // Cost estimate
+            const prices = materialPrices[material];
+            const minCost = sqFt * prices.min;
+            const maxCost = sqFt * prices.max;
+
+            document.getElementById('sqFt').textContent = sqFt + ' ft²';
+            document.getElementById('totalCost').textContent = 'Estimated: $' + Math.round(minCost).toLocaleString() + ' - $' + Math.round(maxCost).toLocaleString();
+            document.getElementById('deckBoards').textContent = deckBoards;
+            document.getElementById('joists').textContent = joists;
+            document.getElementById('posts').textContent = posts;
+            document.getElementById('beams').textContent = beams;
+            document.getElementById('boardList').textContent = deckBoards;
+            document.getElementById('joistList').textContent = joists;
+            document.getElementById('beamList').textContent = beams;
+            document.getElementById('postList').textContent = posts;
+            document.getElementById('ledgerList').textContent = Math.ceil(length / 16);
+            document.getElementById('railingList').textContent = railingFt + ' ft';
+            document.getElementById('screwList').textContent = screws;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

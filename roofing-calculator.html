@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roofing Calculator - How Many Shingles Do I Need?</title>
+    <meta name="description" content="Calculate how many roofing shingles you need. Estimate squares, bundles, and materials. Free roofing calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #dc2626 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #dc2626;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .break-item {
+            background: #fee2e2;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .break-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #dc2626;
+        }
+        .break-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .materials {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .materials h4 {
+            color: #dc2626;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .material-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .material-row:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #dc2626; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #b91c1c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fca5a5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Roofing Calculator</h1>
+            <p class="subtitle">How many shingles do you need?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Roof Length (ft)</label>
+                    <input type="number" id="length" value="40" min="0" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Roof Width (ft)</label>
+                    <input type="number" id="width" value="30" min="0" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Roof Pitch</label>
+                    <select id="pitch" onchange="calculate()">
+                        <option value="1.00">Flat (0/12)</option>
+                        <option value="1.03">Low (3/12)</option>
+                        <option value="1.08" selected>Medium (4/12)</option>
+                        <option value="1.12">Standard (5/12)</option>
+                        <option value="1.17">Moderate (6/12)</option>
+                        <option value="1.22">High (7/12)</option>
+                        <option value="1.30">Steep (8/12)</option>
+                        <option value="1.41">Very Steep (10/12)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Waste Factor (%)</label>
+                    <input type="number" id="waste" value="10" min="5" max="25" oninput="calculate()">
+                </div>
+                <div class="input-group full">
+                    <label>Roofing Type</label>
+                    <select id="type" onchange="calculate()">
+                        <option value="3tab" selected>3-Tab Shingles ($80-100/sq)</option>
+                        <option value="arch">Architectural ($100-150/sq)</option>
+                        <option value="premium">Premium/Designer ($150-250/sq)</option>
+                        <option value="metal">Metal Roofing ($300-700/sq)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Roofing Squares Needed</div>
+                <div class="value" id="squares">14.3</div>
+                <div class="sub" id="sqFt">1 square = 100 sq ft</div>
+            </div>
+
+            <div class="breakdown">
+                <div class="break-item">
+                    <div class="value" id="roofArea">1,430 ft²</div>
+                    <div class="label">Roof Area</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="bundles">43</div>
+                    <div class="label">Bundles (3/sq)</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="minCost">$1,144</div>
+                    <div class="label">Min Cost</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="maxCost">$1,430</div>
+                    <div class="label">Max Cost</div>
+                </div>
+            </div>
+
+            <div class="materials">
+                <h4>Additional Materials</h4>
+                <div class="material-row">
+                    <span>Underlayment (rolls)</span>
+                    <span id="underlayment">4</span>
+                </div>
+                <div class="material-row">
+                    <span>Drip Edge (10 ft pieces)</span>
+                    <span id="dripEdge">15</span>
+                </div>
+                <div class="material-row">
+                    <span>Ridge Cap (linear ft)</span>
+                    <span id="ridgeCap">40</span>
+                </div>
+                <div class="material-row">
+                    <span>Roofing Nails (lbs)</span>
+                    <span id="nails">10</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Construction Tools</h4>
+            <a href="drywall-calculator.html">Drywall Calculator</a>
+            <a href="insulation-calculator.html">Insulation Calculator</a>
+            <a href="square-footage.html">Square Footage</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Roofing Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const roofPrices = {
+            '3tab': { min: 80, max: 100 },
+            'arch': { min: 100, max: 150 },
+            'premium': { min: 150, max: 250 },
+            'metal': { min: 300, max: 700 }
+        };
+
+        function calculate() {
+            const length = parseFloat(document.getElementById('length').value) || 0;
+            const width = parseFloat(document.getElementById('width').value) || 0;
+            const pitch = parseFloat(document.getElementById('pitch').value) || 1.08;
+            const waste = parseFloat(document.getElementById('waste').value) || 10;
+            const type = document.getElementById('type').value;
+
+            // Base footprint area
+            const footprint = length * width;
+
+            // Adjust for pitch (roof is larger than footprint)
+            const roofArea = footprint * pitch * (1 + waste / 100);
+
+            // Squares (1 square = 100 sq ft)
+            const squares = roofArea / 100;
+
+            // Bundles (3 bundles per square)
+            const bundles = Math.ceil(squares * 3);
+
+            // Cost estimates
+            const prices = roofPrices[type];
+            const minCost = squares * prices.min;
+            const maxCost = squares * prices.max;
+
+            // Additional materials
+            const underlayment = Math.ceil(roofArea / 400); // 1 roll per 400 sq ft
+            const perimeter = 2 * (length + width);
+            const dripEdge = Math.ceil(perimeter / 10);
+            const ridgeCap = length;
+            const nails = Math.ceil(squares * 2); // ~2 lbs per square
+
+            document.getElementById('squares').textContent = squares.toFixed(1);
+            document.getElementById('sqFt').textContent = Math.round(roofArea).toLocaleString() + ' sq ft total';
+            document.getElementById('roofArea').textContent = Math.round(roofArea).toLocaleString() + ' ft²';
+            document.getElementById('bundles').textContent = bundles;
+            document.getElementById('minCost').textContent = '$' + Math.round(minCost).toLocaleString();
+            document.getElementById('maxCost').textContent = '$' + Math.round(maxCost).toLocaleString();
+            document.getElementById('underlayment').textContent = underlayment;
+            document.getElementById('dripEdge').textContent = dripEdge;
+            document.getElementById('ridgeCap').textContent = ridgeCap + ' ft';
+            document.getElementById('nails').textContent = nails;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

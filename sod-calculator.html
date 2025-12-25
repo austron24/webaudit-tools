@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sod Calculator - How Much Sod Do I Need?</title>
+    <meta name="description" content="Calculate how much sod you need for your lawn. Estimate rolls and pallets of grass. Free sod calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #22c55e 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #22c55e;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .break-item {
+            background: #dcfce7;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .break-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #16a34a;
+        }
+        .break-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #16a34a;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .tips ul {
+            font-size: 13px;
+            color: #64748b;
+            padding-left: 20px;
+        }
+        .tips li { margin-bottom: 5px; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #16a34a; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #22c55e;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #86efac; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sod Calculator</h1>
+            <p class="subtitle">How much sod do you need?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Lawn Length (ft)</label>
+                    <input type="number" id="length" value="50" min="0" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Lawn Width (ft)</label>
+                    <input type="number" id="width" value="40" min="0" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group full">
+                    <label>Grass Type</label>
+                    <select id="grassType" onchange="calculate()">
+                        <option value="bermuda">Bermuda ($0.30-0.45/sq ft)</option>
+                        <option value="fescue" selected>Fescue ($0.35-0.55/sq ft)</option>
+                        <option value="kentucky">Kentucky Bluegrass ($0.40-0.60/sq ft)</option>
+                        <option value="zoysia">Zoysia ($0.45-0.70/sq ft)</option>
+                        <option value="st-augustine">St. Augustine ($0.35-0.60/sq ft)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Roll Size</label>
+                    <select id="rollSize" onchange="calculate()">
+                        <option value="9" selected>Standard (9 sq ft)</option>
+                        <option value="10">Large Roll (10 sq ft)</option>
+                        <option value="450">Big Roll (450 sq ft)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Waste Factor (%)</label>
+                    <input type="number" id="waste" value="5" min="0" max="20" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Total Sod Needed</div>
+                <div class="value" id="sqFt">2,100 ft²</div>
+                <div class="sub" id="rolls">~234 rolls needed</div>
+            </div>
+
+            <div class="breakdown">
+                <div class="break-item">
+                    <div class="value" id="rollCount">234</div>
+                    <div class="label">Rolls Needed</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="pallets">4.7</div>
+                    <div class="label">Pallets (~500 ft²)</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="minCost">$735</div>
+                    <div class="label">Min Cost</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="maxCost">$1,155</div>
+                    <div class="label">Max Cost</div>
+                </div>
+            </div>
+
+            <div class="tips">
+                <h4>Sod Installation Tips</h4>
+                <ul>
+                    <li>Order 5-10% extra for cutting and fitting</li>
+                    <li>Install within 24 hours of delivery</li>
+                    <li>Water immediately after laying</li>
+                    <li>Stagger seams like brickwork</li>
+                    <li>Wait 2-3 weeks before mowing</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Landscaping Tools</h4>
+            <a href="mulch-calculator.html">Mulch Calculator</a>
+            <a href="gravel-calculator.html">Gravel Calculator</a>
+            <a href="square-footage.html">Square Footage</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Sod Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const grassPrices = {
+            bermuda: { min: 0.30, max: 0.45 },
+            fescue: { min: 0.35, max: 0.55 },
+            kentucky: { min: 0.40, max: 0.60 },
+            zoysia: { min: 0.45, max: 0.70 },
+            'st-augustine': { min: 0.35, max: 0.60 }
+        };
+
+        function calculate() {
+            const length = parseFloat(document.getElementById('length').value) || 0;
+            const width = parseFloat(document.getElementById('width').value) || 0;
+            const grassType = document.getElementById('grassType').value;
+            const rollSize = parseFloat(document.getElementById('rollSize').value) || 9;
+            const waste = parseFloat(document.getElementById('waste').value) || 5;
+
+            const baseSqFt = length * width;
+            const totalSqFt = baseSqFt * (1 + waste / 100);
+
+            const rolls = Math.ceil(totalSqFt / rollSize);
+            const pallets = totalSqFt / 500; // typical pallet covers 500 sq ft
+
+            const prices = grassPrices[grassType];
+            const minCost = totalSqFt * prices.min;
+            const maxCost = totalSqFt * prices.max;
+
+            document.getElementById('sqFt').textContent = Math.round(totalSqFt).toLocaleString() + ' ft²';
+            document.getElementById('rolls').textContent = '~' + rolls + ' rolls needed';
+            document.getElementById('rollCount').textContent = rolls;
+            document.getElementById('pallets').textContent = pallets.toFixed(1);
+            document.getElementById('minCost').textContent = '$' + Math.round(minCost).toLocaleString();
+            document.getElementById('maxCost').textContent = '$' + Math.round(maxCost).toLocaleString();
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

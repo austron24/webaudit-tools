@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fence Calculator - How Much Fencing Do I Need?</title>
+    <meta name="description" content="Calculate how much fencing material you need. Estimate posts, rails, and pickets. Free fence calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #854d0e 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #854d0e;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #854d0e 0%, #713f12 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .break-item {
+            background: #fef3c7;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .break-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #854d0e;
+        }
+        .break-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .materials {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .materials h4 {
+            color: #854d0e;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .material-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .material-row:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #854d0e; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #a16207;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fcd34d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Fence Calculator</h1>
+            <p class="subtitle">How much fencing do you need?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group full">
+                    <label>Total Fence Length (linear feet)</label>
+                    <input type="number" id="length" value="100" min="0" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Fence Height (ft)</label>
+                    <select id="height" onchange="calculate()">
+                        <option value="4">4 feet</option>
+                        <option value="6" selected>6 feet</option>
+                        <option value="8">8 feet</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Post Spacing (ft)</label>
+                    <select id="spacing" onchange="calculate()">
+                        <option value="6">6 feet</option>
+                        <option value="8" selected>8 feet</option>
+                        <option value="10">10 feet</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Fence Style</label>
+                    <select id="style" onchange="calculate()">
+                        <option value="picket" selected>Wood Picket</option>
+                        <option value="privacy">Privacy (Board-on-Board)</option>
+                        <option value="chain">Chain Link</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Number of Gates</label>
+                    <input type="number" id="gates" value="1" min="0" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Cost per Linear Ft ($)</label>
+                    <input type="number" id="price" value="25" min="0" step="1" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Total Linear Feet</div>
+                <div class="value" id="totalFeet">100 ft</div>
+                <div class="sub" id="totalCost">Estimated cost: $2,500</div>
+            </div>
+
+            <div class="breakdown">
+                <div class="break-item">
+                    <div class="value" id="posts">14</div>
+                    <div class="label">Posts Needed</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="rails">39</div>
+                    <div class="label">Rails (2x4s)</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="pickets">200</div>
+                    <div class="label">Pickets/Boards</div>
+                </div>
+                <div class="break-item">
+                    <div class="value" id="concrete">14</div>
+                    <div class="label">Concrete Bags</div>
+                </div>
+            </div>
+
+            <div class="materials">
+                <h4>Materials List</h4>
+                <div class="material-row">
+                    <span>4x4 Posts (8 ft)</span>
+                    <span id="postList">14</span>
+                </div>
+                <div class="material-row">
+                    <span>2x4 Rails (8 ft)</span>
+                    <span id="railList">39</span>
+                </div>
+                <div class="material-row">
+                    <span>1x6 Pickets/Boards</span>
+                    <span id="picketList">200</span>
+                </div>
+                <div class="material-row">
+                    <span>Concrete (50 lb bags)</span>
+                    <span id="concreteList">14</span>
+                </div>
+                <div class="material-row">
+                    <span>Gate Hardware (sets)</span>
+                    <span id="gateList">1</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Outdoor Tools</h4>
+            <a href="concrete-calculator.html">Concrete Calculator</a>
+            <a href="gravel-calculator.html">Gravel Calculator</a>
+            <a href="mulch-calculator.html">Mulch Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Fence Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const length = parseFloat(document.getElementById('length').value) || 0;
+            const height = parseFloat(document.getElementById('height').value) || 6;
+            const spacing = parseFloat(document.getElementById('spacing').value) || 8;
+            const style = document.getElementById('style').value;
+            const gates = parseInt(document.getElementById('gates').value) || 0;
+            const price = parseFloat(document.getElementById('price').value) || 25;
+
+            // Posts: one at each end + one every spacing feet
+            const posts = Math.ceil(length / spacing) + 1;
+
+            // Rails: 3 rails per section for 6ft+ fences, 2 for shorter
+            const sections = Math.ceil(length / spacing);
+            const railsPerSection = height >= 6 ? 3 : 2;
+            const rails = sections * railsPerSection;
+
+            // Pickets: depends on style
+            let pickets = 0;
+            if (style === 'picket') {
+                // Pickets spaced ~3.5" apart, 5.5" wide = 2 per foot
+                pickets = Math.ceil(length * 2);
+            } else if (style === 'privacy') {
+                // Board-on-board: slightly overlapping, ~2.5 per foot
+                pickets = Math.ceil(length * 2.5);
+            } else {
+                // Chain link - measured in rolls/ft
+                pickets = Math.ceil(length / 50); // 50 ft rolls
+            }
+
+            // Concrete: 1 bag per post
+            const concrete = posts;
+
+            // Total cost
+            const totalCost = length * price;
+
+            document.getElementById('totalFeet').textContent = length + ' ft';
+            document.getElementById('totalCost').textContent = 'Estimated cost: $' + Math.round(totalCost).toLocaleString();
+            document.getElementById('posts').textContent = posts;
+            document.getElementById('rails').textContent = rails;
+            document.getElementById('pickets').textContent = style === 'chain' ? pickets + ' rolls' : pickets;
+            document.getElementById('concrete').textContent = concrete;
+            document.getElementById('postList').textContent = posts;
+            document.getElementById('railList').textContent = rails;
+            document.getElementById('picketList').textContent = style === 'chain' ? pickets + ' rolls' : pickets;
+            document.getElementById('concreteList').textContent = concrete;
+            document.getElementById('gateList').textContent = gates;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
