@@ -3,56 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Tax Calculator - Calculate Tax & Total Price</title>
-    <meta name="description" content="Free sales tax calculator. Calculate tax amount and total price for any purchase. Includes state tax rates for all US states.">
-    <meta name="keywords" content="sales tax calculator, tax calculator, state sales tax, calculate tax, price with tax">
+    <title>Sales Tax Calculator - Calculate Tax & Total</title>
+    <meta name="description" content="Free sales tax calculator. Calculate sales tax and total price for any purchase. Includes state tax rates.">
+    <meta name="keywords" content="sales tax calculator, tax calculator, sales tax by state, calculate tax, purchase tax">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/sales-tax-calculator.html">
-    <meta property="og:title" content="Sales Tax Calculator">
-    <meta property="og:description" content="Calculate sales tax and total price instantly. Includes all US state tax rates.">
-    <meta property="og:type" content="website">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --error: #ef4444; }
+        :root { --primary: #10b981; --primary-dark: #059669; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
         .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
         .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
-        .header h1 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
-        .header p { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
         .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
         .content-area { display: flex; flex-direction: column; gap: 20px; }
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); }
-        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); font-weight: 500; }
-        .input-with-icon { position: relative; }
-        .input-with-icon span { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
-        .input-with-icon input, .input-with-icon select { width: 100%; padding: 15px 15px 15px 40px; border: 2px solid var(--border); border-radius: 10px; font-size: 1.1rem; background: var(--bg-input); color: var(--text-primary); }
-        .input-with-icon input:focus, .input-with-icon select:focus { outline: none; border-color: var(--primary); }
-        select { cursor: pointer; }
-        .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
-        .btn-primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
-        .results { display: none; margin-top: 20px; }
-        .result-card { background: var(--bg-input); border-radius: 12px; padding: 20px; }
-        .result-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
-        .result-row:last-child { border-bottom: none; }
-        .result-label { color: var(--text-secondary); }
-        .result-value { font-size: 1.3rem; font-weight: 700; }
-        .result-value.total { color: var(--success); font-size: 2rem; }
-        .result-value.tax { color: var(--accent); }
-        .state-rates { margin-top: 20px; max-height: 300px; overflow-y: auto; }
-        .state-row { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid var(--border); }
-        .state-row:nth-child(even) { background: var(--bg-input); }
-        .state-name { color: var(--text-primary); }
-        .state-rate { color: var(--secondary); font-weight: 600; }
-        .no-tax { color: var(--success); }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.8); }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .result-value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.9rem; }
+        .state-rates { max-height: 300px; overflow-y: auto; margin-top: 15px; }
+        .rate-row { display: flex; justify-content: space-between; padding: 10px 15px; border-bottom: 1px solid var(--border); }
+        .rate-row:hover { background: var(--bg-input); }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
-        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; transition: all 0.3s ease; }
-        .related-link:hover { background: var(--primary); transform: translateX(5px); }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .header h1 { font-size: 1.8rem; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
 <body>
@@ -70,103 +57,88 @@
     
     <header class="header">
         <h1>🧾 Sales Tax Calculator</h1>
-        <p>Calculate sales tax and total price for any purchase. Includes all US state tax rates.</p>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>💵 Calculate Sales Tax</h2>
-                <div class="form-group">
-                    <label>Price Before Tax</label>
-                    <div class="input-with-icon">
-                        <span>$</span>
-                        <input type="number" id="price" placeholder="100.00" step="0.01">
+                <h2>💰 Calculate Tax</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Price Before Tax ($)</label>
+                        <input type="number" id="price" value="100" step="0.01" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Tax Rate (%)</label>
+                        <input type="number" id="taxRate" value="7.25" step="0.01" oninput="calculate()">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>Select State (or enter custom rate)</label>
-                    <div class="input-with-icon">
-                        <span>📍</span>
-                        <select id="stateSelect" onchange="updateTaxRate()">
-                            <option value="">-- Select State --</option>
-                            <option value="0">Alaska (0%)</option>
-                            <option value="4">Alabama (4%)</option>
-                            <option value="6.5">Arizona (5.6%)</option>
-                            <option value="6.5">Arkansas (6.5%)</option>
-                            <option value="7.25">California (7.25%)</option>
-                            <option value="2.9">Colorado (2.9%)</option>
-                            <option value="6.35">Connecticut (6.35%)</option>
-                            <option value="0">Delaware (0%)</option>
-                            <option value="6">Florida (6%)</option>
-                            <option value="4">Georgia (4%)</option>
-                            <option value="4">Hawaii (4%)</option>
-                            <option value="6">Idaho (6%)</option>
-                            <option value="6.25">Illinois (6.25%)</option>
-                            <option value="7">Indiana (7%)</option>
-                            <option value="6">Iowa (6%)</option>
-                            <option value="6.5">Kansas (6.5%)</option>
-                            <option value="6">Kentucky (6%)</option>
-                            <option value="4.45">Louisiana (4.45%)</option>
-                            <option value="5.5">Maine (5.5%)</option>
-                            <option value="6">Maryland (6%)</option>
-                            <option value="6.25">Massachusetts (6.25%)</option>
-                            <option value="6">Michigan (6%)</option>
-                            <option value="6.875">Minnesota (6.875%)</option>
-                            <option value="7">Mississippi (7%)</option>
-                            <option value="4.225">Missouri (4.225%)</option>
-                            <option value="0">Montana (0%)</option>
-                            <option value="5.5">Nebraska (5.5%)</option>
-                            <option value="6.85">Nevada (6.85%)</option>
-                            <option value="0">New Hampshire (0%)</option>
-                            <option value="6.625">New Jersey (6.625%)</option>
-                            <option value="5.125">New Mexico (5.125%)</option>
-                            <option value="4">New York (4%)</option>
-                            <option value="4.75">North Carolina (4.75%)</option>
-                            <option value="5">North Dakota (5%)</option>
-                            <option value="5.75">Ohio (5.75%)</option>
-                            <option value="4.5">Oklahoma (4.5%)</option>
-                            <option value="0">Oregon (0%)</option>
-                            <option value="6">Pennsylvania (6%)</option>
-                            <option value="7">Rhode Island (7%)</option>
-                            <option value="6">South Carolina (6%)</option>
-                            <option value="4.5">South Dakota (4.5%)</option>
-                            <option value="7">Tennessee (7%)</option>
-                            <option value="6.25">Texas (6.25%)</option>
-                            <option value="6.1">Utah (6.1%)</option>
-                            <option value="6">Vermont (6%)</option>
-                            <option value="5.3">Virginia (5.3%)</option>
-                            <option value="6.5">Washington (6.5%)</option>
-                            <option value="6">West Virginia (6%)</option>
-                            <option value="5">Wisconsin (5%)</option>
-                            <option value="4">Wyoming (4%)</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Tax Rate (%)</label>
-                    <div class="input-with-icon">
-                        <span>%</span>
-                        <input type="number" id="taxRate" placeholder="7.0" step="0.001">
-                    </div>
-                </div>
-                <button class="btn btn-primary" onclick="calculate()">Calculate Tax</button>
                 
-                <div class="results" id="results">
+                <div class="form-group">
+                    <label>Or Select State</label>
+                    <select id="state" onchange="selectState()">
+                        <option value="">-- Custom Rate --</option>
+                        <option value="7.25">California (7.25%)</option>
+                        <option value="6.25">Texas (6.25%)</option>
+                        <option value="6.00">Florida (6.00%)</option>
+                        <option value="4.00">New York (4.00%)</option>
+                        <option value="6.00">Pennsylvania (6.00%)</option>
+                        <option value="6.25">Illinois (6.25%)</option>
+                        <option value="5.75">Ohio (5.75%)</option>
+                        <option value="6.00">Georgia (6.00%)</option>
+                        <option value="4.225">Missouri (4.225%)</option>
+                        <option value="6.50">Washington (6.50%)</option>
+                        <option value="6.625">New Jersey (6.625%)</option>
+                        <option value="4.50">Arizona (4.50%)</option>
+                        <option value="2.90">Colorado (2.90%)</option>
+                        <option value="0">Oregon (0%)</option>
+                        <option value="0">Montana (0%)</option>
+                        <option value="0">New Hampshire (0%)</option>
+                        <option value="0">Delaware (0%)</option>
+                        <option value="0">Alaska (0%)</option>
+                    </select>
+                </div>
+                
+                <div class="result-hero">
+                    <div class="result-hero-label">Total Price</div>
+                    <div class="result-hero-value" id="total">$0.00</div>
+                </div>
+                
+                <div class="results-grid">
                     <div class="result-card">
-                        <div class="result-row">
-                            <span class="result-label">Subtotal</span>
-                            <span class="result-value" id="subtotal">$0.00</span>
-                        </div>
-                        <div class="result-row">
-                            <span class="result-label">Tax (<span id="taxPct">0</span>%)</span>
-                            <span class="result-value tax" id="taxAmount">$0.00</span>
-                        </div>
-                        <div class="result-row" style="border-top: 2px solid var(--primary); padding-top: 15px; margin-top: 10px;">
-                            <span class="result-label" style="font-size: 1.2rem; font-weight: 600;">Total</span>
-                            <span class="result-value total" id="total">$0.00</span>
-                        </div>
+                        <div class="result-value" id="originalPrice">$0.00</div>
+                        <div class="result-label">Original Price</div>
                     </div>
+                    <div class="result-card">
+                        <div class="result-value" id="taxAmount">$0.00</div>
+                        <div class="result-label">Tax Amount</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="effectiveRate">0%</div>
+                        <div class="result-label">Tax Rate</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📊 State Tax Rates</h2>
+                <div class="state-rates">
+                    <div class="rate-row"><span>California</span><span>7.25%</span></div>
+                    <div class="rate-row"><span>Tennessee</span><span>7.00%</span></div>
+                    <div class="rate-row"><span>Indiana</span><span>7.00%</span></div>
+                    <div class="rate-row"><span>Mississippi</span><span>7.00%</span></div>
+                    <div class="rate-row"><span>Rhode Island</span><span>7.00%</span></div>
+                    <div class="rate-row"><span>Minnesota</span><span>6.875%</span></div>
+                    <div class="rate-row"><span>Nevada</span><span>6.85%</span></div>
+                    <div class="rate-row"><span>New Jersey</span><span>6.625%</span></div>
+                    <div class="rate-row"><span>Washington</span><span>6.50%</span></div>
+                    <div class="rate-row"><span>Texas</span><span>6.25%</span></div>
+                    <div class="rate-row"><span>Illinois</span><span>6.25%</span></div>
+                    <div class="rate-row"><span>Florida</span><span>6.00%</span></div>
+                    <div class="rate-row"><span>Oregon</span><span>0%</span></div>
+                    <div class="rate-row"><span>Montana</span><span>0%</span></div>
+                    <div class="rate-row"><span>New Hampshire</span><span>0%</span></div>
+                    <div class="rate-row"><span>Delaware</span><span>0%</span></div>
                 </div>
             </div>
 
@@ -177,27 +149,13 @@
             </div>
 
             <div class="card">
-                <h2>🗺️ US State Sales Tax Rates</h2>
-                <p style="color: var(--text-secondary); margin-bottom: 15px;">State base rates only. Local taxes may apply.</p>
-                <div class="state-rates" id="stateRates"></div>
-            </div>
-
-            <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
+                    <a href="tip-calculator.html" class="related-link">💵 Tip Calculator</a>
                     <a href="discount-calculator.html" class="related-link">🏷️ Discount Calculator</a>
                     <a href="percentage-calculator.html" class="related-link">📊 Percentage Calculator</a>
-                    <a href="tip-calculator.html" class="related-link">💵 Tip Calculator</a>
-                    <a href="vat-calculator.html" class="related-link">🌍 VAT Calculator</a>
-                    <a href="price-per-unit-calculator.html" class="related-link">📦 Price Per Unit</a>
-                    <a href="invoice-calculator.html" class="related-link">📋 Invoice Calculator</a>
+                    <a href="income-tax-calculator.html" class="related-link">📋 Income Tax Calculator</a>
                 </div>
-            </div>
-
-            <div class="ad-container">
-                <div class="ad-label">Advertisement</div>
-                <script type="text/javascript">atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };</script>
-                <script type="text/javascript" src="//www.highperformanceformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
             </div>
         </div>
 
@@ -207,74 +165,32 @@
                 <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
                 <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
             </div>
-            <div class="ad-container">
-                <div class="ad-label">Advertisement</div>
-                <script type="text/javascript">atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };</script>
-                <script type="text/javascript" src="//www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
-            </div>
         </div>
     </div>
 
     <script>
-        const stateRates = [
-            { name: 'Alaska', rate: 0 }, { name: 'Delaware', rate: 0 }, { name: 'Montana', rate: 0 },
-            { name: 'New Hampshire', rate: 0 }, { name: 'Oregon', rate: 0 }, { name: 'Colorado', rate: 2.9 },
-            { name: 'Alabama', rate: 4 }, { name: 'Georgia', rate: 4 }, { name: 'Hawaii', rate: 4 },
-            { name: 'New York', rate: 4 }, { name: 'Wyoming', rate: 4 }, { name: 'Missouri', rate: 4.225 },
-            { name: 'Louisiana', rate: 4.45 }, { name: 'Oklahoma', rate: 4.5 }, { name: 'South Dakota', rate: 4.5 },
-            { name: 'North Carolina', rate: 4.75 }, { name: 'North Dakota', rate: 5 }, { name: 'Wisconsin', rate: 5 },
-            { name: 'New Mexico', rate: 5.125 }, { name: 'Virginia', rate: 5.3 }, { name: 'Maine', rate: 5.5 },
-            { name: 'Nebraska', rate: 5.5 }, { name: 'Arizona', rate: 5.6 }, { name: 'Ohio', rate: 5.75 },
-            { name: 'Florida', rate: 6 }, { name: 'Idaho', rate: 6 }, { name: 'Iowa', rate: 6 },
-            { name: 'Kentucky', rate: 6 }, { name: 'Maryland', rate: 6 }, { name: 'Michigan', rate: 6 },
-            { name: 'Pennsylvania', rate: 6 }, { name: 'South Carolina', rate: 6 }, { name: 'Vermont', rate: 6 },
-            { name: 'West Virginia', rate: 6 }, { name: 'Utah', rate: 6.1 }, { name: 'Illinois', rate: 6.25 },
-            { name: 'Massachusetts', rate: 6.25 }, { name: 'Texas', rate: 6.25 }, { name: 'Connecticut', rate: 6.35 },
-            { name: 'Arkansas', rate: 6.5 }, { name: 'Kansas', rate: 6.5 }, { name: 'Washington', rate: 6.5 },
-            { name: 'New Jersey', rate: 6.625 }, { name: 'Nevada', rate: 6.85 }, { name: 'Minnesota', rate: 6.875 },
-            { name: 'Indiana', rate: 7 }, { name: 'Mississippi', rate: 7 }, { name: 'Rhode Island', rate: 7 },
-            { name: 'Tennessee', rate: 7 }, { name: 'California', rate: 7.25 }
-        ];
-
-        function renderStateRates() {
-            const container = document.getElementById('stateRates');
-            container.innerHTML = stateRates.map(s => `
-                <div class="state-row">
-                    <span class="state-name">${s.name}</span>
-                    <span class="state-rate ${s.rate === 0 ? 'no-tax' : ''}">${s.rate === 0 ? 'No Tax' : s.rate + '%'}</span>
-                </div>
-            `).join('');
-        }
-
-        function updateTaxRate() {
-            const rate = document.getElementById('stateSelect').value;
-            if (rate !== '') {
-                document.getElementById('taxRate').value = rate;
+        function selectState() {
+            const state = document.getElementById('state').value;
+            if (state) {
+                document.getElementById('taxRate').value = state;
                 calculate();
             }
         }
-
+        
         function calculate() {
             const price = parseFloat(document.getElementById('price').value) || 0;
-            const rate = parseFloat(document.getElementById('taxRate').value) || 0;
-
-            if (price <= 0) return;
-
-            const tax = price * (rate / 100);
-            const total = price + tax;
-
-            document.getElementById('results').style.display = 'block';
-            document.getElementById('subtotal').textContent = '$' + price.toFixed(2);
-            document.getElementById('taxPct').textContent = rate;
-            document.getElementById('taxAmount').textContent = '$' + tax.toFixed(2);
+            const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
+            
+            const taxAmount = price * (taxRate / 100);
+            const total = price + taxAmount;
+            
+            document.getElementById('originalPrice').textContent = '$' + price.toFixed(2);
+            document.getElementById('taxAmount').textContent = '$' + taxAmount.toFixed(2);
             document.getElementById('total').textContent = '$' + total.toFixed(2);
+            document.getElementById('effectiveRate').textContent = taxRate.toFixed(2) + '%';
         }
-
-        document.querySelectorAll('input').forEach(input => {
-            input.addEventListener('input', calculate);
-        });
-
-        renderStateRates();
+        
+        calculate();
     </script>
 </body>
 </html>

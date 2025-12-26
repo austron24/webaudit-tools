@@ -3,48 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pool Volume Calculator - Swimming Pool Gallons</title>
-    <meta name="description" content="Free pool volume calculator. Calculate how many gallons of water your swimming pool holds. Works for all pool shapes.">
-    <meta name="keywords" content="pool volume calculator, swimming pool gallons, pool water calculator, pool capacity, pool size">
+    <title>Pool Volume Calculator - Gallons & Chemical Dosing</title>
+    <meta name="description" content="Free pool volume calculator. Calculate gallons of water in your pool and chemical dosing amounts.">
+    <meta name="keywords" content="pool volume calculator, pool gallons, pool chemicals, swimming pool calculator, pool water volume">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/pool-volume-calculator.html">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #06b6d4; --primary-dark: #0891b2; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
         .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
-        .header { background: linear-gradient(135deg, #22d3ee 0%, #0891b2 100%); padding: 40px 20px; text-align: center; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
         .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
         .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
         .content-area { display: flex; flex-direction: column; gap: 20px; }
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
         .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
         .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
-        .shape-selector { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
-        .shape-btn { padding: 15px; border: 2px solid var(--border); border-radius: 10px; background: var(--bg-input); color: var(--text-primary); cursor: pointer; text-align: center; transition: all 0.3s; }
-        .shape-btn:hover { border-color: var(--primary); }
-        .shape-btn.active { border-color: var(--success); background: rgba(16, 185, 129, 0.2); }
-        .shape-icon { font-size: 1.5rem; margin-bottom: 5px; }
+        .tab-buttons { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-btn { padding: 12px 20px; background: var(--bg-input); border: 2px solid var(--border); border-radius: 10px; cursor: pointer; font-weight: 700; transition: all 0.3s; }
+        .tab-btn:hover { border-color: var(--primary); }
+        .tab-btn.active { border-color: var(--primary); background: rgba(6, 182, 212, 0.2); color: var(--primary); }
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
         input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
         input:focus, select:focus { outline: none; border-color: var(--primary); }
-        .result-hero { background: linear-gradient(135deg, var(--success), #059669); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
         .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
         .result-hero-label { color: rgba(255,255,255,0.8); }
         .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
-        .result-value { font-size: 1.4rem; font-weight: 700; color: var(--secondary); }
-        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.9rem; }
-        .chemical-estimates { margin-top: 20px; padding: 20px; background: var(--bg-input); border-radius: 12px; }
-        .chem-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
-        .chem-row:last-child { border-bottom: none; }
+        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .chemical-list { margin-top: 20px; }
+        .chem-row { display: flex; justify-content: space-between; padding: 15px; background: var(--bg-input); border-radius: 10px; margin-bottom: 10px; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .results-grid, .shape-selector { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr 1fr; } .tab-buttons { flex-direction: column; } }
     </style>
 </head>
 <body>
@@ -68,38 +66,49 @@
         <div class="content-area">
             <div class="card">
                 <h2>📐 Pool Shape</h2>
-                <div class="shape-selector">
-                    <div class="shape-btn active" onclick="selectShape('rectangle')">
-                        <div class="shape-icon">▭</div>
-                        <div>Rectangle</div>
-                    </div>
-                    <div class="shape-btn" onclick="selectShape('oval')">
-                        <div class="shape-icon">⬭</div>
-                        <div>Oval</div>
-                    </div>
-                    <div class="shape-btn" onclick="selectShape('round')">
-                        <div class="shape-icon">●</div>
-                        <div>Round</div>
-                    </div>
-                    <div class="shape-btn" onclick="selectShape('kidney')">
-                        <div class="shape-icon">🫘</div>
-                        <div>Kidney</div>
+                <div class="tab-buttons">
+                    <div class="tab-btn active" onclick="setShape('rectangle')">▪️ Rectangle</div>
+                    <div class="tab-btn" onclick="setShape('round')">⭕ Round</div>
+                    <div class="tab-btn" onclick="setShape('oval')">⬭ Oval</div>
+                </div>
+                
+                <div id="rectangleForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Length (ft)</label>
+                            <input type="number" id="length" value="32" oninput="calculate()">
+                        </div>
+                        <div class="form-group">
+                            <label>Width (ft)</label>
+                            <input type="number" id="width" value="16" oninput="calculate()">
+                        </div>
                     </div>
                 </div>
                 
-                <h2>📏 Pool Dimensions</h2>
-                <div class="form-grid" id="dimensionInputs">
+                <div id="roundForm" style="display: none;">
                     <div class="form-group">
-                        <label>Length (ft)</label>
-                        <input type="number" id="length" value="30" oninput="calculate()">
+                        <label>Diameter (ft)</label>
+                        <input type="number" id="diameter" value="24" oninput="calculate()">
                     </div>
-                    <div class="form-group">
-                        <label>Width (ft)</label>
-                        <input type="number" id="width" value="15" oninput="calculate()">
+                </div>
+                
+                <div id="ovalForm" style="display: none;">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Long Axis (ft)</label>
+                            <input type="number" id="longAxis" value="32" oninput="calculate()">
+                        </div>
+                        <div class="form-group">
+                            <label>Short Axis (ft)</label>
+                            <input type="number" id="shortAxis" value="16" oninput="calculate()">
+                        </div>
                     </div>
+                </div>
+                
+                <div class="form-grid">
                     <div class="form-group">
-                        <label>Shallow End Depth (ft)</label>
-                        <input type="number" id="shallowDepth" value="3.5" step="0.5" oninput="calculate()">
+                        <label>Shallow Depth (ft)</label>
+                        <input type="number" id="shallowDepth" value="3" step="0.5" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Deep End Depth (ft)</label>
@@ -108,53 +117,49 @@
                 </div>
                 
                 <div class="result-hero">
-                    <div class="result-hero-label">Total Pool Volume</div>
+                    <div class="result-hero-label">Pool Volume</div>
                     <div class="result-hero-value" id="gallons">0 gal</div>
                 </div>
                 
                 <div class="results-grid">
                     <div class="result-card">
-                        <div class="result-value" id="cubicFeet">0</div>
-                        <div class="result-label">Cubic Feet</div>
+                        <div class="result-value" id="avgDepth">0 ft</div>
+                        <div class="result-label">Average Depth</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="surfaceArea">0</div>
+                        <div class="result-label">Surface Sq Ft</div>
                     </div>
                     <div class="result-card">
                         <div class="result-value" id="liters">0</div>
                         <div class="result-label">Liters</div>
                     </div>
-                    <div class="result-card">
-                        <div class="result-value" id="avgDepth">0 ft</div>
-                        <div class="result-label">Average Depth</div>
-                    </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>💧 Chemical Estimates</h2>
-                <p style="color: var(--text-secondary); margin-bottom: 15px;">Approximate amounts for initial pool setup:</p>
-                <div class="chemical-estimates">
+                <h2>🧪 Chemical Dosing Guide</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 15px;">Based on your pool volume:</p>
+                <div class="chemical-list">
                     <div class="chem-row">
-                        <span>Chlorine (shock treatment)</span>
-                        <span id="chlorine">0 lbs</span>
+                        <span>Chlorine (to raise 1 ppm)</span>
+                        <span id="chlorine">0 oz</span>
                     </div>
                     <div class="chem-row">
-                        <span>pH Increaser (if needed)</span>
+                        <span>pH Up (to raise 0.2)</span>
                         <span id="phUp">0 lbs</span>
                     </div>
                     <div class="chem-row">
-                        <span>Alkalinity Increaser</span>
-                        <span id="alkalinity">0 lbs</span>
+                        <span>pH Down (to lower 0.2)</span>
+                        <span id="phDown">0 lbs</span>
                     </div>
                     <div class="chem-row">
-                        <span>Stabilizer (Cyanuric Acid)</span>
-                        <span id="stabilizer">0 lbs</span>
+                        <span>Algaecide (weekly)</span>
+                        <span id="algaecide">0 oz</span>
                     </div>
                     <div class="chem-row">
-                        <span>Fill Time (~12 GPM)</span>
-                        <span id="fillTime">0 hours</span>
-                    </div>
-                    <div class="chem-row">
-                        <span>Est. Water Cost (~$0.004/gal)</span>
-                        <span id="waterCost">$0</span>
+                        <span>Shock Treatment</span>
+                        <span id="shock">0 lbs</span>
                     </div>
                 </div>
             </div>
@@ -169,9 +174,9 @@
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
                     <a href="concrete-calculator.html" class="related-link">🧱 Concrete Calculator</a>
-                    <a href="water-intake-calculator.html" class="related-link">💧 Water Calculator</a>
+                    <a href="water-heater-calculator.html" class="related-link">🚿 Water Heater</a>
                     <a href="square-footage-calculator.html" class="related-link">📐 Square Footage</a>
-                    <a href="unit-converter.html" class="related-link">📏 Unit Converter</a>
+                    <a href="electricity-cost-calculator.html" class="related-link">⚡ Electricity Cost</a>
                 </div>
             </div>
         </div>
@@ -186,83 +191,54 @@
     </div>
 
     <script>
-        let currentShape = 'rectangle';
+        let shape = 'rectangle';
         
-        function selectShape(shape) {
-            currentShape = shape;
-            document.querySelectorAll('.shape-btn').forEach(b => b.classList.remove('active'));
+        function setShape(s) {
+            shape = s;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             event.currentTarget.classList.add('active');
-            
-            // Update form labels based on shape
-            const lengthLabel = document.querySelector('label[for="length"]') || document.querySelector('#dimensionInputs .form-group:first-child label');
-            const widthLabel = document.querySelector('label[for="width"]') || document.querySelector('#dimensionInputs .form-group:nth-child(2) label');
-            
-            if (shape === 'round') {
-                lengthLabel.textContent = 'Diameter (ft)';
-                document.getElementById('width').parentElement.style.display = 'none';
-            } else if (shape === 'oval') {
-                lengthLabel.textContent = 'Long Diameter (ft)';
-                widthLabel.textContent = 'Short Diameter (ft)';
-                document.getElementById('width').parentElement.style.display = 'block';
-            } else {
-                lengthLabel.textContent = 'Length (ft)';
-                widthLabel.textContent = 'Width (ft)';
-                document.getElementById('width').parentElement.style.display = 'block';
-            }
-            
+            document.getElementById('rectangleForm').style.display = s === 'rectangle' ? 'block' : 'none';
+            document.getElementById('roundForm').style.display = s === 'round' ? 'block' : 'none';
+            document.getElementById('ovalForm').style.display = s === 'oval' ? 'block' : 'none';
             calculate();
         }
         
         function calculate() {
-            const length = parseFloat(document.getElementById('length').value) || 0;
-            const width = parseFloat(document.getElementById('width').value) || 0;
             const shallowDepth = parseFloat(document.getElementById('shallowDepth').value) || 0;
             const deepDepth = parseFloat(document.getElementById('deepDepth').value) || 0;
-            
             const avgDepth = (shallowDepth + deepDepth) / 2;
+            
             let surfaceArea = 0;
             
-            switch(currentShape) {
-                case 'rectangle':
-                    surfaceArea = length * width;
-                    break;
-                case 'oval':
-                    surfaceArea = (length / 2) * (width / 2) * Math.PI;
-                    break;
-                case 'round':
-                    surfaceArea = Math.PI * Math.pow(length / 2, 2);
-                    break;
-                case 'kidney':
-                    // Kidney pools are approximately 75% of rectangle
-                    surfaceArea = length * width * 0.75;
-                    break;
+            if (shape === 'rectangle') {
+                const length = parseFloat(document.getElementById('length').value) || 0;
+                const width = parseFloat(document.getElementById('width').value) || 0;
+                surfaceArea = length * width;
+            } else if (shape === 'round') {
+                const diameter = parseFloat(document.getElementById('diameter').value) || 0;
+                surfaceArea = Math.PI * (diameter / 2) * (diameter / 2);
+            } else {
+                const longAxis = parseFloat(document.getElementById('longAxis').value) || 0;
+                const shortAxis = parseFloat(document.getElementById('shortAxis').value) || 0;
+                surfaceArea = Math.PI * (longAxis / 2) * (shortAxis / 2);
             }
             
             const cubicFeet = surfaceArea * avgDepth;
             const gallons = cubicFeet * 7.48;
             const liters = gallons * 3.785;
             
-            // Chemical estimates (approximate)
-            const chlorineLbs = gallons / 10000 * 1;
-            const phUpLbs = gallons / 10000 * 1.5;
-            const alkalinityLbs = gallons / 10000 * 1.4;
-            const stabilizerLbs = gallons / 10000 * 1;
-            
-            // Fill time at 12 GPM
-            const fillTimeHours = gallons / (12 * 60);
-            const waterCost = gallons * 0.004;
-            
-            document.getElementById('gallons').textContent = Math.round(gallons).toLocaleString() + ' gal';
-            document.getElementById('cubicFeet').textContent = Math.round(cubicFeet).toLocaleString() + ' ft³';
-            document.getElementById('liters').textContent = Math.round(liters).toLocaleString() + ' L';
             document.getElementById('avgDepth').textContent = avgDepth.toFixed(1) + ' ft';
+            document.getElementById('surfaceArea').textContent = Math.round(surfaceArea).toLocaleString();
+            document.getElementById('gallons').textContent = Math.round(gallons).toLocaleString() + ' gal';
+            document.getElementById('liters').textContent = Math.round(liters).toLocaleString();
             
-            document.getElementById('chlorine').textContent = chlorineLbs.toFixed(1) + ' lbs';
-            document.getElementById('phUp').textContent = phUpLbs.toFixed(1) + ' lbs';
-            document.getElementById('alkalinity').textContent = alkalinityLbs.toFixed(1) + ' lbs';
-            document.getElementById('stabilizer').textContent = stabilizerLbs.toFixed(1) + ' lbs';
-            document.getElementById('fillTime').textContent = fillTimeHours.toFixed(1) + ' hours';
-            document.getElementById('waterCost').textContent = '$' + waterCost.toFixed(0);
+            // Chemical dosing
+            const per10k = gallons / 10000;
+            document.getElementById('chlorine').textContent = (per10k * 1.3).toFixed(1) + ' oz';
+            document.getElementById('phUp').textContent = (per10k * 0.75).toFixed(1) + ' lbs';
+            document.getElementById('phDown').textContent = (per10k * 0.5).toFixed(1) + ' lbs';
+            document.getElementById('algaecide').textContent = (per10k * 4).toFixed(0) + ' oz';
+            document.getElementById('shock').textContent = (per10k * 1).toFixed(1) + ' lbs';
         }
         
         calculate();
