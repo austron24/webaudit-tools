@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hot Tub Cost Calculator - Installation & Operating Estimates</title>
+    <meta name="description" content="Calculate hot tub costs. Estimate spa installation, operating costs, and maintenance expenses.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #7c3aed 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #7c3aed;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #f3e8ff;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .compare-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #6d28d9;
+        }
+        .compare-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #6d28d9;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #6d28d9; }
+        .pricing {
+            background: #f3e8ff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 {
+            color: #6d28d9;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .pricing table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e9d5ff;
+        }
+        .pricing th { color: #6d28d9; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #6d28d9;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #6d28d9; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #7c3aed;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #c4b5fd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛁 Hot Tub Cost</h1>
+            <p class="subtitle">Installation & operating estimates</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Hot Tub Size</label>
+                    <select id="size" onchange="calculate()">
+                        <option value="small">Small (2-3 person)</option>
+                        <option value="medium" selected>Medium (4-5 person)</option>
+                        <option value="large">Large (6-7 person)</option>
+                        <option value="swim">Swim Spa</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Quality Tier</label>
+                    <select id="quality" onchange="calculate()">
+                        <option value="budget">Budget/Inflatable</option>
+                        <option value="entry">Entry Level</option>
+                        <option value="mid" selected>Mid-Range</option>
+                        <option value="premium">Premium</option>
+                        <option value="luxury">Luxury</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Installation Type</label>
+                    <select id="install" onchange="calculate()">
+                        <option value="deck" selected>On Existing Deck/Patio</option>
+                        <option value="concrete">New Concrete Pad</option>
+                        <option value="inground">Partial Inground</option>
+                        <option value="custom">Custom Installation</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Electrical</label>
+                    <select id="electrical" onchange="calculate()">
+                        <option value="120">120V (plug-in)</option>
+                        <option value="240" selected>240V (hardwired)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Purchase + Installation</div>
+                <div class="value" id="totalCost">$8,000-12,000</div>
+                <div class="sub" id="costNote">Hot tub + delivery + setup</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Hot Tub</div>
+                    <div class="value" id="tubCost">$6,000</div>
+                    <div class="note">Purchase price</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Installation</div>
+                    <div class="value" id="installCost">$2,500</div>
+                    <div class="note">Setup + electrical</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Monthly Electric</div>
+                    <div class="value" id="electricCost">$30-50</div>
+                    <div class="note">Operating cost</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Yearly Maintenance</div>
+                    <div class="value" id="maintenanceCost">$500</div>
+                    <div class="note">Chemicals + repairs</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Cost Breakdown</h4>
+                <div class="break-row">
+                    <span>Hot Tub Unit</span>
+                    <span class="value" id="tubBreak">$5,500</span>
+                </div>
+                <div class="break-row">
+                    <span>Delivery & Crane</span>
+                    <span class="value" id="deliveryCost">$300</span>
+                </div>
+                <div class="break-row">
+                    <span>Electrical Work</span>
+                    <span class="value" id="elecBreak">$1,000</span>
+                </div>
+                <div class="break-row">
+                    <span>Pad/Base</span>
+                    <span class="value" id="padCost">$0</span>
+                </div>
+                <div class="break-row">
+                    <span>Cover & Accessories</span>
+                    <span class="value" id="accessoryCost">$500</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Hot Tub Costs by Type</h4>
+                <table>
+                    <tr>
+                        <th>Type</th>
+                        <th>Price Range</th>
+                    </tr>
+                    <tr><td>Inflatable</td><td>$400-1,000</td></tr>
+                    <tr><td>Entry Level</td><td>$3,000-5,000</td></tr>
+                    <tr><td>Mid-Range</td><td>$5,000-10,000</td></tr>
+                    <tr><td>Premium</td><td>$10,000-16,000</td></tr>
+                    <tr><td>Luxury</td><td>$15,000-25,000+</td></tr>
+                    <tr><td>Swim Spa</td><td>$15,000-35,000</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Hot Tub Tips</h4>
+                <div class="tip-item">✓ 240V heats faster & more efficient</div>
+                <div class="tip-item">✓ Good insulation saves on energy</div>
+                <div class="tip-item">✓ Budget $20-50/month for chemicals</div>
+                <div class="tip-item">✓ Cover extends tub life significantly</div>
+                <div class="tip-item">✓ Check local permit requirements</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Tools</h4>
+            <a href="pool-calculator.html">Pool Calculator</a>
+            <a href="deck-calculator.html">Deck Calculator</a>
+            <a href="electricity-cost-calculator.html">Electric Cost</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Hot Tub Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const size = document.getElementById('size').value;
+            const quality = document.getElementById('quality').value;
+            const install = document.getElementById('install').value;
+            const electrical = document.getElementById('electrical').value;
+
+            // Base tub costs by quality
+            const qualityCosts = {
+                budget: 600,
+                entry: 4000,
+                mid: 7000,
+                premium: 12000,
+                luxury: 20000
+            };
+            let tubCost = qualityCosts[quality];
+
+            // Size multiplier
+            const sizeMult = {
+                small: 0.8,
+                medium: 1.0,
+                large: 1.25,
+                swim: 2.5
+            };
+            tubCost *= sizeMult[size];
+
+            // Installation costs
+            const installCosts = {
+                deck: 0,
+                concrete: 2000,
+                inground: 5000,
+                custom: 8000
+            };
+            const padCost = installCosts[install];
+
+            // Electrical
+            const elecCost = electrical === '240' ? 1200 : 200;
+
+            // Delivery (more for larger/premium)
+            const deliveryCost = quality === 'budget' ? 0 : (size === 'swim' ? 500 : 300);
+
+            // Accessories
+            const accessoryCost = quality === 'budget' ? 100 : 500;
+
+            tubCost = Math.round(tubCost);
+            const totalMid = tubCost + padCost + elecCost + deliveryCost + accessoryCost;
+            const totalLow = Math.round(totalMid * 0.9);
+            const totalHigh = Math.round(totalMid * 1.15);
+
+            // Operating costs
+            const monthlyElec = size === 'swim' ? '50-100' : (electrical === '240' ? '30-50' : '40-70');
+            const yearlyMaint = quality === 'budget' ? 200 : (quality === 'luxury' ? 800 : 500);
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + totalLow.toLocaleString() + '-' + totalHigh.toLocaleString();
+            document.getElementById('tubCost').textContent = '$' + tubCost.toLocaleString();
+            document.getElementById('installCost').textContent = '$' + (padCost + elecCost + deliveryCost).toLocaleString();
+            document.getElementById('electricCost').textContent = '$' + monthlyElec;
+            document.getElementById('maintenanceCost').textContent = '$' + yearlyMaint + '/yr';
+
+            document.getElementById('tubBreak').textContent = '$' + tubCost.toLocaleString();
+            document.getElementById('deliveryCost').textContent = deliveryCost > 0 ? '$' + deliveryCost : 'Included';
+            document.getElementById('elecBreak').textContent = '$' + elecCost.toLocaleString();
+            document.getElementById('padCost').textContent = padCost > 0 ? '$' + padCost.toLocaleString() : 'Using existing';
+            document.getElementById('accessoryCost').textContent = '$' + accessoryCost;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

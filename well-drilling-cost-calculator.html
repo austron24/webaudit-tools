@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Well Drilling Cost Calculator - Water Well Installation Estimates</title>
+    <meta name="description" content="Calculate well drilling costs. Estimate water well installation prices by depth, diameter, and location.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0284c7 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #0284c7;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #e0f2fe;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .compare-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #0369a1;
+        }
+        .compare-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #0369a1;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #0369a1; }
+        .pricing {
+            background: #e0f2fe;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 {
+            color: #0369a1;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .pricing table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #bae6fd;
+        }
+        .pricing th { color: #0369a1; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #0369a1;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0369a1; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0284c7;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #7dd3fc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💧 Well Drilling Cost</h1>
+            <p class="subtitle">Water well installation estimates</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Estimated Depth (ft)</label>
+                    <select id="depth" onchange="calculate()">
+                        <option value="100">100 ft (shallow)</option>
+                        <option value="200" selected>200 ft (average)</option>
+                        <option value="300">300 ft (deep)</option>
+                        <option value="400">400+ ft (very deep)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Well Diameter</label>
+                    <select id="diameter" onchange="calculate()">
+                        <option value="4" selected>4 inch (residential)</option>
+                        <option value="6">6 inch (high volume)</option>
+                        <option value="8">8 inch (agricultural)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Geology/Terrain</label>
+                    <select id="terrain" onchange="calculate()">
+                        <option value="soft">Soft (sand, gravel)</option>
+                        <option value="mixed" selected>Mixed (clay, shale)</option>
+                        <option value="rock">Hard Rock (granite)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Include Pump System?</label>
+                    <select id="pump" onchange="calculate()">
+                        <option value="no">No (drilling only)</option>
+                        <option value="submersible" selected>Submersible Pump</option>
+                        <option value="jet">Jet Pump</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Additional Equipment</label>
+                    <select id="extras" onchange="calculate()">
+                        <option value="basic" selected>Basic (well cap, casing)</option>
+                        <option value="pressure">+ Pressure Tank System</option>
+                        <option value="treatment">+ Water Treatment</option>
+                        <option value="complete">Complete System</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Total Cost</div>
+                <div class="value" id="totalCost">$8,000-15,000</div>
+                <div class="sub" id="perFoot">$35-55 per foot drilled</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Drilling</div>
+                    <div class="value" id="drillingCost">$7,000</div>
+                    <div class="note">Per foot rate</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Pump System</div>
+                    <div class="value" id="pumpCost">$2,500</div>
+                    <div class="note">If selected</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Permits</div>
+                    <div class="value" id="permitCost">$300</div>
+                    <div class="note">Local requirements</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Water Test</div>
+                    <div class="value" id="testCost">$150</div>
+                    <div class="note">Quality testing</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Cost Breakdown</h4>
+                <div class="break-row">
+                    <span>Drilling (per foot)</span>
+                    <span class="value" id="drillBreak">$6,000</span>
+                </div>
+                <div class="break-row">
+                    <span>Casing & Screen</span>
+                    <span class="value" id="casingCost">$1,500</span>
+                </div>
+                <div class="break-row">
+                    <span>Pump & Installation</span>
+                    <span class="value" id="pumpBreak">$2,000</span>
+                </div>
+                <div class="break-row">
+                    <span>Electrical</span>
+                    <span class="value" id="elecCost">$500</span>
+                </div>
+                <div class="break-row">
+                    <span>Permits & Testing</span>
+                    <span class="value" id="permitBreak">$450</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Well Drilling Costs</h4>
+                <table>
+                    <tr>
+                        <th>Terrain Type</th>
+                        <th>Per Foot</th>
+                    </tr>
+                    <tr><td>Soft (sand/gravel)</td><td>$25-35</td></tr>
+                    <tr><td>Mixed (clay/shale)</td><td>$35-55</td></tr>
+                    <tr><td>Hard Rock</td><td>$50-100</td></tr>
+                    <tr><td>Submersible Pump</td><td>$1,500-3,500</td></tr>
+                    <tr><td>Pressure Tank</td><td>$500-1,500</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Well Drilling Tips</h4>
+                <div class="tip-item">✓ Check local well depth averages</div>
+                <div class="tip-item">✓ Permits required in most areas</div>
+                <div class="tip-item">✓ Water testing recommended</div>
+                <div class="tip-item">✓ Ask about dry well warranties</div>
+                <div class="tip-item">✓ Plan for electrical connection</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Tools</h4>
+            <a href="septic-system-cost-calculator.html">Septic System</a>
+            <a href="land-clearing-cost-calculator.html">Land Clearing</a>
+            <a href="home-affordability-calculator.html">Home Affordability</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Well Drilling Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const depth = parseInt(document.getElementById('depth').value) || 200;
+            const diameter = parseInt(document.getElementById('diameter').value) || 4;
+            const terrain = document.getElementById('terrain').value;
+            const pump = document.getElementById('pump').value;
+            const extras = document.getElementById('extras').value;
+
+            // Cost per foot by terrain
+            const terrainCosts = {
+                soft: 30,
+                mixed: 45,
+                rock: 75
+            };
+            let costPerFoot = terrainCosts[terrain];
+
+            // Diameter adjustment
+            const diamMult = diameter === 4 ? 1.0 : (diameter === 6 ? 1.25 : 1.5);
+            costPerFoot *= diamMult;
+
+            const drillingCost = Math.round(depth * costPerFoot);
+            const casingCost = Math.round(depth * 7);
+
+            // Pump costs
+            const pumpCosts = {
+                no: 0,
+                submersible: 2500,
+                jet: 1500
+            };
+            const pumpCost = depth > 100 && pump === 'jet' ? 0 : pumpCosts[pump]; // Jet pumps only for shallow
+
+            // Extras
+            const extraCosts = {
+                basic: 0,
+                pressure: 1000,
+                treatment: 2500,
+                complete: 4000
+            };
+            const extraCost = extraCosts[extras];
+
+            const elecCost = pump !== 'no' ? 500 : 0;
+            const permitCost = 300;
+            const testCost = 150;
+
+            const totalMid = drillingCost + casingCost + pumpCost + extraCost + elecCost + permitCost + testCost;
+            const totalLow = Math.round(totalMid * 0.85);
+            const totalHigh = Math.round(totalMid * 1.25);
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + totalLow.toLocaleString() + '-' + totalHigh.toLocaleString();
+            document.getElementById('perFoot').textContent = '$' + Math.round(costPerFoot * 0.85) + '-' + Math.round(costPerFoot * 1.2) + ' per foot drilled';
+
+            document.getElementById('drillingCost').textContent = '$' + drillingCost.toLocaleString();
+            document.getElementById('pumpCost').textContent = pumpCost > 0 ? '$' + pumpCost.toLocaleString() : 'N/A';
+            document.getElementById('permitCost').textContent = '$' + permitCost;
+            document.getElementById('testCost').textContent = '$' + testCost;
+
+            document.getElementById('drillBreak').textContent = '$' + drillingCost.toLocaleString();
+            document.getElementById('casingCost').textContent = '$' + casingCost.toLocaleString();
+            document.getElementById('pumpBreak').textContent = pumpCost > 0 ? '$' + pumpCost.toLocaleString() : 'N/A';
+            document.getElementById('elecCost').textContent = elecCost > 0 ? '$' + elecCost : 'N/A';
+            document.getElementById('permitBreak').textContent = '$' + (permitCost + testCost);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

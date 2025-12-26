@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tree Removal Cost Calculator - Estimates by Size & Type</title>
+    <meta name="description" content="Calculate tree removal costs. Estimate pricing by tree height, diameter, location, and complexity.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #166534 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #166534;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #166534 0%, #14532d 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #dcfce7;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .compare-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #14532d;
+        }
+        .compare-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #14532d;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #14532d; }
+        .pricing {
+            background: #dcfce7;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 {
+            color: #14532d;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .pricing table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #bbf7d0;
+        }
+        .pricing th { color: #14532d; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #14532d;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #14532d; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #166534;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #86efac; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌳 Tree Removal Cost</h1>
+            <p class="subtitle">Get accurate pricing estimates</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Tree Height (ft)</label>
+                    <select id="height" onchange="calculate()">
+                        <option value="small">Small (under 30 ft)</option>
+                        <option value="medium" selected>Medium (30-60 ft)</option>
+                        <option value="large">Large (60-80 ft)</option>
+                        <option value="xlarge">Very Large (80+ ft)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Trunk Diameter</label>
+                    <select id="diameter" onchange="calculate()">
+                        <option value="thin">Thin (under 12")</option>
+                        <option value="medium" selected>Medium (12-24")</option>
+                        <option value="thick">Thick (24-36")</option>
+                        <option value="massive">Massive (36"+)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Tree Condition</label>
+                    <select id="condition" onchange="calculate()">
+                        <option value="healthy" selected>Healthy (standing)</option>
+                        <option value="dead">Dead/Dying</option>
+                        <option value="hazardous">Hazardous/Leaning</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Access/Location</label>
+                    <select id="access" onchange="calculate()">
+                        <option value="easy" selected>Easy (open yard)</option>
+                        <option value="moderate">Moderate (near house)</option>
+                        <option value="difficult">Difficult (power lines)</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Additional Services</label>
+                    <select id="services" onchange="calculate()">
+                        <option value="removal" selected>Tree Removal Only</option>
+                        <option value="stump">+ Stump Grinding</option>
+                        <option value="hauling">+ Debris Hauling</option>
+                        <option value="both">+ Stump + Hauling</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Total Cost</div>
+                <div class="value" id="totalCost">$500-900</div>
+                <div class="sub" id="costNote">Professional removal</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Tree Removal</div>
+                    <div class="value" id="removalCost">$600</div>
+                    <div class="note">Cutting & sectioning</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Stump Grinding</div>
+                    <div class="value" id="stumpCost">N/A</div>
+                    <div class="note">If selected</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Debris Hauling</div>
+                    <div class="value" id="haulCost">N/A</div>
+                    <div class="note">If selected</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Permit</div>
+                    <div class="value" id="permitCost">$0-150</div>
+                    <div class="note">May be required</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Pricing Factors</h4>
+                <div class="break-row">
+                    <span>Base Tree Removal</span>
+                    <span class="value" id="baseCost">$450</span>
+                </div>
+                <div class="break-row">
+                    <span>Size/Height Premium</span>
+                    <span class="value" id="sizePremium">+$100</span>
+                </div>
+                <div class="break-row">
+                    <span>Difficulty Factor</span>
+                    <span class="value" id="difficultyPremium">+$50</span>
+                </div>
+                <div class="break-row">
+                    <span>Add-on Services</span>
+                    <span class="value" id="addonCost">$0</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Tree Removal Costs by Size</h4>
+                <table>
+                    <tr>
+                        <th>Tree Size</th>
+                        <th>Average Cost</th>
+                    </tr>
+                    <tr><td>Small (under 30 ft)</td><td>$200-500</td></tr>
+                    <tr><td>Medium (30-60 ft)</td><td>$400-900</td></tr>
+                    <tr><td>Large (60-80 ft)</td><td>$800-1,500</td></tr>
+                    <tr><td>Very Large (80+ ft)</td><td>$1,200-2,500+</td></tr>
+                    <tr><td>Stump Grinding</td><td>+$100-400</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Tree Removal Tips</h4>
+                <div class="tip-item">✓ Check if permits are required</div>
+                <div class="tip-item">✓ Verify contractor insurance</div>
+                <div class="tip-item">✓ Get 3+ quotes for large trees</div>
+                <div class="tip-item">✓ Wood chips may be left for free</div>
+                <div class="tip-item">✓ Winter removal is often cheaper</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Outdoor Tools</h4>
+            <a href="land-clearing-cost-calculator.html">Land Clearing</a>
+            <a href="mulch-cost-calculator.html">Mulch Cost</a>
+            <a href="fence-calculator.html">Fence Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Tree Removal Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const height = document.getElementById('height').value;
+            const diameter = document.getElementById('diameter').value;
+            const condition = document.getElementById('condition').value;
+            const access = document.getElementById('access').value;
+            const services = document.getElementById('services').value;
+
+            // Base cost by height
+            const heightCosts = {
+                small: 300,
+                medium: 550,
+                large: 1000,
+                xlarge: 1800
+            };
+            let baseCost = heightCosts[height];
+
+            // Diameter multiplier
+            const diamMult = {
+                thin: 0.8,
+                medium: 1.0,
+                thick: 1.3,
+                massive: 1.6
+            };
+            baseCost *= diamMult[diameter];
+
+            // Condition adjustment
+            const conditionMult = {
+                healthy: 1.0,
+                dead: 0.9,
+                hazardous: 1.4
+            };
+            baseCost *= conditionMult[condition];
+
+            // Access difficulty
+            const accessMult = {
+                easy: 1.0,
+                moderate: 1.2,
+                difficult: 1.5
+            };
+            baseCost *= accessMult[access];
+
+            baseCost = Math.round(baseCost);
+
+            // Add-on services
+            let stumpCost = 0;
+            let haulCost = 0;
+            if (services === 'stump' || services === 'both') {
+                stumpCost = 150 + (diameter === 'thick' ? 100 : 0) + (diameter === 'massive' ? 200 : 0);
+            }
+            if (services === 'hauling' || services === 'both') {
+                haulCost = height === 'small' ? 100 : (height === 'medium' ? 200 : (height === 'large' ? 350 : 500));
+            }
+
+            const totalMid = baseCost + stumpCost + haulCost;
+            const totalLow = Math.round(totalMid * 0.85);
+            const totalHigh = Math.round(totalMid * 1.25);
+
+            const sizePremium = Math.round(baseCost * 0.2);
+            const difficultyPremium = access === 'easy' ? 0 : Math.round(baseCost * (accessMult[access] - 1));
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + totalLow.toLocaleString() + '-' + totalHigh.toLocaleString();
+            document.getElementById('removalCost').textContent = '$' + baseCost.toLocaleString();
+            document.getElementById('stumpCost').textContent = stumpCost > 0 ? '$' + stumpCost : 'N/A';
+            document.getElementById('haulCost').textContent = haulCost > 0 ? '$' + haulCost : 'N/A';
+
+            document.getElementById('baseCost').textContent = '$' + Math.round(heightCosts[height] * 0.9).toLocaleString();
+            document.getElementById('sizePremium').textContent = '+$' + sizePremium;
+            document.getElementById('difficultyPremium').textContent = difficultyPremium > 0 ? '+$' + difficultyPremium : '$0';
+            document.getElementById('addonCost').textContent = (stumpCost + haulCost) > 0 ? '$' + (stumpCost + haulCost) : '$0';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

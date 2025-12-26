@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flooring Installation Cost Calculator - Hardwood, LVP & Tile Estimates</title>
+    <meta name="description" content="Calculate flooring installation costs. Estimate hardwood, laminate, LVP, tile and carpet installation prices per square foot.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #92400e 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #92400e;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #92400e 0%, #78350f 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #fef3c7;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .compare-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #78350f;
+        }
+        .compare-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #78350f;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #78350f; }
+        .pricing {
+            background: #fef3c7;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 {
+            color: #78350f;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .pricing table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #fcd34d;
+        }
+        .pricing th { color: #78350f; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #78350f;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #78350f; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #92400e;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fcd34d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🪵 Flooring Installation Cost</h1>
+            <p class="subtitle">Hardwood, LVP, tile & carpet estimates</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Room Size (sq ft)</label>
+                    <input type="number" id="sqft" value="500" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Flooring Type</label>
+                    <select id="floorType" onchange="calculate()">
+                        <option value="laminate">Laminate</option>
+                        <option value="lvp" selected>Luxury Vinyl Plank (LVP)</option>
+                        <option value="engineered">Engineered Hardwood</option>
+                        <option value="hardwood">Solid Hardwood</option>
+                        <option value="tile">Tile (Ceramic/Porcelain)</option>
+                        <option value="carpet">Carpet</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Quality Grade</label>
+                    <select id="quality" onchange="calculate()">
+                        <option value="budget">Budget</option>
+                        <option value="mid" selected>Mid-Range</option>
+                        <option value="premium">Premium</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Remove Old Flooring?</label>
+                    <select id="removal" onchange="calculate()">
+                        <option value="no">No</option>
+                        <option value="yes" selected>Yes</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Subfloor Condition</label>
+                    <select id="subfloor" onchange="calculate()">
+                        <option value="good" selected>Good (no prep needed)</option>
+                        <option value="moderate">Moderate (minor repairs)</option>
+                        <option value="poor">Poor (major prep needed)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Total Cost</div>
+                <div class="value" id="totalCost">$3,500-5,000</div>
+                <div class="sub" id="perSqft">$7-10 per sq ft installed</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Materials</div>
+                    <div class="value" id="matCost">$2,000</div>
+                    <div class="note">Flooring + underlayment</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Labor</div>
+                    <div class="value" id="laborCost">$1,500</div>
+                    <div class="note">Installation</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Lifespan</div>
+                    <div class="value" id="lifespan">15-25 yrs</div>
+                    <div class="note">With care</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Timeline</div>
+                    <div class="value" id="timeline">2-4 days</div>
+                    <div class="note">For this size</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Cost Breakdown</h4>
+                <div class="break-row">
+                    <span>Flooring Material</span>
+                    <span class="value" id="floorMat">$1,750</span>
+                </div>
+                <div class="break-row">
+                    <span>Underlayment/Prep</span>
+                    <span class="value" id="underCost">$250</span>
+                </div>
+                <div class="break-row">
+                    <span>Installation Labor</span>
+                    <span class="value" id="laborBreak">$1,250</span>
+                </div>
+                <div class="break-row">
+                    <span>Old Floor Removal</span>
+                    <span class="value" id="removalCost">$300</span>
+                </div>
+                <div class="break-row">
+                    <span>Trim/Transitions</span>
+                    <span class="value" id="trimCost">$150</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Flooring Costs by Type</h4>
+                <table>
+                    <tr>
+                        <th>Flooring Type</th>
+                        <th>Material/sqft</th>
+                        <th>Installed/sqft</th>
+                    </tr>
+                    <tr><td>Laminate</td><td>$1-4</td><td>$4-8</td></tr>
+                    <tr><td>Luxury Vinyl (LVP)</td><td>$2-7</td><td>$5-12</td></tr>
+                    <tr><td>Engineered Hardwood</td><td>$4-10</td><td>$8-15</td></tr>
+                    <tr><td>Solid Hardwood</td><td>$5-15</td><td>$10-20</td></tr>
+                    <tr><td>Tile</td><td>$2-10</td><td>$8-18</td></tr>
+                    <tr><td>Carpet</td><td>$2-8</td><td>$5-12</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Flooring Tips</h4>
+                <div class="tip-item">✓ Add 10% extra for waste and cuts</div>
+                <div class="tip-item">✓ LVP is great for water resistance</div>
+                <div class="tip-item">✓ Hardwood adds home value</div>
+                <div class="tip-item">✓ Acclimate flooring before installation</div>
+                <div class="tip-item">✓ Consider underlayment for comfort</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Tools</h4>
+            <a href="tile-calculator.html">Tile Calculator</a>
+            <a href="carpet-calculator.html">Carpet Calculator</a>
+            <a href="bathroom-remodel-calculator.html">Bathroom Remodel</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Flooring Installation Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const sqft = parseFloat(document.getElementById('sqft').value) || 500;
+            const floorType = document.getElementById('floorType').value;
+            const quality = document.getElementById('quality').value;
+            const removal = document.getElementById('removal').value;
+            const subfloor = document.getElementById('subfloor').value;
+
+            // Material cost per sq ft
+            const matCosts = {
+                laminate: 2.5,
+                lvp: 4,
+                engineered: 7,
+                hardwood: 10,
+                tile: 6,
+                carpet: 4
+            };
+            let matPerSqft = matCosts[floorType];
+
+            // Quality multiplier
+            const qualityMult = {
+                budget: 0.7,
+                mid: 1.0,
+                premium: 1.5
+            };
+            matPerSqft *= qualityMult[quality];
+
+            // Labor cost per sq ft
+            const laborCosts = {
+                laminate: 2.5,
+                lvp: 3,
+                engineered: 4,
+                hardwood: 5,
+                tile: 6,
+                carpet: 2
+            };
+            let laborPerSqft = laborCosts[floorType];
+
+            // Subfloor prep
+            const subfloorCost = {
+                good: 0,
+                moderate: sqft * 0.5,
+                poor: sqft * 1.5
+            };
+
+            const floorMat = Math.round(sqft * matPerSqft);
+            const underCost = Math.round(sqft * 0.5);
+            const laborCost = Math.round(sqft * laborPerSqft);
+            const removalCost = removal === 'yes' ? Math.round(sqft * 0.75) : 0;
+            const trimCost = Math.round(sqft * 0.3);
+
+            const totalMid = floorMat + underCost + laborCost + removalCost + trimCost + subfloorCost[subfloor];
+            const totalLow = Math.round(totalMid * 0.85);
+            const totalHigh = Math.round(totalMid * 1.2);
+
+            // Lifespan
+            const lifespans = {
+                laminate: '10-20',
+                lvp: '15-25',
+                engineered: '20-30',
+                hardwood: '25-100',
+                tile: '50+',
+                carpet: '5-15'
+            };
+
+            // Timeline
+            const days = Math.ceil(sqft / 200);
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + totalLow.toLocaleString() + '-' + totalHigh.toLocaleString();
+            document.getElementById('perSqft').textContent = '$' + (totalLow / sqft).toFixed(0) + '-' + (totalHigh / sqft).toFixed(0) + ' per sq ft installed';
+
+            document.getElementById('matCost').textContent = '$' + (floorMat + underCost).toLocaleString();
+            document.getElementById('laborCost').textContent = '$' + laborCost.toLocaleString();
+            document.getElementById('lifespan').textContent = lifespans[floorType] + ' yrs';
+            document.getElementById('timeline').textContent = days + '-' + (days + 2) + ' days';
+
+            document.getElementById('floorMat').textContent = '$' + floorMat.toLocaleString();
+            document.getElementById('underCost').textContent = '$' + underCost.toLocaleString();
+            document.getElementById('laborBreak').textContent = '$' + laborCost.toLocaleString();
+            document.getElementById('removalCost').textContent = removalCost > 0 ? '$' + removalCost : 'N/A';
+            document.getElementById('trimCost').textContent = '$' + trimCost.toLocaleString();
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

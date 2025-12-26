@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Septic System Cost Calculator - Installation & Replacement Estimates</title>
+    <meta name="description" content="Calculate septic system costs. Estimate new installation, replacement, and repair prices by system type.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #047857 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #047857;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #d1fae5;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .compare-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #065f46;
+        }
+        .compare-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #065f46;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #065f46; }
+        .pricing {
+            background: #d1fae5;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 {
+            color: #065f46;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .pricing table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #a7f3d0;
+        }
+        .pricing th { color: #065f46; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #065f46;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #065f46; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #047857;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #6ee7b7; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏠 Septic System Cost</h1>
+            <p class="subtitle">Installation & replacement estimates</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Project Type</label>
+                    <select id="projectType" onchange="calculate()">
+                        <option value="new" selected>New Installation</option>
+                        <option value="replace">Full Replacement</option>
+                        <option value="tank">Tank Only</option>
+                        <option value="drainfield">Drain Field Only</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>System Type</label>
+                    <select id="systemType" onchange="calculate()">
+                        <option value="conventional" selected>Conventional</option>
+                        <option value="chamber">Chamber System</option>
+                        <option value="mound">Mound System</option>
+                        <option value="aerobic">Aerobic Treatment</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Home Size (bedrooms)</label>
+                    <select id="bedrooms" onchange="calculate()">
+                        <option value="2">2 Bedrooms</option>
+                        <option value="3" selected>3 Bedrooms</option>
+                        <option value="4">4 Bedrooms</option>
+                        <option value="5">5+ Bedrooms</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Soil Conditions</label>
+                    <select id="soil" onchange="calculate()">
+                        <option value="good" selected>Good (sandy/loam)</option>
+                        <option value="moderate">Moderate</option>
+                        <option value="poor">Poor (clay/rock)</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Permit & Engineering</label>
+                    <select id="permits" onchange="calculate()">
+                        <option value="basic" selected>Basic Permit ($500-1,000)</option>
+                        <option value="full">Full Engineering ($1,500-3,000)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Total Cost</div>
+                <div class="value" id="totalCost">$6,000-12,000</div>
+                <div class="sub" id="costNote">Complete installation</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Tank</div>
+                    <div class="value" id="tankCost">$1,500</div>
+                    <div class="note">1000+ gallon</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Drain Field</div>
+                    <div class="value" id="fieldCost">$4,000</div>
+                    <div class="note">Leach field</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Installation</div>
+                    <div class="value" id="laborCost">$3,000</div>
+                    <div class="note">Labor + equipment</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Lifespan</div>
+                    <div class="value" id="lifespan">20-40 yrs</div>
+                    <div class="note">With maintenance</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Cost Breakdown</h4>
+                <div class="break-row">
+                    <span>Septic Tank</span>
+                    <span class="value" id="tankBreak">$1,200</span>
+                </div>
+                <div class="break-row">
+                    <span>Drain Field/Leach Field</span>
+                    <span class="value" id="fieldBreak">$3,500</span>
+                </div>
+                <div class="break-row">
+                    <span>Excavation</span>
+                    <span class="value" id="excavCost">$1,500</span>
+                </div>
+                <div class="break-row">
+                    <span>Piping & Connections</span>
+                    <span class="value" id="pipeCost">$500</span>
+                </div>
+                <div class="break-row">
+                    <span>Permits & Inspection</span>
+                    <span class="value" id="permitCost">$800</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Septic System Costs</h4>
+                <table>
+                    <tr>
+                        <th>System Type</th>
+                        <th>Cost Range</th>
+                    </tr>
+                    <tr><td>Conventional</td><td>$3,000-10,000</td></tr>
+                    <tr><td>Chamber System</td><td>$5,000-12,000</td></tr>
+                    <tr><td>Mound System</td><td>$10,000-20,000</td></tr>
+                    <tr><td>Aerobic Treatment</td><td>$10,000-25,000</td></tr>
+                    <tr><td>Tank Replacement</td><td>$1,500-5,000</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Septic System Tips</h4>
+                <div class="tip-item">✓ Pump tank every 3-5 years</div>
+                <div class="tip-item">✓ Soil test may be required</div>
+                <div class="tip-item">✓ Get multiple contractor quotes</div>
+                <div class="tip-item">✓ Check local health department rules</div>
+                <div class="tip-item">✓ Don't drive over drain field</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Tools</h4>
+            <a href="basement-finishing-calculator.html">Basement Finishing</a>
+            <a href="land-clearing-cost-calculator.html">Land Clearing</a>
+            <a href="home-affordability-calculator.html">Home Affordability</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Septic System Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const projectType = document.getElementById('projectType').value;
+            const systemType = document.getElementById('systemType').value;
+            const bedrooms = parseInt(document.getElementById('bedrooms').value) || 3;
+            const soil = document.getElementById('soil').value;
+            const permits = document.getElementById('permits').value;
+
+            // Base costs by system type
+            const systemCosts = {
+                conventional: 6000,
+                chamber: 8000,
+                mound: 15000,
+                aerobic: 18000
+            };
+            let baseCost = systemCosts[systemType];
+
+            // Project type adjustment
+            const projectMult = {
+                new: 1.0,
+                replace: 1.1,
+                tank: 0.25,
+                drainfield: 0.6
+            };
+            baseCost *= projectMult[projectType];
+
+            // Bedroom size adjustment
+            const bedroomMult = 1 + (bedrooms - 3) * 0.15;
+            baseCost *= bedroomMult;
+
+            // Soil conditions
+            const soilMult = {
+                good: 1.0,
+                moderate: 1.2,
+                poor: 1.5
+            };
+            baseCost *= soilMult[soil];
+
+            // Permits
+            const permitCost = permits === 'basic' ? 750 : 2250;
+
+            // Component breakdown
+            const tankCost = Math.round(baseCost * 0.18);
+            const fieldCost = Math.round(baseCost * 0.45);
+            const excavCost = Math.round(baseCost * 0.2);
+            const pipeCost = Math.round(baseCost * 0.07);
+
+            const totalMid = Math.round(baseCost + permitCost);
+            const totalLow = Math.round(totalMid * 0.8);
+            const totalHigh = Math.round(totalMid * 1.3);
+
+            // Lifespan
+            const lifespans = {
+                conventional: '20-30',
+                chamber: '25-35',
+                mound: '20-30',
+                aerobic: '15-25'
+            };
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + totalLow.toLocaleString() + '-' + totalHigh.toLocaleString();
+            document.getElementById('tankCost').textContent = '$' + tankCost.toLocaleString();
+            document.getElementById('fieldCost').textContent = '$' + fieldCost.toLocaleString();
+            document.getElementById('laborCost').textContent = '$' + (excavCost + pipeCost).toLocaleString();
+            document.getElementById('lifespan').textContent = lifespans[systemType] + ' yrs';
+
+            document.getElementById('tankBreak').textContent = '$' + tankCost.toLocaleString();
+            document.getElementById('fieldBreak').textContent = '$' + fieldCost.toLocaleString();
+            document.getElementById('excavCost').textContent = '$' + excavCost.toLocaleString();
+            document.getElementById('pipeCost').textContent = '$' + pipeCost.toLocaleString();
+            document.getElementById('permitCost').textContent = '$' + permitCost.toLocaleString();
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
