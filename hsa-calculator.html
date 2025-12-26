@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roth IRA Calculator - Retirement Savings Growth</title>
-    <meta name="description" content="Free Roth IRA calculator. Estimate your tax-free retirement savings and see how contributions grow over time.">
-    <meta name="keywords" content="Roth IRA calculator, retirement savings, tax-free growth, IRA contribution, retirement planning">
-    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/roth-ira-calculator.html">
+    <title>HSA Calculator - Health Savings Account</title>
+    <meta name="description" content="Free HSA calculator. Calculate your health savings account growth, tax savings, and retirement healthcare benefits.">
+    <meta name="keywords" content="HSA calculator, health savings account, HSA contribution, healthcare savings, HSA tax benefits">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/hsa-calculator.html">
     <style>
-        :root { --primary: #10b981; --primary-dark: #059669; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #0ea5e9; --primary-dark: #0284c7; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -54,43 +54,54 @@
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
 
     <header class="header">
-        <h1>💰 Roth IRA Calculator</h1>
+        <h1>🏥 HSA Calculator</h1>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>📊 Your Information</h2>
+                <h2>📊 HSA Information</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Current Age</label>
-                        <input type="number" id="currentAge" value="30" min="18" max="70" oninput="calculate()">
+                        <label>Coverage Type</label>
+                        <select id="coverageType" onchange="calculate()">
+                            <option value="self">Self Only</option>
+                            <option value="family" selected>Family</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label>Retirement Age</label>
-                        <input type="number" id="retirementAge" value="65" min="50" max="75" oninput="calculate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Current Roth IRA Balance ($)</label>
-                        <input type="number" id="currentBalance" value="15000" oninput="calculate()">
+                        <label>Current HSA Balance ($)</label>
+                        <input type="number" id="currentBalance" value="5000" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Annual Contribution ($)</label>
-                        <input type="number" id="annualContribution" value="7000" oninput="calculate()">
+                        <input type="number" id="annualContribution" value="8300" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Employer Contribution ($)</label>
+                        <input type="number" id="employerContribution" value="1000" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Years Until Retirement</label>
+                        <input type="number" id="years" value="25" min="1" max="50" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Expected Return (%)</label>
-                        <input type="number" id="returnRate" value="7" step="0.5" oninput="calculate()">
+                        <input type="number" id="returnRate" value="6" step="0.5" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Marginal Tax Rate (%)</label>
-                        <input type="number" id="taxRate" value="24" oninput="calculate()">
+                        <label>Federal Tax Rate (%)</label>
+                        <input type="number" id="federalTax" value="22" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>State Tax Rate (%)</label>
+                        <input type="number" id="stateTax" value="5" oninput="calculate()">
                     </div>
                 </div>
 
                 <div class="result-hero">
-                    <div class="result-hero-label">Balance at Retirement (Tax-Free!)</div>
-                    <div class="result-hero-value" id="retirementBalance">$0</div>
+                    <div class="result-hero-label">HSA Balance at Retirement</div>
+                    <div class="result-hero-value" id="futureBalance">$0</div>
                 </div>
 
                 <div class="results-grid">
@@ -99,27 +110,27 @@
                         <div class="result-label">Total Contributions</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="totalGrowth">$0</div>
+                        <div class="result-value" id="investmentGrowth">$0</div>
                         <div class="result-label">Investment Growth</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="taxSavings">$0</div>
-                        <div class="result-label">Tax Savings vs Taxable</div>
+                        <div class="result-value" id="annualTaxSavings">$0</div>
+                        <div class="result-label">Annual Tax Savings</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="yearsToGrow">0</div>
-                        <div class="result-label">Years to Grow</div>
+                        <div class="result-value" id="totalTaxSavings">$0</div>
+                        <div class="result-label">Lifetime Tax Savings</div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>📅 2024 Roth IRA Limits</h2>
-                <div class="breakdown-row"><span>Under 50 Contribution Limit</span><span>$7,000</span></div>
-                <div class="breakdown-row"><span>Catch-Up (50+)</span><span>$8,000</span></div>
-                <div class="breakdown-row"><span>Single Income Limit (Full)</span><span>$146,000</span></div>
-                <div class="breakdown-row"><span>Single Income Phase-Out</span><span>$146,000 - $161,000</span></div>
-                <div class="breakdown-row"><span>Married Income Limit (Full)</span><span>$230,000</span></div>
+                <h2>📅 2024 HSA Limits</h2>
+                <div class="breakdown-row"><span>Self-Only Contribution Limit</span><span>$4,150</span></div>
+                <div class="breakdown-row"><span>Family Contribution Limit</span><span>$8,300</span></div>
+                <div class="breakdown-row"><span>Catch-Up (55+)</span><span>+$1,000</span></div>
+                <div class="breakdown-row"><span>Tax Deductible</span><span>100%</span></div>
+                <div class="breakdown-row"><span>Tax-Free Withdrawals</span><span>Qualified Medical Expenses</span></div>
             </div>
 
             <div class="ad-container">
@@ -132,8 +143,8 @@
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
                     <a href="401k-calculator.html" class="related-link">📈 401(k) Calculator</a>
-                    <a href="social-security-calculator.html" class="related-link">🏛️ Social Security</a>
-                    <a href="compound-interest-calculator.html" class="related-link">💵 Compound Interest</a>
+                    <a href="roth-ira-calculator.html" class="related-link">💰 Roth IRA</a>
+                    <a href="income-tax-calculator.html" class="related-link">📋 Income Tax</a>
                     <a href="retirement-calculator.html" class="related-link">🎯 Retirement</a>
                 </div>
             </div>
@@ -150,31 +161,39 @@
 
     <script>
         function calculate() {
-            const currentAge = parseInt(document.getElementById('currentAge').value) || 30;
-            const retirementAge = parseInt(document.getElementById('retirementAge').value) || 65;
+            const coverageType = document.getElementById('coverageType').value;
             const currentBalance = parseFloat(document.getElementById('currentBalance').value) || 0;
             const annualContribution = parseFloat(document.getElementById('annualContribution').value) || 0;
-            const returnRate = parseFloat(document.getElementById('returnRate').value) / 100 || 0.07;
-            const taxRate = parseFloat(document.getElementById('taxRate').value) / 100 || 0.24;
+            const employerContribution = parseFloat(document.getElementById('employerContribution').value) || 0;
+            const years = parseInt(document.getElementById('years').value) || 25;
+            const returnRate = parseFloat(document.getElementById('returnRate').value) / 100 || 0.06;
+            const federalTax = parseFloat(document.getElementById('federalTax').value) / 100 || 0.22;
+            const stateTax = parseFloat(document.getElementById('stateTax').value) / 100 || 0.05;
 
-            const years = Math.max(0, retirementAge - currentAge);
+            const totalContributionPerYear = annualContribution + employerContribution;
+            const maxLimit = coverageType === 'self' ? 4150 : 8300;
+            const effectiveContribution = Math.min(totalContributionPerYear, maxLimit + employerContribution);
+
             let balance = currentBalance;
             let totalContributions = currentBalance;
 
             for (let i = 0; i < years; i++) {
-                balance = (balance + annualContribution) * (1 + returnRate);
-                totalContributions += annualContribution;
+                balance = (balance + effectiveContribution) * (1 + returnRate);
+                totalContributions += effectiveContribution;
             }
 
-            const totalGrowth = balance - totalContributions;
-            const taxSavings = totalGrowth * taxRate;
+            const investmentGrowth = balance - totalContributions;
+            const combinedTaxRate = federalTax + stateTax + 0.0765; // FICA
+            const annualTaxSavings = annualContribution * combinedTaxRate;
+            const totalTaxSavings = annualTaxSavings * years + investmentGrowth * (federalTax + stateTax);
 
-            document.getElementById('retirementBalance').textContent = '$' + Math.round(balance).toLocaleString();
+            document.getElementById('futureBalance').textContent = '$' + Math.round(balance).toLocaleString();
             document.getElementById('totalContributions').textContent = '$' + Math.round(totalContributions).toLocaleString();
-            document.getElementById('totalGrowth').textContent = '$' + Math.round(totalGrowth).toLocaleString();
-            document.getElementById('taxSavings').textContent = '$' + Math.round(taxSavings).toLocaleString();
-            document.getElementById('yearsToGrow').textContent = years + ' years';
+            document.getElementById('investmentGrowth').textContent = '$' + Math.round(investmentGrowth).toLocaleString();
+            document.getElementById('annualTaxSavings').textContent = '$' + Math.round(annualTaxSavings).toLocaleString();
+            document.getElementById('totalTaxSavings').textContent = '$' + Math.round(totalTaxSavings).toLocaleString();
         }
+
         calculate();
     </script>
 </body>
