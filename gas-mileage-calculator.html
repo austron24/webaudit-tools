@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gas Mileage Calculator - MPG & Fuel Cost</title>
-    <meta name="description" content="Free gas mileage calculator. Calculate your MPG, fuel costs, and trip expenses based on distance and gas prices.">
-    <meta name="keywords" content="gas mileage calculator, MPG calculator, fuel cost, trip cost, gas calculator">
+    <title>Gas Mileage Calculator - MPG & Fuel Cost Calculator</title>
+    <meta name="description" content="Free gas mileage calculator. Calculate your car's MPG, fuel cost per mile, and compare fuel efficiency for trips.">
+    <meta name="keywords" content="gas mileage calculator, MPG calculator, fuel efficiency, cost per mile, fuel economy">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/gas-mileage-calculator.html">
     <style>
-        :root { --primary: #ef4444; --primary-dark: #dc2626; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #22c55e; --primary-dark: #16a34a; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -20,27 +20,30 @@
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
         .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
         .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
-        .tab-buttons { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { flex: 1; padding: 15px; background: var(--bg-input); border: 2px solid var(--border); border-radius: 10px; cursor: pointer; text-align: center; font-weight: 700; transition: all 0.3s; }
-        .tab-btn:hover { border-color: var(--primary); }
-        .tab-btn.active { border-color: var(--primary); background: rgba(239, 68, 68, 0.2); color: var(--primary); }
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
         input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
         input:focus, select:focus { outline: none; border-color: var(--primary); }
-        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
-        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
-        .result-hero-label { color: rgba(255,255,255,0.8); }
-        .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 40px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 2.5rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.9); font-size: 1.2rem; }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
-        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
         .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .breakdown-row:last-child { border-bottom: none; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab { padding: 12px 20px; background: var(--bg-input); border: none; border-radius: 8px; color: var(--text-primary); cursor: pointer; font-size: 1rem; }
+        .tab.active { background: var(--primary); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .results-grid, .tab-buttons { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -55,110 +58,110 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
-    
+
     <header class="header">
-        <h1>⛽ Gas Mileage Calculator</h1>
+        <h1>Gas Mileage Calculator</h1>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>🚗 Calculate Mode</h2>
-                <div class="tab-buttons">
-                    <div class="tab-btn active" onclick="setMode('mpg')">Calculate MPG</div>
-                    <div class="tab-btn" onclick="setMode('trip')">Trip Cost</div>
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('mpg')">Calculate MPG</button>
+                    <button class="tab" onclick="switchTab('trip')">Trip Cost</button>
                 </div>
-                
-                <div id="mpgForm">
+
+                <div id="mpgTab" class="tab-content active">
+                    <h2>Calculate Your MPG</h2>
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Miles Driven</label>
-                            <input type="number" id="miles" value="350" oninput="calculate()">
+                            <input type="number" id="miles" value="300" min="1" oninput="calculate()">
                         </div>
                         <div class="form-group">
                             <label>Gallons Used</label>
-                            <input type="number" id="gallons" value="12" step="0.1" oninput="calculate()">
+                            <input type="number" id="gallons" value="12" min="0.1" step="0.1" oninput="calculate()">
                         </div>
                         <div class="form-group">
                             <label>Gas Price ($/gallon)</label>
-                            <input type="number" id="gasPrice" value="3.50" step="0.01" oninput="calculate()">
+                            <input type="number" id="gasPrice" value="3.50" min="0.5" max="10" step="0.01" oninput="calculate()">
                         </div>
                         <div class="form-group">
-                            <label>Unit System</label>
+                            <label>Unit</label>
                             <select id="unit" onchange="calculate()">
-                                <option value="us" selected>US (MPG)</option>
-                                <option value="metric">Metric (L/100km)</option>
+                                <option value="mpg" selected>MPG (US)</option>
+                                <option value="kml">km/L</option>
+                                <option value="l100">L/100km</option>
                             </select>
                         </div>
                     </div>
                 </div>
-                
-                <div id="tripForm" style="display: none;">
+
+                <div id="tripTab" class="tab-content">
+                    <h2>Calculate Trip Cost</h2>
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Trip Distance (miles)</label>
-                            <input type="number" id="tripDistance" value="500" oninput="calculate()">
+                            <input type="number" id="tripMiles" value="500" min="1" oninput="calculateTrip()">
                         </div>
                         <div class="form-group">
-                            <label>Your Vehicle's MPG</label>
-                            <input type="number" id="vehicleMpg" value="28" step="0.1" oninput="calculate()">
+                            <label>Your Vehicle MPG</label>
+                            <input type="number" id="vehicleMpg" value="28" min="5" max="100" step="0.5" oninput="calculateTrip()">
                         </div>
                         <div class="form-group">
                             <label>Gas Price ($/gallon)</label>
-                            <input type="number" id="tripGasPrice" value="3.50" step="0.01" oninput="calculate()">
+                            <input type="number" id="tripGasPrice" value="3.50" min="0.5" max="10" step="0.01" oninput="calculateTrip()">
                         </div>
                         <div class="form-group">
                             <label>Round Trip?</label>
-                            <select id="roundTrip" onchange="calculate()">
-                                <option value="no">One Way</option>
+                            <select id="roundTrip" onchange="calculateTrip()">
+                                <option value="no" selected>One Way</option>
                                 <option value="yes">Round Trip</option>
                             </select>
                         </div>
                     </div>
                 </div>
-                
-                <div class="result-hero">
-                    <div class="result-hero-label" id="heroLabel">Your Fuel Economy</div>
-                    <div class="result-hero-value" id="heroValue">0 MPG</div>
+            </div>
+
+            <div class="result-hero">
+                <div class="result-hero-label" id="resultLabel">Your Fuel Economy</div>
+                <div class="result-hero-value" id="mainResult">25.0 MPG</div>
+            </div>
+
+            <div class="results-grid">
+                <div class="result-card">
+                    <div class="result-value" id="costPerMile">$0.14</div>
+                    <div class="result-label">Cost Per Mile</div>
                 </div>
-                
-                <div class="results-grid" id="mpgResults">
-                    <div class="result-card">
-                        <div class="result-value" id="mpg">0</div>
-                        <div class="result-label">MPG</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="costPerMile">$0</div>
-                        <div class="result-label">Cost Per Mile</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="totalCost">$0</div>
-                        <div class="result-label">Fuel Cost</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="lPer100">0</div>
-                        <div class="result-label">L/100km</div>
-                    </div>
+                <div class="result-card">
+                    <div class="result-value" id="milesPerDollar">7.1</div>
+                    <div class="result-label">Miles Per Dollar</div>
                 </div>
-                
-                <div class="results-grid" id="tripResults" style="display: none;">
-                    <div class="result-card">
-                        <div class="result-value" id="tripGallons">0</div>
-                        <div class="result-label">Gallons Needed</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="tripCost">$0</div>
-                        <div class="result-label">Total Fuel Cost</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="tripCostPerMile">$0</div>
-                        <div class="result-label">Cost Per Mile</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="tripTotalMiles">0</div>
-                        <div class="result-label">Total Miles</div>
+                <div class="result-card">
+                    <div class="result-value" id="totalCost">$42</div>
+                    <div class="result-label">Total Fuel Cost</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>MPG Comparison</h2>
+                <div class="breakdown-row"><span>Economy Car (35 MPG)</span><span id="econ35">$0</span></div>
+                <div class="breakdown-row"><span>Average Car (28 MPG)</span><span id="econ28">$0</span></div>
+                <div class="breakdown-row"><span>SUV (22 MPG)</span><span id="econ22">$0</span></div>
+                <div class="breakdown-row"><span>Truck (18 MPG)</span><span id="econ18">$0</span></div>
+                <div class="breakdown-row"><span>Hybrid (50 MPG)</span><span id="econ50">$0</span></div>
+            </div>
+
+            <div class="card">
+                <h2>Annual Fuel Costs</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Annual Miles Driven</label>
+                        <input type="number" id="annualMiles" value="12000" min="1000" step="1000" oninput="calculate()">
                     </div>
                 </div>
+                <div class="breakdown-row"><span>Estimated Annual Fuel Cost</span><span id="annualCost">$0</span></div>
+                <div class="breakdown-row"><span>Monthly Average</span><span id="monthlyCost">$0</span></div>
             </div>
 
             <div class="ad-container">
@@ -168,12 +171,12 @@
             </div>
 
             <div class="card">
-                <h2>🔗 Related Tools</h2>
+                <h2>Related Tools</h2>
                 <div class="related-tools">
-                    <a href="car-loan-calculator.html" class="related-link">🚗 Car Loan Calculator</a>
-                    <a href="distance-calculator.html" class="related-link">📍 Distance Calculator</a>
-                    <a href="unit-converter.html" class="related-link">📐 Unit Converter</a>
-                    <a href="carbon-footprint-calculator.html" class="related-link">🌍 Carbon Footprint</a>
+                    <a href="fuel-cost-calculator.html" class="related-link">Fuel Cost</a>
+                    <a href="road-trip-calculator.html" class="related-link">Road Trip</a>
+                    <a href="car-payment-calculator.html" class="related-link">Car Payment</a>
+                    <a href="ev-savings-calculator.html" class="related-link">EV Savings</a>
                 </div>
             </div>
         </div>
@@ -188,56 +191,87 @@
     </div>
 
     <script>
-        let mode = 'mpg';
-        
-        function setMode(m) {
-            mode = m;
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            document.getElementById('mpgForm').style.display = m === 'mpg' ? 'block' : 'none';
-            document.getElementById('tripForm').style.display = m === 'trip' ? 'block' : 'none';
-            document.getElementById('mpgResults').style.display = m === 'mpg' ? 'grid' : 'none';
-            document.getElementById('tripResults').style.display = m === 'trip' ? 'grid' : 'none';
-            calculate();
-        }
-        
-        function calculate() {
-            if (mode === 'mpg') {
-                const miles = parseFloat(document.getElementById('miles').value) || 0;
-                const gallons = parseFloat(document.getElementById('gallons').value) || 1;
-                const gasPrice = parseFloat(document.getElementById('gasPrice').value) || 0;
-                
-                const mpg = miles / gallons;
-                const costPerMile = gasPrice / mpg;
-                const totalCost = gallons * gasPrice;
-                const lPer100 = 235.215 / mpg;
-                
-                document.getElementById('heroLabel').textContent = 'Your Fuel Economy';
-                document.getElementById('heroValue').textContent = mpg.toFixed(1) + ' MPG';
-                document.getElementById('mpg').textContent = mpg.toFixed(1);
-                document.getElementById('costPerMile').textContent = '$' + costPerMile.toFixed(3);
-                document.getElementById('totalCost').textContent = '$' + totalCost.toFixed(2);
-                document.getElementById('lPer100').textContent = lPer100.toFixed(1);
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            
+            if (tab === 'mpg') {
+                document.querySelector('.tab:first-child').classList.add('active');
+                document.getElementById('mpgTab').classList.add('active');
+                calculate();
             } else {
-                const distance = parseFloat(document.getElementById('tripDistance').value) || 0;
-                const mpg = parseFloat(document.getElementById('vehicleMpg').value) || 1;
-                const gasPrice = parseFloat(document.getElementById('tripGasPrice').value) || 0;
-                const roundTrip = document.getElementById('roundTrip').value === 'yes';
-                
-                const totalMiles = roundTrip ? distance * 2 : distance;
-                const gallonsNeeded = totalMiles / mpg;
-                const tripCost = gallonsNeeded * gasPrice;
-                const costPerMile = gasPrice / mpg;
-                
-                document.getElementById('heroLabel').textContent = 'Trip Fuel Cost';
-                document.getElementById('heroValue').textContent = '$' + tripCost.toFixed(2);
-                document.getElementById('tripGallons').textContent = gallonsNeeded.toFixed(1);
-                document.getElementById('tripCost').textContent = '$' + tripCost.toFixed(2);
-                document.getElementById('tripCostPerMile').textContent = '$' + costPerMile.toFixed(3);
-                document.getElementById('tripTotalMiles').textContent = totalMiles;
+                document.querySelector('.tab:last-child').classList.add('active');
+                document.getElementById('tripTab').classList.add('active');
+                calculateTrip();
             }
         }
-        
+
+        function calculate() {
+            const miles = parseFloat(document.getElementById('miles').value) || 0;
+            const gallons = parseFloat(document.getElementById('gallons').value) || 1;
+            const gasPrice = parseFloat(document.getElementById('gasPrice').value) || 0;
+            const unit = document.getElementById('unit').value;
+            const annualMiles = parseFloat(document.getElementById('annualMiles').value) || 12000;
+
+            const mpg = gallons > 0 ? miles / gallons : 0;
+            const costPerMile = mpg > 0 ? gasPrice / mpg : 0;
+            const milesPerDollar = gasPrice > 0 ? mpg / gasPrice : 0;
+            const totalCost = gallons * gasPrice;
+
+            let displayValue, displayLabel;
+            if (unit === 'mpg') {
+                displayValue = mpg.toFixed(1) + ' MPG';
+                displayLabel = 'Your Fuel Economy';
+            } else if (unit === 'kml') {
+                displayValue = (mpg * 0.425144).toFixed(1) + ' km/L';
+                displayLabel = 'Your Fuel Economy';
+            } else {
+                displayValue = (mpg > 0 ? 235.215 / mpg : 0).toFixed(1) + ' L/100km';
+                displayLabel = 'Your Fuel Consumption';
+            }
+
+            document.getElementById('resultLabel').textContent = displayLabel;
+            document.getElementById('mainResult').textContent = displayValue;
+            document.getElementById('costPerMile').textContent = '$' + costPerMile.toFixed(3);
+            document.getElementById('milesPerDollar').textContent = milesPerDollar.toFixed(1);
+            document.getElementById('totalCost').textContent = '$' + totalCost.toFixed(2);
+
+            // Comparison
+            [35, 28, 22, 18, 50].forEach(compareMpg => {
+                const cost = (miles / compareMpg) * gasPrice;
+                document.getElementById('econ' + compareMpg).textContent = '$' + cost.toFixed(2);
+            });
+
+            // Annual costs
+            const annualCost = (annualMiles / mpg) * gasPrice;
+            document.getElementById('annualCost').textContent = '$' + Math.round(annualCost).toLocaleString();
+            document.getElementById('monthlyCost').textContent = '$' + Math.round(annualCost / 12).toLocaleString();
+        }
+
+        function calculateTrip() {
+            const tripMiles = parseFloat(document.getElementById('tripMiles').value) || 0;
+            const vehicleMpg = parseFloat(document.getElementById('vehicleMpg').value) || 28;
+            const gasPrice = parseFloat(document.getElementById('tripGasPrice').value) || 3.50;
+            const roundTrip = document.getElementById('roundTrip').value;
+
+            const totalMiles = roundTrip === 'yes' ? tripMiles * 2 : tripMiles;
+            const gallonsNeeded = totalMiles / vehicleMpg;
+            const tripCost = gallonsNeeded * gasPrice;
+            const costPerMile = tripCost / totalMiles;
+
+            document.getElementById('resultLabel').textContent = 'Trip Fuel Cost';
+            document.getElementById('mainResult').textContent = '$' + tripCost.toFixed(2);
+            document.getElementById('costPerMile').textContent = '$' + costPerMile.toFixed(3);
+            document.getElementById('milesPerDollar').textContent = (vehicleMpg / gasPrice).toFixed(1);
+            document.getElementById('totalCost').textContent = gallonsNeeded.toFixed(1) + ' gal';
+
+            // Comparison for trip
+            [35, 28, 22, 18, 50].forEach(compareMpg => {
+                const cost = (totalMiles / compareMpg) * gasPrice;
+                document.getElementById('econ' + compareMpg).textContent = '$' + cost.toFixed(2);
+            });
+        }
+
         calculate();
     </script>
 </body>

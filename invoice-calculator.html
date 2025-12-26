@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Calculator - Free Invoice Total Calculator</title>
+    <meta name="description" content="Free invoice calculator. Calculate invoice totals with tax, discounts, and multiple line items. Perfect for freelancers and small businesses.">
+    <meta name="keywords" content="invoice calculator, invoice total, billing calculator, freelance invoice, business invoice">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/invoice-calculator.html">
+    <style>
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
+        .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
+        .content-area { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 40px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 2.5rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.9); font-size: 1.2rem; }
+        .line-item { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 40px; gap: 10px; margin-bottom: 10px; align-items: center; }
+        .line-item input { padding: 10px; }
+        .line-total { text-align: right; font-weight: 600; color: var(--secondary); }
+        .btn { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 1rem; }
+        .btn:hover { background: var(--primary-dark); }
+        .btn-remove { background: #ef4444; padding: 8px 12px; font-size: 0.9rem; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .breakdown-row:last-child { border-bottom: none; }
+        .breakdown-row.total { font-weight: bold; font-size: 1.2rem; color: var(--secondary); }
+        .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } .line-item { grid-template-columns: 1fr 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-container" style="display: none;">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
+
+    <header class="header">
+        <h1>Invoice Calculator</h1>
+    </header>
+
+    <div class="main-container">
+        <div class="content-area">
+            <div class="card">
+                <h2>Line Items</h2>
+                <div style="margin-bottom: 10px; color: var(--text-secondary); font-size: 0.85rem; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 40px; gap: 10px;">
+                    <span>Description</span>
+                    <span>Qty</span>
+                    <span>Rate</span>
+                    <span>Amount</span>
+                    <span></span>
+                </div>
+                <div id="lineItems"></div>
+                <button class="btn" onclick="addLineItem()" style="margin-top: 15px;">+ Add Line Item</button>
+            </div>
+
+            <div class="card">
+                <h2>Invoice Settings</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Tax Rate (%)</label>
+                        <input type="number" id="taxRate" value="0" min="0" max="30" step="0.1" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Discount (%)</label>
+                        <input type="number" id="discount" value="0" min="0" max="100" step="0.5" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Shipping/Handling ($)</label>
+                        <input type="number" id="shipping" value="0" min="0" step="0.01" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Currency</label>
+                        <select id="currency" onchange="calculate()">
+                            <option value="$" selected>USD ($)</option>
+                            <option value="€">EUR (€)</option>
+                            <option value="£">GBP (£)</option>
+                            <option value="¥">JPY (¥)</option>
+                            <option value="$">CAD ($)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-hero">
+                <div class="result-hero-label">Invoice Total</div>
+                <div class="result-hero-value" id="invoiceTotal">$0.00</div>
+            </div>
+
+            <div class="card">
+                <h2>Invoice Summary</h2>
+                <div class="breakdown-row"><span>Subtotal</span><span id="subtotal">$0.00</span></div>
+                <div class="breakdown-row"><span>Discount</span><span id="discountAmt">-$0.00</span></div>
+                <div class="breakdown-row"><span>Tax</span><span id="taxAmt">$0.00</span></div>
+                <div class="breakdown-row"><span>Shipping</span><span id="shippingAmt">$0.00</span></div>
+                <div class="breakdown-row total"><span>Total Due</span><span id="totalDue">$0.00</span></div>
+            </div>
+
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+
+            <div class="card">
+                <h2>Related Tools</h2>
+                <div class="related-tools">
+                    <a href="profit-margin-calculator.html" class="related-link">Profit Margin</a>
+                    <a href="sales-tax-calculator.html" class="related-link">Sales Tax</a>
+                    <a href="markup-calculator.html" class="related-link">Markup Calculator</a>
+                    <a href="discount-calculator.html" class="related-link">Discount Calculator</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let lineItems = [
+            { desc: 'Service/Product', qty: 1, rate: 100 }
+        ];
+
+        function renderLineItems() {
+            const container = document.getElementById('lineItems');
+            container.innerHTML = lineItems.map((item, i) => `
+                <div class="line-item">
+                    <input type="text" value="${item.desc}" onchange="updateItem(${i}, 'desc', this.value)" placeholder="Description">
+                    <input type="number" value="${item.qty}" min="1" onchange="updateItem(${i}, 'qty', this.value)">
+                    <input type="number" value="${item.rate}" min="0" step="0.01" onchange="updateItem(${i}, 'rate', this.value)">
+                    <div class="line-total">${formatCurrency(item.qty * item.rate)}</div>
+                    <button class="btn btn-remove" onclick="removeItem(${i})">×</button>
+                </div>
+            `).join('');
+            calculate();
+        }
+
+        function addLineItem() {
+            lineItems.push({ desc: 'Item', qty: 1, rate: 0 });
+            renderLineItems();
+        }
+
+        function removeItem(index) {
+            if (lineItems.length > 1) {
+                lineItems.splice(index, 1);
+                renderLineItems();
+            }
+        }
+
+        function updateItem(index, field, value) {
+            if (field === 'qty' || field === 'rate') {
+                lineItems[index][field] = parseFloat(value) || 0;
+            } else {
+                lineItems[index][field] = value;
+            }
+            renderLineItems();
+        }
+
+        function formatCurrency(amount) {
+            const currency = document.getElementById('currency').value;
+            return currency + amount.toFixed(2);
+        }
+
+        function calculate() {
+            const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
+            const discount = parseFloat(document.getElementById('discount').value) || 0;
+            const shipping = parseFloat(document.getElementById('shipping').value) || 0;
+
+            const subtotal = lineItems.reduce((sum, item) => sum + (item.qty * item.rate), 0);
+            const discountAmt = subtotal * (discount / 100);
+            const afterDiscount = subtotal - discountAmt;
+            const taxAmt = afterDiscount * (taxRate / 100);
+            const total = afterDiscount + taxAmt + shipping;
+
+            document.getElementById('subtotal').textContent = formatCurrency(subtotal);
+            document.getElementById('discountAmt').textContent = '-' + formatCurrency(discountAmt);
+            document.getElementById('taxAmt').textContent = formatCurrency(taxAmt);
+            document.getElementById('shippingAmt').textContent = formatCurrency(shipping);
+            document.getElementById('totalDue').textContent = formatCurrency(total);
+            document.getElementById('invoiceTotal').textContent = formatCurrency(total);
+        }
+
+        renderLineItems();
+    </script>
+</body>
+</html>
