@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moving Cost Calculator - Estimate Moving Expenses</title>
-    <meta name="description" content="Free moving cost calculator. Estimate local and long-distance moving costs including movers, truck rental, packing supplies, and more.">
-    <meta name="keywords" content="moving cost calculator, moving expenses, relocation cost, movers estimate, moving budget">
+    <meta name="description" content="Free moving cost calculator. Estimate your moving costs including movers, truck rental, packing supplies, and more.">
+    <meta name="keywords" content="moving cost calculator, moving estimate, relocation cost, movers cost, moving expenses">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/moving-cost-calculator.html">
     <style>
-        :root { --primary: #8b5cf6; --primary-dark: #7c3aed; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -30,16 +30,20 @@
         .result-hero-label { color: rgba(255,255,255,0.9); font-size: 1.2rem; }
         .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
-        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
         .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
         .breakdown-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
         .breakdown-row:last-child { border-bottom: none; }
-        .breakdown-row.total { background: var(--primary); padding: 15px; margin: 15px -24px -24px; border-radius: 0 0 16px 16px; font-weight: bold; }
+        .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 15px; }
+        .compare-card { background: var(--bg-input); padding: 20px; border-radius: 12px; }
+        .compare-title { color: var(--secondary); font-weight: bold; margin-bottom: 10px; }
+        .compare-price { font-size: 1.5rem; font-weight: bold; color: var(--accent); }
+        .compare-detail { color: var(--text-secondary); font-size: 0.85rem; margin-top: 5px; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) { .form-grid, .results-grid, .compare-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -56,81 +60,57 @@
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
 
     <header class="header">
-        <h1>📦 Moving Cost Calculator</h1>
+        <h1>Moving Cost Calculator</h1>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>🏠 Move Details</h2>
+                <h2>Move Details</h2>
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Home Size</label>
                         <select id="homeSize" onchange="calculate()">
-                            <option value="studio">Studio/1BR</option>
+                            <option value="studio">Studio/1 BR Apartment</option>
+                            <option value="1br">1 Bedroom House</option>
                             <option value="2br" selected>2 Bedroom</option>
                             <option value="3br">3 Bedroom</option>
-                            <option value="4br">4 Bedroom</option>
-                            <option value="5br">5+ Bedroom</option>
+                            <option value="4br">4+ Bedroom</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Distance (miles)</label>
-                        <input type="number" id="distance" value="50" step="10" oninput="calculate()">
+                        <input type="number" id="distance" value="50" min="1" max="3000" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Move Type</label>
                         <select id="moveType" onchange="calculate()">
-                            <option value="local" selected>Local (&lt;100 miles)</option>
-                            <option value="longDistance">Long Distance (100+ miles)</option>
-                            <option value="crossCountry">Cross Country (1000+ miles)</option>
+                            <option value="local" selected>Local (under 100 miles)</option>
+                            <option value="long">Long Distance (100+ miles)</option>
+                            <option value="cross">Cross Country (1000+ miles)</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Moving Method</label>
-                        <select id="method" onchange="calculate()">
-                            <option value="diy">DIY (Truck Rental)</option>
-                            <option value="fullService" selected>Full Service Movers</option>
-                            <option value="hybrid">Hybrid (You Pack)</option>
+                        <label>Moving Season</label>
+                        <select id="season" onchange="calculate()">
+                            <option value="off">Off-Season (Oct-Apr)</option>
+                            <option value="peak" selected>Peak Season (May-Sep)</option>
                         </select>
                     </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>📋 Additional Services</h2>
-                <div class="form-grid">
                     <div class="form-group">
                         <label>Packing Service</label>
                         <select id="packing" onchange="calculate()">
-                            <option value="none" selected>Self Pack</option>
+                            <option value="self" selected>Self Pack</option>
                             <option value="partial">Partial Packing</option>
-                            <option value="full">Full Packing</option>
+                            <option value="full">Full Packing Service</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Storage Needed</label>
-                        <select id="storage" onchange="calculate()">
-                            <option value="0" selected>None</option>
-                            <option value="1">1 Month</option>
-                            <option value="2">2 Months</option>
-                            <option value="3">3+ Months</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Special Items</label>
-                        <select id="special" onchange="calculate()">
-                            <option value="none" selected>None</option>
-                            <option value="piano">Piano</option>
-                            <option value="hot_tub">Hot Tub</option>
-                            <option value="multiple">Multiple Special Items</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Moving Insurance</label>
-                        <select id="insurance" onchange="calculate()">
-                            <option value="basic" selected>Basic (included)</option>
-                            <option value="full">Full Value ($50k)</option>
+                        <label>Floors/Stairs</label>
+                        <select id="floors" onchange="calculate()">
+                            <option value="ground" selected>Ground Floor/Elevator</option>
+                            <option value="stairs1">1 Flight of Stairs</option>
+                            <option value="stairs2">2+ Flights of Stairs</option>
                         </select>
                     </div>
                 </div>
@@ -138,34 +118,38 @@
 
             <div class="result-hero">
                 <div class="result-hero-label">Estimated Moving Cost</div>
-                <div class="result-hero-value" id="totalCost">$0 - $0</div>
+                <div class="result-hero-value" id="totalCost">$0</div>
             </div>
 
             <div class="results-grid">
                 <div class="result-card">
-                    <div class="result-value" id="laborHours">0</div>
-                    <div class="result-label">Est. Labor Hours</div>
+                    <div class="result-value" id="lowEstimate">$0</div>
+                    <div class="result-label">Low Estimate</div>
                 </div>
                 <div class="result-card">
-                    <div class="result-value" id="truckSize">--</div>
-                    <div class="result-label">Truck Size Needed</div>
+                    <div class="result-value" id="avgEstimate">$0</div>
+                    <div class="result-label">Average</div>
                 </div>
                 <div class="result-card">
-                    <div class="result-value" id="weight">0 lbs</div>
-                    <div class="result-label">Est. Weight</div>
+                    <div class="result-value" id="highEstimate">$0</div>
+                    <div class="result-label">High Estimate</div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>📊 Cost Breakdown</h2>
-                <div class="breakdown-row"><span>🚚 Base Moving/Truck</span><span id="baseCost">$0</span></div>
-                <div class="breakdown-row"><span>👷 Labor</span><span id="laborCost">$0</span></div>
-                <div class="breakdown-row"><span>📦 Packing Materials</span><span id="packingCost">$0</span></div>
-                <div class="breakdown-row"><span>📋 Packing Service</span><span id="packingService">$0</span></div>
-                <div class="breakdown-row"><span>🏢 Storage</span><span id="storageCost">$0</span></div>
-                <div class="breakdown-row"><span>🎹 Special Items</span><span id="specialCost">$0</span></div>
-                <div class="breakdown-row"><span>🛡️ Insurance</span><span id="insuranceCost">$0</span></div>
-                <div class="breakdown-row total"><span>Total Estimate</span><span id="grandTotal">$0</span></div>
+                <h2>Cost Breakdown</h2>
+                <div class="breakdown-row"><span>Base Moving Cost</span><span id="baseCost">$0</span></div>
+                <div class="breakdown-row"><span>Distance Fee</span><span id="distanceFee">$0</span></div>
+                <div class="breakdown-row"><span>Packing Services</span><span id="packingCost">$0</span></div>
+                <div class="breakdown-row"><span>Supplies (boxes, tape, etc.)</span><span id="suppliesCost">$0</span></div>
+                <div class="breakdown-row"><span>Stairs/Access Fee</span><span id="stairsFee">$0</span></div>
+                <div class="breakdown-row"><span>Season Adjustment</span><span id="seasonAdj">$0</span></div>
+                <div class="breakdown-row" style="font-weight: bold; color: var(--success);"><span>Total Estimate</span><span id="totalBreak">$0</span></div>
+            </div>
+
+            <div class="card">
+                <h2>Compare Options</h2>
+                <div class="compare-grid" id="compareGrid"></div>
             </div>
 
             <div class="ad-container">
@@ -175,12 +159,12 @@
             </div>
 
             <div class="card">
-                <h2>🔗 Related Tools</h2>
+                <h2>Related Tools</h2>
                 <div class="related-tools">
-                    <a href="budget-calculator.html" class="related-link">📊 Budget Calculator</a>
-                    <a href="rent-vs-buy-calculator.html" class="related-link">🏠 Rent vs Buy</a>
-                    <a href="cost-of-living-calculator.html" class="related-link">💰 Cost of Living</a>
-                    <a href="road-trip-calculator.html" class="related-link">🚗 Road Trip Cost</a>
+                    <a href="rent-vs-buy-calculator.html" class="related-link">Rent vs Buy</a>
+                    <a href="home-affordability-calculator.html" class="related-link">Home Affordability</a>
+                    <a href="budget-calculator.html" class="related-link">Budget Calculator</a>
+                    <a href="cubic-feet-calculator.html" class="related-link">Cubic Feet</a>
                 </div>
             </div>
         </div>
@@ -195,89 +179,100 @@
     </div>
 
     <script>
-        const sizeData = {
-            studio: { weight: 2000, hours: 3, truckFt: 10, packCost: 50 },
-            '2br': { weight: 5000, hours: 5, truckFt: 17, packCost: 100 },
-            '3br': { weight: 8000, hours: 7, truckFt: 20, packCost: 150 },
-            '4br': { weight: 12000, hours: 10, truckFt: 26, packCost: 200 },
-            '5br': { weight: 16000, hours: 12, truckFt: 26, packCost: 300 }
+        const homeSizes = {
+            studio: { weight: 2000, hours: 3, supplies: 75 },
+            '1br': { weight: 3500, hours: 4, supplies: 100 },
+            '2br': { weight: 5000, hours: 6, supplies: 150 },
+            '3br': { weight: 7500, hours: 8, supplies: 200 },
+            '4br': { weight: 10000, hours: 10, supplies: 300 }
         };
+
+        const packingCosts = { self: 0, partial: 0.3, full: 0.6 };
+        const floorFees = { ground: 0, stairs1: 75, stairs2: 150 };
 
         function calculate() {
             const homeSize = document.getElementById('homeSize').value;
-            const distance = parseFloat(document.getElementById('distance').value) || 0;
+            const distance = parseInt(document.getElementById('distance').value) || 50;
             const moveType = document.getElementById('moveType').value;
-            const method = document.getElementById('method').value;
+            const season = document.getElementById('season').value;
             const packing = document.getElementById('packing').value;
-            const storage = parseInt(document.getElementById('storage').value);
-            const special = document.getElementById('special').value;
-            const insurance = document.getElementById('insurance').value;
+            const floors = document.getElementById('floors').value;
+
+            const home = homeSizes[homeSize];
+            const hourlyRate = 130; // Average for 2-person crew
             
-            const data = sizeData[homeSize];
-            
-            let baseCost, laborCost;
-            
-            if (method === 'diy') {
-                // Truck rental pricing
-                const dailyRate = data.truckFt <= 15 ? 30 : data.truckFt <= 20 ? 40 : 60;
-                const mileageRate = 0.79;
-                baseCost = dailyRate + (distance * 2 * mileageRate);
-                laborCost = 0;
+            // Base cost calculation
+            let baseCost;
+            if (moveType === 'local') {
+                baseCost = home.hours * hourlyRate;
             } else {
-                // Professional movers
-                const hourlyRate = method === 'fullService' ? 150 : 120; // per mover team
-                if (moveType === 'local') {
-                    laborCost = data.hours * hourlyRate;
-                    baseCost = 0;
-                } else {
-                    // Long distance based on weight
-                    const perLbRate = moveType === 'crossCountry' ? 0.75 : 0.50;
-                    baseCost = data.weight * perLbRate;
-                    laborCost = data.hours * hourlyRate * 0.5; // Loading/unloading only
-                }
+                // Long distance based on weight
+                const perLbRate = moveType === 'cross' ? 0.60 : 0.50;
+                baseCost = home.weight * perLbRate;
             }
-            
-            // Packing materials
-            const packMaterialsCost = data.packCost;
-            
-            // Packing service
-            let packServiceCost = 0;
-            if (packing === 'partial') packServiceCost = data.weight * 0.05;
-            else if (packing === 'full') packServiceCost = data.weight * 0.10;
-            
-            // Storage
-            const storageRates = { studio: 100, '2br': 150, '3br': 200, '4br': 250, '5br': 300 };
-            const storageCost = storage * storageRates[homeSize];
-            
-            // Special items
-            let specialCost = 0;
-            if (special === 'piano') specialCost = 400;
-            else if (special === 'hot_tub') specialCost = 600;
-            else if (special === 'multiple') specialCost = 1000;
-            
-            // Insurance
-            let insuranceCost = 0;
-            if (insurance === 'full') insuranceCost = data.weight * 0.01;
-            
-            const subtotal = baseCost + laborCost + packMaterialsCost + packServiceCost + storageCost + specialCost + insuranceCost;
-            const lowTotal = Math.round(subtotal * 0.85);
-            const highTotal = Math.round(subtotal * 1.20);
-            
-            document.getElementById('totalCost').textContent = '$' + lowTotal.toLocaleString() + ' - $' + highTotal.toLocaleString();
-            document.getElementById('laborHours').textContent = data.hours;
-            document.getElementById('truckSize').textContent = data.truckFt + ' ft';
-            document.getElementById('weight').textContent = data.weight.toLocaleString() + ' lbs';
-            
+
+            // Distance fee
+            let distanceFee = 0;
+            if (moveType === 'local') {
+                distanceFee = distance > 25 ? (distance - 25) * 2 : 0;
+            } else {
+                distanceFee = distance * 0.50;
+            }
+
+            // Packing
+            const packingCost = baseCost * packingCosts[packing];
+            const suppliesCost = home.supplies;
+
+            // Stairs
+            const stairsFee = floorFees[floors];
+
+            // Season
+            const seasonMult = season === 'peak' ? 1.2 : 1.0;
+            const subtotal = baseCost + distanceFee + packingCost + suppliesCost + stairsFee;
+            const seasonAdj = subtotal * (seasonMult - 1);
+            const total = subtotal + seasonAdj;
+
+            document.getElementById('totalCost').textContent = '$' + Math.round(total).toLocaleString();
+            document.getElementById('lowEstimate').textContent = '$' + Math.round(total * 0.8).toLocaleString();
+            document.getElementById('avgEstimate').textContent = '$' + Math.round(total).toLocaleString();
+            document.getElementById('highEstimate').textContent = '$' + Math.round(total * 1.3).toLocaleString();
+
             document.getElementById('baseCost').textContent = '$' + Math.round(baseCost).toLocaleString();
-            document.getElementById('laborCost').textContent = '$' + Math.round(laborCost).toLocaleString();
-            document.getElementById('packingCost').textContent = '$' + Math.round(packMaterialsCost).toLocaleString();
-            document.getElementById('packingService').textContent = '$' + Math.round(packServiceCost).toLocaleString();
-            document.getElementById('storageCost').textContent = '$' + Math.round(storageCost).toLocaleString();
-            document.getElementById('specialCost').textContent = '$' + Math.round(specialCost).toLocaleString();
-            document.getElementById('insuranceCost').textContent = '$' + Math.round(insuranceCost).toLocaleString();
-            document.getElementById('grandTotal').textContent = '$' + Math.round(subtotal).toLocaleString();
+            document.getElementById('distanceFee').textContent = '$' + Math.round(distanceFee).toLocaleString();
+            document.getElementById('packingCost').textContent = '$' + Math.round(packingCost).toLocaleString();
+            document.getElementById('suppliesCost').textContent = '$' + Math.round(suppliesCost).toLocaleString();
+            document.getElementById('stairsFee').textContent = '$' + Math.round(stairsFee).toLocaleString();
+            document.getElementById('seasonAdj').textContent = (seasonAdj > 0 ? '+' : '') + '$' + Math.round(seasonAdj).toLocaleString();
+            document.getElementById('totalBreak').textContent = '$' + Math.round(total).toLocaleString();
+
+            // Compare options
+            const truckRental = moveType === 'local' ? 150 : distance * 0.80 + 200;
+            const containerCost = home.weight * 0.40 + (moveType !== 'local' ? distance * 0.35 : 0);
+            
+            document.getElementById('compareGrid').innerHTML = `
+                <div class="compare-card">
+                    <div class="compare-title">Full-Service Movers</div>
+                    <div class="compare-price">$${Math.round(total).toLocaleString()}</div>
+                    <div class="compare-detail">Professional handling, insurance included</div>
+                </div>
+                <div class="compare-card">
+                    <div class="compare-title">DIY Truck Rental</div>
+                    <div class="compare-price">$${Math.round(truckRental + suppliesCost).toLocaleString()}</div>
+                    <div class="compare-detail">You pack, load & drive</div>
+                </div>
+                <div class="compare-card">
+                    <div class="compare-title">Moving Container</div>
+                    <div class="compare-price">$${Math.round(containerCost + suppliesCost).toLocaleString()}</div>
+                    <div class="compare-detail">You pack, they ship</div>
+                </div>
+                <div class="compare-card">
+                    <div class="compare-title">Labor Only</div>
+                    <div class="compare-price">$${Math.round(home.hours * 80).toLocaleString()}</div>
+                    <div class="compare-detail">Helpers load your rental truck</div>
+                </div>
+            `;
         }
-        
+
         calculate();
     </script>
 </body>
