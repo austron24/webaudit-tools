@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Equity Calculator - How Much Equity Do You Have?</title>
-    <meta name="description" content="Free home equity calculator. Calculate how much equity you have in your home and potential HELOC borrowing power.">
-    <meta name="keywords" content="home equity calculator, equity in home, HELOC calculator, home value equity">
-    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/home-equity-calculator.html">
+    <title>Keto Calculator - Keto Macro & Calorie Calculator</title>
+    <meta name="description" content="Free keto calculator. Calculate your ideal macros, calories, and fat/protein/carb ratios for the ketogenic diet.">
+    <meta name="keywords" content="keto calculator, keto macros, ketogenic diet, keto diet calculator, low carb calculator">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/keto-calculator.html">
     <style>
         :root { --primary: #059669; --primary-dark: #047857; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -23,8 +23,8 @@
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
-        input { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
-        input:focus { outline: none; border-color: var(--primary); }
+        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
         .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
         .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
         .result-hero-label { color: rgba(255,255,255,0.8); }
@@ -54,61 +54,82 @@
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
 
     <header class="header">
-        <h1>🏠 Home Equity Calculator</h1>
+        <h1>🥑 Keto Calculator</h1>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>🏡 Property Information</h2>
+                <h2>📊 Your Information</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Current Home Value ($)</label>
-                        <input type="number" id="value" value="450000" step="10000" oninput="calculate()">
+                        <label>Gender</label>
+                        <select id="gender" onchange="calculate()">
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label>Mortgage Balance ($)</label>
-                        <input type="number" id="mortgage" value="280000" step="5000" oninput="calculate()">
+                        <label>Age</label>
+                        <input type="number" id="age" value="35" min="18" max="100" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Other Liens ($)</label>
-                        <input type="number" id="liens" value="0" step="1000" oninput="calculate()">
+                        <label>Weight (lbs)</label>
+                        <input type="number" id="weight" value="180" step="1" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>HELOC Max LTV (%)</label>
-                        <input type="number" id="ltv" value="80" step="5" max="95" oninput="calculate()">
+                        <label>Height (inches)</label>
+                        <input type="number" id="height" value="70" step="1" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Activity Level</label>
+                        <select id="activity" onchange="calculate()">
+                            <option value="1.2">Sedentary</option>
+                            <option value="1.375" selected>Light Exercise</option>
+                            <option value="1.55">Moderate Exercise</option>
+                            <option value="1.725">Heavy Exercise</option>
+                            <option value="1.9">Athlete</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Goal</label>
+                        <select id="goal" onchange="calculate()">
+                            <option value="-25">Lose Weight (-25%)</option>
+                            <option value="-15">Mild Weight Loss (-15%)</option>
+                            <option value="0" selected>Maintain Weight</option>
+                            <option value="15">Gain Muscle (+15%)</option>
+                        </select>
                     </div>
                 </div>
 
                 <div class="result-hero">
-                    <div class="result-hero-label">Your Home Equity</div>
-                    <div class="result-hero-value" id="equity">$0</div>
+                    <div class="result-hero-label">Daily Calories</div>
+                    <div class="result-hero-value" id="calories">0</div>
                 </div>
 
                 <div class="results-grid">
                     <div class="result-card">
-                        <div class="result-value" id="equityPct">0%</div>
-                        <div class="result-label">Equity Percentage</div>
+                        <div class="result-value" id="fat">0g</div>
+                        <div class="result-label">Fat (70%)</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="ltvCurrent">0%</div>
-                        <div class="result-label">Current LTV</div>
+                        <div class="result-value" id="protein">0g</div>
+                        <div class="result-label">Protein (25%)</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="borrowable">$0</div>
-                        <div class="result-label">HELOC Available</div>
+                        <div class="result-value" id="carbs">0g</div>
+                        <div class="result-label">Net Carbs (5%)</div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>📊 Equity Analysis</h2>
-                <div class="breakdown-row"><span>Home Value</span><span id="valueShow">$0</span></div>
-                <div class="breakdown-row"><span>Mortgage Balance</span><span id="mortgageShow">$0</span></div>
-                <div class="breakdown-row"><span>Other Liens</span><span id="liensShow">$0</span></div>
-                <div class="breakdown-row"><span>Total Equity</span><span id="equityShow">$0</span></div>
-                <div class="breakdown-row"><span>Maximum Borrow (at LTV)</span><span id="maxBorrow">$0</span></div>
-                <div class="breakdown-row"><span>Available HELOC</span><span id="helocAvail">$0</span></div>
+                <h2>📈 Keto Macro Breakdown</h2>
+                <div class="breakdown-row"><span>Fat Calories</span><span id="fatCal">0 cal</span></div>
+                <div class="breakdown-row"><span>Protein Calories</span><span id="proteinCal">0 cal</span></div>
+                <div class="breakdown-row"><span>Carb Calories</span><span id="carbCal">0 cal</span></div>
+                <div class="breakdown-row"><span>BMR (Base Metabolic Rate)</span><span id="bmr">0 cal</span></div>
+                <div class="breakdown-row"><span>TDEE (Maintenance)</span><span id="tdee">0 cal</span></div>
             </div>
 
             <div class="ad-container">
@@ -120,10 +141,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="mortgage-calculator.html" class="related-link">🏡 Mortgage</a>
-                    <a href="refinance-calculator.html" class="related-link">🔄 Refinance</a>
-                    <a href="home-value-calculator.html" class="related-link">📈 Home Value</a>
-                    <a href="heloc-calculator.html" class="related-link">💰 HELOC</a>
+                    <a href="macro-calculator.html" class="related-link">🍽️ Macro Calculator</a>
+                    <a href="calorie-calculator.html" class="related-link">🔥 Calorie Calculator</a>
+                    <a href="bmi-calculator.html" class="related-link">⚖️ BMI Calculator</a>
+                    <a href="body-fat-calculator.html" class="related-link">📊 Body Fat</a>
                 </div>
             </div>
         </div>
@@ -139,30 +160,47 @@
 
     <script>
         function calculate() {
-            const value = parseFloat(document.getElementById('value').value) || 0;
-            const mortgage = parseFloat(document.getElementById('mortgage').value) || 0;
-            const liens = parseFloat(document.getElementById('liens').value) || 0;
-            const ltv = parseFloat(document.getElementById('ltv').value) / 100;
+            const gender = document.getElementById('gender').value;
+            const age = parseInt(document.getElementById('age').value) || 30;
+            const weight = parseFloat(document.getElementById('weight').value) || 0;
+            const height = parseFloat(document.getElementById('height').value) || 0;
+            const activity = parseFloat(document.getElementById('activity').value);
+            const goal = parseFloat(document.getElementById('goal').value);
 
-            const totalOwed = mortgage + liens;
-            const equity = value - totalOwed;
-            const equityPct = value > 0 ? (equity / value * 100) : 0;
-            const ltvCurrent = value > 0 ? (totalOwed / value * 100) : 0;
+            // Convert to metric
+            const weightKg = weight * 0.453592;
+            const heightCm = height * 2.54;
 
-            const maxBorrow = value * ltv;
-            const borrowable = Math.max(0, maxBorrow - totalOwed);
+            // Calculate BMR using Mifflin-St Jeor
+            let bmr;
+            if (gender === 'male') {
+                bmr = 10 * weightKg + 6.25 * heightCm - 5 * age + 5;
+            } else {
+                bmr = 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
+            }
 
-            document.getElementById('equity').textContent = '$' + Math.round(equity).toLocaleString();
-            document.getElementById('equityPct').textContent = equityPct.toFixed(1) + '%';
-            document.getElementById('ltvCurrent').textContent = ltvCurrent.toFixed(1) + '%';
-            document.getElementById('borrowable').textContent = '$' + Math.round(borrowable).toLocaleString();
+            const tdee = bmr * activity;
+            const calories = Math.round(tdee * (1 + goal / 100));
 
-            document.getElementById('valueShow').textContent = '$' + value.toLocaleString();
-            document.getElementById('mortgageShow').textContent = '-$' + mortgage.toLocaleString();
-            document.getElementById('liensShow').textContent = '-$' + liens.toLocaleString();
-            document.getElementById('equityShow').textContent = '$' + Math.round(equity).toLocaleString();
-            document.getElementById('maxBorrow').textContent = '$' + Math.round(maxBorrow).toLocaleString();
-            document.getElementById('helocAvail').textContent = '$' + Math.round(borrowable).toLocaleString();
+            // Keto macros: 70% fat, 25% protein, 5% carbs
+            const fatCal = calories * 0.70;
+            const proteinCal = calories * 0.25;
+            const carbCal = calories * 0.05;
+
+            const fat = Math.round(fatCal / 9);
+            const protein = Math.round(proteinCal / 4);
+            const carbs = Math.round(carbCal / 4);
+
+            document.getElementById('calories').textContent = calories;
+            document.getElementById('fat').textContent = fat + 'g';
+            document.getElementById('protein').textContent = protein + 'g';
+            document.getElementById('carbs').textContent = carbs + 'g';
+
+            document.getElementById('fatCal').textContent = Math.round(fatCal) + ' cal';
+            document.getElementById('proteinCal').textContent = Math.round(proteinCal) + ' cal';
+            document.getElementById('carbCal').textContent = Math.round(carbCal) + ' cal';
+            document.getElementById('bmr').textContent = Math.round(bmr) + ' cal';
+            document.getElementById('tdee').textContent = Math.round(tdee) + ' cal';
         }
         calculate();
     </script>
