@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Pension Calculator - Retirement Benefit Estimator</title>
+    <meta name="description" content="Calculate your pension benefits. Estimate retirement income from defined benefit pension plans. Free pension calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0369a1 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #0369a1;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #0369a1;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #0284c7; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 48px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .result-range { font-size: 16px; opacity: 0.8; margin-top: 10px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #e0f2fe;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #0369a1; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #0369a1; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0369a1; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0284c7;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #7dd3fc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏛️ Pension Calculator</h1>
+            <p class="subtitle">Estimate your retirement pension benefits</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Final Average Salary ($)</label>
+                    <input type="number" id="salary" value="85000" min="0" step="5000">
+                </div>
+                <div class="input-group">
+                    <label>Years of Service</label>
+                    <input type="number" id="yearsService" value="25" min="0" max="50" step="1">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Pension Formula Type</label>
+                    <select id="formulaType">
+                        <option value="1.5">1.5% per year</option>
+                        <option value="2.0" selected>2.0% per year</option>
+                        <option value="2.5">2.5% per year</option>
+                        <option value="3.0">3.0% per year (generous)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Retirement Age</label>
+                    <select id="retireAge">
+                        <option value="55">55 (Early)</option>
+                        <option value="60">60</option>
+                        <option value="62">62</option>
+                        <option value="65" selected>65 (Full)</option>
+                        <option value="67">67</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Full Retirement Age</label>
+                    <select id="fullRetireAge">
+                        <option value="62">62</option>
+                        <option value="65" selected>65</option>
+                        <option value="67">67</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Early Retirement Penalty (%/year)</label>
+                    <select id="penalty">
+                        <option value="3">3% per year</option>
+                        <option value="5" selected>5% per year</option>
+                        <option value="6">6% per year</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>COLA (Cost of Living Adj.)</label>
+                    <select id="cola">
+                        <option value="0">None</option>
+                        <option value="1">1% annually</option>
+                        <option value="2" selected>2% annually</option>
+                        <option value="3">3% annually</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Survivor Benefit Option</label>
+                    <select id="survivor">
+                        <option value="0" selected>None (Single Life)</option>
+                        <option value="50">50% to Spouse</option>
+                        <option value="75">75% to Spouse</option>
+                        <option value="100">100% to Spouse</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Pension</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="monthlyPension">$0</div>
+                    <div class="result-label-main">Monthly Pension Benefit</div>
+                    <div class="result-range" id="annualPension">Annual: $0</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="basePension">$0</div>
+                        <div class="summary-label">Base Pension</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="adjustments">$0</div>
+                        <div class="summary-label">Adjustments</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="replacementRate">0%</div>
+                        <div class="summary-label">Replacement Rate</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="lifetime">$0</div>
+                        <div class="summary-label">Lifetime Value (20yr)</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Pension Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Final Average Salary</span>
+                        <span class="breakdown-value" id="displaySalary">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Years of Service</span>
+                        <span class="breakdown-value" id="displayYears">0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Benefit Multiplier</span>
+                        <span class="breakdown-value" id="displayMultiplier">0%</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Early Retirement Reduction</span>
+                        <span class="breakdown-value" id="displayReduction">0%</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Survivor Reduction</span>
+                        <span class="breakdown-value" id="displaySurvivor">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Retirement Calculators</h4>
+            <a href="retirement-calculator.html">Retirement Savings</a>
+            <a href="social-security-calculator.html">Social Security</a>
+            <a href="401k-calculator.html">401(k)</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Pension Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const salary = parseFloat(document.getElementById('salary').value);
+            const yearsService = parseInt(document.getElementById('yearsService').value);
+            const formulaRate = parseFloat(document.getElementById('formulaType').value) / 100;
+            const retireAge = parseInt(document.getElementById('retireAge').value);
+            const fullRetireAge = parseInt(document.getElementById('fullRetireAge').value);
+            const penaltyRate = parseFloat(document.getElementById('penalty').value) / 100;
+            const cola = parseFloat(document.getElementById('cola').value) / 100;
+            const survivorOption = parseInt(document.getElementById('survivor').value);
+
+            // Calculate base pension
+            const benefitMultiplier = formulaRate * yearsService;
+            const basePension = salary * benefitMultiplier;
+
+            // Early retirement reduction
+            let earlyReduction = 0;
+            if (retireAge < fullRetireAge) {
+                const yearsEarly = fullRetireAge - retireAge;
+                earlyReduction = yearsEarly * penaltyRate;
+            }
+
+            // Survivor benefit reduction (typically 5-15% reduction)
+            let survivorReduction = 0;
+            if (survivorOption > 0) {
+                survivorReduction = survivorOption / 1000; // 5% for 50%, 7.5% for 75%, 10% for 100%
+            }
+
+            // Calculate adjusted pension
+            const adjustedPension = basePension * (1 - earlyReduction) * (1 - survivorReduction);
+            const monthlyPension = adjustedPension / 12;
+
+            // Adjustments amount
+            const adjustments = basePension - adjustedPension;
+
+            // Replacement rate
+            const replacementRate = (adjustedPension / salary) * 100;
+
+            // Lifetime value (20 years with COLA)
+            let lifetimeValue = 0;
+            let currentAnnual = adjustedPension;
+            for (let year = 0; year < 20; year++) {
+                lifetimeValue += currentAnnual;
+                currentAnnual *= (1 + cola);
+            }
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('monthlyPension').textContent = formatMoney(monthlyPension);
+            document.getElementById('annualPension').textContent = 'Annual: ' + formatMoney(adjustedPension);
+            document.getElementById('basePension').textContent = formatMoney(basePension / 12) + '/mo';
+            document.getElementById('adjustments').textContent = '-' + formatMoney(adjustments / 12) + '/mo';
+            document.getElementById('replacementRate').textContent = replacementRate.toFixed(1) + '%';
+            document.getElementById('lifetime').textContent = formatMoney(lifetimeValue);
+
+            document.getElementById('displaySalary').textContent = formatMoney(salary);
+            document.getElementById('displayYears').textContent = yearsService + ' years';
+            document.getElementById('displayMultiplier').textContent = (benefitMultiplier * 100).toFixed(1) + '%';
+            document.getElementById('displayReduction').textContent = '-' + (earlyReduction * 100).toFixed(1) + '%';
+            document.getElementById('displaySurvivor').textContent = '-' + (survivorReduction * 100).toFixed(1) + '%';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

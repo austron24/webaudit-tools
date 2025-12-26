@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Whole Life Insurance Calculator - Permanent Coverage Estimator</title>
+    <meta name="description" content="Calculate whole life insurance costs and cash value. Compare permanent life insurance options. Free whole life insurance calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #065f46 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #065f46;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #065f46;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #047857; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 48px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .result-range { font-size: 16px; opacity: 0.8; margin-top: 10px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #d1fae5;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #065f46; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #065f46; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #065f46; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #047857;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #6ee7b7; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💎 Whole Life Insurance Calculator</h1>
+            <p class="subtitle">Estimate permanent coverage costs & cash value</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Coverage Amount ($)</label>
+                    <input type="number" id="coverage" value="500000" min="0" step="50000">
+                </div>
+                <div class="input-group">
+                    <label>Your Current Age</label>
+                    <select id="age">
+                        <option value="25">25-29</option>
+                        <option value="30">30-34</option>
+                        <option value="35" selected>35-39</option>
+                        <option value="40">40-44</option>
+                        <option value="45">45-49</option>
+                        <option value="50">50-54</option>
+                        <option value="55">55-59</option>
+                        <option value="60">60-64</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Gender</label>
+                    <select id="gender">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Health Classification</label>
+                    <select id="health">
+                        <option value="preferred_plus">Preferred Plus</option>
+                        <option value="preferred">Preferred</option>
+                        <option value="standard" selected>Standard</option>
+                        <option value="substandard">Substandard</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Tobacco Use</label>
+                    <select id="tobacco">
+                        <option value="no" selected>Non-Tobacco</option>
+                        <option value="yes">Tobacco User</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Policy Type</label>
+                    <select id="policyType">
+                        <option value="traditional" selected>Traditional Whole Life</option>
+                        <option value="universal">Universal Life</option>
+                        <option value="variable">Variable Life</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Years to Project Cash Value</label>
+                    <select id="projectionYears">
+                        <option value="10">10 Years</option>
+                        <option value="20" selected>20 Years</option>
+                        <option value="30">30 Years</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Dividend Option</label>
+                    <select id="dividend">
+                        <option value="paid_up" selected>Paid-Up Additions</option>
+                        <option value="cash">Cash</option>
+                        <option value="reduce">Reduce Premium</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Premiums</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="monthlyPremium">$0</div>
+                    <div class="result-label-main">Estimated Monthly Premium</div>
+                    <div class="result-range" id="annualPremium">Annual: $0</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="deathBenefit">$0</div>
+                        <div class="summary-label">Death Benefit</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="cashValue">$0</div>
+                        <div class="summary-label">Projected Cash Value</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="totalPremiums">$0</div>
+                        <div class="summary-label">Total Premiums Paid</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="returnRate">0%</div>
+                        <div class="summary-label">Effective Return</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Policy Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Coverage Amount</span>
+                        <span class="breakdown-value" id="displayCoverage">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Policy Type</span>
+                        <span class="breakdown-value" id="displayType">Traditional</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Health Rating</span>
+                        <span class="breakdown-value" id="displayHealth">Standard</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Cash Value at Year 10</span>
+                        <span class="breakdown-value" id="displayYear10">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Cash Value at Year 20</span>
+                        <span class="breakdown-value" id="displayYear20">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Insurance Calculators</h4>
+            <a href="term-life-insurance-calculator.html">Term Life Insurance</a>
+            <a href="life-insurance-calculator.html">Life Insurance</a>
+            <a href="annuity-calculator.html">Annuity Calculator</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Whole Life Insurance Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const coverage = parseFloat(document.getElementById('coverage').value);
+            const age = parseInt(document.getElementById('age').value);
+            const gender = document.getElementById('gender').value;
+            const health = document.getElementById('health').value;
+            const tobacco = document.getElementById('tobacco').value;
+            const policyType = document.getElementById('policyType').value;
+            const projectionYears = parseInt(document.getElementById('projectionYears').value);
+            const dividend = document.getElementById('dividend').value;
+
+            // Base rate per $1000 of coverage (whole life is much more expensive)
+            const baseRates = {
+                25: 8, 30: 10, 35: 13, 40: 18, 45: 25, 50: 35, 55: 50, 60: 70
+            };
+            let annualRate = baseRates[age];
+
+            // Gender adjustment (women pay less)
+            if (gender === 'female') {
+                annualRate *= 0.85;
+            }
+
+            // Health class adjustment
+            const healthMultipliers = {
+                preferred_plus: 0.75,
+                preferred: 0.9,
+                standard: 1.0,
+                substandard: 1.5
+            };
+            annualRate *= healthMultipliers[health];
+
+            // Tobacco adjustment
+            if (tobacco === 'yes') {
+                annualRate *= 2.0;
+            }
+
+            // Policy type adjustment
+            const policyMultipliers = {
+                traditional: 1.0,
+                universal: 0.9,
+                variable: 0.85
+            };
+            annualRate *= policyMultipliers[policyType];
+
+            // Calculate annual premium
+            const annualPremium = (coverage / 1000) * annualRate;
+            const monthlyPremium = annualPremium / 12;
+
+            // Total premiums paid over projection period
+            const totalPremiums = annualPremium * projectionYears;
+
+            // Estimate cash value (rough approximation)
+            // Cash value builds slowly at first, then accelerates
+            const year10Cash = annualPremium * 10 * 0.4; // ~40% of premiums
+            const year20Cash = annualPremium * 20 * 0.65; // ~65% of premiums
+            const year30Cash = annualPremium * 30 * 0.85; // ~85% of premiums
+
+            let projectedCashValue;
+            if (projectionYears <= 10) {
+                projectedCashValue = annualPremium * projectionYears * 0.4;
+            } else if (projectionYears <= 20) {
+                projectedCashValue = annualPremium * projectionYears * 0.65;
+            } else {
+                projectedCashValue = annualPremium * projectionYears * 0.85;
+            }
+
+            // Dividend adjustment (paid-up additions increase cash value)
+            if (dividend === 'paid_up') {
+                projectedCashValue *= 1.15;
+            }
+
+            // Calculate effective return
+            const effectiveReturn = ((projectedCashValue - totalPremiums) / totalPremiums * 100);
+
+            const policyTypeNames = {
+                traditional: 'Traditional Whole Life',
+                universal: 'Universal Life',
+                variable: 'Variable Life'
+            };
+
+            const healthNames = {
+                preferred_plus: 'Preferred Plus',
+                preferred: 'Preferred',
+                standard: 'Standard',
+                substandard: 'Substandard'
+            };
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('monthlyPremium').textContent = formatMoney(monthlyPremium);
+            document.getElementById('annualPremium').textContent = 'Annual: ' + formatMoney(annualPremium);
+            document.getElementById('deathBenefit').textContent = formatMoney(coverage);
+            document.getElementById('cashValue').textContent = formatMoney(projectedCashValue);
+            document.getElementById('totalPremiums').textContent = formatMoney(totalPremiums);
+            document.getElementById('returnRate').textContent = effectiveReturn.toFixed(1) + '%';
+
+            document.getElementById('displayCoverage').textContent = formatMoney(coverage);
+            document.getElementById('displayType').textContent = policyTypeNames[policyType];
+            document.getElementById('displayHealth').textContent = healthNames[health];
+            document.getElementById('displayYear10').textContent = formatMoney(year10Cash);
+            document.getElementById('displayYear20').textContent = formatMoney(year20Cash);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Inheritance Tax Calculator - Estate Tax Estimator</title>
+    <meta name="description" content="Calculate inheritance and estate taxes. Estimate federal estate tax and state inheritance tax. Free inheritance tax calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #166534 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #166534;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #166534;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #15803d; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #166534 0%, #15803d 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 48px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .result-range { font-size: 16px; opacity: 0.8; margin-top: 10px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #dcfce7;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #166534; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #166534; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #166534; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #15803d;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #86efac; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏦 Inheritance Tax Calculator</h1>
+            <p class="subtitle">Estimate estate and inheritance taxes</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Total Estate Value ($)</label>
+                    <input type="number" id="estateValue" value="5000000" min="0" step="100000">
+                </div>
+                <div class="input-group">
+                    <label>Outstanding Debts ($)</label>
+                    <input type="number" id="debts" value="200000" min="0" step="10000">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>State of Residence</label>
+                    <select id="state">
+                        <option value="none" selected>No State Estate Tax</option>
+                        <option value="ct">Connecticut</option>
+                        <option value="hi">Hawaii</option>
+                        <option value="il">Illinois</option>
+                        <option value="me">Maine</option>
+                        <option value="md">Maryland</option>
+                        <option value="ma">Massachusetts</option>
+                        <option value="mn">Minnesota</option>
+                        <option value="ny">New York</option>
+                        <option value="or">Oregon</option>
+                        <option value="ri">Rhode Island</option>
+                        <option value="vt">Vermont</option>
+                        <option value="wa">Washington</option>
+                        <option value="dc">Washington D.C.</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Beneficiary Relationship</label>
+                    <select id="relationship">
+                        <option value="spouse" selected>Spouse</option>
+                        <option value="child">Child/Grandchild</option>
+                        <option value="sibling">Sibling</option>
+                        <option value="other">Other Relative</option>
+                        <option value="nonrelative">Non-Relative</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Charitable Bequests ($)</label>
+                    <input type="number" id="charitable" value="0" min="0" step="10000">
+                </div>
+                <div class="input-group">
+                    <label>Life Insurance (in estate) ($)</label>
+                    <input type="number" id="lifeInsurance" value="500000" min="0" step="50000">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Marital Deduction</label>
+                    <select id="maritalDeduction">
+                        <option value="no">No (Single/Widowed)</option>
+                        <option value="yes" selected>Yes (Married - Unlimited)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Prior Taxable Gifts ($)</label>
+                    <input type="number" id="priorGifts" value="0" min="0" step="10000">
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Taxes</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalTax">$0</div>
+                    <div class="result-label-main">Estimated Total Tax</div>
+                    <div class="result-range" id="netInheritance">Net to Beneficiaries: $0</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="federalTax">$0</div>
+                        <div class="summary-label">Federal Estate Tax</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="stateTax">$0</div>
+                        <div class="summary-label">State Estate Tax</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="taxableEstate">$0</div>
+                        <div class="summary-label">Taxable Estate</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="effectiveRate">0%</div>
+                        <div class="summary-label">Effective Tax Rate</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Estate Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Gross Estate</span>
+                        <span class="breakdown-value" id="displayGross">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Less: Debts</span>
+                        <span class="breakdown-value" id="displayDebts">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Less: Charitable</span>
+                        <span class="breakdown-value" id="displayCharitable">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Federal Exemption Used</span>
+                        <span class="breakdown-value" id="displayExemption">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Amount Over Exemption</span>
+                        <span class="breakdown-value" id="displayOver">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Estate Planning Calculators</h4>
+            <a href="estate-tax-calculator.html">Estate Tax</a>
+            <a href="probate-cost-calculator.html">Probate Cost</a>
+            <a href="net-worth-calculator.html">Net Worth</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Inheritance Tax Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const estateValue = parseFloat(document.getElementById('estateValue').value);
+            const debts = parseFloat(document.getElementById('debts').value);
+            const state = document.getElementById('state').value;
+            const relationship = document.getElementById('relationship').value;
+            const charitable = parseFloat(document.getElementById('charitable').value);
+            const lifeInsurance = parseFloat(document.getElementById('lifeInsurance').value);
+            const maritalDeduction = document.getElementById('maritalDeduction').value;
+            const priorGifts = parseFloat(document.getElementById('priorGifts').value);
+
+            // Gross estate
+            const grossEstate = estateValue + lifeInsurance;
+
+            // Deductions
+            let deductions = debts + charitable;
+
+            // Marital deduction (unlimited for spouse)
+            if (relationship === 'spouse' && maritalDeduction === 'yes') {
+                // Spouse inherits tax-free
+                document.getElementById('results').style.display = 'block';
+                document.getElementById('totalTax').textContent = '$0';
+                document.getElementById('netInheritance').textContent = 'Net to Spouse: ' + formatMoney(grossEstate - debts);
+                document.getElementById('federalTax').textContent = '$0';
+                document.getElementById('stateTax').textContent = '$0';
+                document.getElementById('taxableEstate').textContent = '$0';
+                document.getElementById('effectiveRate').textContent = '0%';
+                document.getElementById('displayGross').textContent = formatMoney(grossEstate);
+                document.getElementById('displayDebts').textContent = '-' + formatMoney(debts);
+                document.getElementById('displayCharitable').textContent = '-' + formatMoney(charitable);
+                document.getElementById('displayExemption').textContent = 'Unlimited (Spouse)';
+                document.getElementById('displayOver').textContent = '$0';
+                return;
+            }
+
+            // Net estate
+            const netEstate = grossEstate - deductions;
+
+            // Federal exemption (2024: $13.61 million)
+            const federalExemption = 13610000;
+            const exemptionUsed = Math.min(federalExemption - priorGifts, netEstate);
+            const federalTaxableEstate = Math.max(0, netEstate - (federalExemption - priorGifts));
+
+            // Federal estate tax (40% on amount over exemption)
+            const federalTax = federalTaxableEstate * 0.40;
+
+            // State estate tax exemptions and rates
+            const stateExemptions = {
+                none: Infinity,
+                ct: 13610000,
+                hi: 5490000,
+                il: 4000000,
+                me: 6800000,
+                md: 5000000,
+                ma: 2000000,
+                mn: 3000000,
+                ny: 6940000,
+                or: 1000000,
+                ri: 1774583,
+                vt: 5000000,
+                wa: 2193000,
+                dc: 4710800
+            };
+
+            const stateRates = {
+                none: 0,
+                ct: 0.12,
+                hi: 0.16,
+                il: 0.16,
+                me: 0.12,
+                md: 0.16,
+                ma: 0.16,
+                mn: 0.16,
+                ny: 0.16,
+                or: 0.16,
+                ri: 0.16,
+                vt: 0.16,
+                wa: 0.20,
+                dc: 0.16
+            };
+
+            const stateExemption = stateExemptions[state];
+            const stateTaxableEstate = Math.max(0, netEstate - stateExemption);
+            const stateTax = stateTaxableEstate * stateRates[state];
+
+            // Total tax
+            const totalTax = federalTax + stateTax;
+
+            // Net inheritance
+            const netInheritance = netEstate - totalTax;
+
+            // Effective rate
+            const effectiveRate = netEstate > 0 ? (totalTax / netEstate) * 100 : 0;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalTax').textContent = formatMoney(totalTax);
+            document.getElementById('netInheritance').textContent = 'Net to Beneficiaries: ' + formatMoney(netInheritance);
+            document.getElementById('federalTax').textContent = formatMoney(federalTax);
+            document.getElementById('stateTax').textContent = formatMoney(stateTax);
+            document.getElementById('taxableEstate').textContent = formatMoney(federalTaxableEstate);
+            document.getElementById('effectiveRate').textContent = effectiveRate.toFixed(1) + '%';
+
+            document.getElementById('displayGross').textContent = formatMoney(grossEstate);
+            document.getElementById('displayDebts').textContent = '-' + formatMoney(debts);
+            document.getElementById('displayCharitable').textContent = '-' + formatMoney(charitable);
+            document.getElementById('displayExemption').textContent = formatMoney(exemptionUsed);
+            document.getElementById('displayOver').textContent = formatMoney(federalTaxableEstate);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

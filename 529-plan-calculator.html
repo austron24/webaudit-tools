@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free 529 Plan Calculator - College Savings Estimator</title>
+    <meta name="description" content="Calculate 529 college savings plan growth. Estimate education fund needs and tax benefits. Free 529 plan calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #7c3aed 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #7c3aed;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #7c3aed;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #8b5cf6; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 48px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .result-range { font-size: 16px; opacity: 0.8; margin-top: 10px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #ede9fe;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #7c3aed; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #7c3aed; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #7c3aed; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #8b5cf6;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #c4b5fd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 529 Plan Calculator</h1>
+            <p class="subtitle">Plan your college savings strategy</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Child's Current Age</label>
+                    <input type="number" id="childAge" value="5" min="0" max="17" step="1">
+                </div>
+                <div class="input-group">
+                    <label>College Start Age</label>
+                    <select id="collegeAge">
+                        <option value="18" selected>18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Current 529 Balance ($)</label>
+                    <input type="number" id="currentBalance" value="10000" min="0" step="1000">
+                </div>
+                <div class="input-group">
+                    <label>Monthly Contribution ($)</label>
+                    <input type="number" id="monthlyContrib" value="300" min="0" step="50">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>College Type</label>
+                    <select id="collegeType">
+                        <option value="community">Community College</option>
+                        <option value="public_instate" selected>Public In-State</option>
+                        <option value="public_outstate">Public Out-of-State</option>
+                        <option value="private">Private University</option>
+                        <option value="elite">Elite Private</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Years of College</label>
+                    <select id="yearsCollege">
+                        <option value="2">2 Years</option>
+                        <option value="4" selected>4 Years</option>
+                        <option value="5">5 Years</option>
+                        <option value="6">6 Years (Grad School)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Expected Return (%)</label>
+                    <select id="returnRate">
+                        <option value="4">4% (Conservative)</option>
+                        <option value="6" selected>6% (Moderate)</option>
+                        <option value="8">8% (Aggressive)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>College Cost Inflation (%)</label>
+                    <select id="inflation">
+                        <option value="3">3%</option>
+                        <option value="5" selected>5%</option>
+                        <option value="7">7%</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate 529 Growth</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="projectedBalance">$0</div>
+                    <div class="result-label-main">Projected 529 Balance at College</div>
+                    <div class="result-range" id="coveragePercent">0% of projected costs</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="totalCost">$0</div>
+                        <div class="summary-label">Projected College Cost</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="shortfall">$0</div>
+                        <div class="summary-label">Funding Gap</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="totalContrib">$0</div>
+                        <div class="summary-label">Total Contributions</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="earnings">$0</div>
+                        <div class="summary-label">Tax-Free Earnings</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Savings Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Years Until College</span>
+                        <span class="breakdown-value" id="displayYears">0 years</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Current Annual Cost</span>
+                        <span class="breakdown-value" id="displayCurrentCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Future Annual Cost</span>
+                        <span class="breakdown-value" id="displayFutureCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Monthly Needed to Fill Gap</span>
+                        <span class="breakdown-value" id="displayNeeded">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Tax Savings (Est.)</span>
+                        <span class="breakdown-value" id="displayTax">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Education & Savings Calculators</h4>
+            <a href="student-loan-calculator.html">Student Loan</a>
+            <a href="compound-interest-calculator.html">Compound Interest</a>
+            <a href="savings-goal-calculator.html">Savings Goal</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>529 Plan Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const childAge = parseInt(document.getElementById('childAge').value);
+            const collegeAge = parseInt(document.getElementById('collegeAge').value);
+            const currentBalance = parseFloat(document.getElementById('currentBalance').value);
+            const monthlyContrib = parseFloat(document.getElementById('monthlyContrib').value);
+            const collegeType = document.getElementById('collegeType').value;
+            const yearsCollege = parseInt(document.getElementById('yearsCollege').value);
+            const returnRate = parseFloat(document.getElementById('returnRate').value) / 100;
+            const inflationRate = parseFloat(document.getElementById('inflation').value) / 100;
+
+            // Years until college
+            const yearsUntil = collegeAge - childAge;
+
+            // Current annual costs by college type
+            const currentCosts = {
+                community: 12000,
+                public_instate: 25000,
+                public_outstate: 45000,
+                private: 55000,
+                elite: 80000
+            };
+            const currentAnnualCost = currentCosts[collegeType];
+
+            // Project future cost
+            const futureAnnualCost = currentAnnualCost * Math.pow(1 + inflationRate, yearsUntil);
+            const totalCollegeCost = futureAnnualCost * yearsCollege;
+
+            // Project 529 balance
+            const monthlyRate = returnRate / 12;
+            const months = yearsUntil * 12;
+
+            // Future value of current balance
+            const fvCurrentBalance = currentBalance * Math.pow(1 + monthlyRate, months);
+
+            // Future value of monthly contributions
+            let fvContributions = 0;
+            if (monthlyRate > 0) {
+                fvContributions = monthlyContrib * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
+            } else {
+                fvContributions = monthlyContrib * months;
+            }
+
+            const projectedBalance = fvCurrentBalance + fvContributions;
+            const totalContributions = currentBalance + (monthlyContrib * months);
+            const earnings = projectedBalance - totalContributions;
+
+            // Coverage and shortfall
+            const coveragePercent = (projectedBalance / totalCollegeCost) * 100;
+            const shortfall = Math.max(0, totalCollegeCost - projectedBalance);
+
+            // Monthly needed to close gap
+            let monthlyNeeded = 0;
+            if (shortfall > 0 && monthlyRate > 0) {
+                monthlyNeeded = shortfall / ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
+            }
+
+            // Estimated tax savings (assuming 25% combined state/federal on earnings)
+            const taxSavings = earnings * 0.25;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('projectedBalance').textContent = formatMoney(projectedBalance);
+            document.getElementById('coveragePercent').textContent = coveragePercent.toFixed(0) + '% of projected costs';
+            document.getElementById('totalCost').textContent = formatMoney(totalCollegeCost);
+            document.getElementById('shortfall').textContent = shortfall > 0 ? formatMoney(shortfall) : '$0';
+            document.getElementById('totalContrib').textContent = formatMoney(totalContributions);
+            document.getElementById('earnings').textContent = formatMoney(earnings);
+
+            document.getElementById('displayYears').textContent = yearsUntil + ' years';
+            document.getElementById('displayCurrentCost').textContent = formatMoney(currentAnnualCost) + '/year';
+            document.getElementById('displayFutureCost').textContent = formatMoney(futureAnnualCost) + '/year';
+            document.getElementById('displayNeeded').textContent = shortfall > 0 ? '+' + formatMoney(monthlyNeeded) : '$0';
+            document.getElementById('displayTax').textContent = formatMoney(taxSavings);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
