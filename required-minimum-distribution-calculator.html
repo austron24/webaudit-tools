@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RMD Calculator - Required Minimum Distribution</title>
+    <meta name="description" content="Free RMD calculator. Calculate your required minimum distribution from IRAs and 401(k)s based on IRS life expectancy tables.">
+    <meta name="keywords" content="RMD calculator, required minimum distribution, IRA withdrawal, 401k RMD, retirement withdrawal">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/required-minimum-distribution-calculator.html">
+    <style>
+        :root { --primary: #7c3aed; --primary-dark: #6d28d9; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
+        .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
+        .content-area { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.8); }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .schedule-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .schedule-table th, .schedule-table td { padding: 12px; text-align: center; border-bottom: 1px solid var(--border); }
+        .schedule-table th { background: var(--bg-input); color: var(--secondary); }
+        .schedule-table tr:hover { background: rgba(255,255,255,0.05); }
+        .info-box { background: var(--bg-input); padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 4px solid var(--accent); }
+        .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-container" style="display: none;">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
+
+    <header class="header">
+        <h1>📊 RMD Calculator</h1>
+    </header>
+
+    <div class="main-container">
+        <div class="content-area">
+            <div class="card">
+                <h2>📋 Account Information</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Your Age (as of Dec 31)</label>
+                        <input type="number" id="age" value="73" step="1" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Account Balance ($)</label>
+                        <input type="number" id="balance" value="500000" step="10000" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Account Type</label>
+                        <select id="accountType" onchange="calculate()">
+                            <option value="traditional">Traditional IRA</option>
+                            <option value="401k">401(k)</option>
+                            <option value="403b">403(b)</option>
+                            <option value="inherited">Inherited IRA</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Expected Growth Rate (%)</label>
+                        <input type="number" id="growth" value="5" step="0.5" oninput="calculate()">
+                    </div>
+                </div>
+
+                <div class="result-hero">
+                    <div class="result-hero-label">Required Minimum Distribution</div>
+                    <div class="result-hero-value" id="rmd">$0</div>
+                </div>
+
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-value" id="lifeFactor">0</div>
+                        <div class="result-label">Life Expectancy Factor</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="monthlyRMD">$0</div>
+                        <div class="result-label">Monthly RMD</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="rmdPercent">0%</div>
+                        <div class="result-label">RMD as % of Balance</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📅 10-Year RMD Schedule</h2>
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Age</th>
+                            <th>Balance (Jan 1)</th>
+                            <th>Life Factor</th>
+                            <th>RMD</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule"></tbody>
+                </table>
+
+                <div class="info-box">
+                    <strong>Important Notes:</strong><br>
+                    • RMD age increased to 73 in 2023 (SECURE 2.0 Act)<br>
+                    • Increases to age 75 starting in 2033<br>
+                    • Failure to take RMD results in 25% penalty (reduced from 50%)<br>
+                    • Roth IRAs have no RMDs for original owners
+                </div>
+            </div>
+
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+
+            <div class="card">
+                <h2>🔗 Related Tools</h2>
+                <div class="related-tools">
+                    <a href="ira-calculator.html" class="related-link">📊 IRA Calculator</a>
+                    <a href="401k-calculator.html" class="related-link">💼 401(k)</a>
+                    <a href="retirement-calculator.html" class="related-link">🏖️ Retirement</a>
+                    <a href="social-security-benefit-calculator.html" class="related-link">🏛️ Social Security</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Uniform Lifetime Table (IRS Table III) - 2024
+        const lifetimeTable = {
+            72: 27.4, 73: 26.5, 74: 25.5, 75: 24.6, 76: 23.7, 77: 22.9, 78: 22.0, 79: 21.1, 80: 20.2,
+            81: 19.4, 82: 18.5, 83: 17.7, 84: 16.8, 85: 16.0, 86: 15.2, 87: 14.4, 88: 13.7, 89: 12.9,
+            90: 12.2, 91: 11.5, 92: 10.8, 93: 10.1, 94: 9.5, 95: 8.9, 96: 8.4, 97: 7.8, 98: 7.3, 99: 6.8,
+            100: 6.4, 101: 6.0, 102: 5.6, 103: 5.2, 104: 4.9, 105: 4.6, 106: 4.3, 107: 4.1, 108: 3.9, 109: 3.7, 110: 3.5
+        };
+
+        function getLifeFactor(age) {
+            if (age < 72) return 27.4;
+            if (age > 110) return 3.5;
+            return lifetimeTable[age] || 27.4;
+        }
+
+        function calculate() {
+            const age = parseInt(document.getElementById('age').value) || 73;
+            const balance = parseFloat(document.getElementById('balance').value) || 0;
+            const growth = parseFloat(document.getElementById('growth').value) || 5;
+
+            const lifeFactor = getLifeFactor(age);
+            const rmd = balance / lifeFactor;
+            const rmdPercent = balance > 0 ? (rmd / balance) * 100 : 0;
+
+            document.getElementById('rmd').textContent = '$' + Math.round(rmd).toLocaleString();
+            document.getElementById('lifeFactor').textContent = lifeFactor.toFixed(1);
+            document.getElementById('monthlyRMD').textContent = '$' + Math.round(rmd / 12).toLocaleString();
+            document.getElementById('rmdPercent').textContent = rmdPercent.toFixed(2) + '%';
+
+            // Generate 10-year schedule
+            let scheduleHTML = '';
+            let currentBalance = balance;
+            
+            for (let i = 0; i < 10; i++) {
+                const currentAge = age + i;
+                const factor = getLifeFactor(currentAge);
+                const yearRMD = currentBalance / factor;
+                
+                scheduleHTML += `
+                    <tr>
+                        <td>${currentAge}</td>
+                        <td>$${Math.round(currentBalance).toLocaleString()}</td>
+                        <td>${factor.toFixed(1)}</td>
+                        <td>$${Math.round(yearRMD).toLocaleString()}</td>
+                    </tr>
+                `;
+                
+                // Calculate next year's balance (growth minus RMD)
+                currentBalance = (currentBalance - yearRMD) * (1 + growth / 100);
+            }
+            
+            document.getElementById('schedule').innerHTML = scheduleHTML;
+        }
+        calculate();
+    </script>
+</body>
+</html>
