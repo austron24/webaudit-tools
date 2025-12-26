@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Card Calculator - Weekly Hours & Pay Calculator</title>
+    <meta name="description" content="Free time card calculator. Calculate your weekly work hours and total pay including overtime.">
+    <meta name="keywords" content="time card calculator, timesheet calculator, work hours calculator, weekly hours, payroll calculator">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/time-card-calculator.html">
+    <style>
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
+        .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
+        .content-area { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .settings-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        input, select { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        .time-card { margin-top: 20px; }
+        .day-row { display: grid; grid-template-columns: 100px 1fr 1fr 1fr 1fr 80px; gap: 10px; padding: 15px; background: var(--bg-input); border-radius: 10px; margin-bottom: 10px; align-items: center; }
+        .day-row.header { background: var(--primary); font-weight: 700; }
+        .day-label { font-weight: 600; }
+        .day-row input { padding: 10px; }
+        .day-total { text-align: center; font-weight: 700; color: var(--secondary); }
+        .result-hero { background: linear-gradient(135deg, var(--success), #059669); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.8); }
+        .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        @media (max-width: 768px) { .day-row { grid-template-columns: 80px 1fr 1fr 60px; } .day-row .break { display: none; } }
+        @media (max-width: 640px) { .settings-row, .results-grid { grid-template-columns: 1fr 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-container" style="display: none;">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
+    
+    <header class="header">
+        <h1>⏱️ Time Card Calculator</h1>
+    </header>
+
+    <div class="main-container">
+        <div class="content-area">
+            <div class="card">
+                <h2>⚙️ Settings</h2>
+                <div class="settings-row">
+                    <div class="form-group">
+                        <label>Hourly Rate ($)</label>
+                        <input type="number" id="hourlyRate" value="25" step="0.25" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Overtime After (hours)</label>
+                        <input type="number" id="overtimeAfter" value="40" oninput="calculate()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📅 Weekly Time Card</h2>
+                <div class="time-card">
+                    <div class="day-row header">
+                        <span>Day</span>
+                        <span>Start</span>
+                        <span>End</span>
+                        <span class="break">Break (min)</span>
+                        <span class="break">Break 2</span>
+                        <span>Hours</span>
+                    </div>
+                    <div class="day-row" data-day="monday">
+                        <span class="day-label">Monday</span>
+                        <input type="time" class="start" value="09:00" oninput="calculate()">
+                        <input type="time" class="end" value="17:00" oninput="calculate()">
+                        <input type="number" class="break" value="30" oninput="calculate()">
+                        <input type="number" class="break" value="0" oninput="calculate()">
+                        <span class="day-total">0</span>
+                    </div>
+                    <div class="day-row" data-day="tuesday">
+                        <span class="day-label">Tuesday</span>
+                        <input type="time" class="start" value="09:00" oninput="calculate()">
+                        <input type="time" class="end" value="17:00" oninput="calculate()">
+                        <input type="number" class="break" value="30" oninput="calculate()">
+                        <input type="number" class="break" value="0" oninput="calculate()">
+                        <span class="day-total">0</span>
+                    </div>
+                    <div class="day-row" data-day="wednesday">
+                        <span class="day-label">Wednesday</span>
+                        <input type="time" class="start" value="09:00" oninput="calculate()">
+                        <input type="time" class="end" value="17:00" oninput="calculate()">
+                        <input type="number" class="break" value="30" oninput="calculate()">
+                        <input type="number" class="break" value="0" oninput="calculate()">
+                        <span class="day-total">0</span>
+                    </div>
+                    <div class="day-row" data-day="thursday">
+                        <span class="day-label">Thursday</span>
+                        <input type="time" class="start" value="09:00" oninput="calculate()">
+                        <input type="time" class="end" value="17:00" oninput="calculate()">
+                        <input type="number" class="break" value="30" oninput="calculate()">
+                        <input type="number" class="break" value="0" oninput="calculate()">
+                        <span class="day-total">0</span>
+                    </div>
+                    <div class="day-row" data-day="friday">
+                        <span class="day-label">Friday</span>
+                        <input type="time" class="start" value="09:00" oninput="calculate()">
+                        <input type="time" class="end" value="17:00" oninput="calculate()">
+                        <input type="number" class="break" value="30" oninput="calculate()">
+                        <input type="number" class="break" value="0" oninput="calculate()">
+                        <span class="day-total">0</span>
+                    </div>
+                    <div class="day-row" data-day="saturday">
+                        <span class="day-label">Saturday</span>
+                        <input type="time" class="start" value="" oninput="calculate()">
+                        <input type="time" class="end" value="" oninput="calculate()">
+                        <input type="number" class="break" value="0" oninput="calculate()">
+                        <input type="number" class="break" value="0" oninput="calculate()">
+                        <span class="day-total">0</span>
+                    </div>
+                    <div class="day-row" data-day="sunday">
+                        <span class="day-label">Sunday</span>
+                        <input type="time" class="start" value="" oninput="calculate()">
+                        <input type="time" class="end" value="" oninput="calculate()">
+                        <input type="number" class="break" value="0" oninput="calculate()">
+                        <input type="number" class="break" value="0" oninput="calculate()">
+                        <span class="day-total">0</span>
+                    </div>
+                </div>
+                
+                <div class="result-hero">
+                    <div class="result-hero-label">Total Weekly Pay</div>
+                    <div class="result-hero-value" id="totalPay">$0</div>
+                </div>
+                
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-value" id="totalHours">0</div>
+                        <div class="result-label">Total Hours</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="regularHours">0</div>
+                        <div class="result-label">Regular Hours</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="overtimeHours">0</div>
+                        <div class="result-label">Overtime Hours</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="overtimePay">$0</div>
+                        <div class="result-label">Overtime Pay</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+
+            <div class="card">
+                <h2>🔗 Related Tools</h2>
+                <div class="related-tools">
+                    <a href="overtime-calculator.html" class="related-link">⏰ Overtime Calculator</a>
+                    <a href="hourly-paycheck-calculator.html" class="related-link">💵 Hourly Paycheck</a>
+                    <a href="paycheck-calculator.html" class="related-link">💰 Salary Paycheck</a>
+                    <a href="hourly-to-salary-calculator.html" class="related-link">🔄 Hourly to Salary</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function timeToMinutes(timeStr) {
+            if (!timeStr) return 0;
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+        
+        function calculate() {
+            const hourlyRate = parseFloat(document.getElementById('hourlyRate').value) || 0;
+            const overtimeAfter = parseFloat(document.getElementById('overtimeAfter').value) || 40;
+            
+            let totalMinutes = 0;
+            
+            document.querySelectorAll('.day-row[data-day]').forEach(row => {
+                const start = row.querySelector('.start').value;
+                const end = row.querySelector('.end').value;
+                const breaks = row.querySelectorAll('.break');
+                const breakMinutes = Array.from(breaks).reduce((sum, b) => sum + (parseFloat(b.value) || 0), 0);
+                
+                let dayMinutes = 0;
+                if (start && end) {
+                    const startMin = timeToMinutes(start);
+                    const endMin = timeToMinutes(end);
+                    dayMinutes = endMin - startMin - breakMinutes;
+                    if (dayMinutes < 0) dayMinutes = 0;
+                }
+                
+                totalMinutes += dayMinutes;
+                const dayHours = (dayMinutes / 60).toFixed(2);
+                row.querySelector('.day-total').textContent = dayHours;
+            });
+            
+            const totalHours = totalMinutes / 60;
+            const regularHours = Math.min(totalHours, overtimeAfter);
+            const overtimeHours = Math.max(0, totalHours - overtimeAfter);
+            
+            const regularPay = regularHours * hourlyRate;
+            const overtimePay = overtimeHours * hourlyRate * 1.5;
+            const totalPay = regularPay + overtimePay;
+            
+            document.getElementById('totalHours').textContent = totalHours.toFixed(2);
+            document.getElementById('regularHours').textContent = regularHours.toFixed(2);
+            document.getElementById('overtimeHours').textContent = overtimeHours.toFixed(2);
+            document.getElementById('overtimePay').textContent = '$' + Math.round(overtimePay).toLocaleString();
+            document.getElementById('totalPay').textContent = '$' + Math.round(totalPay).toLocaleString();
+        }
+        
+        calculate();
+    </script>
+</body>
+</html>

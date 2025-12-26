@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overtime Calculator - Calculate Overtime Pay</title>
+    <meta name="description" content="Free overtime calculator. Calculate your overtime pay including time and a half, double time, and total earnings.">
+    <meta name="keywords" content="overtime calculator, overtime pay, time and a half, double time, extra hours pay">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/overtime-calculator.html">
+    <style>
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
+        .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
+        .header { background: linear-gradient(135deg, var(--accent) 0%, #d97706 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
+        .content-area { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        .result-hero { background: linear-gradient(135deg, var(--success), #059669); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.8); }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .result-value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.9rem; }
+        .breakdown { margin-top: 20px; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 15px 20px; background: var(--bg-input); border-radius: 10px; margin-bottom: 10px; }
+        .breakdown-row.highlight { background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.1)); border: 2px solid var(--accent); }
+        .rate-badge { display: inline-block; padding: 4px 12px; background: var(--accent); color: var(--bg-dark); border-radius: 20px; font-size: 0.85rem; font-weight: 700; margin-left: 10px; }
+        .weekly-summary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 20px; }
+        .summary-box { padding: 25px; border-radius: 16px; text-align: center; }
+        .summary-box.regular { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(99, 102, 241, 0.1)); border: 2px solid var(--primary); }
+        .summary-box.overtime { background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.1)); border: 2px solid var(--accent); }
+        .summary-label { color: var(--text-secondary); margin-bottom: 10px; }
+        .summary-value { font-size: 2rem; font-weight: 800; }
+        .summary-box.regular .summary-value { color: var(--primary); }
+        .summary-box.overtime .summary-value { color: var(--accent); }
+        .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        @media (max-width: 640px) { .form-grid, .results-grid, .weekly-summary { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-container" style="display: none;">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
+    
+    <header class="header">
+        <h1>⏰ Overtime Calculator</h1>
+    </header>
+
+    <div class="main-container">
+        <div class="content-area">
+            <div class="card">
+                <h2>💰 Calculate Your Overtime Pay</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Regular Hourly Rate ($)</label>
+                        <input type="number" id="hourlyRate" value="25" step="0.25" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Regular Hours (per week)</label>
+                        <input type="number" id="regularHours" value="40" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Overtime Hours (1.5x rate)</label>
+                        <input type="number" id="overtimeHours" value="10" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Double Time Hours (2x rate)</label>
+                        <input type="number" id="doubleTimeHours" value="0" oninput="calculate()">
+                    </div>
+                </div>
+                
+                <div class="result-hero">
+                    <div class="result-hero-label">Total Weekly Earnings</div>
+                    <div class="result-hero-value" id="totalEarnings">$0</div>
+                </div>
+                
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-value" id="regularPay">$0</div>
+                        <div class="result-label">Regular Pay</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="overtimePay">$0</div>
+                        <div class="result-label">Overtime Pay</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="totalHours">0</div>
+                        <div class="result-label">Total Hours</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📊 Earnings Breakdown</h2>
+                <div class="breakdown">
+                    <div class="breakdown-row">
+                        <span>Regular Hours <span id="regHoursLabel">(40 hrs)</span></span>
+                        <span>$<span id="regRate">25.00</span>/hr = $<span id="regTotal">1,000</span></span>
+                    </div>
+                    <div class="breakdown-row highlight">
+                        <span>Overtime <span id="otHoursLabel">(10 hrs)</span> <span class="rate-badge">1.5x</span></span>
+                        <span>$<span id="otRate">37.50</span>/hr = $<span id="otTotal">375</span></span>
+                    </div>
+                    <div class="breakdown-row highlight">
+                        <span>Double Time <span id="dtHoursLabel">(0 hrs)</span> <span class="rate-badge">2x</span></span>
+                        <span>$<span id="dtRate">50.00</span>/hr = $<span id="dtTotal">0</span></span>
+                    </div>
+                </div>
+                
+                <div class="weekly-summary">
+                    <div class="summary-box regular">
+                        <div class="summary-label">Regular Pay</div>
+                        <div class="summary-value" id="summaryRegular">$1,000</div>
+                    </div>
+                    <div class="summary-box overtime">
+                        <div class="summary-label">Extra Pay (OT + DT)</div>
+                        <div class="summary-value" id="summaryExtra">$375</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📅 Monthly & Annual Projection</h2>
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-value" id="monthlyEarnings">$0</div>
+                        <div class="result-label">Monthly (4.33 weeks)</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="annualEarnings">$0</div>
+                        <div class="result-label">Annual (52 weeks)</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="effectiveRate">$0</div>
+                        <div class="result-label">Effective Hourly Rate</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+
+            <div class="card">
+                <h2>🔗 Related Tools</h2>
+                <div class="related-tools">
+                    <a href="hourly-paycheck-calculator.html" class="related-link">💵 Hourly Paycheck</a>
+                    <a href="paycheck-calculator.html" class="related-link">💰 Salary Paycheck</a>
+                    <a href="hourly-to-salary-calculator.html" class="related-link">🔄 Hourly to Salary</a>
+                    <a href="time-card-calculator.html" class="related-link">⏱️ Time Card</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            const hourlyRate = parseFloat(document.getElementById('hourlyRate').value) || 0;
+            const regularHours = parseFloat(document.getElementById('regularHours').value) || 0;
+            const overtimeHours = parseFloat(document.getElementById('overtimeHours').value) || 0;
+            const doubleTimeHours = parseFloat(document.getElementById('doubleTimeHours').value) || 0;
+            
+            const otRate = hourlyRate * 1.5;
+            const dtRate = hourlyRate * 2;
+            
+            const regularPay = regularHours * hourlyRate;
+            const overtimePay = overtimeHours * otRate;
+            const doubleTimePay = doubleTimeHours * dtRate;
+            
+            const totalHours = regularHours + overtimeHours + doubleTimeHours;
+            const totalEarnings = regularPay + overtimePay + doubleTimePay;
+            const effectiveRate = totalHours > 0 ? totalEarnings / totalHours : 0;
+            
+            document.getElementById('regularPay').textContent = '$' + Math.round(regularPay).toLocaleString();
+            document.getElementById('overtimePay').textContent = '$' + Math.round(overtimePay + doubleTimePay).toLocaleString();
+            document.getElementById('totalHours').textContent = totalHours;
+            document.getElementById('totalEarnings').textContent = '$' + Math.round(totalEarnings).toLocaleString();
+            
+            document.getElementById('regHoursLabel').textContent = '(' + regularHours + ' hrs)';
+            document.getElementById('regRate').textContent = hourlyRate.toFixed(2);
+            document.getElementById('regTotal').textContent = Math.round(regularPay).toLocaleString();
+            
+            document.getElementById('otHoursLabel').textContent = '(' + overtimeHours + ' hrs)';
+            document.getElementById('otRate').textContent = otRate.toFixed(2);
+            document.getElementById('otTotal').textContent = Math.round(overtimePay).toLocaleString();
+            
+            document.getElementById('dtHoursLabel').textContent = '(' + doubleTimeHours + ' hrs)';
+            document.getElementById('dtRate').textContent = dtRate.toFixed(2);
+            document.getElementById('dtTotal').textContent = Math.round(doubleTimePay).toLocaleString();
+            
+            document.getElementById('summaryRegular').textContent = '$' + Math.round(regularPay).toLocaleString();
+            document.getElementById('summaryExtra').textContent = '$' + Math.round(overtimePay + doubleTimePay).toLocaleString();
+            
+            document.getElementById('monthlyEarnings').textContent = '$' + Math.round(totalEarnings * 4.33).toLocaleString();
+            document.getElementById('annualEarnings').textContent = '$' + Math.round(totalEarnings * 52).toLocaleString();
+            document.getElementById('effectiveRate').textContent = '$' + effectiveRate.toFixed(2);
+        }
+        
+        calculate();
+    </script>
+</body>
+</html>
