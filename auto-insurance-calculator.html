@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Auto Insurance Calculator - Premium Estimator</title>
+    <meta name="description" content="Estimate your car insurance premium based on vehicle, driving history, and coverage needs. Free auto insurance cost calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #b91c1c 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #b91c1c;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #b91c1c;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #991b1b; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #fef2f2;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #b91c1c; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #b91c1c; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #b91c1c; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #991b1b;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fca5a5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚗 Auto Insurance Calculator</h1>
+            <p class="subtitle">Estimate your car insurance premium</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Vehicle Value ($)</label>
+                    <input type="number" id="vehicleValue" value="30000" min="1000" step="1000">
+                </div>
+                <div class="input-group">
+                    <label>Vehicle Age (years)</label>
+                    <input type="number" id="vehicleAge" value="3" min="0" max="30">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Driver Age</label>
+                    <select id="driverAge">
+                        <option value="16-19">16-19 (Teen)</option>
+                        <option value="20-25">20-25 (Young Adult)</option>
+                        <option value="26-64" selected>26-64 (Adult)</option>
+                        <option value="65+">65+ (Senior)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Driving History</label>
+                    <select id="drivingHistory">
+                        <option value="clean" selected>Clean (No violations)</option>
+                        <option value="minor">Minor (1-2 tickets)</option>
+                        <option value="major">Major (At-fault accident)</option>
+                        <option value="dui">DUI/DWI</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Coverage Level</label>
+                    <select id="coverageLevel">
+                        <option value="minimum">State Minimum</option>
+                        <option value="standard" selected>Standard (100/300/100)</option>
+                        <option value="premium">Premium (250/500/250)</option>
+                        <option value="full">Full Coverage + Umbrella</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Deductible</label>
+                    <select id="deductible">
+                        <option value="250">$250</option>
+                        <option value="500" selected>$500</option>
+                        <option value="1000">$1,000</option>
+                        <option value="2000">$2,000</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Annual Miles Driven</label>
+                    <select id="mileage">
+                        <option value="low">Low (&lt;7,500)</option>
+                        <option value="medium" selected>Medium (7,500-15,000)</option>
+                        <option value="high">High (15,000-25,000)</option>
+                        <option value="very_high">Very High (25,000+)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Credit Score</label>
+                    <select id="creditScore">
+                        <option value="excellent">Excellent (760+)</option>
+                        <option value="good" selected>Good (700-759)</option>
+                        <option value="fair">Fair (650-699)</option>
+                        <option value="poor">Poor (Below 650)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Premium</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="annualPremium">$0</div>
+                    <div class="result-label-main">Estimated Annual Premium</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="monthlyPremium">$0</div>
+                        <div class="summary-label">Monthly Payment</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="sixMonthPremium">$0</div>
+                        <div class="summary-label">6-Month Premium</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="liabilityLimit">$0</div>
+                        <div class="summary-label">Liability Limit</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="comprehensiveLimit">$0</div>
+                        <div class="summary-label">Comp/Collision</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Premium Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Liability Coverage</span>
+                        <span class="breakdown-value" id="displayLiability">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Collision Coverage</span>
+                        <span class="breakdown-value" id="displayCollision">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Comprehensive</span>
+                        <span class="breakdown-value" id="displayComprehensive">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Uninsured Motorist</span>
+                        <span class="breakdown-value" id="displayUninsured">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Medical Payments</span>
+                        <span class="breakdown-value" id="displayMedical">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Insurance Calculators</h4>
+            <a href="umbrella-insurance-calculator.html">Umbrella Insurance</a>
+            <a href="life-insurance-calculator.html">Life Insurance</a>
+            <a href="home-insurance-calculator.html">Home Insurance</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Auto Insurance Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const vehicleValue = parseFloat(document.getElementById('vehicleValue').value);
+            const vehicleAge = parseInt(document.getElementById('vehicleAge').value);
+            const driverAge = document.getElementById('driverAge').value;
+            const drivingHistory = document.getElementById('drivingHistory').value;
+            const coverageLevel = document.getElementById('coverageLevel').value;
+            const deductible = parseFloat(document.getElementById('deductible').value);
+            const mileage = document.getElementById('mileage').value;
+            const creditScore = document.getElementById('creditScore').value;
+
+            // Base rates
+            let basePremium = 1200;
+
+            // Driver age factors
+            const ageFactors = {
+                '16-19': 2.5,
+                '20-25': 1.5,
+                '26-64': 1.0,
+                '65+': 1.15
+            };
+            basePremium *= ageFactors[driverAge];
+
+            // Driving history
+            const historyFactors = {
+                clean: 1.0,
+                minor: 1.25,
+                major: 1.75,
+                dui: 2.5
+            };
+            basePremium *= historyFactors[drivingHistory];
+
+            // Coverage level
+            const coverageFactors = {
+                minimum: 0.6,
+                standard: 1.0,
+                premium: 1.4,
+                full: 1.8
+            };
+            basePremium *= coverageFactors[coverageLevel];
+
+            // Deductible
+            const deductibleFactors = {
+                250: 1.15,
+                500: 1.0,
+                1000: 0.88,
+                2000: 0.75
+            };
+            basePremium *= deductibleFactors[deductible];
+
+            // Mileage
+            const mileageFactors = {
+                low: 0.85,
+                medium: 1.0,
+                high: 1.15,
+                very_high: 1.3
+            };
+            basePremium *= mileageFactors[mileage];
+
+            // Credit score
+            const creditFactors = {
+                excellent: 0.85,
+                good: 1.0,
+                fair: 1.25,
+                poor: 1.6
+            };
+            basePremium *= creditFactors[creditScore];
+
+            // Vehicle value (comprehensive/collision)
+            const compCollision = vehicleValue * 0.04 * (1 - vehicleAge * 0.03);
+            const totalPremium = basePremium + Math.max(compCollision, 0);
+
+            // Coverage limits based on level
+            const liabilityLimits = {
+                minimum: '$25K/$50K',
+                standard: '$100K/$300K',
+                premium: '$250K/$500K',
+                full: '$500K/$1M'
+            };
+
+            // Breakdown calculations
+            const liability = totalPremium * 0.35;
+            const collision = totalPremium * 0.30;
+            const comprehensive = totalPremium * 0.15;
+            const uninsured = totalPremium * 0.12;
+            const medical = totalPremium * 0.08;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('annualPremium').textContent = formatMoney(totalPremium);
+            document.getElementById('monthlyPremium').textContent = formatMoney(totalPremium / 12);
+            document.getElementById('sixMonthPremium').textContent = formatMoney(totalPremium / 2);
+            document.getElementById('liabilityLimit').textContent = liabilityLimits[coverageLevel];
+            document.getElementById('comprehensiveLimit').textContent = formatMoney(vehicleValue);
+
+            document.getElementById('displayLiability').textContent = formatMoney(liability);
+            document.getElementById('displayCollision').textContent = formatMoney(collision);
+            document.getElementById('displayComprehensive').textContent = formatMoney(comprehensive);
+            document.getElementById('displayUninsured').textContent = formatMoney(uninsured);
+            document.getElementById('displayMedical').textContent = formatMoney(medical);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

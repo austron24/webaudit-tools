@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Umbrella Insurance Calculator - Coverage Estimator</title>
+    <meta name="description" content="Calculate how much umbrella insurance you need. Estimate liability coverage based on assets and risk factors. Free umbrella insurance calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #1e40af;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #1e40af;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #1e3a8a; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #dbeafe;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #1e40af; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #1e40af; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #1e40af; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #1e3a8a;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #93c5fd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>☂️ Umbrella Insurance Calculator</h1>
+            <p class="subtitle">Estimate your liability coverage needs</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Total Net Worth ($)</label>
+                    <input type="number" id="netWorth" value="500000" min="0" step="50000">
+                </div>
+                <div class="input-group">
+                    <label>Annual Income ($)</label>
+                    <input type="number" id="income" value="150000" min="0" step="10000">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Home Value ($)</label>
+                    <input type="number" id="homeValue" value="400000" min="0" step="25000">
+                </div>
+                <div class="input-group">
+                    <label>Number of Vehicles</label>
+                    <select id="vehicles">
+                        <option value="1">1 Vehicle</option>
+                        <option value="2" selected>2 Vehicles</option>
+                        <option value="3">3 Vehicles</option>
+                        <option value="4">4+ Vehicles</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Teen Drivers</label>
+                    <select id="teenDrivers">
+                        <option value="0" selected>None</option>
+                        <option value="1">1 Teen Driver</option>
+                        <option value="2">2+ Teen Drivers</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Swimming Pool</label>
+                    <select id="pool">
+                        <option value="no" selected>No Pool</option>
+                        <option value="yes">Has Pool</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Risk Factors</label>
+                <select id="riskLevel">
+                    <option value="low">Low Risk (Work from home, no guests)</option>
+                    <option value="medium" selected>Medium Risk (Regular activities)</option>
+                    <option value="high">High Risk (Boat, ATV, rental property)</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Coverage Needed</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="recommendedCoverage">$0M</div>
+                    <div class="result-label-main">Recommended Umbrella Coverage</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="annualPremium">$0</div>
+                        <div class="summary-label">Est. Annual Premium</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="monthlyPremium">$0</div>
+                        <div class="summary-label">Monthly Cost</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="assetsProtected">$0</div>
+                        <div class="summary-label">Assets Protected</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="coverageMultiple">0x</div>
+                        <div class="summary-label">Coverage Multiple</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Coverage Analysis</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Net Worth</span>
+                        <span class="breakdown-value" id="displayNetWorth">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Future Earnings (10 yrs)</span>
+                        <span class="breakdown-value" id="displayEarnings">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Total Exposure</span>
+                        <span class="breakdown-value" id="displayExposure">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Risk Adjustment</span>
+                        <span class="breakdown-value" id="displayRisk">+0%</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Cost per $1M Coverage</span>
+                        <span class="breakdown-value" id="displayCostPer">$0/year</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Insurance Calculators</h4>
+            <a href="life-insurance-calculator.html">Life Insurance</a>
+            <a href="disability-insurance-calculator.html">Disability Insurance</a>
+            <a href="home-insurance-calculator.html">Home Insurance</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Umbrella Insurance Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const netWorth = parseFloat(document.getElementById('netWorth').value);
+            const income = parseFloat(document.getElementById('income').value);
+            const homeValue = parseFloat(document.getElementById('homeValue').value);
+            const vehicles = parseInt(document.getElementById('vehicles').value);
+            const teenDrivers = parseInt(document.getElementById('teenDrivers').value);
+            const pool = document.getElementById('pool').value;
+            const riskLevel = document.getElementById('riskLevel').value;
+
+            // Calculate future earnings (10 years)
+            const futureEarnings = income * 10;
+
+            // Base exposure
+            let totalExposure = netWorth + futureEarnings;
+
+            // Risk multipliers
+            let riskMultiplier = 1;
+            const riskAdjustments = { low: 0.8, medium: 1.0, high: 1.5 };
+            riskMultiplier = riskAdjustments[riskLevel];
+
+            // Additional risk factors
+            if (vehicles >= 3) riskMultiplier += 0.1;
+            if (teenDrivers > 0) riskMultiplier += 0.2 * teenDrivers;
+            if (pool === 'yes') riskMultiplier += 0.15;
+
+            // Calculate recommended coverage
+            const adjustedExposure = totalExposure * riskMultiplier;
+
+            // Round up to nearest million
+            let recommendedMillions = Math.ceil(adjustedExposure / 1000000);
+            recommendedMillions = Math.max(1, Math.min(recommendedMillions, 10)); // Cap between 1-10M
+
+            const recommendedCoverage = recommendedMillions * 1000000;
+
+            // Estimate premium (~$150-300 per million)
+            const basePremiumPerMillion = 200;
+            let premium = recommendedMillions * basePremiumPerMillion;
+            if (teenDrivers > 0) premium += 100 * teenDrivers;
+            if (pool === 'yes') premium += 50;
+            if (riskLevel === 'high') premium *= 1.2;
+
+            const coverageMultiple = (recommendedCoverage / netWorth).toFixed(1);
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('recommendedCoverage').textContent = '$' + recommendedMillions + 'M';
+            document.getElementById('annualPremium').textContent = formatMoney(premium);
+            document.getElementById('monthlyPremium').textContent = formatMoney(premium / 12);
+            document.getElementById('assetsProtected').textContent = formatMoney(netWorth);
+            document.getElementById('coverageMultiple').textContent = coverageMultiple + 'x';
+
+            document.getElementById('displayNetWorth').textContent = formatMoney(netWorth);
+            document.getElementById('displayEarnings').textContent = formatMoney(futureEarnings);
+            document.getElementById('displayExposure').textContent = formatMoney(totalExposure);
+            document.getElementById('displayRisk').textContent = '+' + Math.round((riskMultiplier - 1) * 100) + '%';
+            document.getElementById('displayCostPer').textContent = formatMoney(premium / recommendedMillions) + '/year';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

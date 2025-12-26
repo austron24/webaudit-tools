@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Commercial Property Calculator - Cap Rate & NOI</title>
+    <meta name="description" content="Calculate commercial property value, cap rate, and NOI. Analyze investment returns for office, retail, and industrial properties. Free commercial property calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #4338ca 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #4338ca;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #4338ca;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #3730a3; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #4338ca 0%, #3730a3 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #e0e7ff;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #4338ca; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #4338ca; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #4338ca; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #3730a3;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #a5b4fc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏢 Commercial Property Calculator</h1>
+            <p class="subtitle">Analyze commercial real estate investments</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Purchase Price ($)</label>
+                    <input type="number" id="purchasePrice" value="1500000" min="0" step="50000">
+                </div>
+                <div class="input-group">
+                    <label>Property Type</label>
+                    <select id="propertyType">
+                        <option value="office">Office Building</option>
+                        <option value="retail" selected>Retail</option>
+                        <option value="industrial">Industrial/Warehouse</option>
+                        <option value="multifamily">Multi-Family</option>
+                        <option value="mixed">Mixed Use</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Gross Annual Rent ($)</label>
+                    <input type="number" id="grossRent" value="180000" min="0" step="5000">
+                </div>
+                <div class="input-group">
+                    <label>Vacancy Rate (%)</label>
+                    <input type="number" id="vacancyRate" value="5" min="0" max="50" step="1">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Annual Property Tax ($)</label>
+                    <input type="number" id="propertyTax" value="18000" min="0" step="1000">
+                </div>
+                <div class="input-group">
+                    <label>Annual Insurance ($)</label>
+                    <input type="number" id="insurance" value="6000" min="0" step="500">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Annual Maintenance ($)</label>
+                    <input type="number" id="maintenance" value="12000" min="0" step="1000">
+                </div>
+                <div class="input-group">
+                    <label>Management Fee (%)</label>
+                    <input type="number" id="managementFee" value="8" min="0" max="20" step="1">
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Investment</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="capRate">0%</div>
+                    <div class="result-label-main">Capitalization Rate</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="noi">$0</div>
+                        <div class="summary-label">Net Operating Income</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="grossYield">0%</div>
+                        <div class="summary-label">Gross Yield</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="effectiveRent">$0</div>
+                        <div class="summary-label">Effective Gross Income</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="expenseRatio">0%</div>
+                        <div class="summary-label">Expense Ratio</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Income & Expense Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Gross Rental Income</span>
+                        <span class="breakdown-value" id="displayGross">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Vacancy Loss</span>
+                        <span class="breakdown-value" id="displayVacancy">-$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Effective Gross Income</span>
+                        <span class="breakdown-value" id="displayEGI">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Total Expenses</span>
+                        <span class="breakdown-value" id="displayExpenses">-$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Net Operating Income</span>
+                        <span class="breakdown-value" id="displayNOI">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Real Estate Calculators</h4>
+            <a href="rental-property-calculator.html">Rental Property</a>
+            <a href="house-affordability-calculator.html">House Affordability</a>
+            <a href="refinance-calculator.html">Refinance</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Commercial Property Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const purchasePrice = parseFloat(document.getElementById('purchasePrice').value);
+            const grossRent = parseFloat(document.getElementById('grossRent').value);
+            const vacancyRate = parseFloat(document.getElementById('vacancyRate').value) / 100;
+            const propertyTax = parseFloat(document.getElementById('propertyTax').value);
+            const insurance = parseFloat(document.getElementById('insurance').value);
+            const maintenance = parseFloat(document.getElementById('maintenance').value);
+            const managementFee = parseFloat(document.getElementById('managementFee').value) / 100;
+
+            // Calculate vacancy loss
+            const vacancyLoss = grossRent * vacancyRate;
+
+            // Effective Gross Income
+            const egi = grossRent - vacancyLoss;
+
+            // Management fee on EGI
+            const managementCost = egi * managementFee;
+
+            // Total expenses
+            const totalExpenses = propertyTax + insurance + maintenance + managementCost;
+
+            // Net Operating Income
+            const noi = egi - totalExpenses;
+
+            // Cap Rate
+            const capRate = (noi / purchasePrice * 100).toFixed(2);
+
+            // Gross Yield
+            const grossYield = (grossRent / purchasePrice * 100).toFixed(2);
+
+            // Expense Ratio
+            const expenseRatio = (totalExpenses / egi * 100).toFixed(1);
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('capRate').textContent = capRate + '%';
+            document.getElementById('noi').textContent = formatMoney(noi);
+            document.getElementById('grossYield').textContent = grossYield + '%';
+            document.getElementById('effectiveRent').textContent = formatMoney(egi);
+            document.getElementById('expenseRatio').textContent = expenseRatio + '%';
+
+            document.getElementById('displayGross').textContent = formatMoney(grossRent);
+            document.getElementById('displayVacancy').textContent = '-' + formatMoney(vacancyLoss);
+            document.getElementById('displayEGI').textContent = formatMoney(egi);
+            document.getElementById('displayExpenses').textContent = '-' + formatMoney(totalExpenses);
+            document.getElementById('displayNOI').textContent = formatMoney(noi);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

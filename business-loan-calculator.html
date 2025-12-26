@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Business Loan Calculator - Payment & Cost Estimator</title>
+    <meta name="description" content="Calculate business loan payments, total interest, and true cost of borrowing. Compare SBA, term loans, and lines of credit. Free business loan calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #065f46 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #065f46;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #065f46;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #064e3b; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #065f46 0%, #064e3b 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #d1fae5;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #065f46; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #065f46; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #065f46; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #064e3b;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #6ee7b7; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💼 Business Loan Calculator</h1>
+            <p class="subtitle">Calculate your business financing costs</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Loan Amount ($)</label>
+                    <input type="number" id="loanAmount" value="100000" min="1000" step="5000">
+                </div>
+                <div class="input-group">
+                    <label>Interest Rate (%)</label>
+                    <input type="number" id="interestRate" value="8.5" min="1" max="50" step="0.25">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Loan Term (years)</label>
+                    <select id="loanTerm">
+                        <option value="1">1 Year</option>
+                        <option value="2">2 Years</option>
+                        <option value="3">3 Years</option>
+                        <option value="5" selected>5 Years</option>
+                        <option value="7">7 Years</option>
+                        <option value="10">10 Years</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Loan Type</label>
+                    <select id="loanType">
+                        <option value="term" selected>Term Loan</option>
+                        <option value="sba">SBA Loan</option>
+                        <option value="equipment">Equipment Loan</option>
+                        <option value="loc">Line of Credit</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Origination Fee (%)</label>
+                    <input type="number" id="originationFee" value="2" min="0" max="10" step="0.5">
+                </div>
+                <div class="input-group">
+                    <label>Business Revenue ($)</label>
+                    <input type="number" id="revenue" value="500000" min="0" step="25000">
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Loan Cost</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="monthlyPayment">$0</div>
+                    <div class="result-label-main">Monthly Payment</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="totalInterest">$0</div>
+                        <div class="summary-label">Total Interest</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="totalCost">$0</div>
+                        <div class="summary-label">Total Cost</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="effectiveRate">0%</div>
+                        <div class="summary-label">Effective APR</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="revenuePercent">0%</div>
+                        <div class="summary-label">% of Revenue</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Loan Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Principal Amount</span>
+                        <span class="breakdown-value" id="displayPrincipal">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Origination Fee</span>
+                        <span class="breakdown-value" id="displayOrigination">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Total Interest Paid</span>
+                        <span class="breakdown-value" id="displayInterest">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Annual Payment</span>
+                        <span class="breakdown-value" id="displayAnnual">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Total Repayment</span>
+                        <span class="breakdown-value" id="displayTotal">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Business Calculators</h4>
+            <a href="profit-margin-calculator.html">Profit Margin</a>
+            <a href="break-even-calculator.html">Break Even</a>
+            <a href="roi-calculator.html">ROI Calculator</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Business Loan Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+            const interestRate = parseFloat(document.getElementById('interestRate').value) / 100 / 12;
+            const loanTerm = parseInt(document.getElementById('loanTerm').value) * 12;
+            const loanType = document.getElementById('loanType').value;
+            const originationFee = parseFloat(document.getElementById('originationFee').value) / 100;
+            const revenue = parseFloat(document.getElementById('revenue').value);
+
+            // Calculate origination fee
+            const originationAmount = loanAmount * originationFee;
+
+            // Calculate monthly payment
+            const monthlyPayment = loanAmount * (interestRate * Math.pow(1 + interestRate, loanTerm)) /
+                                   (Math.pow(1 + interestRate, loanTerm) - 1);
+
+            // Total payments
+            const totalPayments = monthlyPayment * loanTerm;
+            const totalInterest = totalPayments - loanAmount;
+            const totalCost = totalPayments + originationAmount;
+
+            // Effective APR (including fees)
+            const effectiveRate = ((totalCost / loanAmount - 1) / (loanTerm / 12) * 100).toFixed(2);
+
+            // Payment as percentage of revenue
+            const annualPayment = monthlyPayment * 12;
+            const revenuePercent = ((annualPayment / revenue) * 100).toFixed(1);
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('monthlyPayment').textContent = formatMoney(monthlyPayment);
+            document.getElementById('totalInterest').textContent = formatMoney(totalInterest);
+            document.getElementById('totalCost').textContent = formatMoney(totalCost);
+            document.getElementById('effectiveRate').textContent = effectiveRate + '%';
+            document.getElementById('revenuePercent').textContent = revenuePercent + '%';
+
+            document.getElementById('displayPrincipal').textContent = formatMoney(loanAmount);
+            document.getElementById('displayOrigination').textContent = formatMoney(originationAmount);
+            document.getElementById('displayInterest').textContent = formatMoney(totalInterest);
+            document.getElementById('displayAnnual').textContent = formatMoney(annualPayment);
+            document.getElementById('displayTotal').textContent = formatMoney(totalCost);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

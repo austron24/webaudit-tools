@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Medical Bill Calculator - Out-of-Pocket Cost Estimator</title>
+    <meta name="description" content="Calculate your medical bill costs after insurance. Estimate deductibles, copays, and out-of-pocket expenses. Free medical bill calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #dc2626 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #dc2626;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #dc2626;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #b91c1c; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #fee2e2;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #dc2626; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #dc2626; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #dc2626; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #b91c1c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fca5a5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏥 Medical Bill Calculator</h1>
+            <p class="subtitle">Estimate your out-of-pocket medical costs</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Total Medical Bill ($)</label>
+                    <input type="number" id="totalBill" value="5000" min="0" step="100">
+                </div>
+                <div class="input-group">
+                    <label>Annual Deductible ($)</label>
+                    <input type="number" id="deductible" value="1500" min="0" step="100">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Deductible Already Met ($)</label>
+                    <input type="number" id="deductibleMet" value="500" min="0" step="100">
+                </div>
+                <div class="input-group">
+                    <label>Coinsurance Rate (%)</label>
+                    <input type="number" id="coinsurance" value="20" min="0" max="100" step="5">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Out-of-Pocket Maximum ($)</label>
+                    <input type="number" id="oopMax" value="6000" min="0" step="500">
+                </div>
+                <div class="input-group">
+                    <label>OOP Already Spent ($)</label>
+                    <input type="number" id="oopSpent" value="1000" min="0" step="100">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Provider Network</label>
+                <select id="network">
+                    <option value="in" selected>In-Network Provider</option>
+                    <option value="out">Out-of-Network Provider</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate My Cost</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="yourCost">$0</div>
+                    <div class="result-label-main">Your Out-of-Pocket Cost</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="insurancePays">$0</div>
+                        <div class="summary-label">Insurance Pays</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="percentagePaid">0%</div>
+                        <div class="summary-label">You Pay %</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="remainingDeductible">$0</div>
+                        <div class="summary-label">Remaining Deductible</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="remainingOOP">$0</div>
+                        <div class="summary-label">Remaining to OOP Max</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Cost Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Total Bill</span>
+                        <span class="breakdown-value" id="displayBill">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Deductible Portion</span>
+                        <span class="breakdown-value" id="displayDeductible">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Coinsurance Portion</span>
+                        <span class="breakdown-value" id="displayCoinsurance">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">OOP Max Adjustment</span>
+                        <span class="breakdown-value" id="displayOOPAdj">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Your Total Cost</span>
+                        <span class="breakdown-value" id="displayTotal">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Health Calculators</h4>
+            <a href="hsa-calculator.html">HSA Calculator</a>
+            <a href="life-insurance-calculator.html">Life Insurance</a>
+            <a href="disability-insurance-calculator.html">Disability Insurance</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Medical Bill Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const totalBill = parseFloat(document.getElementById('totalBill').value);
+            const deductible = parseFloat(document.getElementById('deductible').value);
+            const deductibleMet = parseFloat(document.getElementById('deductibleMet').value);
+            const coinsuranceRate = parseFloat(document.getElementById('coinsurance').value) / 100;
+            const oopMax = parseFloat(document.getElementById('oopMax').value);
+            const oopSpent = parseFloat(document.getElementById('oopSpent').value);
+            const network = document.getElementById('network').value;
+
+            // Apply out-of-network penalty
+            let adjustedBill = totalBill;
+            if (network === 'out') {
+                adjustedBill = totalBill * 1.5; // 50% higher for out-of-network
+            }
+
+            // Calculate remaining deductible
+            const remainingDeductible = Math.max(0, deductible - deductibleMet);
+
+            // Amount that goes toward deductible
+            const deductiblePortion = Math.min(adjustedBill, remainingDeductible);
+
+            // Amount subject to coinsurance
+            const afterDeductible = adjustedBill - deductiblePortion;
+            const coinsurancePortion = afterDeductible * coinsuranceRate;
+
+            // Total before OOP max check
+            let yourCost = deductiblePortion + coinsurancePortion;
+
+            // Check against OOP max
+            const remainingOOP = Math.max(0, oopMax - oopSpent);
+            const oopAdj = Math.max(0, yourCost - remainingOOP);
+            yourCost = Math.min(yourCost, remainingOOP);
+
+            // Insurance pays
+            const insurancePays = adjustedBill - yourCost;
+            const percentagePaid = ((yourCost / adjustedBill) * 100).toFixed(1);
+
+            // Remaining after this bill
+            const newRemainingDeductible = Math.max(0, remainingDeductible - deductiblePortion);
+            const newRemainingOOP = Math.max(0, remainingOOP - yourCost);
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('yourCost').textContent = formatMoney(yourCost);
+            document.getElementById('insurancePays').textContent = formatMoney(insurancePays);
+            document.getElementById('percentagePaid').textContent = percentagePaid + '%';
+            document.getElementById('remainingDeductible').textContent = formatMoney(newRemainingDeductible);
+            document.getElementById('remainingOOP').textContent = formatMoney(newRemainingOOP);
+
+            document.getElementById('displayBill').textContent = formatMoney(adjustedBill);
+            document.getElementById('displayDeductible').textContent = formatMoney(deductiblePortion);
+            document.getElementById('displayCoinsurance').textContent = formatMoney(coinsurancePortion);
+            document.getElementById('displayOOPAdj').textContent = '-' + formatMoney(oopAdj);
+            document.getElementById('displayTotal').textContent = formatMoney(yourCost);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

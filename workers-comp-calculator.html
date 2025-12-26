@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Workers Comp Calculator - Benefits Estimator</title>
+    <meta name="description" content="Calculate workers compensation benefits. Estimate weekly payments, duration, and total benefits. Free workers comp calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #ea580c 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .disclaimer {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: #92400e;
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #ea580c;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #ea580c;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #c2410c; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #ffedd5;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #ea580c; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #ea580c; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #ea580c; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #c2410c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fdba74; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🦺 Workers Comp Calculator</h1>
+            <p class="subtitle">Estimate workers compensation benefits</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="disclaimer">
+                <strong>Disclaimer:</strong> Workers comp varies by state. This is a general estimate only. Consult with your employer or a workers comp attorney for accurate calculations.
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Weekly Wage Before Injury ($)</label>
+                    <input type="number" id="weeklyWage" value="1000" min="0" step="50">
+                </div>
+                <div class="input-group">
+                    <label>State</label>
+                    <select id="state">
+                        <option value="avg" selected>Average State</option>
+                        <option value="ca">California</option>
+                        <option value="tx">Texas</option>
+                        <option value="fl">Florida</option>
+                        <option value="ny">New York</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Disability Type</label>
+                    <select id="disabilityType">
+                        <option value="ttd" selected>Temporary Total Disability</option>
+                        <option value="tpd">Temporary Partial Disability</option>
+                        <option value="ppd">Permanent Partial Disability</option>
+                        <option value="ptd">Permanent Total Disability</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Expected Duration (weeks)</label>
+                    <input type="number" id="duration" value="12" min="1" max="500">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Impairment Rating (%)</label>
+                    <input type="number" id="impairmentRating" value="0" min="0" max="100" step="5">
+                </div>
+                <div class="input-group">
+                    <label>Medical Expenses ($)</label>
+                    <input type="number" id="medicalExpenses" value="5000" min="0" step="500">
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Benefits</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="weeklyBenefit">$0</div>
+                    <div class="result-label-main">Weekly Benefit Amount</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="totalBenefits">$0</div>
+                        <div class="summary-label">Total Benefits</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="durationWeeks">0 weeks</div>
+                        <div class="summary-label">Duration</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="wageReplacement">0%</div>
+                        <div class="summary-label">Wage Replacement</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="medicalCovered">$0</div>
+                        <div class="summary-label">Medical Covered</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Benefit Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Average Weekly Wage</span>
+                        <span class="breakdown-value" id="displayAWW">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Benefit Rate</span>
+                        <span class="breakdown-value" id="displayRate">66.67%</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Weekly Benefit</span>
+                        <span class="breakdown-value" id="displayWeekly">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Total Wage Benefits</span>
+                        <span class="breakdown-value" id="displayWage">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Medical Benefits</span>
+                        <span class="breakdown-value" id="displayMedical">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Legal Calculators</h4>
+            <a href="disability-insurance-calculator.html">Disability Insurance</a>
+            <a href="personal-injury-calculator.html">Personal Injury</a>
+            <a href="alimony-calculator.html">Alimony</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Workers Comp Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const weeklyWage = parseFloat(document.getElementById('weeklyWage').value);
+            const state = document.getElementById('state').value;
+            const disabilityType = document.getElementById('disabilityType').value;
+            const duration = parseInt(document.getElementById('duration').value);
+            const impairmentRating = parseFloat(document.getElementById('impairmentRating').value) / 100;
+            const medicalExpenses = parseFloat(document.getElementById('medicalExpenses').value);
+
+            // Benefit rates by state (simplified)
+            const benefitRates = {
+                avg: 0.6667,
+                ca: 0.6667,
+                tx: 0.70,
+                fl: 0.6667,
+                ny: 0.6667
+            };
+
+            // Max weekly benefits by state (simplified)
+            const maxBenefits = {
+                avg: 1200,
+                ca: 1620,
+                tx: 1112,
+                fl: 1099,
+                ny: 1125
+            };
+
+            const benefitRate = benefitRates[state];
+            const maxWeekly = maxBenefits[state];
+
+            // Calculate weekly benefit
+            let weeklyBenefit = weeklyWage * benefitRate;
+
+            // Apply caps
+            weeklyBenefit = Math.min(weeklyBenefit, maxWeekly);
+
+            // Adjust for disability type
+            let adjustedDuration = duration;
+            if (disabilityType === 'tpd') {
+                weeklyBenefit *= 0.5; // Partial disability
+            } else if (disabilityType === 'ppd') {
+                weeklyBenefit *= (impairmentRating || 0.25);
+            } else if (disabilityType === 'ptd') {
+                adjustedDuration = 500; // Long-term
+            }
+
+            const totalWageBenefits = weeklyBenefit * adjustedDuration;
+            const totalBenefits = totalWageBenefits + medicalExpenses;
+            const wageReplacement = ((weeklyBenefit / weeklyWage) * 100).toFixed(0);
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('weeklyBenefit').textContent = formatMoney(weeklyBenefit);
+            document.getElementById('totalBenefits').textContent = formatMoney(totalBenefits);
+            document.getElementById('durationWeeks').textContent = adjustedDuration + ' weeks';
+            document.getElementById('wageReplacement').textContent = wageReplacement + '%';
+            document.getElementById('medicalCovered').textContent = formatMoney(medicalExpenses);
+
+            document.getElementById('displayAWW').textContent = formatMoney(weeklyWage);
+            document.getElementById('displayRate').textContent = Math.round(benefitRate * 100) + '%';
+            document.getElementById('displayWeekly').textContent = formatMoney(weeklyBenefit);
+            document.getElementById('displayWage').textContent = formatMoney(totalWageBenefits);
+            document.getElementById('displayMedical').textContent = formatMoney(medicalExpenses);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
