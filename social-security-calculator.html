@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Social Security Calculator - Estimate Your Benefits</title>
-    <meta name="description" content="Free Social Security calculator. Estimate your retirement benefits based on earnings history and claiming age.">
-    <meta name="keywords" content="social security calculator, retirement benefits, SSA calculator, social security estimate, retirement planning">
+    <title>Social Security Calculator - Estimate Benefits</title>
+    <meta name="description" content="Free Social Security calculator. Estimate your monthly Social Security benefits based on earnings history and retirement age.">
+    <meta name="keywords" content="social security calculator, social security benefits, retirement benefits, SSA calculator, social security estimate">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/social-security-calculator.html">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #0369a1; --primary-dark: #075985; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -25,28 +25,21 @@
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
         input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
         input:focus, select:focus { outline: none; border-color: var(--primary); }
-        .result-hero { background: linear-gradient(135deg, var(--success), #059669); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
         .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
         .result-hero-label { color: rgba(255,255,255,0.8); }
-        .claiming-ages { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
-        .age-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.3s; }
-        .age-card:hover { transform: translateY(-2px); }
-        .age-card.selected { border: 2px solid var(--success); background: rgba(16, 185, 129, 0.2); }
-        .age-value { font-size: 1.8rem; font-weight: 800; color: var(--secondary); }
-        .age-card.selected .age-value { color: var(--success); }
-        .age-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.9rem; }
-        .age-reduction { color: var(--accent); font-size: 0.85rem; margin-top: 5px; }
-        .lifetime-comparison { margin-top: 20px; padding: 20px; background: var(--bg-input); border-radius: 12px; }
-        .comparison-bar { height: 30px; background: var(--border); border-radius: 8px; margin: 10px 0; overflow: hidden; }
-        .bar-fill { height: 100%; border-radius: 8px; transition: width 0.5s; }
-        .comparison-labels { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        .annual-breakdown { margin-top: 20px; }
-        .annual-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .age-comparison { margin-top: 20px; }
+        .age-row { display: flex; justify-content: space-between; padding: 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 10px; }
+        .age-row.selected { border: 2px solid var(--success); }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } .claiming-ages { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -69,100 +62,56 @@
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>📊 Your Information</h2>
+                <h2>📋 Your Information</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Current Age</label>
-                        <input type="number" id="currentAge" value="55" min="22" max="70" oninput="calculate()">
+                        <label>Birth Year</label>
+                        <input type="number" id="birthYear" value="1970" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Birth Year</label>
-                        <input type="number" id="birthYear" value="1970" min="1943" max="2002" oninput="calculate()">
+                        <label>Planned Retirement Age</label>
+                        <select id="retireAge" onchange="calculate()">
+                            <option value="62">62 (Early)</option>
+                            <option value="65">65</option>
+                            <option value="67" selected>67 (Full Retirement Age)</option>
+                            <option value="70">70 (Maximum Benefit)</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Average Annual Earnings ($)</label>
-                        <input type="number" id="avgEarnings" value="75000" oninput="calculate()">
+                        <input type="number" id="avgEarnings" value="65000" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Years of Work History</label>
-                        <input type="number" id="workYears" value="30" min="10" max="45" oninput="calculate()">
+                        <input type="number" id="workYears" value="35" min="0" max="45" oninput="calculate()">
                     </div>
                 </div>
                 
                 <div class="result-hero">
-                    <div class="result-hero-label">Estimated Monthly Benefit at FRA</div>
+                    <div class="result-hero-label">Estimated Monthly Benefit</div>
                     <div class="result-hero-value" id="monthlyBenefit">$0</div>
                 </div>
                 
-                <h3 style="color: var(--secondary); margin: 20px 0 15px;">Claiming Age Options</h3>
-                <div class="claiming-ages">
-                    <div class="age-card" onclick="selectAge(62)">
-                        <div class="age-label">Early Retirement</div>
-                        <div class="age-value" id="benefit62">$0</div>
-                        <div class="age-label">Age 62</div>
-                        <div class="age-reduction" id="reduction62">-30%</div>
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-value" id="annualBenefit">$0</div>
+                        <div class="result-label">Annual Benefit</div>
                     </div>
-                    <div class="age-card selected" onclick="selectAge(67)">
-                        <div class="age-label">Full Retirement Age</div>
-                        <div class="age-value" id="benefit67">$0</div>
-                        <div class="age-label">Age 67</div>
-                        <div class="age-reduction">Full Benefit</div>
+                    <div class="result-card">
+                        <div class="result-value" id="pia">$0</div>
+                        <div class="result-label">Full Retirement (PIA)</div>
                     </div>
-                    <div class="age-card" onclick="selectAge(70)">
-                        <div class="age-label">Delayed Retirement</div>
-                        <div class="age-value" id="benefit70">$0</div>
-                        <div class="age-label">Age 70</div>
-                        <div class="age-reduction" id="increase70">+24%</div>
+                    <div class="result-card">
+                        <div class="result-value" id="fullRetireAge">67</div>
+                        <div class="result-label">Full Retirement Age</div>
                     </div>
                 </div>
-                
-                <div class="lifetime-comparison">
-                    <h3 style="color: var(--secondary); margin-bottom: 15px;">Lifetime Benefits Comparison (to age 85)</h3>
-                    
-                    <div class="comparison-labels">
-                        <span>Age 62</span>
-                        <span id="lifetime62">$0</span>
-                    </div>
-                    <div class="comparison-bar">
-                        <div class="bar-fill" id="bar62" style="width: 80%; background: #ef4444;"></div>
-                    </div>
-                    
-                    <div class="comparison-labels">
-                        <span>Age 67</span>
-                        <span id="lifetime67">$0</span>
-                    </div>
-                    <div class="comparison-bar">
-                        <div class="bar-fill" id="bar67" style="width: 90%; background: var(--primary);"></div>
-                    </div>
-                    
-                    <div class="comparison-labels">
-                        <span>Age 70</span>
-                        <span id="lifetime70">$0</span>
-                    </div>
-                    <div class="comparison-bar">
-                        <div class="bar-fill" id="bar70" style="width: 100%; background: var(--success);"></div>
-                    </div>
-                </div>
-                
-                <div class="annual-breakdown">
-                    <h3 style="color: var(--secondary); margin-bottom: 15px;">Annual Benefit Summary</h3>
-                    <div class="annual-item">
-                        <span>Annual Benefit at FRA</span>
-                        <span id="annualFRA">$0</span>
-                    </div>
-                    <div class="annual-item">
-                        <span>Your Full Retirement Age (FRA)</span>
-                        <span id="fraAge">67</span>
-                    </div>
-                    <div class="annual-item">
-                        <span>Maximum Benefit (Age 70)</span>
-                        <span id="maxAnnual">$0</span>
-                    </div>
-                    <div class="annual-item">
-                        <span>Early Benefit (Age 62)</span>
-                        <span id="earlyAnnual">$0</span>
-                    </div>
-                </div>
+            </div>
+
+            <div class="card">
+                <h2>📊 Benefits by Claiming Age</h2>
+                <div class="age-comparison" id="ageComparison"></div>
+                <p style="color: var(--text-secondary); margin-top: 15px; font-size: 0.9rem;">⚠️ This is an estimate. Actual benefits depend on your complete earnings history. Visit ssa.gov for official estimates.</p>
             </div>
 
             <div class="ad-container">
@@ -174,10 +123,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="retirement-calculator.html" class="related-link">💰 Retirement Calculator</a>
-                    <a href="investment-calculator.html" class="related-link">📈 Investment Calculator</a>
-                    <a href="compound-interest-calculator.html" class="related-link">💵 Compound Interest</a>
-                    <a href="life-insurance-calculator.html" class="related-link">🛡️ Life Insurance</a>
+                    <a href="401k-calculator.html" class="related-link">💰 401k Calculator</a>
+                    <a href="retirement-calculator.html" class="related-link">🏖️ Retirement Calculator</a>
+                    <a href="compound-interest-calculator.html" class="related-link">📈 Compound Interest</a>
+                    <a href="age-calculator.html" class="related-link">📅 Age Calculator</a>
                 </div>
             </div>
         </div>
@@ -192,79 +141,92 @@
     </div>
 
     <script>
-        let selectedAge = 67;
+        function getFullRetirementAge(birthYear) {
+            if (birthYear <= 1937) return 65;
+            if (birthYear === 1938) return 65 + 2/12;
+            if (birthYear === 1939) return 65 + 4/12;
+            if (birthYear === 1940) return 65 + 6/12;
+            if (birthYear === 1941) return 65 + 8/12;
+            if (birthYear === 1942) return 65 + 10/12;
+            if (birthYear >= 1943 && birthYear <= 1954) return 66;
+            if (birthYear === 1955) return 66 + 2/12;
+            if (birthYear === 1956) return 66 + 4/12;
+            if (birthYear === 1957) return 66 + 6/12;
+            if (birthYear === 1958) return 66 + 8/12;
+            if (birthYear === 1959) return 66 + 10/12;
+            return 67;
+        }
         
-        function selectAge(age) {
-            selectedAge = age;
-            document.querySelectorAll('.age-card').forEach(c => c.classList.remove('selected'));
-            event.currentTarget.classList.add('selected');
+        function calculatePIA(avgEarnings, workYears) {
+            const aime = Math.min(avgEarnings / 12, 12000);
+            const effectiveYears = Math.min(workYears, 35) / 35;
+            const adjustedAime = aime * effectiveYears;
+            
+            let pia = 0;
+            if (adjustedAime <= 1174) {
+                pia = adjustedAime * 0.9;
+            } else if (adjustedAime <= 7078) {
+                pia = 1174 * 0.9 + (adjustedAime - 1174) * 0.32;
+            } else {
+                pia = 1174 * 0.9 + (7078 - 1174) * 0.32 + (adjustedAime - 7078) * 0.15;
+            }
+            
+            return Math.round(pia);
+        }
+        
+        function getBenefitAtAge(pia, fra, claimAge) {
+            const monthsEarly = (fra - claimAge) * 12;
+            const monthsLate = (claimAge - fra) * 12;
+            
+            if (claimAge < fra) {
+                let reduction = 0;
+                if (monthsEarly <= 36) {
+                    reduction = monthsEarly * 0.00556;
+                } else {
+                    reduction = 36 * 0.00556 + (monthsEarly - 36) * 0.00417;
+                }
+                return Math.round(pia * (1 - reduction));
+            } else if (claimAge > fra) {
+                const increase = Math.min(monthsLate, 36) * 0.00667;
+                return Math.round(pia * (1 + increase));
+            }
+            return pia;
         }
         
         function calculate() {
-            const currentAge = parseInt(document.getElementById('currentAge').value) || 55;
             const birthYear = parseInt(document.getElementById('birthYear').value) || 1970;
+            const retireAge = parseInt(document.getElementById('retireAge').value) || 67;
             const avgEarnings = parseFloat(document.getElementById('avgEarnings').value) || 0;
             const workYears = parseInt(document.getElementById('workYears').value) || 35;
             
-            // Determine Full Retirement Age based on birth year
-            let fra = 67;
-            if (birthYear <= 1954) fra = 66;
-            else if (birthYear >= 1960) fra = 67;
-            else fra = 66 + (birthYear - 1954) * 2 / 12;
+            const fra = getFullRetirementAge(birthYear);
+            const pia = calculatePIA(avgEarnings, workYears);
+            const monthlyBenefit = getBenefitAtAge(pia, fra, retireAge);
+            const annualBenefit = monthlyBenefit * 12;
             
-            // Calculate AIME (Average Indexed Monthly Earnings) - simplified
-            const maxTaxableEarnings = 160200; // 2023 cap
-            const cappedEarnings = Math.min(avgEarnings, maxTaxableEarnings);
-            const aime = (cappedEarnings * Math.min(workYears, 35)) / (35 * 12);
+            document.getElementById('monthlyBenefit').textContent = '$' + monthlyBenefit.toLocaleString();
+            document.getElementById('annualBenefit').textContent = '$' + annualBenefit.toLocaleString();
+            document.getElementById('pia').textContent = '$' + pia.toLocaleString();
+            document.getElementById('fullRetireAge').textContent = Math.floor(fra) + ' years ' + Math.round((fra % 1) * 12) + ' months';
             
-            // Calculate PIA (Primary Insurance Amount) using 2024 bend points
-            let pia = 0;
-            if (aime <= 1174) {
-                pia = aime * 0.90;
-            } else if (aime <= 7078) {
-                pia = 1174 * 0.90 + (aime - 1174) * 0.32;
-            } else {
-                pia = 1174 * 0.90 + (7078 - 1174) * 0.32 + (aime - 7078) * 0.15;
-            }
-            
-            // Calculate benefits at different ages
-            const monthsEarly62 = (fra - 62) * 12;
-            const reductionPer62 = monthsEarly62 <= 36 ? monthsEarly62 * 5/9/100 : 36 * 5/9/100 + (monthsEarly62 - 36) * 5/12/100;
-            const benefit62 = pia * (1 - reductionPer62);
-            
-            const benefit67 = pia; // At FRA (assuming FRA is 67)
-            
-            const monthsDelayed = (70 - fra) * 12;
-            const increase70 = monthsDelayed * 2/3/100;
-            const benefit70 = pia * (1 + increase70);
-            
-            // Lifetime benefits calculation (to age 85)
-            const lifetime62 = benefit62 * 12 * (85 - 62);
-            const lifetime67 = benefit67 * 12 * (85 - 67);
-            const lifetime70 = benefit70 * 12 * (85 - 70);
-            
-            // Update display
-            document.getElementById('monthlyBenefit').textContent = '$' + Math.round(pia).toLocaleString();
-            document.getElementById('benefit62').textContent = '$' + Math.round(benefit62).toLocaleString();
-            document.getElementById('benefit67').textContent = '$' + Math.round(benefit67).toLocaleString();
-            document.getElementById('benefit70').textContent = '$' + Math.round(benefit70).toLocaleString();
-            
-            document.getElementById('reduction62').textContent = '-' + (reductionPer62 * 100).toFixed(0) + '%';
-            document.getElementById('increase70').textContent = '+' + (increase70 * 100).toFixed(0) + '%';
-            
-            document.getElementById('lifetime62').textContent = '$' + Math.round(lifetime62).toLocaleString();
-            document.getElementById('lifetime67').textContent = '$' + Math.round(lifetime67).toLocaleString();
-            document.getElementById('lifetime70').textContent = '$' + Math.round(lifetime70).toLocaleString();
-            
-            const maxLifetime = Math.max(lifetime62, lifetime67, lifetime70);
-            document.getElementById('bar62').style.width = (lifetime62 / maxLifetime * 100) + '%';
-            document.getElementById('bar67').style.width = (lifetime67 / maxLifetime * 100) + '%';
-            document.getElementById('bar70').style.width = (lifetime70 / maxLifetime * 100) + '%';
-            
-            document.getElementById('annualFRA').textContent = '$' + Math.round(pia * 12).toLocaleString();
-            document.getElementById('fraAge').textContent = fra.toFixed(0);
-            document.getElementById('maxAnnual').textContent = '$' + Math.round(benefit70 * 12).toLocaleString();
-            document.getElementById('earlyAnnual').textContent = '$' + Math.round(benefit62 * 12).toLocaleString();
+            const ages = [62, 65, 67, 70];
+            let comparisonHtml = '';
+            ages.forEach(age => {
+                const benefit = getBenefitAtAge(pia, fra, age);
+                const isSelected = age === retireAge;
+                let label = '';
+                if (age === 62) label = '(Earliest)';
+                else if (age === Math.floor(fra)) label = '(Full Retirement)';
+                else if (age === 70) label = '(Maximum)';
+                
+                comparisonHtml += `
+                    <div class="age-row ${isSelected ? 'selected' : ''}">
+                        <span>Age ${age} ${label}</span>
+                        <span style="color: var(--secondary); font-weight: 700;">$${benefit.toLocaleString()}/mo</span>
+                    </div>
+                `;
+            });
+            document.getElementById('ageComparison').innerHTML = comparisonHtml;
         }
         
         calculate();
