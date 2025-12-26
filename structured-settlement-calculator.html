@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Structured Settlement Calculator - Present Value Estimator</title>
+    <meta name="description" content="Calculate the present value of structured settlement payments. Compare lump sum vs annuity options. Free structured settlement calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #166534 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #166534;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #166534;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #15803d; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #166534 0%, #15803d 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #dcfce7;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #166534; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #166534; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #166534; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #15803d;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #86efac; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💰 Structured Settlement Calculator</h1>
+            <p class="subtitle">Calculate present value of future payments</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Monthly Payment Amount ($)</label>
+                    <input type="number" id="monthlyPayment" value="2500" min="0" step="100">
+                </div>
+                <div class="input-group">
+                    <label>Years Remaining</label>
+                    <input type="number" id="yearsRemaining" value="20" min="1" max="50">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Payment Frequency</label>
+                    <select id="frequency">
+                        <option value="monthly" selected>Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                        <option value="annual">Annual</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Discount Rate (%)</label>
+                    <input type="number" id="discountRate" value="6" min="1" max="15" step="0.5">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Annual Increase (%)</label>
+                    <input type="number" id="annualIncrease" value="0" min="0" max="10" step="0.5">
+                </div>
+                <div class="input-group">
+                    <label>Lump Sum Offer ($)</label>
+                    <input type="number" id="lumpSumOffer" value="350000" min="0" step="10000">
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Value</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="presentValue">$0</div>
+                    <div class="result-label-main">Present Value of Payments</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="totalPayments">$0</div>
+                        <div class="summary-label">Total Future Payments</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="lumpSumValue">$0</div>
+                        <div class="summary-label">Lump Sum Offer</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="difference">$0</div>
+                        <div class="summary-label">Difference</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="recommendation">Keep</div>
+                        <div class="summary-label">Recommendation</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Analysis Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Monthly Payment</span>
+                        <span class="breakdown-value" id="displayMonthly">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Number of Payments</span>
+                        <span class="breakdown-value" id="displayPayments">0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Discount Rate Used</span>
+                        <span class="breakdown-value" id="displayRate">0%</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Value Lost if Sold</span>
+                        <span class="breakdown-value" id="displayLost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Effective Discount</span>
+                        <span class="breakdown-value" id="displayDiscount">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Financial Calculators</h4>
+            <a href="lawsuit-settlement-calculator.html">Lawsuit Settlement</a>
+            <a href="personal-injury-calculator.html">Personal Injury</a>
+            <a href="annuity-calculator.html">Annuity Calculator</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Structured Settlement Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const monthlyPayment = parseFloat(document.getElementById('monthlyPayment').value);
+            const yearsRemaining = parseInt(document.getElementById('yearsRemaining').value);
+            const frequency = document.getElementById('frequency').value;
+            const discountRate = parseFloat(document.getElementById('discountRate').value) / 100;
+            const annualIncrease = parseFloat(document.getElementById('annualIncrease').value) / 100;
+            const lumpSumOffer = parseFloat(document.getElementById('lumpSumOffer').value);
+
+            // Calculate number of payments based on frequency
+            let paymentsPerYear = 12;
+            let paymentAmount = monthlyPayment;
+            if (frequency === 'quarterly') {
+                paymentsPerYear = 4;
+                paymentAmount = monthlyPayment * 3;
+            } else if (frequency === 'annual') {
+                paymentsPerYear = 1;
+                paymentAmount = monthlyPayment * 12;
+            }
+
+            const totalPayments = yearsRemaining * paymentsPerYear;
+            const periodicRate = discountRate / paymentsPerYear;
+
+            // Calculate present value with potential growth
+            let presentValue = 0;
+            let totalFuturePayments = 0;
+            let currentPayment = paymentAmount;
+
+            for (let i = 1; i <= totalPayments; i++) {
+                // Apply annual increase at the start of each year
+                if (i > 1 && (i - 1) % paymentsPerYear === 0) {
+                    currentPayment *= (1 + annualIncrease);
+                }
+                totalFuturePayments += currentPayment;
+                presentValue += currentPayment / Math.pow(1 + periodicRate, i);
+            }
+
+            // Calculate difference and recommendation
+            const difference = presentValue - lumpSumOffer;
+            const valueLost = totalFuturePayments - lumpSumOffer;
+            const effectiveDiscount = ((totalFuturePayments - lumpSumOffer) / totalFuturePayments * 100).toFixed(1);
+
+            let recommendation = 'Keep Payments';
+            if (lumpSumOffer > presentValue) {
+                recommendation = 'Consider Lump Sum';
+            }
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('presentValue').textContent = formatMoney(presentValue);
+            document.getElementById('totalPayments').textContent = formatMoney(totalFuturePayments);
+            document.getElementById('lumpSumValue').textContent = formatMoney(lumpSumOffer);
+            document.getElementById('difference').textContent = (difference >= 0 ? '+' : '') + formatMoney(difference);
+            document.getElementById('recommendation').textContent = recommendation;
+
+            document.getElementById('displayMonthly').textContent = formatMoney(monthlyPayment);
+            document.getElementById('displayPayments').textContent = totalPayments;
+            document.getElementById('displayRate').textContent = (discountRate * 100).toFixed(1) + '%';
+            document.getElementById('displayLost').textContent = formatMoney(valueLost);
+            document.getElementById('displayDiscount').textContent = effectiveDiscount + '%';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

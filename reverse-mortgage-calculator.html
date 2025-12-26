@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Reverse Mortgage Calculator - HECM Estimator</title>
+    <meta name="description" content="Calculate reverse mortgage proceeds and payments. Estimate HECM loan amounts based on age and home value. Free reverse mortgage calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #854d0e 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #854d0e;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #854d0e;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #a16207; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #854d0e 0%, #a16207 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #fef3c7;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #854d0e; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #854d0e; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #854d0e; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #a16207;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fcd34d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏡 Reverse Mortgage Calculator</h1>
+            <p class="subtitle">Estimate HECM loan proceeds</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Home Value ($)</label>
+                    <input type="number" id="homeValue" value="400000" min="100000" step="25000">
+                </div>
+                <div class="input-group">
+                    <label>Current Mortgage Balance ($)</label>
+                    <input type="number" id="mortgageBalance" value="50000" min="0" step="10000">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Youngest Borrower Age</label>
+                    <input type="number" id="age" value="70" min="62" max="95">
+                </div>
+                <div class="input-group">
+                    <label>Interest Rate (%)</label>
+                    <input type="number" id="interestRate" value="6.5" min="3" max="12" step="0.25">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Payout Option</label>
+                    <select id="payoutOption">
+                        <option value="lump" selected>Lump Sum</option>
+                        <option value="line">Line of Credit</option>
+                        <option value="tenure">Monthly (Tenure)</option>
+                        <option value="term">Monthly (Fixed Term)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Term (years, if applicable)</label>
+                    <input type="number" id="termYears" value="10" min="1" max="30">
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Proceeds</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="availableProceeds">$0</div>
+                    <div class="result-label-main">Available Proceeds</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="monthlyPayment">$0</div>
+                        <div class="summary-label">Monthly Payment</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="principalLimit">$0</div>
+                        <div class="summary-label">Principal Limit</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="plf">0%</div>
+                        <div class="summary-label">Principal Limit Factor</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="remainingEquity">$0</div>
+                        <div class="summary-label">Remaining Equity</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Reverse Mortgage Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Home Value</span>
+                        <span class="breakdown-value" id="displayHome">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">HECM Limit (2024)</span>
+                        <span class="breakdown-value" id="displayLimit">$1,149,825</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Principal Limit</span>
+                        <span class="breakdown-value" id="displayPrincipal">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Less: Closing Costs</span>
+                        <span class="breakdown-value" id="displayCosts">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Less: Mortgage Payoff</span>
+                        <span class="breakdown-value" id="displayPayoff">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Mortgage Calculators</h4>
+            <a href="heloc-calculator.html">HELOC</a>
+            <a href="home-equity-calculator.html">Home Equity</a>
+            <a href="mortgage-calculator.html">Mortgage</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Reverse Mortgage Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const homeValue = parseFloat(document.getElementById('homeValue').value);
+            const mortgageBalance = parseFloat(document.getElementById('mortgageBalance').value);
+            const age = parseInt(document.getElementById('age').value);
+            const interestRate = parseFloat(document.getElementById('interestRate').value) / 100;
+            const payoutOption = document.getElementById('payoutOption').value;
+            const termYears = parseInt(document.getElementById('termYears').value);
+
+            // 2024 HECM limit
+            const hecmLimit = 1149825;
+            const maxClaimAmount = Math.min(homeValue, hecmLimit);
+
+            // Principal Limit Factor based on age and interest rate
+            // Simplified PLF table (actual varies by expected rate)
+            let plf = 0.30; // Base for age 62
+            if (age >= 62) plf = 0.30 + (age - 62) * 0.015;
+            if (age >= 75) plf = 0.50 + (age - 75) * 0.012;
+            if (age >= 85) plf = 0.62 + (age - 85) * 0.008;
+            plf = Math.min(plf, 0.75); // Cap at 75%
+
+            // Adjust PLF for interest rate
+            if (interestRate > 0.05) {
+                plf -= (interestRate - 0.05) * 2;
+            }
+            plf = Math.max(plf, 0.20);
+
+            // Calculate principal limit
+            const principalLimit = maxClaimAmount * plf;
+
+            // Closing costs (estimate)
+            const originationFee = Math.min(Math.max(homeValue * 0.02, 2500), 6000);
+            const mip = maxClaimAmount * 0.02; // 2% MIP
+            const otherCosts = 3000; // Title, appraisal, etc.
+            const totalClosingCosts = originationFee + mip + otherCosts;
+
+            // Available proceeds
+            const availableProceeds = principalLimit - totalClosingCosts - mortgageBalance;
+            const netProceeds = Math.max(0, availableProceeds);
+
+            // Monthly payment calculation (for tenure/term options)
+            let monthlyPayment = 0;
+            if (payoutOption === 'tenure') {
+                // Lifetime monthly payment based on life expectancy
+                const lifeExpectancy = 95 - age;
+                const months = lifeExpectancy * 12;
+                monthlyPayment = netProceeds / months;
+            } else if (payoutOption === 'term') {
+                monthlyPayment = netProceeds / (termYears * 12);
+            }
+
+            // Remaining equity
+            const remainingEquity = homeValue - principalLimit;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('availableProceeds').textContent = formatMoney(netProceeds);
+            document.getElementById('monthlyPayment').textContent = formatMoney(monthlyPayment);
+            document.getElementById('principalLimit').textContent = formatMoney(principalLimit);
+            document.getElementById('plf').textContent = (plf * 100).toFixed(1) + '%';
+            document.getElementById('remainingEquity').textContent = formatMoney(remainingEquity);
+
+            document.getElementById('displayHome').textContent = formatMoney(homeValue);
+            document.getElementById('displayLimit').textContent = formatMoney(hecmLimit);
+            document.getElementById('displayPrincipal').textContent = formatMoney(principalLimit);
+            document.getElementById('displayCosts').textContent = '-' + formatMoney(totalClosingCosts);
+            document.getElementById('displayPayoff').textContent = '-' + formatMoney(mortgageBalance);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

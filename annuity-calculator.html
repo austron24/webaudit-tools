@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Annuity Calculator - Retirement Income Estimator</title>
+    <meta name="description" content="Calculate annuity payments and retirement income. Estimate fixed, variable, and immediate annuity payouts. Free annuity calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #7c3aed 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #7c3aed;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #7c3aed;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #6d28d9; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #ede9fe;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #7c3aed; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #7c3aed; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #7c3aed; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #6d28d9;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #c4b5fd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💎 Annuity Calculator</h1>
+            <p class="subtitle">Calculate retirement annuity income</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Initial Investment ($)</label>
+                    <input type="number" id="principal" value="500000" min="10000" step="25000">
+                </div>
+                <div class="input-group">
+                    <label>Annuity Type</label>
+                    <select id="annuityType">
+                        <option value="immediate" selected>Immediate Annuity</option>
+                        <option value="deferred">Deferred Annuity</option>
+                        <option value="variable">Variable Annuity</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Your Age</label>
+                    <input type="number" id="age" value="65" min="50" max="85">
+                </div>
+                <div class="input-group">
+                    <label>Payout Period</label>
+                    <select id="payoutPeriod">
+                        <option value="life" selected>Lifetime</option>
+                        <option value="20">20 Years Certain</option>
+                        <option value="15">15 Years Certain</option>
+                        <option value="10">10 Years Certain</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Interest Rate (%)</label>
+                    <input type="number" id="interestRate" value="5" min="2" max="10" step="0.25">
+                </div>
+                <div class="input-group">
+                    <label>Payment Frequency</label>
+                    <select id="frequency">
+                        <option value="monthly" selected>Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                        <option value="annual">Annually</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Deferral Period (years, if deferred)</label>
+                <input type="number" id="deferralYears" value="5" min="0" max="20">
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Annuity</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="monthlyPayment">$0</div>
+                    <div class="result-label-main">Monthly Payment</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="annualIncome">$0</div>
+                        <div class="summary-label">Annual Income</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="totalPayouts">$0</div>
+                        <div class="summary-label">Total Payouts (Est.)</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="payoutRatio">0%</div>
+                        <div class="summary-label">Payout Rate</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="breakevenYears">0 yrs</div>
+                        <div class="summary-label">Break-Even</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Annuity Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Principal</span>
+                        <span class="breakdown-value" id="displayPrincipal">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Interest Earned</span>
+                        <span class="breakdown-value" id="displayInterest">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Payout Period</span>
+                        <span class="breakdown-value" id="displayPeriod">Lifetime</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">First Payment Date</span>
+                        <span class="breakdown-value" id="displayStart">Immediate</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Expected Life Payout</span>
+                        <span class="breakdown-value" id="displayLifePayout">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Retirement Calculators</h4>
+            <a href="retirement-calculator.html">Retirement Savings</a>
+            <a href="social-security-calculator.html">Social Security</a>
+            <a href="401k-calculator.html">401(k) Calculator</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Annuity Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const principal = parseFloat(document.getElementById('principal').value);
+            const annuityType = document.getElementById('annuityType').value;
+            const age = parseInt(document.getElementById('age').value);
+            const payoutPeriod = document.getElementById('payoutPeriod').value;
+            const interestRate = parseFloat(document.getElementById('interestRate').value) / 100;
+            const frequency = document.getElementById('frequency').value;
+            const deferralYears = parseInt(document.getElementById('deferralYears').value);
+
+            // Life expectancy estimate
+            const lifeExpectancy = 85;
+            const yearsInPayout = payoutPeriod === 'life' ? (lifeExpectancy - age) : parseInt(payoutPeriod);
+
+            // Payments per year
+            let paymentsPerYear = 12;
+            if (frequency === 'quarterly') paymentsPerYear = 4;
+            else if (frequency === 'annual') paymentsPerYear = 1;
+
+            // Calculate accumulated value if deferred
+            let accumulatedValue = principal;
+            if (annuityType === 'deferred' && deferralYears > 0) {
+                accumulatedValue = principal * Math.pow(1 + interestRate, deferralYears);
+            }
+
+            // Calculate periodic payment (annuity formula)
+            const periodicRate = interestRate / paymentsPerYear;
+            const totalPayments = yearsInPayout * paymentsPerYear;
+
+            let periodicPayment;
+            if (periodicRate > 0) {
+                periodicPayment = accumulatedValue * (periodicRate * Math.pow(1 + periodicRate, totalPayments)) /
+                                  (Math.pow(1 + periodicRate, totalPayments) - 1);
+            } else {
+                periodicPayment = accumulatedValue / totalPayments;
+            }
+
+            // Convert to monthly for display
+            let monthlyPayment = periodicPayment;
+            if (frequency === 'quarterly') monthlyPayment = periodicPayment / 3;
+            else if (frequency === 'annual') monthlyPayment = periodicPayment / 12;
+
+            const annualIncome = monthlyPayment * 12;
+            const totalPayouts = periodicPayment * totalPayments;
+            const payoutRatio = ((annualIncome / principal) * 100).toFixed(1);
+            const breakevenYears = (principal / annualIncome).toFixed(1);
+            const interestEarned = totalPayouts - accumulatedValue;
+
+            let startDate = 'Immediate';
+            if (annuityType === 'deferred') {
+                startDate = 'In ' + deferralYears + ' years';
+            }
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('monthlyPayment').textContent = formatMoney(monthlyPayment);
+            document.getElementById('annualIncome').textContent = formatMoney(annualIncome);
+            document.getElementById('totalPayouts').textContent = formatMoney(totalPayouts);
+            document.getElementById('payoutRatio').textContent = payoutRatio + '%';
+            document.getElementById('breakevenYears').textContent = breakevenYears + ' yrs';
+
+            document.getElementById('displayPrincipal').textContent = formatMoney(principal);
+            document.getElementById('displayInterest').textContent = formatMoney(interestEarned);
+            document.getElementById('displayPeriod').textContent = payoutPeriod === 'life' ? 'Lifetime' : payoutPeriod + ' Years';
+            document.getElementById('displayStart').textContent = startDate;
+            document.getElementById('displayLifePayout').textContent = formatMoney(totalPayouts);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
