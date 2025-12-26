@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kitchen Remodel Cost Calculator - Renovation Estimates</title>
-    <meta name="description" content="Calculate kitchen remodel costs. Estimate renovation prices for cabinets, countertops, appliances and more.">
+    <title>Free Kitchen Remodel Calculator - Kitchen Renovation Cost Estimator</title>
+    <meta name="description" content="Calculate kitchen remodel costs. Estimate cabinet, countertop, appliance, and labor expenses. Free kitchen renovation cost calculator.">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -13,140 +13,97 @@
             min-height: 100vh;
             color: #f8fafc;
         }
-        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
         header { text-align: center; margin-bottom: 30px; }
         h1 { font-size: 36px; margin-bottom: 10px; }
         .subtitle { font-size: 16px; opacity: 0.9; }
         .calc-card {
             background: white;
             border-radius: 24px;
-            padding: 35px;
+            padding: 40px;
             color: #1e293b;
             box-shadow: 0 25px 50px rgba(0,0,0,0.3);
         }
-        .input-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-        .input-group {
-            margin-bottom: 15px;
-        }
-        .input-group.full { grid-column: span 2; }
+        .input-group { margin-bottom: 20px; }
         .input-group label {
             display: block;
-            font-size: 12px;
+            font-size: 14px;
             color: #64748b;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            font-weight: 500;
         }
         .input-group input, .input-group select {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 16px;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
         }
         .input-group input:focus, .input-group select:focus {
             outline: none;
             border-color: #dc2626;
         }
-        .result-box {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-            border-radius: 16px;
-            padding: 30px;
-            text-align: center;
-            color: white;
-            margin: 25px 0;
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
         }
-        .result-box .label { opacity: 0.9; font-size: 14px; }
-        .result-box .value { font-size: 42px; font-weight: bold; }
-        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
-        .compare-grid {
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #dc2626;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #ef4444; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 48px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .result-range { font-size: 16px; opacity: 0.8; margin-top: 10px; }
+        .summary-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 20px;
+            gap: 15px;
+            margin-bottom: 20px;
         }
-        .compare-item {
-            background: #fef2f2;
-            border-radius: 10px;
+        .summary-box {
+            background: #fee2e2;
             padding: 20px;
+            border-radius: 12px;
             text-align: center;
         }
-        .compare-item .type {
-            font-size: 12px;
-            color: #64748b;
-            margin-bottom: 5px;
-        }
-        .compare-item .value {
-            font-size: 22px;
-            font-weight: bold;
-            color: #b91c1c;
-        }
-        .compare-item .note {
-            font-size: 11px;
-            color: #64748b;
-            margin-top: 5px;
-        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #dc2626; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
         .breakdown {
             background: #f8fafc;
             border-radius: 12px;
             padding: 20px;
-            margin-top: 20px;
         }
-        .breakdown h4 {
-            color: #b91c1c;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
-        .break-row {
+        .breakdown h4 { color: #dc2626; margin-bottom: 15px; }
+        .breakdown-row {
             display: flex;
             justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #e2e8f0;
-            font-size: 14px;
-        }
-        .break-row:last-child { border: none; }
-        .break-row .value { font-weight: 600; color: #b91c1c; }
-        .pricing {
-            background: #fef2f2;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        .pricing h4 {
-            color: #b91c1c;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
-        .pricing table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-        .pricing th, .pricing td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #fecaca;
-        }
-        .pricing th { color: #b91c1c; }
-        .tips {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        .tips h4 {
-            color: #b91c1c;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
-        .tip-item {
-            font-size: 13px;
-            padding: 8px 0;
+            padding: 12px 0;
             border-bottom: 1px solid #e2e8f0;
         }
-        .tip-item:last-child { border: none; }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
         .tools-promo {
             background: white;
             border-radius: 12px;
@@ -154,11 +111,11 @@
             color: #1e293b;
             margin-top: 25px;
         }
-        .tools-promo h4 { color: #b91c1c; margin-bottom: 10px; }
+        .tools-promo h4 { color: #dc2626; margin-bottom: 10px; }
         .tools-promo a {
             display: inline-block;
             margin: 5px 10px 5px 0;
-            color: #dc2626;
+            color: #ef4444;
             text-decoration: none;
         }
         .tools-promo a:hover { text-decoration: underline; }
@@ -169,141 +126,150 @@
 <body>
     <div class="container">
         <header>
-            <h1>🍳 Kitchen Remodel Cost</h1>
-            <p class="subtitle">Estimate your renovation budget</p>
+            <h1>🍳 Kitchen Remodel Calculator</h1>
+            <p class="subtitle">Estimate your kitchen renovation costs</p>
         </header>
 
         <div class="calc-card">
-            <div class="input-grid">
+            <div class="input-row">
                 <div class="input-group">
-                    <label>Kitchen Size</label>
-                    <select id="kitchenSize" onchange="calculate()">
-                        <option value="small">Small (70 sq ft)</option>
-                        <option value="medium" selected>Medium (120 sq ft)</option>
-                        <option value="large">Large (200 sq ft)</option>
-                        <option value="xlarge">Extra Large (300+ sq ft)</option>
-                    </select>
+                    <label>Kitchen Size (sq ft)</label>
+                    <input type="number" id="sqft" value="150" min="50" max="500" step="10">
                 </div>
                 <div class="input-group">
-                    <label>Remodel Scope</label>
-                    <select id="scope" onchange="calculate()">
-                        <option value="cosmetic">Cosmetic (paint, hardware)</option>
-                        <option value="partial" selected>Partial (+ counters, appliances)</option>
-                        <option value="full">Full (new cabinets)</option>
-                        <option value="luxury">Luxury (custom everything)</option>
+                    <label>Remodel Level</label>
+                    <select id="level">
+                        <option value="cosmetic">Cosmetic Refresh</option>
+                        <option value="minor">Minor Remodel</option>
+                        <option value="major" selected>Major Remodel</option>
+                        <option value="luxury">Luxury/Custom</option>
                     </select>
                 </div>
+            </div>
+
+            <div class="input-row">
                 <div class="input-group">
-                    <label>Cabinet Type</label>
-                    <select id="cabinets" onchange="calculate()">
+                    <label>Cabinet Option</label>
+                    <select id="cabinets">
                         <option value="reface">Reface Existing</option>
                         <option value="stock" selected>Stock Cabinets</option>
                         <option value="semicustom">Semi-Custom</option>
-                        <option value="custom">Full Custom</option>
+                        <option value="custom">Custom Built</option>
                     </select>
                 </div>
                 <div class="input-group">
                     <label>Countertop Material</label>
-                    <select id="countertops" onchange="calculate()">
+                    <select id="countertop">
                         <option value="laminate">Laminate</option>
+                        <option value="tile">Tile</option>
                         <option value="granite" selected>Granite</option>
                         <option value="quartz">Quartz</option>
                         <option value="marble">Marble</option>
                     </select>
                 </div>
-                <div class="input-group full">
-                    <label>Layout Changes?</label>
-                    <select id="layout" onchange="calculate()">
-                        <option value="none" selected>No (same layout)</option>
-                        <option value="minor">Minor (move appliances)</option>
-                        <option value="major">Major (new walls/plumbing)</option>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Appliance Package</label>
+                    <select id="appliances">
+                        <option value="keep">Keep Existing</option>
+                        <option value="basic">Basic Package</option>
+                        <option value="midrange" selected>Mid-Range</option>
+                        <option value="highend">High-End</option>
+                        <option value="professional">Professional Grade</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Flooring</label>
+                    <select id="flooring">
+                        <option value="keep">Keep Existing</option>
+                        <option value="vinyl">Vinyl/LVP</option>
+                        <option value="tile" selected>Tile</option>
+                        <option value="hardwood">Hardwood</option>
                     </select>
                 </div>
             </div>
 
-            <div class="result-box">
-                <div class="label">Estimated Total Cost</div>
-                <div class="value" id="totalCost">$25,000-40,000</div>
-                <div class="sub" id="perSqft">$210-330 per sq ft</div>
-            </div>
-
-            <div class="compare-grid">
-                <div class="compare-item">
-                    <div class="type">Materials</div>
-                    <div class="value" id="matCost">$15,000</div>
-                    <div class="note">Cabinets, counters, etc.</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Layout Changes</label>
+                    <select id="layout">
+                        <option value="none" selected>No Changes</option>
+                        <option value="minor">Minor (Move Sink)</option>
+                        <option value="major">Major (New Layout)</option>
+                        <option value="walls">Remove/Add Walls</option>
+                    </select>
                 </div>
-                <div class="compare-item">
-                    <div class="type">Labor</div>
-                    <div class="value" id="laborCost">$10,000</div>
-                    <div class="note">All trades</div>
-                </div>
-                <div class="compare-item">
-                    <div class="type">ROI</div>
-                    <div class="value" id="roi">70-80%</div>
-                    <div class="note">Value added</div>
-                </div>
-                <div class="compare-item">
-                    <div class="type">Timeline</div>
-                    <div class="value" id="timeline">4-8 wks</div>
-                    <div class="note">Typical duration</div>
+                <div class="input-group">
+                    <label>Your Region</label>
+                    <select id="region">
+                        <option value="low">Low Cost Area</option>
+                        <option value="average" selected>Average</option>
+                        <option value="high">High Cost Metro</option>
+                    </select>
                 </div>
             </div>
 
-            <div class="breakdown">
-                <h4>💰 Cost Breakdown</h4>
-                <div class="break-row">
-                    <span>Cabinets</span>
-                    <span class="value" id="cabinetCost">$8,000</span>
-                </div>
-                <div class="break-row">
-                    <span>Countertops</span>
-                    <span class="value" id="counterCost">$3,500</span>
-                </div>
-                <div class="break-row">
-                    <span>Appliances</span>
-                    <span class="value" id="applianceCost">$5,000</span>
-                </div>
-                <div class="break-row">
-                    <span>Flooring</span>
-                    <span class="value" id="floorCost">$2,000</span>
-                </div>
-                <div class="break-row">
-                    <span>Plumbing</span>
-                    <span class="value" id="plumbCost">$1,500</span>
-                </div>
-                <div class="break-row">
-                    <span>Electrical</span>
-                    <span class="value" id="elecCost">$1,500</span>
-                </div>
-            </div>
+            <button class="btn" onclick="calculate()">Calculate Cost</button>
 
-            <div class="pricing">
-                <h4>📊 Average Kitchen Remodel Costs</h4>
-                <table>
-                    <tr>
-                        <th>Scope</th>
-                        <th>Small</th>
-                        <th>Large</th>
-                    </tr>
-                    <tr><td>Cosmetic</td><td>$5,000-10,000</td><td>$8,000-15,000</td></tr>
-                    <tr><td>Partial</td><td>$15,000-30,000</td><td>$25,000-50,000</td></tr>
-                    <tr><td>Full</td><td>$30,000-50,000</td><td>$50,000-80,000</td></tr>
-                    <tr><td>Luxury</td><td>$50,000+</td><td>$100,000+</td></tr>
-                </table>
-            </div>
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalCost">$0</div>
+                    <div class="result-label-main">Total Estimated Cost</div>
+                    <div class="result-range" id="costRange">Range: $0 - $0</div>
+                </div>
 
-            <div class="tips">
-                <h4>💡 Kitchen Remodel Tips</h4>
-                <div class="tip-item">✓ Cabinets are 30-40% of total cost</div>
-                <div class="tip-item">✓ Keep same layout to save on plumbing</div>
-                <div class="tip-item">✓ Refacing saves 50% vs new cabinets</div>
-                <div class="tip-item">✓ Add 15-20% buffer for surprises</div>
-                <div class="tip-item">✓ Kitchen remodels have highest ROI</div>
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="perSqft">$0</div>
+                        <div class="summary-label">Cost Per Sq Ft</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="cabinetCost">$0</div>
+                        <div class="summary-label">Cabinets</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="counterCost">$0</div>
+                        <div class="summary-label">Countertops</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="laborCost">$0</div>
+                        <div class="summary-label">Labor</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Cost Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Cabinets</span>
+                        <span class="breakdown-value" id="displayCabinets">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Countertops</span>
+                        <span class="breakdown-value" id="displayCounters">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Appliances</span>
+                        <span class="breakdown-value" id="displayAppliances">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Flooring</span>
+                        <span class="breakdown-value" id="displayFlooring">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Plumbing/Electrical</span>
+                        <span class="breakdown-value" id="displayPlumbing">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Installation Labor</span>
+                        <span class="breakdown-value" id="displayLabor">$0</span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="ad-container" style="text-align: center; margin: 25px 0;">
+        <div class="ad-container">
             <script>
                 atOptions = {
                     'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
@@ -317,98 +283,87 @@
         </div>
 
         <div class="tools-promo">
-            <h4>More Home Tools</h4>
+            <h4>More Home Improvement Calculators</h4>
             <a href="bathroom-remodel-calculator.html">Bathroom Remodel</a>
-            <a href="flooring-calculator.html">Flooring Calculator</a>
-            <a href="tile-calculator.html">Tile Calculator</a>
-            <a href="index.html">View All 100+ Tools</a>
+            <a href="home-addition-calculator.html">Home Addition</a>
+            <a href="countertop-calculator.html">Countertops</a>
+            <a href="index.html">View All Tools</a>
         </div>
     </div>
 
     <footer>
         <p>Kitchen Remodel Calculator by WebAudit Pro</p>
-        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+        <p><a href="index.html">More Free Tools</a></p>
     </footer>
 
     <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
         function calculate() {
-            const kitchenSize = document.getElementById('kitchenSize').value;
-            const scope = document.getElementById('scope').value;
+            const sqft = parseFloat(document.getElementById('sqft').value);
+            const level = document.getElementById('level').value;
             const cabinets = document.getElementById('cabinets').value;
-            const countertops = document.getElementById('countertops').value;
+            const countertop = document.getElementById('countertop').value;
+            const appliances = document.getElementById('appliances').value;
+            const flooring = document.getElementById('flooring').value;
             const layout = document.getElementById('layout').value;
+            const region = document.getElementById('region').value;
 
-            // Size in sq ft
-            const sizes = {
-                small: 70,
-                medium: 120,
-                large: 200,
-                xlarge: 300
-            };
-            const sqft = sizes[kitchenSize];
+            const linearFeet = sqft * 0.2;
+            const cabinetCosts = { reface: 150, stock: 250, semicustom: 400, custom: 800 };
+            let cabinetCost = linearFeet * cabinetCosts[cabinets];
 
-            // Cabinet costs per linear foot (assume 20-30 linear ft based on size)
-            const linearFt = Math.round(sqft * 0.2);
-            const cabinetCosts = {
-                reface: 150,
-                stock: 200,
-                semicustom: 350,
-                custom: 600
-            };
-            let cabinetCost = linearFt * cabinetCosts[cabinets];
+            const counterSqft = sqft * 0.15;
+            const counterCosts = { laminate: 30, tile: 50, granite: 80, quartz: 100, marble: 150 };
+            let counterCost = counterSqft * counterCosts[countertop];
 
-            // Countertop costs per sq ft (assume 30-50 sq ft)
-            const counterSqft = Math.round(sqft * 0.3);
-            const counterCosts = {
-                laminate: 30,
-                granite: 80,
-                quartz: 100,
-                marble: 150
-            };
-            let counterCost = counterSqft * counterCosts[countertops];
+            const applianceCosts = { keep: 0, basic: 3000, midrange: 6000, highend: 12000, professional: 25000 };
+            let applianceCost = applianceCosts[appliances];
 
-            // Appliance package
-            const applianceCosts = {
-                cosmetic: 0,
-                partial: 4000,
-                full: 6000,
-                luxury: 15000
-            };
-            const applianceCost = applianceCosts[scope];
+            const flooringCosts = { keep: 0, vinyl: 6, tile: 12, hardwood: 15 };
+            let floorCost = sqft * flooringCosts[flooring];
 
-            // Flooring
-            const floorCost = Math.round(sqft * 15);
+            const layoutCosts = { none: 0, minor: 2000, major: 8000, walls: 15000 };
+            let layoutCost = layoutCosts[layout];
 
-            // Plumbing/electrical
-            const layoutMult = layout === 'none' ? 1 : (layout === 'minor' ? 1.5 : 2.5);
-            const plumbCost = Math.round(1200 * layoutMult);
-            const elecCost = Math.round(1200 * layoutMult);
+            const plumbingCosts = { cosmetic: 500, minor: 2000, major: 5000, luxury: 10000 };
+            let plumbingCost = plumbingCosts[level];
 
-            // Labor (roughly 40% of materials)
-            const matTotal = cabinetCost + counterCost + applianceCost + floorCost + plumbCost + elecCost;
-            const laborCost = Math.round(matTotal * 0.5);
+            const materialTotal = cabinetCost + counterCost + applianceCost + floorCost;
+            let laborCost = materialTotal * 0.35;
 
-            const totalMid = matTotal + laborCost;
-            const totalLow = Math.round(totalMid * 0.85);
-            const totalHigh = Math.round(totalMid * 1.25);
+            const regionMultipliers = { low: 0.80, average: 1.0, high: 1.35 };
+            const regionMult = regionMultipliers[region];
 
-            // Timeline
-            const weeks = scope === 'cosmetic' ? '1-2' : (scope === 'partial' ? '4-6' : (scope === 'full' ? '6-10' : '10-16'));
+            cabinetCost *= regionMult;
+            counterCost *= regionMult;
+            floorCost *= regionMult;
+            layoutCost *= regionMult;
+            plumbingCost *= regionMult;
+            laborCost *= regionMult;
 
-            // Update display
-            document.getElementById('totalCost').textContent = '$' + totalLow.toLocaleString() + '-' + totalHigh.toLocaleString();
-            document.getElementById('perSqft').textContent = '$' + Math.round(totalLow / sqft) + '-' + Math.round(totalHigh / sqft) + ' per sq ft';
+            const totalCost = cabinetCost + counterCost + applianceCost + floorCost + layoutCost + plumbingCost + laborCost;
+            const perSqft = totalCost / sqft;
 
-            document.getElementById('matCost').textContent = '$' + matTotal.toLocaleString();
-            document.getElementById('laborCost').textContent = '$' + laborCost.toLocaleString();
-            document.getElementById('timeline').textContent = weeks + ' wks';
+            const lowEstimate = totalCost * 0.85;
+            const highEstimate = totalCost * 1.25;
 
-            document.getElementById('cabinetCost').textContent = '$' + cabinetCost.toLocaleString();
-            document.getElementById('counterCost').textContent = '$' + counterCost.toLocaleString();
-            document.getElementById('applianceCost').textContent = '$' + applianceCost.toLocaleString();
-            document.getElementById('floorCost').textContent = '$' + floorCost.toLocaleString();
-            document.getElementById('plumbCost').textContent = '$' + plumbCost.toLocaleString();
-            document.getElementById('elecCost').textContent = '$' + elecCost.toLocaleString();
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalCost').textContent = formatMoney(totalCost);
+            document.getElementById('costRange').textContent = 'Range: ' + formatMoney(lowEstimate) + ' - ' + formatMoney(highEstimate);
+            document.getElementById('perSqft').textContent = formatMoney(perSqft);
+            document.getElementById('cabinetCost').textContent = formatMoney(cabinetCost);
+            document.getElementById('counterCost').textContent = formatMoney(counterCost);
+            document.getElementById('laborCost').textContent = formatMoney(laborCost);
+
+            document.getElementById('displayCabinets').textContent = formatMoney(cabinetCost);
+            document.getElementById('displayCounters').textContent = formatMoney(counterCost);
+            document.getElementById('displayAppliances').textContent = formatMoney(applianceCost);
+            document.getElementById('displayFlooring').textContent = formatMoney(floorCost);
+            document.getElementById('displayPlumbing').textContent = formatMoney(plumbingCost + layoutCost);
+            document.getElementById('displayLabor').textContent = formatMoney(laborCost);
         }
 
         calculate();

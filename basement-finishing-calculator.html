@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basement Finishing Cost Calculator - Renovation Estimates</title>
-    <meta name="description" content="Calculate basement finishing costs. Estimate renovation prices for finishing your basement space.">
+    <title>Free Basement Finishing Calculator - Basement Remodel Cost Estimator</title>
+    <meta name="description" content="Calculate basement finishing costs. Estimate framing, drywall, flooring, and labor expenses. Free basement remodel cost calculator.">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -13,140 +13,97 @@
             min-height: 100vh;
             color: #f8fafc;
         }
-        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
         header { text-align: center; margin-bottom: 30px; }
         h1 { font-size: 36px; margin-bottom: 10px; }
         .subtitle { font-size: 16px; opacity: 0.9; }
         .calc-card {
             background: white;
             border-radius: 24px;
-            padding: 35px;
+            padding: 40px;
             color: #1e293b;
             box-shadow: 0 25px 50px rgba(0,0,0,0.3);
         }
-        .input-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-        .input-group {
-            margin-bottom: 15px;
-        }
-        .input-group.full { grid-column: span 2; }
+        .input-group { margin-bottom: 20px; }
         .input-group label {
             display: block;
-            font-size: 12px;
+            font-size: 14px;
             color: #64748b;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            font-weight: 500;
         }
         .input-group input, .input-group select {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 16px;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
         }
         .input-group input:focus, .input-group select:focus {
             outline: none;
             border-color: #6366f1;
         }
-        .result-box {
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-            border-radius: 16px;
-            padding: 30px;
-            text-align: center;
-            color: white;
-            margin: 25px 0;
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
         }
-        .result-box .label { opacity: 0.9; font-size: 14px; }
-        .result-box .value { font-size: 42px; font-weight: bold; }
-        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
-        .compare-grid {
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #6366f1;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #818cf8; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 48px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .result-range { font-size: 16px; opacity: 0.8; margin-top: 10px; }
+        .summary-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 20px;
+            gap: 15px;
+            margin-bottom: 20px;
         }
-        .compare-item {
-            background: #eef2ff;
-            border-radius: 10px;
+        .summary-box {
+            background: #e0e7ff;
             padding: 20px;
+            border-radius: 12px;
             text-align: center;
         }
-        .compare-item .type {
-            font-size: 12px;
-            color: #64748b;
-            margin-bottom: 5px;
-        }
-        .compare-item .value {
-            font-size: 22px;
-            font-weight: bold;
-            color: #4f46e5;
-        }
-        .compare-item .note {
-            font-size: 11px;
-            color: #64748b;
-            margin-top: 5px;
-        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #6366f1; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
         .breakdown {
             background: #f8fafc;
             border-radius: 12px;
             padding: 20px;
-            margin-top: 20px;
         }
-        .breakdown h4 {
-            color: #4f46e5;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
-        .break-row {
+        .breakdown h4 { color: #6366f1; margin-bottom: 15px; }
+        .breakdown-row {
             display: flex;
             justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #e2e8f0;
-            font-size: 14px;
-        }
-        .break-row:last-child { border: none; }
-        .break-row .value { font-weight: 600; color: #4f46e5; }
-        .pricing {
-            background: #eef2ff;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        .pricing h4 {
-            color: #4f46e5;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
-        .pricing table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-        .pricing th, .pricing td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #c7d2fe;
-        }
-        .pricing th { color: #4f46e5; }
-        .tips {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        .tips h4 {
-            color: #4f46e5;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
-        .tip-item {
-            font-size: 13px;
-            padding: 8px 0;
+            padding: 12px 0;
             border-bottom: 1px solid #e2e8f0;
         }
-        .tip-item:last-child { border: none; }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
         .tools-promo {
             background: white;
             border-radius: 12px;
@@ -154,11 +111,11 @@
             color: #1e293b;
             margin-top: 25px;
         }
-        .tools-promo h4 { color: #4f46e5; margin-bottom: 10px; }
+        .tools-promo h4 { color: #6366f1; margin-bottom: 10px; }
         .tools-promo a {
             display: inline-block;
             margin: 5px 10px 5px 0;
-            color: #6366f1;
+            color: #818cf8;
             text-decoration: none;
         }
         .tools-promo a:hover { text-decoration: underline; }
@@ -169,130 +126,170 @@
 <body>
     <div class="container">
         <header>
-            <h1>🏠 Basement Finishing Cost</h1>
-            <p class="subtitle">Estimate your renovation budget</p>
+            <h1>🏠 Basement Finishing Calculator</h1>
+            <p class="subtitle">Estimate basement remodel costs</p>
         </header>
 
         <div class="calc-card">
-            <div class="input-grid">
+            <div class="input-row">
                 <div class="input-group">
                     <label>Basement Size (sq ft)</label>
-                    <input type="number" id="sqft" value="800" oninput="calculate()">
+                    <input type="number" id="sqft" value="800" min="200" max="3000" step="50">
                 </div>
                 <div class="input-group">
                     <label>Finish Level</label>
-                    <select id="finishLevel" onchange="calculate()">
-                        <option value="basic">Basic (paint, carpet)</option>
-                        <option value="standard" selected>Standard (drywall, flooring)</option>
-                        <option value="upscale">Upscale (custom finishes)</option>
-                        <option value="luxury">Luxury (high-end)</option>
+                    <select id="finishLevel">
+                        <option value="basic">Basic (Utility Room)</option>
+                        <option value="standard" selected>Standard Living Space</option>
+                        <option value="upscale">Upscale Finish</option>
+                        <option value="luxury">Luxury/High-End</option>
                     </select>
                 </div>
+            </div>
+
+            <div class="input-row">
                 <div class="input-group">
                     <label>Ceiling Height</label>
-                    <select id="ceiling" onchange="calculate()">
-                        <option value="low">Low (under 7 ft)</option>
-                        <option value="standard" selected>Standard (7-8 ft)</option>
-                        <option value="high">High (8+ ft)</option>
+                    <select id="ceilingHeight">
+                        <option value="low">Low (7 ft or less)</option>
+                        <option value="standard" selected>Standard (8 ft)</option>
+                        <option value="high">High (9+ ft)</option>
                     </select>
                 </div>
                 <div class="input-group">
-                    <label>Bathroom?</label>
-                    <select id="bathroom" onchange="calculate()">
+                    <label>Ceiling Type</label>
+                    <select id="ceilingType">
+                        <option value="exposed">Exposed/Painted</option>
+                        <option value="dropceil" selected>Drop Ceiling</option>
+                        <option value="drywall">Drywall Ceiling</option>
+                        <option value="coffered">Coffered/Tray</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Flooring Type</label>
+                    <select id="flooring">
+                        <option value="carpet" selected>Carpet</option>
+                        <option value="vinyl">Vinyl/LVP</option>
+                        <option value="tile">Tile</option>
+                        <option value="engineered">Engineered Wood</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Add Bathroom?</label>
+                    <select id="bathroom">
                         <option value="none" selected>No Bathroom</option>
                         <option value="half">Half Bath</option>
-                        <option value="full">Full Bath</option>
-                    </select>
-                </div>
-                <div class="input-group full">
-                    <label>Additional Features</label>
-                    <select id="features" onchange="calculate()">
-                        <option value="none" selected>None</option>
-                        <option value="bar">Wet Bar</option>
-                        <option value="kitchen">Kitchenette</option>
-                        <option value="theater">Home Theater</option>
+                        <option value="full">Full Bathroom</option>
+                        <option value="luxury">Luxury Bath</option>
                     </select>
                 </div>
             </div>
 
-            <div class="result-box">
-                <div class="label">Estimated Total Cost</div>
-                <div class="value" id="totalCost">$32,000-48,000</div>
-                <div class="sub" id="perSqft">$40-60 per sq ft</div>
-            </div>
-
-            <div class="compare-grid">
-                <div class="compare-item">
-                    <div class="type">Materials</div>
-                    <div class="value" id="matCost">$16,000</div>
-                    <div class="note">Drywall, flooring, etc.</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Add Kitchenette?</label>
+                    <select id="kitchen">
+                        <option value="none" selected>No Kitchen</option>
+                        <option value="wetbar">Wet Bar</option>
+                        <option value="kitchenette">Kitchenette</option>
+                        <option value="full">Full Kitchen</option>
+                    </select>
                 </div>
-                <div class="compare-item">
-                    <div class="type">Labor</div>
-                    <div class="value" id="laborCost">$20,000</div>
-                    <div class="note">All trades</div>
-                </div>
-                <div class="compare-item">
-                    <div class="type">ROI</div>
-                    <div class="value" id="roi">70-75%</div>
-                    <div class="note">Value added</div>
-                </div>
-                <div class="compare-item">
-                    <div class="type">Timeline</div>
-                    <div class="value" id="timeline">4-8 wks</div>
-                    <div class="note">Typical duration</div>
+                <div class="input-group">
+                    <label>Egress Window</label>
+                    <select id="egress">
+                        <option value="no" selected>Not Needed</option>
+                        <option value="yes">Add Egress Window</option>
+                    </select>
                 </div>
             </div>
 
-            <div class="breakdown">
-                <h4>💰 Cost Breakdown</h4>
-                <div class="break-row">
-                    <span>Framing & Drywall</span>
-                    <span class="value" id="frameCost">$8,000</span>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Waterproofing Needed?</label>
+                    <select id="waterproof">
+                        <option value="none" selected>None Needed</option>
+                        <option value="sealant">Sealant Only</option>
+                        <option value="interior">Interior System</option>
+                        <option value="exterior">Exterior (Major)</option>
+                    </select>
                 </div>
-                <div class="break-row">
-                    <span>Flooring</span>
-                    <span class="value" id="floorCost">$4,000</span>
-                </div>
-                <div class="break-row">
-                    <span>Electrical</span>
-                    <span class="value" id="elecCost">$3,000</span>
-                </div>
-                <div class="break-row">
-                    <span>HVAC Extension</span>
-                    <span class="value" id="hvacCost">$2,500</span>
-                </div>
-                <div class="break-row">
-                    <span>Bathroom (if any)</span>
-                    <span class="value" id="bathCost">N/A</span>
+                <div class="input-group">
+                    <label>Your Region</label>
+                    <select id="region">
+                        <option value="low">Low Cost Area</option>
+                        <option value="average" selected>Average</option>
+                        <option value="high">High Cost Metro</option>
+                    </select>
                 </div>
             </div>
 
-            <div class="pricing">
-                <h4>📊 Basement Finishing Costs</h4>
-                <table>
-                    <tr>
-                        <th>Finish Level</th>
-                        <th>Per Sq Ft</th>
-                    </tr>
-                    <tr><td>Basic (DIY-friendly)</td><td>$25-40</td></tr>
-                    <tr><td>Standard</td><td>$40-60</td></tr>
-                    <tr><td>Upscale</td><td>$60-90</td></tr>
-                    <tr><td>Luxury</td><td>$90-150</td></tr>
-                </table>
-            </div>
+            <button class="btn" onclick="calculate()">Calculate Cost</button>
 
-            <div class="tips">
-                <h4>💡 Basement Finishing Tips</h4>
-                <div class="tip-item">✓ Address moisture issues first</div>
-                <div class="tip-item">✓ Check local permits required</div>
-                <div class="tip-item">✓ Egress windows may be required</div>
-                <div class="tip-item">✓ Consider radon mitigation</div>
-                <div class="tip-item">✓ Plan for adequate HVAC</div>
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalCost">$0</div>
+                    <div class="result-label-main">Total Estimated Cost</div>
+                    <div class="result-range" id="costRange">Range: $0 - $0</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="perSqft">$0</div>
+                        <div class="summary-label">Cost Per Sq Ft</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="framingCost">$0</div>
+                        <div class="summary-label">Framing/Walls</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="electricCost">$0</div>
+                        <div class="summary-label">Electrical</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="homeValue">$0</div>
+                        <div class="summary-label">Added Home Value</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Cost Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Framing & Insulation</span>
+                        <span class="breakdown-value" id="displayFraming">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Drywall & Paint</span>
+                        <span class="breakdown-value" id="displayDrywall">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Ceiling</span>
+                        <span class="breakdown-value" id="displayCeiling">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Flooring</span>
+                        <span class="breakdown-value" id="displayFlooring">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Electrical</span>
+                        <span class="breakdown-value" id="displayElectric">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Plumbing (Bathroom/Kitchen)</span>
+                        <span class="breakdown-value" id="displayPlumbing">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Other (Egress, Waterproof)</span>
+                        <span class="breakdown-value" id="displayOther">$0</span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="ad-container" style="text-align: center; margin: 25px 0;">
+        <div class="ad-container">
             <script>
                 atOptions = {
                     'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
@@ -306,92 +303,95 @@
         </div>
 
         <div class="tools-promo">
-            <h4>More Home Tools</h4>
-            <a href="flooring-calculator.html">Flooring Calculator</a>
-            <a href="drywall-calculator.html">Drywall Calculator</a>
+            <h4>More Home Improvement Calculators</h4>
+            <a href="home-addition-calculator.html">Home Addition</a>
             <a href="bathroom-remodel-calculator.html">Bathroom Remodel</a>
-            <a href="index.html">View All 100+ Tools</a>
+            <a href="drywall-calculator.html">Drywall</a>
+            <a href="index.html">View All Tools</a>
         </div>
     </div>
 
     <footer>
         <p>Basement Finishing Calculator by WebAudit Pro</p>
-        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+        <p><a href="index.html">More Free Tools</a></p>
     </footer>
 
     <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
         function calculate() {
-            const sqft = parseFloat(document.getElementById('sqft').value) || 800;
+            const sqft = parseFloat(document.getElementById('sqft').value);
             const finishLevel = document.getElementById('finishLevel').value;
-            const ceiling = document.getElementById('ceiling').value;
+            const ceilingHeight = document.getElementById('ceilingHeight').value;
+            const ceilingType = document.getElementById('ceilingType').value;
+            const flooring = document.getElementById('flooring').value;
             const bathroom = document.getElementById('bathroom').value;
-            const features = document.getElementById('features').value;
+            const kitchen = document.getElementById('kitchen').value;
+            const egress = document.getElementById('egress').value;
+            const waterproof = document.getElementById('waterproof').value;
+            const region = document.getElementById('region').value;
 
-            // Base cost per sq ft by finish level
-            const finishCosts = {
-                basic: 32,
-                standard: 50,
-                upscale: 75,
-                luxury: 120
-            };
-            let costPerSqft = finishCosts[finishLevel];
+            let framingCost = sqft * 8;
+            let drywallCost = sqft * 6;
 
-            // Ceiling adjustment
-            const ceilingMult = {
-                low: 1.15,
-                standard: 1.0,
-                high: 0.95
-            };
-            costPerSqft *= ceilingMult[ceiling];
+            const ceilingCosts = { exposed: 2, dropceil: 5, drywall: 8, coffered: 20 };
+            let ceilingCost = sqft * ceilingCosts[ceilingType];
 
-            // Base costs
-            const baseCost = sqft * costPerSqft;
-            const frameCost = Math.round(sqft * 10);
-            const floorCost = Math.round(sqft * 6);
-            const elecCost = Math.round(sqft * 4);
-            const hvacCost = Math.round(2000 + sqft * 0.5);
+            if (ceilingHeight === 'low') { ceilingCost *= 0.9; }
+            else if (ceilingHeight === 'high') { drywallCost *= 1.15; }
 
-            // Bathroom cost
-            const bathCosts = {
-                none: 0,
-                half: 5000,
-                full: 12000
-            };
-            const bathCost = bathCosts[bathroom];
+            const flooringCosts = { carpet: 5, vinyl: 7, tile: 12, engineered: 10 };
+            let flooringCost = sqft * flooringCosts[flooring];
 
-            // Feature costs
-            const featureCosts = {
-                none: 0,
-                bar: 8000,
-                kitchen: 15000,
-                theater: 10000
-            };
-            const featureCost = featureCosts[features];
+            let electricCost = sqft * 5;
 
-            const totalMid = Math.round(baseCost + bathCost + featureCost);
-            const totalLow = Math.round(totalMid * 0.85);
-            const totalHigh = Math.round(totalMid * 1.2);
+            const bathroomCosts = { none: 0, half: 5000, full: 12000, luxury: 25000 };
+            let plumbingCost = bathroomCosts[bathroom];
 
-            // Material vs labor split
-            const matCost = Math.round(totalMid * 0.4);
-            const laborCost = Math.round(totalMid * 0.6);
+            const kitchenCosts = { none: 0, wetbar: 3000, kitchenette: 8000, full: 20000 };
+            plumbingCost += kitchenCosts[kitchen];
 
-            // Timeline
-            let weeks = finishLevel === 'basic' ? '2-4' : (finishLevel === 'standard' ? '4-8' : (finishLevel === 'upscale' ? '6-10' : '8-14'));
+            let otherCost = 0;
+            if (egress === 'yes') { otherCost += 4000; }
 
-            // Update display
-            document.getElementById('totalCost').textContent = '$' + totalLow.toLocaleString() + '-' + totalHigh.toLocaleString();
-            document.getElementById('perSqft').textContent = '$' + Math.round(totalLow / sqft) + '-' + Math.round(totalHigh / sqft) + ' per sq ft';
+            const waterproofCosts = { none: 0, sealant: sqft * 2, interior: sqft * 8, exterior: sqft * 25 };
+            otherCost += waterproofCosts[waterproof];
 
-            document.getElementById('matCost').textContent = '$' + matCost.toLocaleString();
-            document.getElementById('laborCost').textContent = '$' + laborCost.toLocaleString();
-            document.getElementById('timeline').textContent = weeks + ' wks';
+            const regionMultipliers = { low: 0.80, average: 1.0, high: 1.35 };
+            const regionMult = regionMultipliers[region];
 
-            document.getElementById('frameCost').textContent = '$' + frameCost.toLocaleString();
-            document.getElementById('floorCost').textContent = '$' + floorCost.toLocaleString();
-            document.getElementById('elecCost').textContent = '$' + elecCost.toLocaleString();
-            document.getElementById('hvacCost').textContent = '$' + hvacCost.toLocaleString();
-            document.getElementById('bathCost').textContent = bathCost > 0 ? '$' + bathCost.toLocaleString() : 'N/A';
+            framingCost *= regionMult;
+            drywallCost *= regionMult;
+            ceilingCost *= regionMult;
+            flooringCost *= regionMult;
+            electricCost *= regionMult;
+            plumbingCost *= regionMult;
+            otherCost *= regionMult;
+
+            const totalCost = framingCost + drywallCost + ceilingCost + flooringCost + electricCost + plumbingCost + otherCost;
+            const perSqft = totalCost / sqft;
+            const homeValue = totalCost * 0.72;
+
+            const lowEstimate = totalCost * 0.85;
+            const highEstimate = totalCost * 1.25;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalCost').textContent = formatMoney(totalCost);
+            document.getElementById('costRange').textContent = 'Range: ' + formatMoney(lowEstimate) + ' - ' + formatMoney(highEstimate);
+            document.getElementById('perSqft').textContent = formatMoney(perSqft);
+            document.getElementById('framingCost').textContent = formatMoney(framingCost);
+            document.getElementById('electricCost').textContent = formatMoney(electricCost);
+            document.getElementById('homeValue').textContent = '+' + formatMoney(homeValue);
+
+            document.getElementById('displayFraming').textContent = formatMoney(framingCost);
+            document.getElementById('displayDrywall').textContent = formatMoney(drywallCost);
+            document.getElementById('displayCeiling').textContent = formatMoney(ceilingCost);
+            document.getElementById('displayFlooring').textContent = formatMoney(flooringCost);
+            document.getElementById('displayElectric').textContent = formatMoney(electricCost);
+            document.getElementById('displayPlumbing').textContent = formatMoney(plumbingCost);
+            document.getElementById('displayOther').textContent = formatMoney(otherCost);
         }
 
         calculate();

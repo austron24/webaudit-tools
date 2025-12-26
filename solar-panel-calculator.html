@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Solar Panel Calculator - Solar Installation Cost Estimator</title>
+    <meta name="description" content="Calculate solar panel installation costs and savings. Estimate solar system size, payback period, and ROI. Free solar panel calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #ea580c 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #ea580c;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #ea580c;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #f97316; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 48px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .result-range { font-size: 16px; opacity: 0.8; margin-top: 10px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #ffedd5;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #ea580c; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #ea580c; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #ea580c; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #f97316;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fdba74; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>☀️ Solar Panel Calculator</h1>
+            <p class="subtitle">Estimate solar installation costs & savings</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Monthly Electric Bill ($)</label>
+                    <input type="number" id="electricBill" value="150" min="50" max="1000" step="10">
+                </div>
+                <div class="input-group">
+                    <label>Your State/Region</label>
+                    <select id="region">
+                        <option value="southwest">Southwest (AZ, NV, NM)</option>
+                        <option value="california">California</option>
+                        <option value="south">South (TX, FL, GA)</option>
+                        <option value="midwest" selected>Midwest</option>
+                        <option value="northeast">Northeast</option>
+                        <option value="northwest">Northwest</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Roof Type</label>
+                    <select id="roofType">
+                        <option value="asphalt" selected>Asphalt Shingles</option>
+                        <option value="metal">Metal</option>
+                        <option value="tile">Tile/Clay</option>
+                        <option value="flat">Flat Roof</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Roof Condition</label>
+                    <select id="roofCondition">
+                        <option value="excellent">Excellent (< 5 yrs)</option>
+                        <option value="good" selected>Good (5-15 yrs)</option>
+                        <option value="fair">Fair (15-20 yrs)</option>
+                        <option value="replace">Needs Replacement</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Panel Quality</label>
+                    <select id="panelQuality">
+                        <option value="economy">Economy</option>
+                        <option value="standard" selected>Standard</option>
+                        <option value="premium">Premium (LG, Panasonic)</option>
+                        <option value="luxury">Luxury (SunPower)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Battery Storage</label>
+                    <select id="battery">
+                        <option value="none" selected>No Battery</option>
+                        <option value="basic">Basic (1 Powerwall)</option>
+                        <option value="extended">Extended (2 Powerwall)</option>
+                        <option value="offgrid">Off-Grid Capable</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Energy Offset Goal</label>
+                    <select id="offset">
+                        <option value="50">50% of Usage</option>
+                        <option value="80">80% of Usage</option>
+                        <option value="100" selected>100% of Usage</option>
+                        <option value="120">120% (Net Metering)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Utility Rate Increase (%/yr)</label>
+                    <select id="rateIncrease">
+                        <option value="2">2%</option>
+                        <option value="3" selected>3%</option>
+                        <option value="4">4%</option>
+                        <option value="5">5%</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Solar</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalCost">$0</div>
+                    <div class="result-label-main">Net Cost (After Tax Credit)</div>
+                    <div class="result-range" id="systemSize">System Size: 0 kW</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="grossCost">$0</div>
+                        <div class="summary-label">Gross Cost</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="taxCredit">$0</div>
+                        <div class="summary-label">Federal Tax Credit (30%)</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="annualSavings">$0</div>
+                        <div class="summary-label">Year 1 Savings</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="paybackYears">0 yrs</div>
+                        <div class="summary-label">Payback Period</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 System Details</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">System Size</span>
+                        <span class="breakdown-value" id="displaySize">0 kW</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Number of Panels</span>
+                        <span class="breakdown-value" id="displayPanels">0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Annual Production</span>
+                        <span class="breakdown-value" id="displayProduction">0 kWh</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">25-Year Savings</span>
+                        <span class="breakdown-value" id="display25Year">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">ROI</span>
+                        <span class="breakdown-value" id="displayROI">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Energy Calculators</h4>
+            <a href="electric-bill-calculator.html">Electric Bill</a>
+            <a href="ev-charging-cost-calculator.html">EV Charging</a>
+            <a href="carbon-footprint-calculator.html">Carbon Footprint</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Solar Panel Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const electricBill = parseFloat(document.getElementById('electricBill').value);
+            const region = document.getElementById('region').value;
+            const roofType = document.getElementById('roofType').value;
+            const roofCondition = document.getElementById('roofCondition').value;
+            const panelQuality = document.getElementById('panelQuality').value;
+            const battery = document.getElementById('battery').value;
+            const offsetGoal = parseInt(document.getElementById('offset').value) / 100;
+            const rateIncrease = parseFloat(document.getElementById('rateIncrease').value) / 100;
+
+            // Estimate kWh usage from bill (avg $0.12/kWh)
+            const monthlyKwh = electricBill / 0.12;
+            const annualKwh = monthlyKwh * 12;
+
+            // Sun hours by region
+            const sunHours = {
+                southwest: 6.5,
+                california: 5.8,
+                south: 5.2,
+                midwest: 4.5,
+                northeast: 4.2,
+                northwest: 4.0
+            };
+            const avgSunHours = sunHours[region];
+
+            // Calculate system size needed
+            const targetKwh = annualKwh * offsetGoal;
+            const systemSizeKw = targetKwh / (avgSunHours * 365 * 0.8); // 80% efficiency factor
+
+            // Number of panels (avg 400W per panel)
+            const numPanels = Math.ceil(systemSizeKw * 1000 / 400);
+
+            // Cost per watt by quality
+            const costPerWatt = {
+                economy: 2.50,
+                standard: 3.00,
+                premium: 3.50,
+                luxury: 4.00
+            };
+            let systemCost = systemSizeKw * 1000 * costPerWatt[panelQuality];
+
+            // Roof type adjustment
+            const roofMultipliers = {
+                asphalt: 1.0,
+                metal: 1.05,
+                tile: 1.15,
+                flat: 1.1
+            };
+            systemCost *= roofMultipliers[roofType];
+
+            // Roof condition (may need replacement)
+            if (roofCondition === 'replace') {
+                systemCost += 8000; // Add roof replacement
+            }
+
+            // Battery costs
+            const batteryCosts = {
+                none: 0,
+                basic: 12000,
+                extended: 22000,
+                offgrid: 35000
+            };
+            systemCost += batteryCosts[battery];
+
+            // Federal tax credit (30%)
+            const taxCredit = systemCost * 0.30;
+            const netCost = systemCost - taxCredit;
+
+            // Annual savings
+            const annualSavings = electricBill * 12 * offsetGoal;
+
+            // Payback period
+            const paybackYears = netCost / annualSavings;
+
+            // 25-year savings (with rate increases)
+            let totalSavings = 0;
+            let annualSaving = annualSavings;
+            for (let year = 0; year < 25; year++) {
+                totalSavings += annualSaving;
+                annualSaving *= (1 + rateIncrease);
+            }
+
+            // ROI
+            const roi = ((totalSavings - netCost) / netCost) * 100;
+
+            // Annual production
+            const annualProduction = systemSizeKw * avgSunHours * 365 * 0.8;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalCost').textContent = formatMoney(netCost);
+            document.getElementById('systemSize').textContent = 'System Size: ' + systemSizeKw.toFixed(1) + ' kW';
+            document.getElementById('grossCost').textContent = formatMoney(systemCost);
+            document.getElementById('taxCredit').textContent = '-' + formatMoney(taxCredit);
+            document.getElementById('annualSavings').textContent = formatMoney(annualSavings);
+            document.getElementById('paybackYears').textContent = paybackYears.toFixed(1) + ' yrs';
+
+            document.getElementById('displaySize').textContent = systemSizeKw.toFixed(1) + ' kW';
+            document.getElementById('displayPanels').textContent = numPanels + ' panels';
+            document.getElementById('displayProduction').textContent = Math.round(annualProduction).toLocaleString() + ' kWh';
+            document.getElementById('display25Year').textContent = formatMoney(totalSavings);
+            document.getElementById('displayROI').textContent = roi.toFixed(0) + '%';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
