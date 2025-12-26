@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coupon Calculator - Calculate Coupon Savings</title>
+    <meta name="description" content="Free coupon calculator. Calculate total savings when stacking coupons and discounts. See your final price after all deals.">
+    <meta name="keywords" content="coupon calculator, stacking coupons, discount calculator, savings calculator, coupon stacking">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/coupon-calculator.html">
+    <style>
+        :root { --primary: #e11d48; --primary-dark: #be123c; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
+        .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
+        .content-area { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        .coupon-row { display: grid; grid-template-columns: 1fr 120px 50px; gap: 10px; align-items: end; margin-bottom: 10px; }
+        .btn { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; }
+        .btn-add { background: var(--success); color: white; }
+        .btn-remove { background: var(--primary); color: white; padding: 12px 15px; }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.8); }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
+        .savings-tag { color: var(--success); }
+        .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        @media (max-width: 640px) { .results-grid { grid-template-columns: 1fr; } .coupon-row { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-container" style="display: none;">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
+
+    <header class="header">
+        <h1>🏷️ Coupon Calculator</h1>
+    </header>
+
+    <div class="main-container">
+        <div class="content-area">
+            <div class="card">
+                <h2>🛒 Original Price</h2>
+                <div class="form-group">
+                    <label>Item Price ($)</label>
+                    <input type="number" id="originalPrice" value="100" step="0.01" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>✂️ Your Coupons</h2>
+                <div id="couponsContainer">
+                    <div class="coupon-row">
+                        <div class="form-group">
+                            <label>Coupon 1</label>
+                            <input type="number" class="coupon-value" value="20" step="0.01" oninput="calculate()">
+                        </div>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select class="coupon-type" onchange="calculate()">
+                                <option value="percent">% Off</option>
+                                <option value="dollar">$ Off</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-remove" onclick="removeCoupon(this)">✕</button>
+                    </div>
+                </div>
+                <button class="btn btn-add" onclick="addCoupon()">+ Add Another Coupon</button>
+
+                <div class="result-hero">
+                    <div class="result-hero-label">Final Price</div>
+                    <div class="result-hero-value" id="finalPrice">$0.00</div>
+                </div>
+
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-value savings-tag" id="totalSavings">$0.00</div>
+                        <div class="result-label">Total Savings</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value savings-tag" id="percentOff">0%</div>
+                        <div class="result-label">Percent Off</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="effectiveRate">$0.00</div>
+                        <div class="result-label">You Pay Per $1</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📊 Savings Breakdown</h2>
+                <div id="breakdown"></div>
+                <div class="breakdown-row" style="font-weight: bold; background: var(--success);">
+                    <span>Final Price</span>
+                    <span id="finalDisplay">$0.00</span>
+                </div>
+            </div>
+
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+
+            <div class="card">
+                <h2>🔗 Related Tools</h2>
+                <div class="related-tools">
+                    <a href="discount-calculator.html" class="related-link">🏷️ Discount Calculator</a>
+                    <a href="sales-tax-calculator.html" class="related-link">🧾 Sales Tax</a>
+                    <a href="unit-price-calculator.html" class="related-link">📦 Unit Price</a>
+                    <a href="percentage-calculator.html" class="related-link">📊 Percentage</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let couponCount = 1;
+
+        function addCoupon() {
+            couponCount++;
+            const container = document.getElementById('couponsContainer');
+            const row = document.createElement('div');
+            row.className = 'coupon-row';
+            row.innerHTML = `
+                <div class="form-group">
+                    <label>Coupon ${couponCount}</label>
+                    <input type="number" class="coupon-value" value="10" step="0.01" oninput="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>Type</label>
+                    <select class="coupon-type" onchange="calculate()">
+                        <option value="percent">% Off</option>
+                        <option value="dollar">$ Off</option>
+                    </select>
+                </div>
+                <button class="btn btn-remove" onclick="removeCoupon(this)">✕</button>
+            `;
+            container.appendChild(row);
+            calculate();
+        }
+
+        function removeCoupon(btn) {
+            const rows = document.querySelectorAll('.coupon-row');
+            if (rows.length > 1) {
+                btn.parentElement.remove();
+                calculate();
+            }
+        }
+
+        function calculate() {
+            const original = parseFloat(document.getElementById('originalPrice').value) || 0;
+            const values = document.querySelectorAll('.coupon-value');
+            const types = document.querySelectorAll('.coupon-type');
+            
+            let currentPrice = original;
+            let breakdownHTML = `<div class="breakdown-row"><span>Original Price</span><span>$${original.toFixed(2)}</span></div>`;
+            
+            values.forEach((input, i) => {
+                const value = parseFloat(input.value) || 0;
+                const type = types[i].value;
+                let discount = 0;
+                
+                if (type === 'percent') {
+                    discount = currentPrice * (value / 100);
+                    breakdownHTML += `<div class="breakdown-row"><span>Coupon ${i+1}: ${value}% off</span><span class="savings-tag">-$${discount.toFixed(2)}</span></div>`;
+                } else {
+                    discount = value;
+                    breakdownHTML += `<div class="breakdown-row"><span>Coupon ${i+1}: $${value} off</span><span class="savings-tag">-$${discount.toFixed(2)}</span></div>`;
+                }
+                
+                currentPrice = Math.max(0, currentPrice - discount);
+            });
+            
+            const totalSavings = original - currentPrice;
+            const percentOff = original > 0 ? (totalSavings / original) * 100 : 0;
+            const effectiveRate = original > 0 ? currentPrice / original : 0;
+            
+            document.getElementById('finalPrice').textContent = '$' + currentPrice.toFixed(2);
+            document.getElementById('totalSavings').textContent = '$' + totalSavings.toFixed(2);
+            document.getElementById('percentOff').textContent = percentOff.toFixed(1) + '%';
+            document.getElementById('effectiveRate').textContent = '$' + effectiveRate.toFixed(2);
+            document.getElementById('breakdown').innerHTML = breakdownHTML;
+            document.getElementById('finalDisplay').textContent = '$' + currentPrice.toFixed(2);
+        }
+        calculate();
+    </script>
+</body>
+</html>
