@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siding Calculator - Vinyl & Material Estimates</title>
-    <meta name="description" content="Free siding calculator. Calculate how many squares of siding you need for your home exterior project.">
-    <meta name="keywords" content="siding calculator, vinyl siding, exterior siding, siding cost, home siding">
+    <title>Siding Calculator - Estimate Materials & Cost</title>
+    <meta name="description" content="Free siding calculator. Calculate how much siding you need for your home. Estimate materials for vinyl, wood, fiber cement, and more.">
+    <meta name="keywords" content="siding calculator, vinyl siding, home siding, exterior siding, siding cost">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/siding-calculator.html">
     <style>
-        :root { --primary: #0d9488; --primary-dark: #0f766e; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #8b5cf6; --primary-dark: #7c3aed; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -20,26 +20,29 @@
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
         .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
         .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        .type-btn { padding: 15px; background: var(--bg-input); border: 2px solid var(--border); border-radius: 10px; color: var(--text-primary); cursor: pointer; text-align: center; }
+        .type-btn:hover, .type-btn.active { background: var(--primary); border-color: var(--primary); }
+        .type-btn .emoji { font-size: 1.5rem; display: block; margin-bottom: 5px; }
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
         input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
         input:focus, select:focus { outline: none; border-color: var(--primary); }
-        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 40px; border-radius: 16px; text-align: center; margin: 20px 0; }
         .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
-        .result-hero-label { color: rgba(255,255,255,0.8); }
-        .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
+        .result-hero-label { color: rgba(255,255,255,0.9); font-size: 1.2rem; }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
-        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
         .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
-        .cost-breakdown { margin-top: 20px; }
-        .cost-row { display: flex; justify-content: space-between; padding: 15px; background: var(--bg-input); border-radius: 10px; margin-bottom: 10px; }
-        .cost-row.total { background: var(--success); color: white; font-weight: 700; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .breakdown-row:last-child { border-bottom: none; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 640px) { .form-grid, .type-grid { grid-template-columns: 1fr; } .results-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -54,7 +57,7 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
-    
+
     <header class="header">
         <h1>🏠 Siding Calculator</h1>
     </header>
@@ -62,95 +65,63 @@
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>📐 Wall Dimensions</h2>
+                <h2>🧱 Siding Type</h2>
+                <div class="type-grid">
+                    <button class="type-btn active" onclick="setType('vinyl', this)"><span class="emoji">🔲</span>Vinyl</button>
+                    <button class="type-btn" onclick="setType('fiber', this)"><span class="emoji">🪵</span>Fiber Cement</button>
+                    <button class="type-btn" onclick="setType('wood', this)"><span class="emoji">🌲</span>Wood</button>
+                    <button class="type-btn" onclick="setType('aluminum', this)"><span class="emoji">🔩</span>Aluminum</button>
+                    <button class="type-btn" onclick="setType('steel', this)"><span class="emoji">⬜</span>Steel</button>
+                    <button class="type-btn" onclick="setType('stucco', this)"><span class="emoji">🏛️</span>Stucco</button>
+                </div>
+
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Total Wall Length (ft)</label>
-                        <input type="number" id="length" value="120" oninput="calculate()">
+                        <label>Wall Height (feet)</label>
+                        <input type="number" id="height" value="9" step="1" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Wall Height (ft)</label>
-                        <input type="number" id="height" value="9" oninput="calculate()">
+                        <label>Total Wall Length (feet)</label>
+                        <input type="number" id="length" value="150" step="10" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Number of Windows</label>
-                        <input type="number" id="windows" value="8" min="0" oninput="calculate()">
+                        <label>Gable Area (sq ft)</label>
+                        <input type="number" id="gables" value="200" step="25" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Number of Doors</label>
-                        <input type="number" id="doors" value="2" min="0" oninput="calculate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Siding Type</label>
-                        <select id="sidingType" onchange="calculate()">
-                            <option value="vinyl">Vinyl Siding</option>
-                            <option value="fiber">Fiber Cement</option>
-                            <option value="wood">Wood Siding</option>
-                            <option value="aluminum">Aluminum</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Waste Factor (%)</label>
-                        <input type="number" id="waste" value="10" min="5" max="20" oninput="calculate()">
-                    </div>
-                </div>
-                
-                <div class="result-hero">
-                    <div class="result-hero-label">Siding Squares Needed</div>
-                    <div class="result-hero-value" id="squares">0</div>
-                </div>
-                
-                <div class="results-grid">
-                    <div class="result-card">
-                        <div class="result-value" id="grossSqFt">0</div>
-                        <div class="result-label">Gross Sq Ft</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="openings">0</div>
-                        <div class="result-label">Openings Sq Ft</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="netSqFt">0</div>
-                        <div class="result-label">Net Sq Ft</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="boxes">0</div>
-                        <div class="result-label">Boxes/Cartons</div>
+                        <label>Window/Door Area (sq ft)</label>
+                        <input type="number" id="openings" value="200" step="25" oninput="calculate()">
                     </div>
                 </div>
             </div>
 
+            <div class="result-hero">
+                <div class="result-hero-label">Estimated Cost</div>
+                <div class="result-hero-value" id="totalCost">$0</div>
+            </div>
+
+            <div class="results-grid">
+                <div class="result-card">
+                    <div class="result-value" id="totalSqFt">0</div>
+                    <div class="result-label">Square Feet</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value" id="squares">0</div>
+                    <div class="result-label">Squares (100 sq ft)</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value" id="materialCost">$0</div>
+                    <div class="result-label">Material Only</div>
+                </div>
+            </div>
+
             <div class="card">
-                <h2>💰 Cost Estimate</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Siding Cost (per sq ft)</label>
-                        <input type="number" id="sidingCost" value="3.50" step="0.1" oninput="calculate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Installation (per sq ft)</label>
-                        <input type="number" id="installCost" value="4.00" step="0.1" oninput="calculate()">
-                    </div>
-                </div>
-                
-                <div class="cost-breakdown">
-                    <div class="cost-row">
-                        <span>Siding Materials</span>
-                        <span id="materialCost">$0</span>
-                    </div>
-                    <div class="cost-row">
-                        <span>Trim & Accessories (15%)</span>
-                        <span id="trimCost">$0</span>
-                    </div>
-                    <div class="cost-row">
-                        <span>Installation Labor</span>
-                        <span id="laborCost">$0</span>
-                    </div>
-                    <div class="cost-row total">
-                        <span>Total Estimated Cost</span>
-                        <span id="totalCost">$0</span>
-                    </div>
-                </div>
+                <h2>📊 Cost Breakdown</h2>
+                <div class="breakdown-row"><span>Siding Material</span><span id="sidingCost">$0</span></div>
+                <div class="breakdown-row"><span>Underlayment/Wrap</span><span id="wrapCost">$0</span></div>
+                <div class="breakdown-row"><span>Trim & Accessories</span><span id="trimCost">$0</span></div>
+                <div class="breakdown-row"><span>Labor (estimated)</span><span id="laborCost">$0</span></div>
+                <div class="breakdown-row"><span><strong>Total Installed</strong></span><span id="grandTotal"><strong>$0</strong></span></div>
             </div>
 
             <div class="ad-container">
@@ -162,10 +133,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="roofing-calculator.html" class="related-link">🏠 Roofing Calculator</a>
                     <a href="paint-calculator.html" class="related-link">🎨 Paint Calculator</a>
-                    <a href="square-footage-calculator.html" class="related-link">📐 Square Footage</a>
-                    <a href="fence-calculator.html" class="related-link">🏗️ Fence Calculator</a>
+                    <a href="roofing-calculator.html" class="related-link">🏠 Roofing</a>
+                    <a href="insulation-calculator.html" class="related-link">🧊 Insulation</a>
+                    <a href="home-renovation-calculator.html" class="related-link">🔨 Renovation</a>
                 </div>
             </div>
         </div>
@@ -180,39 +151,59 @@
     </div>
 
     <script>
+        const sidingTypes = {
+            vinyl: { materialLow: 3, materialHigh: 8, laborLow: 2, laborHigh: 4 },
+            fiber: { materialLow: 6, materialHigh: 12, laborLow: 4, laborHigh: 8 },
+            wood: { materialLow: 8, materialHigh: 15, laborLow: 5, laborHigh: 10 },
+            aluminum: { materialLow: 4, materialHigh: 8, laborLow: 3, laborHigh: 5 },
+            steel: { materialLow: 5, materialHigh: 12, laborLow: 4, laborHigh: 7 },
+            stucco: { materialLow: 6, materialHigh: 10, laborLow: 5, laborHigh: 9 }
+        };
+
+        let currentType = 'vinyl';
+
+        function setType(type, btn) {
+            currentType = type;
+            document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            calculate();
+        }
+
         function calculate() {
-            const length = parseFloat(document.getElementById('length').value) || 0;
             const height = parseFloat(document.getElementById('height').value) || 0;
-            const windows = parseInt(document.getElementById('windows').value) || 0;
-            const doors = parseInt(document.getElementById('doors').value) || 0;
-            const waste = parseFloat(document.getElementById('waste').value) / 100;
-            const sidingCost = parseFloat(document.getElementById('sidingCost').value) || 0;
-            const installCost = parseFloat(document.getElementById('installCost').value) || 0;
+            const length = parseFloat(document.getElementById('length').value) || 0;
+            const gables = parseFloat(document.getElementById('gables').value) || 0;
+            const openings = parseFloat(document.getElementById('openings').value) || 0;
             
-            const grossSqFt = length * height;
-            const windowArea = windows * 15;
-            const doorArea = doors * 21;
-            const openings = windowArea + doorArea;
-            const netSqFt = grossSqFt - openings;
-            const totalSqFt = netSqFt * (1 + waste);
-            const squares = totalSqFt / 100;
-            const boxes = Math.ceil(totalSqFt / 100);
+            const wallArea = height * length;
+            const totalArea = wallArea + gables - openings;
+            const squares = totalArea / 100;
             
-            document.getElementById('grossSqFt').textContent = Math.round(grossSqFt).toLocaleString();
-            document.getElementById('openings').textContent = Math.round(openings).toLocaleString();
-            document.getElementById('netSqFt').textContent = Math.round(totalSqFt).toLocaleString();
+            // Add 10% for waste
+            const orderArea = totalArea * 1.1;
+            
+            const type = sidingTypes[currentType];
+            const materialAvg = (type.materialLow + type.materialHigh) / 2;
+            const laborAvg = (type.laborLow + type.laborHigh) / 2;
+            
+            const sidingCost = orderArea * materialAvg;
+            const wrapCost = totalArea * 0.50; // House wrap
+            const trimCost = totalArea * 1.50; // Trim, corners, J-channels
+            const laborCost = totalArea * laborAvg;
+            
+            const totalCost = sidingCost + wrapCost + trimCost + laborCost;
+            const materialOnly = sidingCost + wrapCost + trimCost;
+            
+            document.getElementById('totalSqFt').textContent = Math.round(totalArea).toLocaleString();
             document.getElementById('squares').textContent = squares.toFixed(1);
-            document.getElementById('boxes').textContent = boxes;
+            document.getElementById('materialCost').textContent = '$' + Math.round(materialOnly).toLocaleString();
+            document.getElementById('totalCost').textContent = '$' + Math.round(totalCost).toLocaleString();
             
-            const materialCost = totalSqFt * sidingCost;
-            const trimCost = materialCost * 0.15;
-            const laborCost = totalSqFt * installCost;
-            const totalCost = materialCost + trimCost + laborCost;
-            
-            document.getElementById('materialCost').textContent = '$' + Math.round(materialCost).toLocaleString();
+            document.getElementById('sidingCost').textContent = '$' + Math.round(sidingCost).toLocaleString();
+            document.getElementById('wrapCost').textContent = '$' + Math.round(wrapCost).toLocaleString();
             document.getElementById('trimCost').textContent = '$' + Math.round(trimCost).toLocaleString();
             document.getElementById('laborCost').textContent = '$' + Math.round(laborCost).toLocaleString();
-            document.getElementById('totalCost').textContent = '$' + Math.round(totalCost).toLocaleString();
+            document.getElementById('grandTotal').innerHTML = '<strong>$' + Math.round(totalCost).toLocaleString() + '</strong>';
         }
         
         calculate();
