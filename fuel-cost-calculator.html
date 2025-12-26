@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fuel Cost Calculator - Gas Trip Cost Calculator</title>
-    <meta name="description" content="Free fuel cost calculator. Calculate trip gas costs based on distance, MPG, and fuel prices. Plan your road trip budget.">
-    <meta name="keywords" content="fuel cost calculator, gas calculator, trip cost, road trip calculator, mpg calculator">
+    <title>Fuel Cost Calculator - Calculate Gas Cost for Trip</title>
+    <meta name="description" content="Free fuel cost calculator. Calculate gas costs for any trip based on distance, MPG, and fuel price. Compare fuel costs between vehicles.">
+    <meta name="keywords" content="fuel cost calculator, gas calculator, trip cost, mpg calculator, fuel economy">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/fuel-cost-calculator.html">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #3b82f6; --primary-dark: #2563eb; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
         .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
-        .header { background: linear-gradient(135deg, var(--accent) 0%, #d97706 100%); padding: 40px 20px; text-align: center; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
         .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
         .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
         .content-area { display: flex; flex-direction: column; gap: 20px; }
@@ -21,30 +21,23 @@
         .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
         .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
         input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
         input:focus, select:focus { outline: none; border-color: var(--primary); }
-        .result-hero { background: linear-gradient(135deg, var(--success), #059669); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
         .result-hero-value { font-size: 3.5rem; font-weight: 800; color: white; }
         .result-hero-label { color: rgba(255,255,255,0.8); }
-        .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
-        .result-value { font-size: 1.4rem; font-weight: 700; color: var(--secondary); }
-        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.9rem; }
-        .comparison { margin-top: 20px; }
-        .compare-row { display: flex; justify-content: space-between; padding: 15px; background: var(--bg-input); border-radius: 10px; margin-bottom: 10px; align-items: center; }
-        .compare-label { display: flex; align-items: center; gap: 10px; }
-        .compare-icon { font-size: 1.5rem; }
-        .compare-value { font-weight: 700; color: var(--secondary); }
-        .annual-estimate { margin-top: 20px; padding: 20px; background: var(--bg-input); border-radius: 12px; }
-        .annual-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px; }
-        .annual-item { text-align: center; padding: 15px; background: var(--bg-card); border-radius: 10px; }
+        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } .annual-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -59,7 +52,7 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
-    
+
     <header class="header">
         <h1>⛽ Fuel Cost Calculator</h1>
     </header>
@@ -71,95 +64,76 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Trip Distance (miles)</label>
-                        <input type="number" id="distance" value="350" oninput="calculate()">
+                        <input type="number" id="distance" value="300" step="10" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Fuel Efficiency (MPG)</label>
-                        <input type="number" id="mpg" value="28" step="0.1" oninput="calculate()">
+                        <label>Fuel Economy (MPG)</label>
+                        <input type="number" id="mpg" value="28" step="1" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Gas Price ($/gallon)</label>
-                        <input type="number" id="gasPrice" value="3.25" step="0.01" oninput="calculate()">
+                        <input type="number" id="gasPrice" value="3.50" step="0.10" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Round Trip?</label>
                         <select id="roundTrip" onchange="calculate()">
                             <option value="1">One Way</option>
-                            <option value="2" selected>Round Trip</option>
+                            <option value="2">Round Trip</option>
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="result-hero">
                     <div class="result-hero-label">Total Fuel Cost</div>
-                    <div class="result-hero-value" id="totalCost">$0</div>
+                    <div class="result-hero-value" id="totalCost">$0.00</div>
                 </div>
-                
+
                 <div class="results-grid">
                     <div class="result-card">
-                        <div class="result-value" id="totalDistance">0 mi</div>
-                        <div class="result-label">Total Distance</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="gallonsNeeded">0 gal</div>
+                        <div class="result-value" id="gallonsNeeded">0</div>
                         <div class="result-label">Gallons Needed</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="costPerMile">$0</div>
+                        <div class="result-value" id="costPerMile">$0.00</div>
                         <div class="result-label">Cost Per Mile</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="co2Produced">0 lbs</div>
-                        <div class="result-label">CO₂ Produced</div>
+                        <div class="result-value" id="totalDistance">0</div>
+                        <div class="result-label">Total Miles</div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>🔄 Vehicle Comparison</h2>
-                <div class="comparison">
-                    <div class="compare-row">
-                        <div class="compare-label"><span class="compare-icon">🚙</span>SUV (18 MPG)</div>
-                        <span class="compare-value" id="suvCost">$0</span>
+                <h2>📊 Monthly/Annual Estimates</h2>
+                <div class="form-group">
+                    <label>Miles Driven Per Month</label>
+                    <input type="number" id="monthlyMiles" value="1000" step="100" oninput="calculateMonthly()">
+                </div>
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-value" id="monthlyCost">$0</div>
+                        <div class="result-label">Monthly Cost</div>
                     </div>
-                    <div class="compare-row">
-                        <div class="compare-label"><span class="compare-icon">🚗</span>Sedan (30 MPG)</div>
-                        <span class="compare-value" id="sedanCost">$0</span>
+                    <div class="result-card">
+                        <div class="result-value" id="annualCost">$0</div>
+                        <div class="result-label">Annual Cost</div>
                     </div>
-                    <div class="compare-row">
-                        <div class="compare-label"><span class="compare-icon">🚘</span>Hybrid (50 MPG)</div>
-                        <span class="compare-value" id="hybridCost">$0</span>
-                    </div>
-                    <div class="compare-row">
-                        <div class="compare-label"><span class="compare-icon">⚡</span>Electric (~120 MPGe)</div>
-                        <span class="compare-value" id="evCost">$0</span>
+                    <div class="result-card">
+                        <div class="result-value" id="annualGallons">0</div>
+                        <div class="result-label">Gallons/Year</div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>📊 Annual Driving Estimates</h2>
-                <div class="annual-estimate">
-                    <p style="color: var(--text-secondary); margin-bottom: 10px;">Based on your vehicle's MPG and current gas price:</p>
-                    <div class="annual-grid">
-                        <div class="annual-item">
-                            <div class="result-value" id="annual10k">$0</div>
-                            <div class="result-label">10,000 miles/year</div>
-                        </div>
-                        <div class="annual-item">
-                            <div class="result-value" id="annual12k">$0</div>
-                            <div class="result-label">12,000 miles/year (avg)</div>
-                        </div>
-                        <div class="annual-item">
-                            <div class="result-value" id="annual15k">$0</div>
-                            <div class="result-label">15,000 miles/year</div>
-                        </div>
-                        <div class="annual-item">
-                            <div class="result-value" id="monthly">$0</div>
-                            <div class="result-label">Monthly (12k/yr)</div>
-                        </div>
-                    </div>
-                </div>
+                <h2>🔄 MPG Comparison</h2>
+                <div class="breakdown-row"><span>20 MPG Vehicle</span><span id="cost20">$0.00</span></div>
+                <div class="breakdown-row"><span>25 MPG Vehicle</span><span id="cost25">$0.00</span></div>
+                <div class="breakdown-row"><span>30 MPG Vehicle</span><span id="cost30">$0.00</span></div>
+                <div class="breakdown-row"><span>35 MPG Vehicle</span><span id="cost35">$0.00</span></div>
+                <div class="breakdown-row"><span>40 MPG Vehicle</span><span id="cost40">$0.00</span></div>
+                <div class="breakdown-row" style="background: var(--success);"><span>50 MPG Hybrid</span><span id="cost50">$0.00</span></div>
             </div>
 
             <div class="ad-container">
@@ -171,10 +145,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="gas-mileage-calculator.html" class="related-link">⛽ Gas Mileage Calculator</a>
-                    <a href="car-payment-calculator.html" class="related-link">🚗 Car Payment</a>
-                    <a href="auto-insurance-calculator.html" class="related-link">🛡️ Auto Insurance</a>
-                    <a href="unit-converter.html" class="related-link">📐 Unit Converter</a>
+                    <a href="ev-savings-calculator.html" class="related-link">⚡ EV Savings</a>
+                    <a href="car-depreciation-calculator.html" class="related-link">📉 Depreciation</a>
+                    <a href="auto-loan-calculator.html" class="related-link">🚗 Auto Loan</a>
+                    <a href="road-trip-calculator.html" class="related-link">🛣️ Road Trip</a>
                 </div>
             </div>
         </div>
@@ -193,39 +167,41 @@
             const distance = parseFloat(document.getElementById('distance').value) || 0;
             const mpg = parseFloat(document.getElementById('mpg').value) || 1;
             const gasPrice = parseFloat(document.getElementById('gasPrice').value) || 0;
-            const roundTrip = parseInt(document.getElementById('roundTrip').value);
+            const roundTrip = parseInt(document.getElementById('roundTrip').value) || 1;
             
             const totalDistance = distance * roundTrip;
             const gallonsNeeded = totalDistance / mpg;
             const totalCost = gallonsNeeded * gasPrice;
-            const costPerMile = totalCost / totalDistance;
-            const co2Produced = gallonsNeeded * 19.6; // lbs CO2 per gallon
+            const costPerMile = gasPrice / mpg;
             
             document.getElementById('totalCost').textContent = '$' + totalCost.toFixed(2);
-            document.getElementById('totalDistance').textContent = totalDistance.toLocaleString() + ' mi';
-            document.getElementById('gallonsNeeded').textContent = gallonsNeeded.toFixed(1) + ' gal';
-            document.getElementById('costPerMile').textContent = '$' + costPerMile.toFixed(2);
-            document.getElementById('co2Produced').textContent = Math.round(co2Produced).toLocaleString() + ' lbs';
+            document.getElementById('gallonsNeeded').textContent = gallonsNeeded.toFixed(1);
+            document.getElementById('costPerMile').textContent = '$' + costPerMile.toFixed(3);
+            document.getElementById('totalDistance').textContent = totalDistance.toLocaleString();
             
-            // Comparison costs
-            const suvCost = (totalDistance / 18) * gasPrice;
-            const sedanCost = (totalDistance / 30) * gasPrice;
-            const hybridCost = (totalDistance / 50) * gasPrice;
-            const evCost = (totalDistance / 3.5) * 0.12; // kWh cost assuming 3.5 mi/kWh
+            // MPG comparison
+            [20, 25, 30, 35, 40, 50].forEach(m => {
+                const cost = (totalDistance / m) * gasPrice;
+                document.getElementById('cost' + m).textContent = '$' + cost.toFixed(2);
+            });
             
-            document.getElementById('suvCost').textContent = '$' + suvCost.toFixed(2);
-            document.getElementById('sedanCost').textContent = '$' + sedanCost.toFixed(2);
-            document.getElementById('hybridCost').textContent = '$' + hybridCost.toFixed(2);
-            document.getElementById('evCost').textContent = '$' + evCost.toFixed(2);
-            
-            // Annual estimates
-            const costPer1Mile = gasPrice / mpg;
-            document.getElementById('annual10k').textContent = '$' + Math.round(10000 * costPer1Mile).toLocaleString();
-            document.getElementById('annual12k').textContent = '$' + Math.round(12000 * costPer1Mile).toLocaleString();
-            document.getElementById('annual15k').textContent = '$' + Math.round(15000 * costPer1Mile).toLocaleString();
-            document.getElementById('monthly').textContent = '$' + Math.round(1000 * costPer1Mile).toLocaleString();
+            calculateMonthly();
         }
-        
+
+        function calculateMonthly() {
+            const monthlyMiles = parseFloat(document.getElementById('monthlyMiles').value) || 0;
+            const mpg = parseFloat(document.getElementById('mpg').value) || 1;
+            const gasPrice = parseFloat(document.getElementById('gasPrice').value) || 0;
+            
+            const monthlyGallons = monthlyMiles / mpg;
+            const monthlyCost = monthlyGallons * gasPrice;
+            const annualCost = monthlyCost * 12;
+            const annualGallons = monthlyGallons * 12;
+            
+            document.getElementById('monthlyCost').textContent = '$' + monthlyCost.toFixed(0);
+            document.getElementById('annualCost').textContent = '$' + annualCost.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('annualGallons').textContent = annualGallons.toFixed(0);
+        }
         calculate();
     </script>
 </body>
