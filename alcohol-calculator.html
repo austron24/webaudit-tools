@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alcohol Calculator - BAC & Drinks Calculator</title>
+    <meta name="description" content="Free alcohol calculator. Estimate blood alcohol content (BAC) based on drinks, weight, and time. Know when you're safe to drive.">
+    <meta name="keywords" content="alcohol calculator, BAC calculator, blood alcohol calculator, drink calculator, sober calculator">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/alcohol-calculator.html">
+    <style>
+        :root { --primary: #a855f7; --primary-dark: #9333ea; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
+        .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
+        .content-area { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        .result-hero { padding: 40px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero.safe { background: linear-gradient(135deg, var(--success), #047857); }
+        .result-hero.caution { background: linear-gradient(135deg, var(--warning), #d97706); }
+        .result-hero.danger { background: linear-gradient(135deg, var(--danger), #b91c1c); }
+        .result-hero-value { font-size: 5rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.9); font-size: 1.2rem; }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .result-value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .drink-btn { padding: 15px; background: var(--bg-input); border: 2px solid var(--border); border-radius: 10px; color: var(--text-primary); cursor: pointer; text-align: center; transition: all 0.3s; }
+        .drink-btn:hover { background: var(--primary); border-color: var(--primary); }
+        .drink-counter { display: flex; align-items: center; gap: 15px; justify-content: center; margin: 15px 0; }
+        .drink-counter button { width: 50px; height: 50px; border-radius: 50%; background: var(--primary); border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+        .drink-counter span { font-size: 2rem; font-weight: bold; min-width: 60px; text-align: center; }
+        .bac-scale { display: flex; height: 30px; border-radius: 15px; overflow: hidden; margin: 20px 0; }
+        .bac-scale div { flex: 1; }
+        .info-box { background: var(--bg-input); padding: 15px; border-radius: 10px; margin-top: 15px; border-left: 4px solid var(--danger); }
+        .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-container" style="display: none;">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
+
+    <header class="header">
+        <h1>🍺 Alcohol Calculator</h1>
+    </header>
+
+    <div class="main-container">
+        <div class="content-area">
+            <div class="card">
+                <h2>👤 Your Information</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Body Weight</label>
+                        <input type="number" id="weight" value="160" step="5" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Weight Unit</label>
+                        <select id="weightUnit" onchange="calculate()">
+                            <option value="lbs">Pounds (lbs)</option>
+                            <option value="kg">Kilograms (kg)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Sex</label>
+                        <select id="sex" onchange="calculate()">
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Hours Since First Drink</label>
+                        <input type="number" id="hours" value="2" step="0.5" min="0" oninput="calculate()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🍻 Standard Drinks Consumed</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 15px;">1 standard drink = 12oz beer (5%), 5oz wine (12%), or 1.5oz spirits (40%)</p>
+                <div class="drink-counter">
+                    <button onclick="adjustDrinks(-1)">−</button>
+                    <span id="drinkCount">3</span>
+                    <button onclick="adjustDrinks(1)">+</button>
+                </div>
+            </div>
+
+            <div class="result-hero safe" id="resultHero">
+                <div class="result-hero-label">Estimated BAC</div>
+                <div class="result-hero-value" id="bacValue">0.00%</div>
+                <div id="bacStatus" style="margin-top: 10px; font-size: 1.2rem;"></div>
+            </div>
+
+            <div class="bac-scale">
+                <div style="background: var(--success);" title="0.00-0.02%"></div>
+                <div style="background: #84cc16;" title="0.02-0.05%"></div>
+                <div style="background: var(--warning);" title="0.05-0.08%"></div>
+                <div style="background: #f97316;" title="0.08-0.15%"></div>
+                <div style="background: var(--danger);" title="0.15%+"></div>
+            </div>
+
+            <div class="results-grid">
+                <div class="result-card">
+                    <div class="result-value" id="soberTime">0h</div>
+                    <div class="result-label">Time Until Sober</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value" id="legalTime">0h</div>
+                    <div class="result-label">Until Legal (0.08%)</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value" id="drinkEquiv">0</div>
+                    <div class="result-label">Drinks Still Active</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📊 BAC Effects</h2>
+                <div class="info-box" style="border-color: var(--success);">
+                    <strong>0.00 - 0.02%:</strong> Little to no effect. Normal behavior.
+                </div>
+                <div class="info-box" style="border-color: #84cc16;">
+                    <strong>0.02 - 0.05%:</strong> Mild relaxation, slight mood elevation.
+                </div>
+                <div class="info-box" style="border-color: var(--warning);">
+                    <strong>0.05 - 0.08%:</strong> Reduced coordination, impaired judgment.
+                </div>
+                <div class="info-box" style="border-color: #f97316;">
+                    <strong>0.08 - 0.15%:</strong> Legal limit. Significant impairment.
+                </div>
+                <div class="info-box">
+                    <strong>0.15%+:</strong> Severe impairment. High risk. Seek help.
+                </div>
+                <div class="info-box" style="margin-top: 20px; border-color: var(--primary);">
+                    ⚠️ <strong>Disclaimer:</strong> This is an estimate only. Many factors affect BAC. Never drink and drive. When in doubt, don't drive.
+                </div>
+            </div>
+
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+
+            <div class="card">
+                <h2>🔗 Related Tools</h2>
+                <div class="related-tools">
+                    <a href="calorie-calculator.html" class="related-link">🔥 Calorie Calculator</a>
+                    <a href="water-intake-calculator.html" class="related-link">💧 Water Intake</a>
+                    <a href="bmi-calculator.html" class="related-link">⚖️ BMI Calculator</a>
+                    <a href="tip-calculator.html" class="related-link">💰 Tip Calculator</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let drinks = 3;
+        
+        function adjustDrinks(delta) {
+            drinks = Math.max(0, drinks + delta);
+            document.getElementById('drinkCount').textContent = drinks;
+            calculate();
+        }
+
+        function calculate() {
+            let weight = parseFloat(document.getElementById('weight').value) || 160;
+            const weightUnit = document.getElementById('weightUnit').value;
+            const sex = document.getElementById('sex').value;
+            const hours = parseFloat(document.getElementById('hours').value) || 0;
+            
+            // Convert to grams
+            if (weightUnit === 'lbs') {
+                weight = weight * 453.592;
+            } else {
+                weight = weight * 1000;
+            }
+            
+            // Widmark formula
+            const r = sex === 'male' ? 0.68 : 0.55;
+            const alcoholGrams = drinks * 14; // 14g per standard drink
+            const metabolismRate = 0.015; // BAC decrease per hour
+            
+            let bac = (alcoholGrams / (weight * r)) * 100;
+            bac = Math.max(0, bac - (metabolismRate * hours));
+            
+            const hero = document.getElementById('resultHero');
+            const statusEl = document.getElementById('bacStatus');
+            
+            document.getElementById('bacValue').textContent = bac.toFixed(3) + '%';
+            
+            if (bac < 0.02) {
+                hero.className = 'result-hero safe';
+                statusEl.textContent = '✓ Sober or minimal impairment';
+            } else if (bac < 0.05) {
+                hero.className = 'result-hero safe';
+                statusEl.textContent = '✓ Mild effects only';
+            } else if (bac < 0.08) {
+                hero.className = 'result-hero caution';
+                statusEl.textContent = '⚠️ Impaired - DO NOT DRIVE';
+            } else {
+                hero.className = 'result-hero danger';
+                statusEl.textContent = '🚫 LEGALLY INTOXICATED - DO NOT DRIVE';
+            }
+            
+            const hoursToSober = bac / metabolismRate;
+            const hoursToLegal = Math.max(0, (bac - 0.08) / metabolismRate);
+            const activeDrinks = bac / (0.02); // Rough estimate
+            
+            document.getElementById('soberTime').textContent = hoursToSober.toFixed(1) + 'h';
+            document.getElementById('legalTime').textContent = bac > 0.08 ? hoursToLegal.toFixed(1) + 'h' : 'Legal';
+            document.getElementById('drinkEquiv').textContent = activeDrinks.toFixed(1);
+        }
+        
+        calculate();
+    </script>
+</body>
+</html>
