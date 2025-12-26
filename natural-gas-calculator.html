@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Firewood Calculator - Cords & BTU Estimator</title>
-    <meta name="description" content="Free firewood calculator. Calculate how many cords of firewood you need for heating season based on BTU and burn rate.">
-    <meta name="keywords" content="firewood calculator, cord of wood, firewood BTU, heating calculator, wood stove">
-    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/firewood-calculator.html">
+    <title>Natural Gas Calculator - Therm Usage & Cost</title>
+    <meta name="description" content="Free natural gas calculator. Calculate therms, BTU usage, and monthly gas costs for your home heating.">
+    <meta name="keywords" content="natural gas calculator, therm calculator, gas bill calculator, heating cost, BTU calculator">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/natural-gas-calculator.html">
     <style>
-        :root { --primary: #ea580c; --primary-dark: #c2410c; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #0369a1; --primary-dark: #075985; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -32,8 +32,6 @@
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
         .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
         .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
-        .wood-types { margin-top: 20px; }
-        .wood-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
@@ -55,108 +53,81 @@
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
     
     <header class="header">
-        <h1>🔥 Firewood Calculator</h1>
+        <h1>🔥 Natural Gas Calculator</h1>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>🏠 Heating Requirements</h2>
+                <h2>🏠 Home Details</h2>
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Home Size (sq ft)</label>
                         <input type="number" id="homeSize" value="2000" oninput="calculate()">
                     </div>
                     <div class="form-group">
+                        <label>Gas Price ($/therm)</label>
+                        <input type="number" id="pricePerTherm" value="1.20" step="0.1" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Gas Appliances</label>
+                        <select id="appliances" onchange="calculate()">
+                            <option value="furnace" selected>Furnace + Water Heater</option>
+                            <option value="all">All Gas (+ range, dryer)</option>
+                            <option value="furnace_only">Furnace Only</option>
+                            <option value="water_only">Water Heater Only</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label>Heating Months</label>
-                        <input type="number" id="months" value="5" min="1" max="12" oninput="calculate()">
+                        <input type="number" id="heatingMonths" value="6" min="0" max="12" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Wood Type</label>
-                        <select id="woodType" onchange="calculate()">
-                            <option value="oak">Oak (27.6M BTU/cord)</option>
-                            <option value="maple" selected>Maple (25.5M BTU/cord)</option>
-                            <option value="ash">Ash (24.2M BTU/cord)</option>
-                            <option value="birch">Birch (23.8M BTU/cord)</option>
-                            <option value="pine">Pine (17.1M BTU/cord)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Heating Use</label>
-                        <select id="heatingUse" onchange="calculate()">
-                            <option value="primary" selected>Primary Heat Source</option>
-                            <option value="supplement">Supplemental Heat</option>
-                            <option value="occasional">Occasional/Ambiance</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Climate Zone</label>
+                        <label>Climate</label>
                         <select id="climate" onchange="calculate()">
-                            <option value="cold">Cold (Northern US)</option>
-                            <option value="moderate" selected>Moderate (Mid-Atlantic)</option>
-                            <option value="mild">Mild (Southern US)</option>
+                            <option value="cold">Cold (Northern)</option>
+                            <option value="moderate" selected>Moderate</option>
+                            <option value="mild">Mild (Southern)</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Cost per Cord ($)</label>
-                        <input type="number" id="costPerCord" value="300" oninput="calculate()">
+                        <label>Home Efficiency</label>
+                        <select id="efficiency" onchange="calculate()">
+                            <option value="poor">Poor Insulation</option>
+                            <option value="average" selected>Average</option>
+                            <option value="good">Well Insulated</option>
+                        </select>
                     </div>
                 </div>
                 
                 <div class="result-hero">
-                    <div class="result-hero-label">Cords Needed</div>
-                    <div class="result-hero-value" id="cordsNeeded">0</div>
+                    <div class="result-hero-label">Estimated Annual Cost</div>
+                    <div class="result-hero-value" id="annualCost">$0</div>
                 </div>
                 
                 <div class="results-grid">
                     <div class="result-card">
-                        <div class="result-value" id="btuRequired">0</div>
-                        <div class="result-label">Million BTU/Season</div>
+                        <div class="result-value" id="annualTherms">0</div>
+                        <div class="result-label">Therms/Year</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="faceCards">0</div>
-                        <div class="result-label">Face Cords</div>
+                        <div class="result-value" id="winterMonthly">$0</div>
+                        <div class="result-label">Winter Monthly</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="totalCost">$0</div>
-                        <div class="result-label">Total Cost</div>
+                        <div class="result-value" id="summerMonthly">$0</div>
+                        <div class="result-label">Summer Monthly</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="monthlyBurn">0</div>
-                        <div class="result-label">Cords per Month</div>
+                        <div class="result-value" id="btuPerHour">0</div>
+                        <div class="result-label">BTU/hr Needed</div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>🪵 Wood BTU Reference</h2>
-                <div class="wood-types">
-                    <div class="wood-row">
-                        <span>🌳 Oak (White/Red)</span>
-                        <span>27.6M BTU/cord</span>
-                    </div>
-                    <div class="wood-row">
-                        <span>🍁 Maple (Sugar/Hard)</span>
-                        <span>25.5M BTU/cord</span>
-                    </div>
-                    <div class="wood-row">
-                        <span>🌲 Ash (White)</span>
-                        <span>24.2M BTU/cord</span>
-                    </div>
-                    <div class="wood-row">
-                        <span>🌿 Birch (Yellow)</span>
-                        <span>23.8M BTU/cord</span>
-                    </div>
-                    <div class="wood-row">
-                        <span>🌲 Cherry</span>
-                        <span>20.4M BTU/cord</span>
-                    </div>
-                    <div class="wood-row">
-                        <span>🌲 Pine (White)</span>
-                        <span>17.1M BTU/cord</span>
-                    </div>
-                </div>
-                <p style="color: var(--text-secondary); margin-top: 15px; font-size: 0.9rem;">📏 1 cord = 4' x 4' x 8' = 128 cubic feet</p>
+                <h2>📊 Monthly Breakdown</h2>
+                <div id="monthlyBreakdown" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;"></div>
             </div>
 
             <div class="ad-container">
@@ -168,10 +139,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="hvac-calculator.html" class="related-link">❄️ HVAC Calculator</a>
-                    <a href="insulation-calculator.html" class="related-link">🧱 Insulation Calculator</a>
                     <a href="propane-calculator.html" class="related-link">⛽ Propane Calculator</a>
+                    <a href="hvac-calculator.html" class="related-link">❄️ HVAC Calculator</a>
                     <a href="electricity-cost-calculator.html" class="related-link">⚡ Electricity Cost</a>
+                    <a href="insulation-calculator.html" class="related-link">🧱 Insulation Calculator</a>
                 </div>
             </div>
         </div>
@@ -186,45 +157,52 @@
     </div>
 
     <script>
-        const woodBTU = {
-            oak: 27.6,
-            maple: 25.5,
-            ash: 24.2,
-            birch: 23.8,
-            pine: 17.1
-        };
-        
         function calculate() {
             const homeSize = parseFloat(document.getElementById('homeSize').value) || 0;
-            const months = parseFloat(document.getElementById('months').value) || 5;
-            const woodType = document.getElementById('woodType').value;
-            const heatingUse = document.getElementById('heatingUse').value;
+            const pricePerTherm = parseFloat(document.getElementById('pricePerTherm').value) || 0;
+            const appliances = document.getElementById('appliances').value;
+            const heatingMonths = parseFloat(document.getElementById('heatingMonths').value) || 0;
             const climate = document.getElementById('climate').value;
-            const costPerCord = parseFloat(document.getElementById('costPerCord').value) || 0;
+            const efficiency = document.getElementById('efficiency').value;
             
-            let btuPerSqFt = 30;
-            if (climate === 'cold') btuPerSqFt = 45;
-            else if (climate === 'mild') btuPerSqFt = 20;
+            let btuPerSqFt = 35;
+            if (climate === 'cold') btuPerSqFt = 50;
+            else if (climate === 'mild') btuPerSqFt = 25;
             
-            let useFactor = 1.0;
-            if (heatingUse === 'supplement') useFactor = 0.4;
-            else if (heatingUse === 'occasional') useFactor = 0.15;
+            let effFactor = 1.0;
+            if (efficiency === 'poor') effFactor = 1.3;
+            else if (efficiency === 'good') effFactor = 0.75;
             
-            const dailyBTU = homeSize * btuPerSqFt * useFactor;
-            const seasonBTU = dailyBTU * 24 * 30 * months / 1000000;
-            const btuPerCord = woodBTU[woodType];
-            const stoveEfficiency = 0.70;
+            const btuPerHour = Math.round(homeSize * btuPerSqFt * effFactor);
+            const thermPerMonth = (btuPerHour * 8 * 30) / 100000;
+            const heatingTherms = thermPerMonth * heatingMonths;
             
-            const cordsNeeded = seasonBTU / (btuPerCord * stoveEfficiency);
-            const faceCards = cordsNeeded * 3;
-            const monthlyBurn = cordsNeeded / months;
-            const totalCost = cordsNeeded * costPerCord;
+            let baseTherms = 15;
+            if (appliances === 'all') baseTherms = 25;
+            else if (appliances === 'furnace_only') baseTherms = 5;
+            else if (appliances === 'water_only') baseTherms = 12;
             
-            document.getElementById('cordsNeeded').textContent = cordsNeeded.toFixed(1);
-            document.getElementById('btuRequired').textContent = seasonBTU.toFixed(1);
-            document.getElementById('faceCards').textContent = faceCards.toFixed(1);
-            document.getElementById('monthlyBurn').textContent = monthlyBurn.toFixed(2);
-            document.getElementById('totalCost').textContent = '$' + Math.round(totalCost).toLocaleString();
+            const annualTherms = Math.round(heatingTherms + (baseTherms * 12));
+            const annualCost = annualTherms * pricePerTherm;
+            
+            const winterMonthly = (thermPerMonth + baseTherms) * pricePerTherm;
+            const summerMonthly = baseTherms * pricePerTherm;
+            
+            document.getElementById('annualTherms').textContent = annualTherms.toLocaleString();
+            document.getElementById('annualCost').textContent = '$' + Math.round(annualCost).toLocaleString();
+            document.getElementById('winterMonthly').textContent = '$' + Math.round(winterMonthly);
+            document.getElementById('summerMonthly').textContent = '$' + Math.round(summerMonthly);
+            document.getElementById('btuPerHour').textContent = btuPerHour.toLocaleString();
+            
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const heatingFactors = [1.2, 1.1, 0.8, 0.3, 0, 0, 0, 0, 0.2, 0.5, 0.9, 1.1];
+            let breakdown = '';
+            months.forEach((m, i) => {
+                const monthTherms = Math.round(baseTherms + (thermPerMonth * heatingFactors[i]));
+                const cost = Math.round(monthTherms * pricePerTherm);
+                breakdown += `<div style="background: var(--bg-input); padding: 10px; border-radius: 8px; text-align: center;"><div style="color: var(--text-secondary); font-size: 0.8rem;">${m}</div><div style="color: var(--secondary); font-weight: 700;">$${cost}</div></div>`;
+            });
+            document.getElementById('monthlyBreakdown').innerHTML = breakdown;
         }
         
         calculate();
