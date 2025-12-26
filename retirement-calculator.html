@@ -3,799 +3,286 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retirement Calculator - Free Online Calculator | WebTools Pro</title>
-    <meta name="description" content="Calculate how much you need to save for retirement. See if you're on track and how long your money will last. Free retirement planning calculator.">
+    <title>Retirement Calculator - How Much Do You Need to Retire?</title>
+    <meta name="description" content="Calculate how much you need to save for retirement. See if you're on track and how to reach your retirement goals.">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/retirement-calculator.html">
-    <meta property="og:title" content="Retirement Calculator - Free Online Calculator">
-    <meta property="og:description" content="Calculate how much you need to save for retirement. See if you're on track and how long your money will last. Free retirement planning calculator.">
+    <meta property="og:title" content="Retirement Calculator - Plan Your Future">
+    <meta property="og:description" content="Calculate your retirement savings needs and create a plan.">
     <meta property="og:type" content="website">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧮</text></svg>">
     <style>
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --bg-dark: #0f172a;
-            --bg-card: #1e293b;
-            --text-light: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
-            --white: #ffffff;
-        }
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-light);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-        .site-header {
-            background: linear-gradient(135deg, var(--bg-dark), var(--bg-card));
-            border-bottom: 1px solid var(--border);
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo {
-            font-size: 22px;
-            font-weight: 700;
-            text-decoration: none;
-            color: var(--text-light);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--primary), #f59e0b);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-        .nav-links { display: flex; gap: 20px; }
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .nav-links a:hover { color: var(--text-light); }
-        @media (max-width: 600px) { .nav-links { display: none; } }
-
-        .ad-top { background: var(--bg-card); padding: 12px 0; text-align: center; border-bottom: 1px solid var(--border); }
-        .ad-mobile { display: none; text-align: center; margin: 12px auto; max-width: 320px; }
-        @media (max-width: 768px) { .ad-mobile { display: block; } }
-
-        .main-layout {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 25px 20px;
-            display: grid;
-            grid-template-columns: 1fr 280px;
-            gap: 25px;
-        }
-        @media (max-width: 900px) {
-            .main-layout { grid-template-columns: 1fr; }
-            .sidebar { display: none; }
-        }
-
-        .hero { text-align: center; margin-bottom: 25px; }
-        .hero h1 {
-            font-size: 38px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, var(--text-light), var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero p { font-size: 16px; color: var(--text-muted); max-width: 500px; margin: 0 auto; }
-        @media (max-width: 600px) { .hero h1 { font-size: 28px; } }
-
-        .calc-card {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 35px;
-            color: #1e293b;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-        @media (max-width: 600px) { .calc-card { padding: 20px; } }
-
-        .unit-toggle {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 25px;
-            background: #f1f5f9;
-            padding: 5px;
-            border-radius: 12px;
-        }
-        .unit-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            background: transparent;
-            color: #64748b;
-            transition: all 0.2s;
-        }
-        .unit-btn.active {
-            background: var(--white);
-            color: var(--primary);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .input-group { margin-bottom: 20px; }
-        .input-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: 700;
-            color: #475569;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .input-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        .input-row input, .input-group input, .input-group select {
-            flex: 1;
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.2s;
-            background: #f8fafc;
-        }
-        .input-row input:focus, .input-group input:focus, .input-group select:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: var(--white);
-        }
-        .input-row span { font-size: 13px; color: #64748b; font-weight: 600; min-width: 25px; }
-
-        .btn {
-            width: 100%;
-            padding: 16px 25px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: var(--white);
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: 8px;
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.35);
-        }
-
-        .results {
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 2px solid #e2e8f0;
-            display: none;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; min-height: 100vh; }
+        .header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; }
+        .nav-links a:hover { color: var(--primary); }
+        .ad-top { background: var(--bg-card); padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); }
+        .ad-mobile { display: none; background: var(--bg-card); padding: 0.5rem; text-align: center; }
+        .main-layout { display: flex; max-width: 1400px; margin: 0 auto; gap: 2rem; padding: 2rem; }
+        .content { flex: 1; min-width: 0; }
+        .sidebar { width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 1rem; }
+        .hero { text-align: center; margin-bottom: 2rem; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary), #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { color: var(--text-secondary); font-size: 1.1rem; }
+        .calculator-card { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .section-title { font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--primary); }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.75rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 0.5rem; color: var(--text-primary); font-size: 1rem; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+        .input-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .calculate-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; border-radius: 0.5rem; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; }
+        .calculate-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
+        .results { display: none; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
         .results.show { display: block; }
-        .bmi-display, .result-main { text-align: center; margin-bottom: 25px; }
-        .bmi-value, .result-value {
-            font-size: 56px;
-            font-weight: 800;
-            color: var(--primary);
-            line-height: 1.1;
-        }
-        .bmi-category, .result-label {
-            font-size: 22px;
-            font-weight: 600;
-            margin-top: 8px;
-            color: #1e293b;
-        }
-
-        .bmi-scale, .scale-bar-container { margin: 25px 0; }
-        .bmi-scale > div:first-child, .scale-bar {
-            height: 18px;
-            background: linear-gradient(to right, #3b82f6 0%, #22c55e 25%, #eab308 55%, #f97316 75%, #ef4444 100%);
-            border-radius: 9px;
-            position: relative;
-        }
-        .bmi-marker, .scale-marker {
-            position: absolute;
-            top: -6px;
-            width: 5px;
-            height: 30px;
-            background: #1e293b;
-            border-radius: 2px;
-            transform: translateX(-50%);
-            transition: left 0.4s ease;
-        }
-        .scale-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: #64748b;
-            margin-top: 10px;
-            font-weight: 600;
-        }
-
-        .category-info, .category-table {
-            background: #f8fafc;
-            border-radius: 14px;
-            overflow: hidden;
-            margin-top: 20px;
-        }
-        .category-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 14px 20px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .category-row:last-child { border: none; }
-        .category-row.active { background: #fef2f2; }
-
-        .result-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 12px;
-            margin-top: 20px;
-        }
-        .result-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 18px;
-            text-align: center;
-        }
-        .result-item-value { font-size: 22px; font-weight: 700; color: #1e293b; }
-        .result-item-label { font-size: 11px; color: #64748b; text-transform: uppercase; margin-top: 4px; letter-spacing: 0.5px; }
-
-        .ad-inline { background: #f8fafc; border-radius: 10px; padding: 15px; margin: 25px 0; text-align: center; }
-        .ad-bottom { background: var(--bg-card); padding: 25px 15px; text-align: center; margin-top: 30px; border-radius: 14px; }
-
-        .info-section {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 30px;
-            margin-top: 30px;
-        }
-        .info-section h2 { font-size: 22px; margin-bottom: 15px; color: var(--text-light); }
-        .info-section p { color: var(--text-muted); margin-bottom: 15px; font-size: 15px; line-height: 1.7; }
-        .info-section h3 { font-size: 18px; margin: 20px 0 12px; color: var(--text-light); }
-        .info-section ul { color: var(--text-muted); margin-left: 20px; }
-        .info-section li { margin-bottom: 10px; line-height: 1.6; }
-
-        .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .sidebar-ad { background: var(--bg-card); border-radius: 14px; padding: 15px; text-align: center; }
-        .sidebar-tools {
-            background: var(--bg-card);
-            border-radius: 14px;
-            padding: 20px;
-        }
-        .sidebar-tools h3 { font-size: 16px; margin-bottom: 15px; color: var(--text-light); }
-        .tool-link {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px;
-            border-radius: 10px;
-            text-decoration: none;
-            color: var(--text-muted);
-            transition: all 0.2s;
-            margin-bottom: 6px;
-        }
-        .tool-link:hover { background: rgba(99, 102, 241, 0.1); color: var(--text-light); }
-        .tool-icon-small {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-        }
-
-        .related-tools { margin-top: 35px; }
-        .related-tools h2 { font-size: 24px; margin-bottom: 20px; text-align: center; }
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px;
-        }
-        .tool-card {
-            background: var(--bg-card);
-            border-radius: 14px;
-            padding: 20px;
-            text-decoration: none;
-            color: var(--text-light);
-            transition: all 0.3s;
-            border: 1px solid var(--border);
-        }
-        .tool-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--primary);
-            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.2);
-        }
-        .tool-card-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            margin-bottom: 12px;
-        }
-        .tool-card h4 { font-size: 14px; margin-bottom: 6px; }
-        .tool-card p { font-size: 12px; color: var(--text-muted); }
-
-        .site-footer {
-            background: var(--bg-card);
-            border-top: 1px solid var(--border);
-            padding: 40px 20px 25px;
-            margin-top: 50px;
-        }
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 30px;
-        }
-        .footer-section h4 { font-size: 14px; margin-bottom: 15px; color: var(--text-light); }
-        .footer-section a {
-            display: block;
-            color: var(--text-muted);
-            text-decoration: none;
-            padding: 6px 0;
-            font-size: 13px;
-        }
-        .footer-section a:hover { color: var(--primary); }
-        .footer-bottom {
-            max-width: 1200px;
-            margin: 30px auto 0;
-            padding-top: 25px;
-            border-top: 1px solid var(--border);
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-        .footer-bottom a { color: var(--primary); text-decoration: none; }
-
-        .tools-promo { display: none; }
-        .cta-section { display: none; }
+        .status-card { text-align: center; padding: 2rem; border-radius: 1rem; margin-bottom: 2rem; }
+        .status-card.on-track { background: rgba(16, 185, 129, 0.1); border: 2px solid var(--success); }
+        .status-card.behind { background: rgba(245, 158, 11, 0.1); border: 2px solid var(--warning); }
+        .status-card.far-behind { background: rgba(239, 68, 68, 0.1); border: 2px solid var(--danger); }
+        .status-card h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .status-card.on-track h2 { color: var(--success); }
+        .status-card.behind h2 { color: var(--warning); }
+        .status-card.far-behind h2 { color: var(--danger); }
+        .status-card p { color: var(--text-secondary); }
+        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .result-box { background: var(--bg-input); padding: 1.25rem; border-radius: 0.75rem; text-align: center; }
+        .result-box.highlight { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid var(--primary); }
+        .result-label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .result-value { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
+        .projection { margin-top: 2rem; }
+        .projection h4 { color: var(--text-primary); margin-bottom: 1rem; }
+        .projection-bar { background: var(--bg-input); height: 40px; border-radius: 20px; overflow: hidden; position: relative; margin-bottom: 1rem; }
+        .projection-fill { height: 100%; border-radius: 20px; display: flex; align-items: center; padding: 0 1rem; font-weight: 600; font-size: 0.9rem; }
+        .projection-fill.good { background: linear-gradient(90deg, var(--success), #34d399); }
+        .projection-fill.warning { background: linear-gradient(90deg, var(--warning), #fbbf24); }
+        .projection-fill.danger { background: linear-gradient(90deg, var(--danger), #f87171); }
+        .projection-labels { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-secondary); }
+        .ad-inline { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin: 2rem 0; }
+        .info-section { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .info-section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary); }
+        .info-section p, .info-section li { color: var(--text-secondary); margin-bottom: 0.75rem; }
+        .info-section ul { padding-left: 1.5rem; }
+        .related-tools { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); }
+        .related-tools h3 { margin-bottom: 1rem; color: var(--text-primary); }
+        .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+        .tool-link { display: block; padding: 1rem; background: var(--bg-input); border-radius: 0.5rem; text-decoration: none; color: var(--text-primary); }
+        .tool-link:hover { background: var(--border); transform: translateY(-2px); }
+        .ad-bottom { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin-top: 2rem; }
+        .footer { background: var(--bg-card); border-top: 1px solid var(--border); padding: 2rem; text-align: center; margin-top: 3rem; }
+        .footer p { color: var(--text-secondary); font-size: 0.9rem; }
+        @media (max-width: 968px) { .sidebar { display: none; } .main-layout { padding: 1rem; } }
+        @media (max-width: 640px) { .ad-top { display: none; } .ad-mobile { display: block; } .hero h1 { font-size: 1.75rem; } .input-row { grid-template-columns: 1fr; } .nav-links { display: none; } }
     </style>
 </head>
 <body>
-    <header class="site-header">
-        <div class="header-container">
-            <a href="index.html" class="logo">
-                <div class="logo-icon">🧮</div>
-                WebTools Pro
-            </a>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">CalcTools</a>
             <nav class="nav-links">
-                <a href="index.html">All Tools</a>
-                <a href="bmi-calculator.html">Health</a>
-                <a href="mortgage-calculator.html">Finance</a>
+                <a href="index.html">Home</a>
+                <a href="finance-calculators.html">Finance</a>
+                <a href="health-calculators.html">Health</a>
+                <a href="home-calculators.html">Home</a>
             </nav>
         </div>
     </header>
-
     <div class="ad-top">
-        <script>
-            atOptions = {
-                'key' : 'b43e7cf5057864a264961884e1f34530',
-                'format' : 'iframe',
-                'height' : 90,
-                'width' : 728,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
     </div>
-
     <div class="ad-mobile">
-        <script>
-            atOptions = {
-                'key' : '9f6b66d433cad4c02b643bdd4b7eefc0',
-                'format' : 'iframe',
-                'height' : 50,
-                'width' : 320,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
-
-    <main class="main-layout">
-        <div class="content">
-            <section class="hero">
+    <div class="main-layout">
+        <main class="content">
+            <div class="hero">
                 <h1>Retirement Calculator</h1>
-                <p>Calculate how much you need to save for retirement. See if you're on track and how long your money will last. Free retirement planning calculator....</p>
-            </section>
-
-            <div class="calc-card">
-                
-            <div class="section-title">Your Information</div>
-            <div class="input-grid">
-                <div class="input-group">
-                    <label>Current Age</label>
-                    <input type="number" id="currentAge" value="30" min="18" max="80" oninput="calculate()">
+                <p>Plan your financial future and retire with confidence</p>
+            </div>
+            <div class="calculator-card">
+                <h2 class="section-title">Your Information</h2>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Current Age</label>
+                        <input type="number" id="currentAge" value="35" placeholder="35">
+                    </div>
+                    <div class="form-group">
+                        <label>Retirement Age</label>
+                        <input type="number" id="retireAge" value="65" placeholder="65">
+                    </div>
                 </div>
-                <div class="input-group">
-                    <label>Retirement Age</label>
-                    <input type="number" id="retireAge" value="65" min="40" max="90" oninput="calculate()">
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Current Retirement Savings ($)</label>
+                        <input type="number" id="currentSavings" value="50000" placeholder="50000">
+                    </div>
+                    <div class="form-group">
+                        <label>Monthly Contribution ($)</label>
+                        <input type="number" id="monthlyContribution" value="500" placeholder="500">
+                    </div>
                 </div>
-                <div class="input-group">
-                    <label>Current Savings ($)</label>
-                    <input type="number" id="savings" value="50000" min="0" step="1000" oninput="calculate()">
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Expected Annual Return (%)</label>
+                        <input type="number" id="annualReturn" value="7" step="0.5" placeholder="7">
+                    </div>
+                    <div class="form-group">
+                        <label>Desired Annual Retirement Income ($)</label>
+                        <input type="number" id="retireIncome" value="60000" placeholder="60000">
+                    </div>
                 </div>
-                <div class="input-group">
-                    <label>Monthly Contribution ($)</label>
-                    <input type="number" id="monthly" value="1000" min="0" step="100" oninput="calculate()">
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Expected Social Security ($/month)</label>
+                        <input type="number" id="socialSecurity" value="2000" placeholder="2000">
+                    </div>
+                    <div class="form-group">
+                        <label>Inflation Rate (%)</label>
+                        <input type="number" id="inflation" value="3" step="0.5" placeholder="3">
+                    </div>
+                </div>
+                <button class="calculate-btn" onclick="calculate()">Calculate Retirement</button>
+                <div class="results" id="results">
+                    <div class="status-card" id="statusCard"></div>
+                    <div class="result-grid">
+                        <div class="result-box highlight">
+                            <div class="result-label">Projected Savings at Retirement</div>
+                            <div class="result-value" id="projectedSavings">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Amount Needed</div>
+                            <div class="result-value" id="amountNeeded">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Monthly Income from Savings</div>
+                            <div class="result-value" id="monthlyFromSavings">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Years Until Retirement</div>
+                            <div class="result-value" id="yearsToRetire">0</div>
+                        </div>
+                    </div>
+                    <div class="projection">
+                        <h4>Savings Progress</h4>
+                        <div class="projection-bar">
+                            <div class="projection-fill" id="progressFill"></div>
+                        </div>
+                        <div class="projection-labels">
+                            <span>$0</span>
+                            <span id="goalLabel">Goal: $0</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="section-title">Retirement Goals</div>
-            <div class="input-grid">
-                <div class="input-group">
-                    <label>Monthly Income Needed ($)</label>
-                    <input type="number" id="income" value="5000" min="0" step="100" oninput="calculate()">
-                </div>
-                <div class="input-group">
-                    <label>Expected Return (%)</label>
-                    <input type="number" id="returnRate" value="7" min="0" max="20" step="0.5" oninput="calculate()">
-                </div>
-            </div>
-
-            <div class="result-box">
-                <div class="label">Projected Retirement Savings</div>
-                <div class="value" id="projected">$0</div>
-                <div class="sub" id="atAge">At age 65</div>
-            </div>
-
-            <div class="status on-track" id="status">
-                You're on track for retirement!
-            </div>
-
-            <div class="stats">
-                <div class="stat-item">
-                    <div class="value" id="needed">$0</div>
-                    <div class="label">Amount Needed</div>
-                </div>
-                <div class="stat-item">
-                    <div class="value" id="shortfall">$0</div>
-                    <div class="label">Surplus/Shortfall</div>
-                </div>
-                <div class="stat-item">
-                    <div class="value" id="yearsLast">0</div>
-                    <div class="label">Years Money Lasts</div>
-                </div>
-                <div class="stat-item">
-                    <div class="value" id="monthlyNeeded">$0</div>
-                    <div class="label">Monthly Needed to Hit Goal</div>
-                </div>
-            </div>
-        
-            </div>
-
             <div class="ad-inline">
-                <script>
-            atOptions = {
-                'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
-                'format' : 'iframe',
-                'height' : 250,
-                'width' : 300,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
             </div>
-
-            <section class="info-section">
-                <h2>About This Tool</h2>
-                <p>Calculate how much you need to save for retirement. See if you're on track and how long your money will last. Free retirement planning calculator.</p>
-                <p>This free online calculator provides instant, accurate results. No signup required - just enter your values and get your answer immediately.</p>
-            </section>
-
-            <section class="related-tools">
-                <h2>Related Tools</h2>
-                <div class="tools-grid">
-                    <a href="mortgage-calculator.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #3b82f6, #3b82f6cc);">💰</div>
-                        <h4>Mortgage Calculatorulator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                    <a href="loan-calculator.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #3b82f6, #3b82f6cc);">💰</div>
-                        <h4>Loan Calculatorulator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                    <a href="compound-interest-calculator.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #3b82f6, #3b82f6cc);">💰</div>
-                        <h4>Compound Interest Calculatorulator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                    <a href="401k-calculator.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #3b82f6, #3b82f6cc);">💰</div>
-                        <h4>401K Calculatorulator</h4>
-                        <p>Free online tool</p>
-                    </a>
+            <div class="info-section">
+                <h2>Retirement Planning Tips</h2>
+                <p>Start early and stay consistent to maximize your retirement savings.</p>
+                <ul>
+                    <li><strong>4% Rule:</strong> Plan to withdraw 4% of savings annually in retirement</li>
+                    <li><strong>Employer Match:</strong> Always contribute enough to get full employer 401(k) match</li>
+                    <li><strong>Diversification:</strong> Spread investments across stocks, bonds, and other assets</li>
+                    <li><strong>Catch-Up Contributions:</strong> After 50, you can contribute extra to retirement accounts</li>
+                    <li><strong>Healthcare Costs:</strong> Plan for significant healthcare expenses in retirement</li>
+                </ul>
+            </div>
+            <div class="related-tools">
+                <h3>Related Calculators</h3>
+                <div class="tool-grid">
+                    <a href="401k-calculator.html" class="tool-link">401(k) Calculator</a>
+                    <a href="roth-ira-calculator.html" class="tool-link">Roth IRA Calculator</a>
+                    <a href="compound-interest-calculator.html" class="tool-link">Compound Interest</a>
+                    <a href="investment-calculator.html" class="tool-link">Investment Calculator</a>
+                    <a href="social-security-calculator.html" class="tool-link">Social Security</a>
+                    <a href="inflation-calculator.html" class="tool-link">Inflation Calculator</a>
                 </div>
-            </section>
-
+            </div>
             <div class="ad-bottom">
-                <script>
-            atOptions = {
-                'key' : 'bca56f01884f1cf07c196213009e77ac',
-                'format' : 'iframe',
-                'height' : 60,
-                'width' : 468,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
+                <script type="text/javascript">atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
             </div>
-        </div>
-
+        </main>
         <aside class="sidebar">
-            <div class="sidebar-ad">
-                <script>
-            atOptions = {
-                'key' : 'd4702b3e9743f9cd914a00e5026493f3',
-                'format' : 'iframe',
-                'height' : 600,
-                'width' : 160,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            <div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
             </div>
-            <div class="sidebar-ad">
-                <script>
-            atOptions = {
-                'key' : '8398a480b05e8a3236f9ea561b7cab1a',
-                'format' : 'iframe',
-                'height' : 300,
-                'width' : 160,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
-            </div>
-            <div class="sidebar-tools">
-                <h3>Popular Tools</h3>
-                <a href="bmi-calculator.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #ef4444, #dc2626);">🏃</div>
-                    BMI Calculator
-                </a>
-                <a href="mortgage-calculator.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #1e40af, #1d4ed8);">🏠</div>
-                    Mortgage Calculator
-                </a>
-                <a href="percentage-calc.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #16a34a, #15803d);">%</div>
-                    Percentage Calculator
-                </a>
-                <a href="age-calculator.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #ec4899, #be185d);">📅</div>
-                    Age Calculator
-                </a>
+            <div>
+                <script type="text/javascript">atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
             </div>
         </aside>
-    </main>
-
-    <footer class="site-footer">
-        <div class="footer-container">
-            <div class="footer-section">
-                <h4>Financial Tools</h4>
-                <a href="mortgage-calculator.html">Mortgage Calculator</a>
-                <a href="loan-calculator.html">Loan Calculator</a>
-                <a href="compound-interest-calculator.html">Compound Interest</a>
-                <a href="retirement-calculator.html">Retirement Calculator</a>
-            </div>
-            <div class="footer-section">
-                <h4>Health Tools</h4>
-                <a href="bmi-calculator.html">BMI Calculator</a>
-                <a href="calorie-calculator.html">Calorie Calculator</a>
-                <a href="body-fat-calculator.html">Body Fat Calculator</a>
-                <a href="water-intake-calculator.html">Water Intake</a>
-            </div>
-            <div class="footer-section">
-                <h4>Math Tools</h4>
-                <a href="percentage-calc.html">Percentage Calculator</a>
-                <a href="average-calculator.html">Average Calculator</a>
-                <a href="fraction-calculator.html">Fraction Calculator</a>
-                <a href="scientific-calculator.html">Scientific Calculator</a>
-            </div>
-            <div class="footer-section">
-                <h4>Converters</h4>
-                <a href="unit-converter.html">Unit Converter</a>
-                <a href="temperature-converter.html">Temperature</a>
-                <a href="currency-converter.html">Currency Converter</a>
-                <a href="timezone-converter.html">Time Zone</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 WebTools Pro. Free calculators & tools. | <a href="index.html">All 360+ Tools</a></p>
-        </div>
-    </footer>
-
-    <script>
-        atOptions = {'key':'9f6b66d433cad4c02b643bdd4b7eefc0','format':'iframe','height':50,'width':320,'params':{}};            </script><script src="https://www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script></div>
-
-        <div class="calc-card">
-            <div class="section-title">Your Information</div>
-            <div class="input-grid">
-                <div class="input-group">
-                    <label>Current Age</label>
-                    <input type="number" id="currentAge" value="30" min="18" max="80" oninput="calculate()">
-                </div>
-                <div class="input-group">
-                    <label>Retirement Age</label>
-                    <input type="number" id="retireAge" value="65" min="40" max="90" oninput="calculate()">
-                </div>
-                <div class="input-group">
-                    <label>Current Savings ($)</label>
-                    <input type="number" id="savings" value="50000" min="0" step="1000" oninput="calculate()">
-                </div>
-                <div class="input-group">
-                    <label>Monthly Contribution ($)</label>
-                    <input type="number" id="monthly" value="1000" min="0" step="100" oninput="calculate()">
-                </div>
-            </div>
-
-            <div class="section-title">Retirement Goals</div>
-            <div class="input-grid">
-                <div class="input-group">
-                    <label>Monthly Income Needed ($)</label>
-                    <input type="number" id="income" value="5000" min="0" step="100" oninput="calculate()">
-                </div>
-                <div class="input-group">
-                    <label>Expected Return (%)</label>
-                    <input type="number" id="returnRate" value="7" min="0" max="20" step="0.5" oninput="calculate()">
-                </div>
-            </div>
-
-            <div class="result-box">
-                <div class="label">Projected Retirement Savings</div>
-                <div class="value" id="projected">$0</div>
-                <div class="sub" id="atAge">At age 65</div>
-            </div>
-
-            <div class="status on-track" id="status">
-                You're on track for retirement!
-            </div>
-
-            <div class="stats">
-                <div class="stat-item">
-                    <div class="value" id="needed">$0</div>
-                    <div class="label">Amount Needed</div>
-                </div>
-                <div class="stat-item">
-                    <div class="value" id="shortfall">$0</div>
-                    <div class="label">Surplus/Shortfall</div>
-                </div>
-                <div class="stat-item">
-                    <div class="value" id="yearsLast">0</div>
-                    <div class="label">Years Money Lasts</div>
-                </div>
-                <div class="stat-item">
-                    <div class="value" id="monthlyNeeded">$0</div>
-                    <div class="label">Monthly Needed to Hit Goal</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="ad-container" style="text-align: center; margin: 25px 0;">
-            <script>
-                atOptions = {
-                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
-                    'format' : 'iframe',
-                    'height' : 250,
-                    'width' : 300,
-                    'params' : {}
-                };
-            </script>
-            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
-        </div>
-
-        <div class="ad-sidebar" style="text-align:center;margin:15px 0;"><script>atOptions = {'key':'8398a480b05e8a3236f9ea561b7cab1a','format':'iframe','height':300,'width':160,'params':{}};            </script><script src="https://www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script></div>
-
-        <div class="tools-promo">
-            <h4>More Financial Tools</h4>
-            <a href="savings-calculator.html">Savings Calculator</a>
-            <a href="compound-interest.html">Compound Interest</a>
-            <a href="inflation-calculator.html">Inflation Calculator</a>
-            <a href="index.html">View All 100+ Tools</a>
-        </div>
     </div>
-
-    <footer>
-        <p>Retirement Calculator by WebAudit Pro</p>
-        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    <footer class="footer">
+        <p>&copy; 2024 CalcTools. Free online calculators for everyone.</p>
     </footer>
-
     <script>
-        function calculate() {
-            const currentAge = parseInt(document.getElementById('currentAge').value) || 30;
-            const retireAge = parseInt(document.getElementById('retireAge').value) || 65;
-            const savings = parseFloat(document.getElementById('savings').value) || 0;
-            const monthly = parseFloat(document.getElementById('monthly').value) || 0;
-            const incomeNeeded = parseFloat(document.getElementById('income').value) || 0;
-            const returnRate = parseFloat(document.getElementById('returnRate').value) / 100 / 12;
-
-            const yearsToRetire = Math.max(0, retireAge - currentAge);
-            const months = yearsToRetire * 12;
-
-            // Calculate projected savings at retirement
-            let projected = savings;
-            for (let i = 0; i < months; i++) {
-                projected = projected * (1 + returnRate) + monthly;
-            }
-
-            // Amount needed (25x annual expenses - 4% rule)
-            const annualNeeded = incomeNeeded * 12;
-            const amountNeeded = annualNeeded * 25;
-
-            // Shortfall or surplus
-            const shortfall = projected - amountNeeded;
-
-            // How long money will last (simple calculation)
-            const yearsLast = projected > 0 ? Math.floor(projected / annualNeeded) : 0;
-
-            // Monthly needed to hit goal
-            let monthlyNeeded = 0;
-            if (amountNeeded > savings) {
-                // Simplified calculation
-                const futureNeed = amountNeeded;
-                const fvPrincipal = savings * Math.pow(1 + returnRate, months);
-                const remaining = futureNeed - fvPrincipal;
-                if (returnRate > 0 && months > 0) {
-                    monthlyNeeded = remaining / ((Math.pow(1 + returnRate, months) - 1) / returnRate);
-                } else {
-                    monthlyNeeded = remaining / months;
-                }
-                monthlyNeeded = Math.max(0, monthlyNeeded);
-            }
-
-            document.getElementById('projected').textContent = '$' + projected.toLocaleString('en-US', {maximumFractionDigits: 0});
-            document.getElementById('atAge').textContent = `At age ${retireAge}`;
-            document.getElementById('needed').textContent = '$' + amountNeeded.toLocaleString('en-US', {maximumFractionDigits: 0});
-            document.getElementById('shortfall').textContent = (shortfall >= 0 ? '+$' : '-$') + Math.abs(shortfall).toLocaleString('en-US', {maximumFractionDigits: 0});
-            document.getElementById('yearsLast').textContent = yearsLast + ' years';
-            document.getElementById('monthlyNeeded').textContent = '$' + monthlyNeeded.toLocaleString('en-US', {maximumFractionDigits: 0});
-
-            const statusEl = document.getElementById('status');
-            if (shortfall >= 0) {
-                statusEl.className = 'status on-track';
-                statusEl.textContent = "You're on track for retirement!";
-            } else {
-                statusEl.className = 'status behind';
-                statusEl.textContent = "You may need to save more or adjust goals";
-            }
+        function formatCurrency(num) {
+            if (num >= 1000000) return '$' + (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return '$' + (num / 1000).toFixed(0) + 'K';
+            return '$' + Math.round(num).toLocaleString('en-US');
         }
-
+        function formatCurrencyFull(num) {
+            return '$' + Math.round(num).toLocaleString('en-US');
+        }
+        function calculate() {
+            const currentAge = parseInt(document.getElementById('currentAge').value) || 0;
+            const retireAge = parseInt(document.getElementById('retireAge').value) || 0;
+            const currentSavings = parseFloat(document.getElementById('currentSavings').value) || 0;
+            const monthlyContribution = parseFloat(document.getElementById('monthlyContribution').value) || 0;
+            const annualReturn = parseFloat(document.getElementById('annualReturn').value) / 100 || 0;
+            const retireIncome = parseFloat(document.getElementById('retireIncome').value) || 0;
+            const socialSecurity = parseFloat(document.getElementById('socialSecurity').value) || 0;
+            const inflation = parseFloat(document.getElementById('inflation').value) / 100 || 0;
+            const yearsToRetire = retireAge - currentAge;
+            const monthsToRetire = yearsToRetire * 12;
+            const monthlyReturn = annualReturn / 12;
+            let projectedSavings = currentSavings;
+            for (let m = 0; m < monthsToRetire; m++) {
+                projectedSavings = projectedSavings * (1 + monthlyReturn) + monthlyContribution;
+            }
+            const inflationAdjustedIncome = retireIncome * Math.pow(1 + inflation, yearsToRetire);
+            const annualSSIncome = socialSecurity * 12;
+            const neededFromSavings = inflationAdjustedIncome - annualSSIncome;
+            const amountNeeded = neededFromSavings * 25;
+            const monthlyFromSavings = projectedSavings * 0.04 / 12;
+            const totalMonthlyRetireIncome = monthlyFromSavings + socialSecurity;
+            const progressPct = Math.min(100, (projectedSavings / amountNeeded) * 100);
+            let statusClass, statusTitle, statusText;
+            if (progressPct >= 100) {
+                statusClass = 'on-track';
+                statusTitle = 'You\'re On Track!';
+                statusText = 'Your projected savings exceed your retirement goal. Great job!';
+            } else if (progressPct >= 70) {
+                statusClass = 'behind';
+                statusTitle = 'Almost There';
+                statusText = 'You\'re close to your goal. Consider increasing contributions slightly.';
+            } else {
+                statusClass = 'far-behind';
+                statusTitle = 'Action Needed';
+                statusText = 'You may need to increase savings or adjust retirement expectations.';
+            }
+            document.getElementById('statusCard').className = 'status-card ' + statusClass;
+            document.getElementById('statusCard').innerHTML = '<h2>' + statusTitle + '</h2><p>' + statusText + '</p>';
+            document.getElementById('projectedSavings').textContent = formatCurrency(projectedSavings);
+            document.getElementById('amountNeeded').textContent = formatCurrency(amountNeeded);
+            document.getElementById('monthlyFromSavings').textContent = formatCurrencyFull(monthlyFromSavings);
+            document.getElementById('yearsToRetire').textContent = yearsToRetire;
+            const fillClass = progressPct >= 100 ? 'good' : progressPct >= 70 ? 'warning' : 'danger';
+            document.getElementById('progressFill').className = 'projection-fill ' + fillClass;
+            document.getElementById('progressFill').style.width = progressPct + '%';
+            document.getElementById('progressFill').textContent = progressPct.toFixed(0) + '%';
+            document.getElementById('goalLabel').textContent = 'Goal: ' + formatCurrency(amountNeeded);
+            document.getElementById('results').classList.add('show');
+        }
         calculate();
-    
     </script>
 </body>
 </html>
