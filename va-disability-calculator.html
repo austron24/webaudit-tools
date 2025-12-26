@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free VA Disability Calculator - Benefits Estimator 2024</title>
+    <meta name="description" content="Calculate VA disability compensation rates. Estimate monthly benefits based on disability rating and dependents. Free VA disability calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #1e3a5f;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #1e3a5f;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #1e40af; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #dbeafe;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #1e3a5f; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #1e3a5f; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #1e3a5f; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #1e40af;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #93c5fd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎖️ VA Disability Calculator</h1>
+            <p class="subtitle">Estimate 2024 VA compensation rates</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Combined Disability Rating (%)</label>
+                    <select id="rating">
+                        <option value="10">10%</option>
+                        <option value="20">20%</option>
+                        <option value="30">30%</option>
+                        <option value="40">40%</option>
+                        <option value="50">50%</option>
+                        <option value="60">60%</option>
+                        <option value="70" selected>70%</option>
+                        <option value="80">80%</option>
+                        <option value="90">90%</option>
+                        <option value="100">100%</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Marital Status</label>
+                    <select id="maritalStatus">
+                        <option value="single" selected>Single</option>
+                        <option value="married">Married</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Dependent Children (Under 18)</label>
+                    <select id="children">
+                        <option value="0" selected>0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4+</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Dependent Parents</label>
+                    <select id="parents">
+                        <option value="0" selected>0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Aid & Attendance</label>
+                    <select id="aidAttendance">
+                        <option value="none" selected>None</option>
+                        <option value="spouse">Spouse needs A&A</option>
+                        <option value="veteran">Veteran needs A&A</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>School-Age Children (18-23)</label>
+                    <select id="schoolChildren">
+                        <option value="0" selected>0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Benefits</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="monthlyBenefit">$0</div>
+                    <div class="result-label-main">Monthly VA Compensation</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="annualBenefit">$0</div>
+                        <div class="summary-label">Annual Benefits</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="baseRate">$0</div>
+                        <div class="summary-label">Base Rate</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="dependentAdd">$0</div>
+                        <div class="summary-label">Dependent Additions</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="taxStatus">Tax-Free</div>
+                        <div class="summary-label">Tax Status</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Benefits Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Base Rate (at rating)</span>
+                        <span class="breakdown-value" id="displayBase">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Spouse Addition</span>
+                        <span class="breakdown-value" id="displaySpouse">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Children Addition</span>
+                        <span class="breakdown-value" id="displayChildren">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Parent Addition</span>
+                        <span class="breakdown-value" id="displayParents">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Aid & Attendance</span>
+                        <span class="breakdown-value" id="displayAA">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Benefits Calculators</h4>
+            <a href="social-security-calculator.html">Social Security</a>
+            <a href="medicare-calculator.html">Medicare</a>
+            <a href="retirement-calculator.html">Retirement</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>VA Disability Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const rating = parseInt(document.getElementById('rating').value);
+            const maritalStatus = document.getElementById('maritalStatus').value;
+            const children = parseInt(document.getElementById('children').value);
+            const parents = parseInt(document.getElementById('parents').value);
+            const aidAttendance = document.getElementById('aidAttendance').value;
+            const schoolChildren = parseInt(document.getElementById('schoolChildren').value);
+
+            // 2024 VA disability rates (single veteran, no dependents)
+            const baseRates = {
+                10: 171.23,
+                20: 338.49,
+                30: 524.31,
+                40: 755.28,
+                50: 1075.16,
+                60: 1361.88,
+                70: 1716.28,
+                80: 1995.01,
+                90: 2241.91,
+                100: 3737.85
+            };
+
+            let baseRate = baseRates[rating];
+            let spouseAdd = 0;
+            let childrenAdd = 0;
+            let parentsAdd = 0;
+            let aaAdd = 0;
+
+            // Spouse addition (only for 30%+)
+            if (rating >= 30 && maritalStatus === 'married') {
+                const spouseRates = {
+                    30: 61, 40: 81, 50: 102, 60: 122, 70: 143, 80: 163, 90: 184, 100: 204
+                };
+                spouseAdd = spouseRates[rating] || 0;
+            }
+
+            // Children addition (only for 30%+)
+            if (rating >= 30 && children > 0) {
+                const childRates = {
+                    30: 31, 40: 41, 50: 52, 60: 62, 70: 72, 80: 82, 90: 93, 100: 103
+                };
+                childrenAdd = (childRates[rating] || 0) * Math.min(children, 4);
+            }
+
+            // School children (18-23)
+            if (rating >= 30 && schoolChildren > 0) {
+                const schoolRates = {
+                    30: 100, 40: 133, 50: 167, 60: 200, 70: 234, 80: 267, 90: 300, 100: 334
+                };
+                childrenAdd += (schoolRates[rating] || 0) * schoolChildren;
+            }
+
+            // Parents addition (only for 30%+)
+            if (rating >= 30 && parents > 0) {
+                const parentRates = {
+                    30: 45, 40: 60, 50: 75, 60: 90, 70: 105, 80: 120, 90: 135, 100: 150
+                };
+                parentsAdd = (parentRates[rating] || 0) * parents;
+            }
+
+            // Aid & Attendance
+            if (aidAttendance === 'spouse' && rating >= 30) {
+                aaAdd = 185;
+            } else if (aidAttendance === 'veteran' && rating === 100) {
+                aaAdd = 450; // Simplified - actual varies
+            }
+
+            const totalMonthly = baseRate + spouseAdd + childrenAdd + parentsAdd + aaAdd;
+            const annualBenefit = totalMonthly * 12;
+            const dependentAdd = spouseAdd + childrenAdd + parentsAdd;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('monthlyBenefit').textContent = formatMoney(totalMonthly);
+            document.getElementById('annualBenefit').textContent = formatMoney(annualBenefit);
+            document.getElementById('baseRate').textContent = formatMoney(baseRate);
+            document.getElementById('dependentAdd').textContent = formatMoney(dependentAdd);
+            document.getElementById('taxStatus').textContent = 'Tax-Free';
+
+            document.getElementById('displayBase').textContent = formatMoney(baseRate);
+            document.getElementById('displaySpouse').textContent = formatMoney(spouseAdd);
+            document.getElementById('displayChildren').textContent = formatMoney(childrenAdd);
+            document.getElementById('displayParents').textContent = formatMoney(parentsAdd);
+            document.getElementById('displayAA').textContent = formatMoney(aaAdd);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

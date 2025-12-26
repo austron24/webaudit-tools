@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Wrongful Death Calculator - Settlement Estimator</title>
+    <meta name="description" content="Estimate wrongful death lawsuit settlements. Calculate potential compensation for loss of life claims. Free wrongful death calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1f2937 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .disclaimer {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: #92400e;
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #1f2937;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #1f2937;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #374151; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 48px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .result-range { font-size: 16px; opacity: 0.8; margin-top: 10px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #f3f4f6;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #1f2937; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #1f2937; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #1f2937; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #374151;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #9ca3af; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚖️ Wrongful Death Calculator</h1>
+            <p class="subtitle">Estimate potential settlement value</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="disclaimer">
+                <strong>Disclaimer:</strong> This calculator provides rough estimates only. Wrongful death settlements vary enormously based on jurisdiction, circumstances, and liability. Contact a wrongful death attorney for case-specific evaluation.
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Deceased's Age</label>
+                    <input type="number" id="age" value="45" min="18" max="85">
+                </div>
+                <div class="input-group">
+                    <label>Annual Income ($)</label>
+                    <input type="number" id="income" value="75000" min="0" step="5000">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Type of Death</label>
+                    <select id="deathType">
+                        <option value="medical" selected>Medical Malpractice</option>
+                        <option value="auto">Auto Accident</option>
+                        <option value="workplace">Workplace Accident</option>
+                        <option value="product">Product Liability</option>
+                        <option value="criminal">Criminal Act</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Defendant Type</label>
+                    <select id="defendantType">
+                        <option value="individual">Individual</option>
+                        <option value="small_business">Small Business</option>
+                        <option value="corporation" selected>Corporation</option>
+                        <option value="government">Government Entity</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Number of Dependents</label>
+                    <select id="dependents">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2" selected>2</option>
+                        <option value="3">3</option>
+                        <option value="4">4+</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Liability Clarity</label>
+                    <select id="liability">
+                        <option value="clear" selected>Clear Liability</option>
+                        <option value="strong">Strong Case</option>
+                        <option value="moderate">Moderate Case</option>
+                        <option value="weak">Weak/Disputed</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Medical Bills Before Death ($)</label>
+                    <input type="number" id="medicalBills" value="150000" min="0" step="10000">
+                </div>
+                <div class="input-group">
+                    <label>Funeral Expenses ($)</label>
+                    <input type="number" id="funeralCosts" value="15000" min="0" step="1000">
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Settlement</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalSettlement">$0</div>
+                    <div class="result-label-main">Estimated Settlement Value</div>
+                    <div class="result-range" id="settlementRange">Range: $0 - $0</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="economicDamages">$0</div>
+                        <div class="summary-label">Economic Damages</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="nonEconomic">$0</div>
+                        <div class="summary-label">Non-Economic Damages</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="punitiveDamages">$0</div>
+                        <div class="summary-label">Punitive (if applicable)</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="afterFees">$0</div>
+                        <div class="summary-label">After Attorney Fees</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Damages Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Lost Future Earnings</span>
+                        <span class="breakdown-value" id="displayEarnings">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Lost Benefits</span>
+                        <span class="breakdown-value" id="displayBenefits">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Medical Expenses</span>
+                        <span class="breakdown-value" id="displayMedical">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Funeral Costs</span>
+                        <span class="breakdown-value" id="displayFuneral">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Loss of Consortium</span>
+                        <span class="breakdown-value" id="displayConsortium">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Legal Calculators</h4>
+            <a href="personal-injury-calculator.html">Personal Injury</a>
+            <a href="lawsuit-settlement-calculator.html">Lawsuit Settlement</a>
+            <a href="mesothelioma-settlement-calculator.html">Mesothelioma</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Wrongful Death Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const age = parseInt(document.getElementById('age').value);
+            const income = parseFloat(document.getElementById('income').value);
+            const deathType = document.getElementById('deathType').value;
+            const defendantType = document.getElementById('defendantType').value;
+            const dependents = parseInt(document.getElementById('dependents').value);
+            const liability = document.getElementById('liability').value;
+            const medicalBills = parseFloat(document.getElementById('medicalBills').value);
+            const funeralCosts = parseFloat(document.getElementById('funeralCosts').value);
+
+            // Calculate working years remaining (assume retirement at 67)
+            const workingYears = Math.max(0, 67 - age);
+
+            // Lost future earnings (simplified, without discounting)
+            const lostEarnings = income * workingYears * 0.7; // 70% for personal consumption reduction
+
+            // Lost benefits (roughly 30% of salary)
+            const lostBenefits = income * 0.3 * workingYears * 0.5;
+
+            // Economic damages
+            const economicDamages = lostEarnings + lostBenefits + medicalBills + funeralCosts;
+
+            // Non-economic damages (pain, suffering, loss of consortium)
+            let nonEconomicMultiplier = 2; // Base multiplier
+
+            // Adjust for death type
+            const deathTypeMultipliers = {
+                medical: 2.5,
+                auto: 2.0,
+                workplace: 2.2,
+                product: 2.8,
+                criminal: 3.0
+            };
+            nonEconomicMultiplier *= deathTypeMultipliers[deathType];
+
+            // Adjust for dependents
+            nonEconomicMultiplier += dependents * 0.3;
+
+            // Liability adjustment
+            const liabilityMultipliers = {
+                clear: 1.0,
+                strong: 0.85,
+                moderate: 0.6,
+                weak: 0.35
+            };
+            nonEconomicMultiplier *= liabilityMultipliers[liability];
+
+            const nonEconomicDamages = economicDamages * nonEconomicMultiplier;
+
+            // Loss of consortium (part of non-economic)
+            const lossOfConsortium = 250000 + (dependents * 100000);
+
+            // Punitive damages (only in egregious cases)
+            let punitiveDamages = 0;
+            if (liability === 'clear' && (deathType === 'product' || deathType === 'criminal')) {
+                punitiveDamages = economicDamages * 1.5;
+            }
+
+            // Defendant type affects collectability
+            const defendantMultipliers = {
+                individual: 0.4,
+                small_business: 0.6,
+                corporation: 1.0,
+                government: 0.8
+            };
+            const collectabilityFactor = defendantMultipliers[defendantType];
+
+            // Total settlement
+            const totalBeforeAdjustment = economicDamages + nonEconomicDamages + punitiveDamages;
+            const totalSettlement = totalBeforeAdjustment * collectabilityFactor;
+
+            // Range
+            const lowEstimate = totalSettlement * 0.4;
+            const highEstimate = totalSettlement * 2;
+
+            // After attorney fees (33-40% contingency)
+            const afterFees = totalSettlement * 0.6;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalSettlement').textContent = formatMoney(totalSettlement);
+            document.getElementById('settlementRange').textContent = 'Range: ' + formatMoney(lowEstimate) + ' - ' + formatMoney(highEstimate);
+            document.getElementById('economicDamages').textContent = formatMoney(economicDamages);
+            document.getElementById('nonEconomic').textContent = formatMoney(nonEconomicDamages);
+            document.getElementById('punitiveDamages').textContent = formatMoney(punitiveDamages);
+            document.getElementById('afterFees').textContent = formatMoney(afterFees);
+
+            document.getElementById('displayEarnings').textContent = formatMoney(lostEarnings);
+            document.getElementById('displayBenefits').textContent = formatMoney(lostBenefits);
+            document.getElementById('displayMedical').textContent = formatMoney(medicalBills);
+            document.getElementById('displayFuneral').textContent = formatMoney(funeralCosts);
+            document.getElementById('displayConsortium').textContent = formatMoney(lossOfConsortium);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

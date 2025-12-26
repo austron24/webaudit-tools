@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Motorcycle Accident Calculator - Injury Settlement Estimator</title>
+    <meta name="description" content="Estimate motorcycle accident injury settlements. Calculate compensation for motorcycle crash injuries. Free motorcycle accident calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #1e293b;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #1e293b;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #334155; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 48px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .result-range { font-size: 16px; opacity: 0.8; margin-top: 10px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #e2e8f0;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #1e293b; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #1e293b; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #1e293b; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #334155;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #94a3b8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏍️ Motorcycle Accident Calculator</h1>
+            <p class="subtitle">Estimate motorcycle injury settlement</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Accident Type</label>
+                    <select id="accidentType">
+                        <option value="left_turn" selected>Left Turn (Car hit you)</option>
+                        <option value="rear_end">Rear-Ended</option>
+                        <option value="lane_change">Lane Change</option>
+                        <option value="intersection">Intersection</option>
+                        <option value="road_hazard">Road Hazard</option>
+                        <option value="hit_run">Hit and Run</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Injury Severity</label>
+                    <select id="injurySeverity">
+                        <option value="road_rash">Road Rash/Minor</option>
+                        <option value="fractures" selected>Fractures</option>
+                        <option value="surgery">Surgery Required</option>
+                        <option value="permanent">Permanent Injury</option>
+                        <option value="catastrophic">Catastrophic (TBI/Spinal)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Medical Bills ($)</label>
+                    <input type="number" id="medicalBills" value="35000" min="0" step="1000">
+                </div>
+                <div class="input-group">
+                    <label>Lost Wages ($)</label>
+                    <input type="number" id="lostWages" value="12000" min="0" step="500">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Bike Damage ($)</label>
+                    <input type="number" id="bikeDamage" value="8000" min="0" step="500">
+                </div>
+                <div class="input-group">
+                    <label>Helmet Worn?</label>
+                    <select id="helmetWorn">
+                        <option value="yes" selected>Yes - DOT Approved</option>
+                        <option value="partial">Yes - Not DOT Approved</option>
+                        <option value="no">No Helmet</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Fault Determination</label>
+                    <select id="fault">
+                        <option value="100_other" selected>100% Other Driver</option>
+                        <option value="80_other">80% Other Driver</option>
+                        <option value="70_other">70% Other Driver</option>
+                        <option value="60_other">60% Other Driver</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>At-Fault Driver's Insurance</label>
+                    <select id="insurance">
+                        <option value="minimum">Minimum ($25-50k)</option>
+                        <option value="standard" selected>Standard ($100k)</option>
+                        <option value="high">High ($250k+)</option>
+                        <option value="uninsured">Uninsured/Underinsured</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Settlement</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalSettlement">$0</div>
+                    <div class="result-label-main">Estimated Settlement Value</div>
+                    <div class="result-range" id="settlementRange">Range: $0 - $0</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="economicDamages">$0</div>
+                        <div class="summary-label">Economic Damages</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="painSuffering">$0</div>
+                        <div class="summary-label">Pain & Suffering</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="bikeProperty">$0</div>
+                        <div class="summary-label">Bike/Property</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="afterFees">$0</div>
+                        <div class="summary-label">After Attorney Fees</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Settlement Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Medical Expenses</span>
+                        <span class="breakdown-value" id="displayMedical">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Future Medical (Est.)</span>
+                        <span class="breakdown-value" id="displayFuture">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Lost Income</span>
+                        <span class="breakdown-value" id="displayWages">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Pain Multiplier Used</span>
+                        <span class="breakdown-value" id="displayMultiplier">0x</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Helmet Impact</span>
+                        <span class="breakdown-value" id="displayHelmet">None</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Accident Calculators</h4>
+            <a href="car-accident-settlement-calculator.html">Car Accident</a>
+            <a href="truck-accident-calculator.html">Truck Accident</a>
+            <a href="personal-injury-calculator.html">Personal Injury</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Motorcycle Accident Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const accidentType = document.getElementById('accidentType').value;
+            const injurySeverity = document.getElementById('injurySeverity').value;
+            const medicalBills = parseFloat(document.getElementById('medicalBills').value);
+            const lostWages = parseFloat(document.getElementById('lostWages').value);
+            const bikeDamage = parseFloat(document.getElementById('bikeDamage').value);
+            const helmetWorn = document.getElementById('helmetWorn').value;
+            const fault = document.getElementById('fault').value;
+            const insurance = document.getElementById('insurance').value;
+
+            // Future medical estimate (motorcycle injuries often more severe)
+            const futureMedicalMultipliers = {
+                road_rash: 0.3,
+                fractures: 0.6,
+                surgery: 1.2,
+                permanent: 2.5,
+                catastrophic: 5.0
+            };
+            const futureMedical = medicalBills * futureMedicalMultipliers[injurySeverity];
+
+            // Economic damages
+            const economicDamages = medicalBills + lostWages + futureMedical;
+
+            // Pain multiplier (motorcycle injuries typically get higher multipliers)
+            const baseMultipliers = {
+                road_rash: 2.0,
+                fractures: 3.0,
+                surgery: 4.5,
+                permanent: 6.0,
+                catastrophic: 8.0
+            };
+            let painMultiplier = baseMultipliers[injurySeverity];
+
+            // Accident type affects value
+            const accidentMultipliers = {
+                left_turn: 1.2,  // Classic motorcycle accident, usually clear liability
+                rear_end: 1.1,
+                lane_change: 1.1,
+                intersection: 1.0,
+                road_hazard: 0.8,  // Harder to prove liability
+                hit_run: 0.9
+            };
+            painMultiplier *= accidentMultipliers[accidentType];
+
+            const painSuffering = economicDamages * painMultiplier;
+
+            // Helmet impact on recovery (in some states)
+            let helmetReduction = 0;
+            let helmetImpact = 'No reduction';
+            if (helmetWorn === 'no' && (injurySeverity === 'permanent' || injurySeverity === 'catastrophic')) {
+                helmetReduction = 0.15; // Could reduce head injury claims
+                helmetImpact = '-15% (head injuries)';
+            } else if (helmetWorn === 'partial') {
+                helmetReduction = 0.05;
+                helmetImpact = '-5% potential';
+            }
+
+            // Total injury claim before reductions
+            let injuryClaim = economicDamages + painSuffering;
+            injuryClaim *= (1 - helmetReduction);
+
+            // Fault adjustment
+            const faultMultipliers = {
+                '100_other': 1.0,
+                '80_other': 0.8,
+                '70_other': 0.7,
+                '60_other': 0.6
+            };
+            const faultFactor = faultMultipliers[fault];
+            injuryClaim *= faultFactor;
+
+            // Policy limits
+            const policyLimits = {
+                minimum: 30000,
+                standard: 100000,
+                high: 250000,
+                uninsured: 50000  // Assuming UM coverage
+            };
+            const policyLimit = policyLimits[insurance];
+            const finalInjury = Math.min(injuryClaim, policyLimit);
+
+            // Total (injury + property)
+            const totalSettlement = finalInjury + bikeDamage;
+
+            // After attorney fees
+            const afterFees = totalSettlement * 0.67;
+
+            // Range
+            const lowEstimate = totalSettlement * 0.5;
+            const highEstimate = Math.min(totalSettlement * 1.8, policyLimit + bikeDamage);
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalSettlement').textContent = formatMoney(totalSettlement);
+            document.getElementById('settlementRange').textContent = 'Range: ' + formatMoney(lowEstimate) + ' - ' + formatMoney(highEstimate);
+            document.getElementById('economicDamages').textContent = formatMoney(economicDamages);
+            document.getElementById('painSuffering').textContent = formatMoney(painSuffering);
+            document.getElementById('bikeProperty').textContent = formatMoney(bikeDamage);
+            document.getElementById('afterFees').textContent = formatMoney(afterFees);
+
+            document.getElementById('displayMedical').textContent = formatMoney(medicalBills);
+            document.getElementById('displayFuture').textContent = formatMoney(futureMedical);
+            document.getElementById('displayWages').textContent = formatMoney(lostWages);
+            document.getElementById('displayMultiplier').textContent = painMultiplier.toFixed(1) + 'x';
+            document.getElementById('displayHelmet').textContent = helmetImpact;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

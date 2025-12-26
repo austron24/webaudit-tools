@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Asbestos Trust Fund Calculator - Claim Estimator</title>
+    <meta name="description" content="Estimate asbestos trust fund claim payouts. Calculate potential compensation from bankruptcy trusts. Free asbestos trust calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #7f1d1d 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .disclaimer {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: #92400e;
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #7f1d1d;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #7f1d1d;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #991b1b; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 48px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .result-range { font-size: 16px; opacity: 0.8; margin-top: 10px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #fee2e2;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #7f1d1d; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #7f1d1d; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #7f1d1d; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #991b1b;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fca5a5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚖️ Asbestos Trust Fund Calculator</h1>
+            <p class="subtitle">Estimate bankruptcy trust claims</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="disclaimer">
+                <strong>Disclaimer:</strong> This is a rough estimate only. Actual trust fund payouts vary based on individual circumstances, trust payment percentages, and claim documentation. Contact an asbestos attorney for case-specific evaluation.
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Disease Category</label>
+                    <select id="disease">
+                        <option value="mesothelioma" selected>Mesothelioma</option>
+                        <option value="lung_cancer">Lung Cancer (Asbestos)</option>
+                        <option value="asbestosis_severe">Severe Asbestosis</option>
+                        <option value="asbestosis_mild">Mild Asbestosis</option>
+                        <option value="pleural_disease">Pleural Disease</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Number of Trusts to File</label>
+                    <select id="numTrusts">
+                        <option value="5">5 Trusts</option>
+                        <option value="10" selected>10 Trusts</option>
+                        <option value="20">20 Trusts</option>
+                        <option value="30">30+ Trusts</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Exposure Duration</label>
+                    <select id="exposureDuration">
+                        <option value="short">1-5 Years</option>
+                        <option value="medium" selected>5-15 Years</option>
+                        <option value="long">15-30 Years</option>
+                        <option value="career">30+ Years</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Exposure Setting</label>
+                    <select id="exposureSetting">
+                        <option value="occupational" selected>Occupational (Direct)</option>
+                        <option value="secondary">Secondary (Family)</option>
+                        <option value="environmental">Environmental</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Documentation Quality</label>
+                    <select id="documentation">
+                        <option value="excellent">Excellent (Work records, witnesses)</option>
+                        <option value="good" selected>Good (Some documentation)</option>
+                        <option value="limited">Limited documentation</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Filing Status</label>
+                    <select id="filingStatus">
+                        <option value="living" selected>Living Claimant</option>
+                        <option value="deceased">Deceased (Estate Claim)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Trust Claims</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalEstimate">$0</div>
+                    <div class="result-label-main">Estimated Total Trust Payouts</div>
+                    <div class="result-range" id="estimateRange">Range: $0 - $0</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="avgPerTrust">$0</div>
+                        <div class="summary-label">Average Per Trust</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="paymentPercent">0%</div>
+                        <div class="summary-label">Avg Payment Percentage</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="afterFees">$0</div>
+                        <div class="summary-label">After Attorney Fees</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="timeline">0 months</div>
+                        <div class="summary-label">Expected Timeline</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Trust Fund Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Base Scheduled Value</span>
+                        <span class="breakdown-value" id="displayBase">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Number of Trusts</span>
+                        <span class="breakdown-value" id="displayTrusts">0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Documentation Adjustment</span>
+                        <span class="breakdown-value" id="displayDoc">0%</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Expedited Review Eligible</span>
+                        <span class="breakdown-value" id="displayExpedited">Yes</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Attorney Fees (25-40%)</span>
+                        <span class="breakdown-value" id="displayFees">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Legal Calculators</h4>
+            <a href="mesothelioma-settlement-calculator.html">Mesothelioma Settlement</a>
+            <a href="personal-injury-calculator.html">Personal Injury</a>
+            <a href="lawsuit-settlement-calculator.html">Lawsuit Settlement</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Asbestos Trust Fund Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const disease = document.getElementById('disease').value;
+            const numTrusts = parseInt(document.getElementById('numTrusts').value);
+            const exposureDuration = document.getElementById('exposureDuration').value;
+            const exposureSetting = document.getElementById('exposureSetting').value;
+            const documentation = document.getElementById('documentation').value;
+            const filingStatus = document.getElementById('filingStatus').value;
+
+            // Base scheduled values by disease
+            const diseaseValues = {
+                mesothelioma: 180000,
+                lung_cancer: 75000,
+                asbestosis_severe: 40000,
+                asbestosis_mild: 15000,
+                pleural_disease: 8000
+            };
+            let baseValue = diseaseValues[disease];
+
+            // Payment percentages vary by trust (typically 2-25%)
+            const avgPaymentPercent = disease === 'mesothelioma' ? 0.15 : 0.08;
+
+            // Exposure duration multiplier
+            const durationMultipliers = { short: 0.7, medium: 1.0, long: 1.2, career: 1.4 };
+            baseValue *= durationMultipliers[exposureDuration];
+
+            // Exposure setting multiplier
+            const settingMultipliers = { occupational: 1.0, secondary: 0.6, environmental: 0.4 };
+            baseValue *= settingMultipliers[exposureSetting];
+
+            // Documentation quality
+            const docMultipliers = { excellent: 1.2, good: 1.0, limited: 0.7 };
+            baseValue *= docMultipliers[documentation];
+
+            // Calculate per trust average (after payment percentage)
+            const avgPerTrust = baseValue * avgPaymentPercent;
+
+            // Total from all trusts
+            const totalEstimate = avgPerTrust * numTrusts;
+
+            // Range
+            const lowEstimate = totalEstimate * 0.5;
+            const highEstimate = totalEstimate * 2;
+
+            // Attorney fees (typically 25-40% for asbestos cases)
+            const feePercent = 0.33;
+            const fees = totalEstimate * feePercent;
+            const afterFees = totalEstimate - fees;
+
+            // Timeline (mesothelioma gets expedited review)
+            let timeline = disease === 'mesothelioma' ? '6-12' : '12-24';
+
+            // Expedited review eligibility
+            const expedited = disease === 'mesothelioma' || disease === 'lung_cancer' ? 'Yes' : 'No';
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalEstimate').textContent = formatMoney(totalEstimate);
+            document.getElementById('estimateRange').textContent = 'Range: ' + formatMoney(lowEstimate) + ' - ' + formatMoney(highEstimate);
+            document.getElementById('avgPerTrust').textContent = formatMoney(avgPerTrust);
+            document.getElementById('paymentPercent').textContent = (avgPaymentPercent * 100).toFixed(0) + '%';
+            document.getElementById('afterFees').textContent = formatMoney(afterFees);
+            document.getElementById('timeline').textContent = timeline + ' months';
+
+            document.getElementById('displayBase').textContent = formatMoney(baseValue);
+            document.getElementById('displayTrusts').textContent = numTrusts;
+            document.getElementById('displayDoc').textContent = (docMultipliers[documentation] * 100 - 100).toFixed(0) + '%';
+            document.getElementById('displayExpedited').textContent = expedited;
+            document.getElementById('displayFees').textContent = formatMoney(fees);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
