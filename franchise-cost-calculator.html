@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Franchise Cost Calculator - Franchise Investment Estimator</title>
+    <meta name="description" content="Calculate franchise startup costs. Estimate franchise fees, equipment, and working capital. Free franchise investment calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #b91c1c 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #b91c1c;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #b91c1c;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #dc2626; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #b91c1c 0%, #dc2626 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 48px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .result-range { font-size: 16px; opacity: 0.8; margin-top: 10px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #fee2e2;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #b91c1c; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #b91c1c; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #b91c1c; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #dc2626;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fca5a5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏪 Franchise Cost Calculator</h1>
+            <p class="subtitle">Estimate franchise investment costs</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Franchise Category</label>
+                    <select id="category">
+                        <option value="qsr" selected>Quick Service Restaurant</option>
+                        <option value="casual">Casual Dining</option>
+                        <option value="retail">Retail Store</option>
+                        <option value="fitness">Fitness/Gym</option>
+                        <option value="service">Home Services</option>
+                        <option value="auto">Automotive</option>
+                        <option value="hotel">Hotel/Lodging</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Brand Tier</label>
+                    <select id="tier">
+                        <option value="low">Low-Cost Entry</option>
+                        <option value="mid" selected>Mid-Range</option>
+                        <option value="premium">Premium Brand</option>
+                        <option value="top">Top-Tier National</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Location Type</label>
+                    <select id="location">
+                        <option value="inline" selected>Inline/Strip Mall</option>
+                        <option value="standalone">Standalone Building</option>
+                        <option value="mall">Mall Location</option>
+                        <option value="home">Home-Based</option>
+                        <option value="mobile">Mobile/Vehicle</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Market Size</label>
+                    <select id="market">
+                        <option value="small">Small Town</option>
+                        <option value="medium" selected>Medium City</option>
+                        <option value="large">Large Metro</option>
+                        <option value="major">Major Market</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Build-Out Level</label>
+                    <select id="buildout">
+                        <option value="turnkey">Turnkey/Existing</option>
+                        <option value="standard" selected>Standard Build</option>
+                        <option value="custom">Custom Build</option>
+                        <option value="ground">Ground-Up Construction</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Multi-Unit Discount</label>
+                    <select id="multiunit">
+                        <option value="no" selected>Single Unit</option>
+                        <option value="2">2 Units (5% off)</option>
+                        <option value="3">3+ Units (10% off)</option>
+                        <option value="5">5+ Units (15% off)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Investment</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalInvestment">$0</div>
+                    <div class="result-label-main">Total Initial Investment</div>
+                    <div class="result-range" id="investmentRange">Range: $0 - $0</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="franchiseFee">$0</div>
+                        <div class="summary-label">Franchise Fee</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="buildoutCost">$0</div>
+                        <div class="summary-label">Build-Out</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="equipmentCost">$0</div>
+                        <div class="summary-label">Equipment</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="workingCap">$0</div>
+                        <div class="summary-label">Working Capital</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Investment Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Initial Franchise Fee</span>
+                        <span class="breakdown-value" id="displayFee">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Build-Out/Construction</span>
+                        <span class="breakdown-value" id="displayBuildout">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Equipment & Fixtures</span>
+                        <span class="breakdown-value" id="displayEquipment">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Inventory & Supplies</span>
+                        <span class="breakdown-value" id="displayInventory">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Working Capital (3-6 mo)</span>
+                        <span class="breakdown-value" id="displayWorking">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Training & Misc</span>
+                        <span class="breakdown-value" id="displayTraining">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Business Calculators</h4>
+            <a href="business-loan-calculator.html">Business Loan</a>
+            <a href="commercial-rent-calculator.html">Commercial Rent</a>
+            <a href="roi-calculator.html">ROI Calculator</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Franchise Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const category = document.getElementById('category').value;
+            const tier = document.getElementById('tier').value;
+            const location = document.getElementById('location').value;
+            const market = document.getElementById('market').value;
+            const buildout = document.getElementById('buildout').value;
+            const multiunit = document.getElementById('multiunit').value;
+
+            // Base franchise fees by category
+            const baseFees = {
+                qsr: 35000,
+                casual: 50000,
+                retail: 30000,
+                fitness: 40000,
+                service: 25000,
+                auto: 35000,
+                hotel: 75000
+            };
+            let franchiseFee = baseFees[category];
+
+            // Tier multiplier for franchise fee
+            const tierMults = { low: 0.6, mid: 1.0, premium: 1.5, top: 2.5 };
+            franchiseFee *= tierMults[tier];
+
+            // Build-out costs by category and location
+            const buildoutBase = {
+                qsr: 250000,
+                casual: 400000,
+                retail: 150000,
+                fitness: 300000,
+                service: 50000,
+                auto: 200000,
+                hotel: 5000000
+            };
+            let buildoutCost = buildoutBase[category];
+
+            // Location type multiplier
+            const locationMults = {
+                inline: 1.0,
+                standalone: 1.5,
+                mall: 1.3,
+                home: 0.1,
+                mobile: 0.3
+            };
+            buildoutCost *= locationMults[location];
+
+            // Build-out level multiplier
+            const buildMults = { turnkey: 0.5, standard: 1.0, custom: 1.4, ground: 2.0 };
+            buildoutCost *= buildMults[buildout];
+
+            // Market size multiplier
+            const marketMults = { small: 0.7, medium: 1.0, large: 1.3, major: 1.6 };
+            buildoutCost *= marketMults[market];
+            franchiseFee *= marketMults[market];
+
+            // Equipment costs
+            const equipmentBase = {
+                qsr: 150000,
+                casual: 200000,
+                retail: 50000,
+                fitness: 250000,
+                service: 30000,
+                auto: 100000,
+                hotel: 500000
+            };
+            let equipmentCost = equipmentBase[category] * tierMults[tier];
+
+            // Inventory
+            let inventoryCost = equipmentCost * 0.2;
+
+            // Working capital (3-6 months operating)
+            let workingCap = (buildoutCost + equipmentCost) * 0.15;
+
+            // Training and misc
+            let trainingCost = franchiseFee * 0.15 + 10000;
+
+            // Multi-unit discount
+            const discounts = { no: 0, 2: 0.05, 3: 0.10, 5: 0.15 };
+            const discount = discounts[multiunit];
+            franchiseFee *= (1 - discount);
+
+            // Total investment
+            const totalInvestment = franchiseFee + buildoutCost + equipmentCost + inventoryCost + workingCap + trainingCost;
+
+            // Range
+            const lowEstimate = totalInvestment * 0.8;
+            const highEstimate = totalInvestment * 1.3;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalInvestment').textContent = formatMoney(totalInvestment);
+            document.getElementById('investmentRange').textContent = 'Range: ' + formatMoney(lowEstimate) + ' - ' + formatMoney(highEstimate);
+            document.getElementById('franchiseFee').textContent = formatMoney(franchiseFee);
+            document.getElementById('buildoutCost').textContent = formatMoney(buildoutCost);
+            document.getElementById('equipmentCost').textContent = formatMoney(equipmentCost);
+            document.getElementById('workingCap').textContent = formatMoney(workingCap);
+
+            document.getElementById('displayFee').textContent = formatMoney(franchiseFee);
+            document.getElementById('displayBuildout').textContent = formatMoney(buildoutCost);
+            document.getElementById('displayEquipment').textContent = formatMoney(equipmentCost);
+            document.getElementById('displayInventory').textContent = formatMoney(inventoryCost);
+            document.getElementById('displayWorking').textContent = formatMoney(workingCap);
+            document.getElementById('displayTraining').textContent = formatMoney(trainingCost);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

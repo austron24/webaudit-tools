@@ -3,150 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Landscaping Cost Calculator - Yard Design & Install Estimates</title>
-    <meta name="description" content="Calculate landscaping costs. Estimate yard design, planting, hardscaping, and outdoor project prices.">
+    <title>Free Landscaping Cost Calculator - Landscape Design Estimator</title>
+    <meta name="description" content="Calculate landscaping costs. Estimate lawn, plants, hardscape, and labor expenses. Free landscaping cost calculator.">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #16a34a 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #15803d 100%);
             min-height: 100vh;
             color: #f8fafc;
         }
-        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
         header { text-align: center; margin-bottom: 30px; }
         h1 { font-size: 36px; margin-bottom: 10px; }
         .subtitle { font-size: 16px; opacity: 0.9; }
         .calc-card {
             background: white;
             border-radius: 24px;
-            padding: 35px;
+            padding: 40px;
             color: #1e293b;
             box-shadow: 0 25px 50px rgba(0,0,0,0.3);
         }
-        .input-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-        .input-group {
-            margin-bottom: 15px;
-        }
-        .input-group.full { grid-column: span 2; }
+        .input-group { margin-bottom: 20px; }
         .input-group label {
             display: block;
-            font-size: 12px;
+            font-size: 14px;
             color: #64748b;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            font-weight: 500;
         }
         .input-group input, .input-group select {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 16px;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
         }
         .input-group input:focus, .input-group select:focus {
             outline: none;
-            border-color: #16a34a;
+            border-color: #15803d;
         }
-        .result-box {
-            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-            border-radius: 16px;
-            padding: 30px;
-            text-align: center;
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #15803d;
             color: white;
-            margin: 25px 0;
+            transition: all 0.2s;
+            margin-top: 10px;
         }
-        .result-box .label { opacity: 0.9; font-size: 14px; }
-        .result-box .value { font-size: 42px; font-weight: bold; }
-        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
-        .compare-grid {
+        .btn:hover { background: #16a34a; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 48px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .result-range { font-size: 16px; opacity: 0.8; margin-top: 10px; }
+        .summary-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 20px;
+            gap: 15px;
+            margin-bottom: 20px;
         }
-        .compare-item {
+        .summary-box {
             background: #dcfce7;
-            border-radius: 10px;
             padding: 20px;
+            border-radius: 12px;
             text-align: center;
         }
-        .compare-item .type {
-            font-size: 12px;
-            color: #64748b;
-            margin-bottom: 5px;
-        }
-        .compare-item .value {
-            font-size: 22px;
-            font-weight: bold;
-            color: #15803d;
-        }
-        .compare-item .note {
-            font-size: 11px;
-            color: #64748b;
-            margin-top: 5px;
-        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #15803d; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
         .breakdown {
             background: #f8fafc;
             border-radius: 12px;
             padding: 20px;
-            margin-top: 20px;
         }
-        .breakdown h4 {
-            color: #15803d;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
-        .break-row {
+        .breakdown h4 { color: #15803d; margin-bottom: 15px; }
+        .breakdown-row {
             display: flex;
             justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #e2e8f0;
-            font-size: 14px;
-        }
-        .break-row:last-child { border: none; }
-        .break-row .value { font-weight: 600; color: #15803d; }
-        .pricing {
-            background: #dcfce7;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        .pricing h4 {
-            color: #15803d;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
-        .pricing table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-        .pricing th, .pricing td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #bbf7d0;
-        }
-        .pricing th { color: #15803d; }
-        .tips {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        .tips h4 {
-            color: #15803d;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
-        .tip-item {
-            font-size: 13px;
-            padding: 8px 0;
+            padding: 12px 0;
             border-bottom: 1px solid #e2e8f0;
         }
-        .tip-item:last-child { border: none; }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
         .tools-promo {
             background: white;
             border-radius: 12px;
@@ -169,134 +126,148 @@
 <body>
     <div class="container">
         <header>
-            <h1>🌿 Landscaping Cost</h1>
-            <p class="subtitle">Yard design & installation estimates</p>
+            <h1>🌳 Landscaping Cost Calculator</h1>
+            <p class="subtitle">Estimate your landscaping project costs</p>
         </header>
 
         <div class="calc-card">
-            <div class="input-grid">
+            <div class="input-row">
                 <div class="input-group">
                     <label>Yard Size (sq ft)</label>
-                    <input type="number" id="sqft" value="2000" oninput="calculate()">
+                    <input type="number" id="sqft" value="5000" min="500" max="50000" step="500">
                 </div>
                 <div class="input-group">
                     <label>Project Scope</label>
-                    <select id="scope" onchange="calculate()">
-                        <option value="basic">Basic (mulch, few plants)</option>
-                        <option value="moderate" selected>Moderate (beds, shrubs)</option>
-                        <option value="extensive">Extensive (full redesign)</option>
-                        <option value="luxury">Luxury (complete overhaul)</option>
+                    <select id="scope">
+                        <option value="basic">Basic Refresh</option>
+                        <option value="moderate" selected>Moderate Redesign</option>
+                        <option value="extensive">Extensive Makeover</option>
+                        <option value="complete">Complete Overhaul</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Lawn Work</label>
+                    <select id="lawn">
+                        <option value="none">No Lawn Work</option>
+                        <option value="overseed">Overseed Existing</option>
+                        <option value="sod" selected>New Sod</option>
+                        <option value="hydroseed">Hydroseed</option>
                     </select>
                 </div>
                 <div class="input-group">
-                    <label>Hardscaping</label>
-                    <select id="hardscape" onchange="calculate()">
-                        <option value="none" selected>None</option>
-                        <option value="walkway">Walkway/Path</option>
-                        <option value="patio">Patio Area</option>
-                        <option value="retaining">Retaining Wall</option>
-                        <option value="full">Multiple Features</option>
+                    <label>Plants & Trees</label>
+                    <select id="plants">
+                        <option value="minimal">Minimal (Few Plants)</option>
+                        <option value="moderate" selected>Moderate Beds</option>
+                        <option value="extensive">Extensive Planting</option>
+                        <option value="mature">Mature Trees/Shrubs</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Hardscape</label>
+                    <select id="hardscape">
+                        <option value="none">None</option>
+                        <option value="walkway" selected>Walkways Only</option>
+                        <option value="patio">Patio/Deck Area</option>
+                        <option value="extensive">Extensive (Walls, Paths)</option>
                     </select>
                 </div>
                 <div class="input-group">
-                    <label>Plants/Shrubs</label>
-                    <select id="plants" onchange="calculate()">
-                        <option value="few">Few (5-10)</option>
-                        <option value="moderate" selected>Moderate (15-25)</option>
-                        <option value="many">Many (30-50)</option>
-                        <option value="extensive">Extensive (50+)</option>
-                    </select>
-                </div>
-                <div class="input-group full">
-                    <label>Irrigation System</label>
-                    <select id="irrigation" onchange="calculate()">
-                        <option value="none" selected>None</option>
-                        <option value="drip">Drip Irrigation</option>
+                    <label>Irrigation</label>
+                    <select id="irrigation">
+                        <option value="none" selected>No Irrigation</option>
+                        <option value="drip">Drip System</option>
                         <option value="sprinkler">Sprinkler System</option>
+                        <option value="smart">Smart Irrigation</option>
                     </select>
                 </div>
             </div>
 
-            <div class="result-box">
-                <div class="label">Estimated Total Cost</div>
-                <div class="value" id="totalCost">$5,000-10,000</div>
-                <div class="sub" id="perSqft">$2.50-5 per sq ft</div>
-            </div>
-
-            <div class="compare-grid">
-                <div class="compare-item">
-                    <div class="type">Materials</div>
-                    <div class="value" id="matCost">$3,500</div>
-                    <div class="note">Plants, soil, mulch</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Outdoor Lighting</label>
+                    <select id="lighting">
+                        <option value="none" selected>None</option>
+                        <option value="path">Path Lighting</option>
+                        <option value="accent">Accent Lighting</option>
+                        <option value="full">Full Landscape Lighting</option>
+                    </select>
                 </div>
-                <div class="compare-item">
-                    <div class="type">Labor</div>
-                    <div class="value" id="laborCost">$3,500</div>
-                    <div class="note">Design & install</div>
-                </div>
-                <div class="compare-item">
-                    <div class="type">Hardscape</div>
-                    <div class="value" id="hardCost">$0</div>
-                    <div class="note">Pavers, walls</div>
-                </div>
-                <div class="compare-item">
-                    <div class="type">ROI</div>
-                    <div class="value" id="roi">100-200%</div>
-                    <div class="note">Curb appeal value</div>
+                <div class="input-group">
+                    <label>Your Region</label>
+                    <select id="region">
+                        <option value="low">Low Cost Area</option>
+                        <option value="average" selected>Average</option>
+                        <option value="high">High Cost Metro</option>
+                    </select>
                 </div>
             </div>
 
-            <div class="breakdown">
-                <h4>💰 Cost Breakdown</h4>
-                <div class="break-row">
-                    <span>Design/Planning</span>
-                    <span class="value" id="designCost">$500</span>
-                </div>
-                <div class="break-row">
-                    <span>Plants & Trees</span>
-                    <span class="value" id="plantCost">$2,000</span>
-                </div>
-                <div class="break-row">
-                    <span>Soil & Mulch</span>
-                    <span class="value" id="soilCost">$800</span>
-                </div>
-                <div class="break-row">
-                    <span>Hardscaping</span>
-                    <span class="value" id="hardBreak">$0</span>
-                </div>
-                <div class="break-row">
-                    <span>Installation Labor</span>
-                    <span class="value" id="laborBreak">$2,500</span>
-                </div>
-            </div>
+            <button class="btn" onclick="calculate()">Calculate Cost</button>
 
-            <div class="pricing">
-                <h4>📊 Landscaping Costs</h4>
-                <table>
-                    <tr>
-                        <th>Element</th>
-                        <th>Cost Range</th>
-                    </tr>
-                    <tr><td>Shrubs/Bushes</td><td>$25-150 each</td></tr>
-                    <tr><td>Trees</td><td>$100-1,000+ each</td></tr>
-                    <tr><td>Mulch (installed)</td><td>$50-100/yard</td></tr>
-                    <tr><td>Sod (installed)</td><td>$1-2/sq ft</td></tr>
-                    <tr><td>Paver Patio</td><td>$10-25/sq ft</td></tr>
-                    <tr><td>Retaining Wall</td><td>$20-50/sq ft</td></tr>
-                </table>
-            </div>
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalCost">$0</div>
+                    <div class="result-label-main">Estimated Total Cost</div>
+                    <div class="result-range" id="costRange">Range: $0 - $0</div>
+                </div>
 
-            <div class="tips">
-                <h4>💡 Landscaping Tips</h4>
-                <div class="tip-item">✓ Start with a professional design</div>
-                <div class="tip-item">✓ Use native plants for lower maintenance</div>
-                <div class="tip-item">✓ Spring and fall are best for planting</div>
-                <div class="tip-item">✓ Consider ongoing maintenance costs</div>
-                <div class="tip-item">✓ Landscaping has excellent ROI</div>
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="perSqft">$0</div>
+                        <div class="summary-label">Cost Per Sq Ft</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="plantsCost">$0</div>
+                        <div class="summary-label">Plants & Materials</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="laborCost">$0</div>
+                        <div class="summary-label">Labor</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="homeValue">$0</div>
+                        <div class="summary-label">Est. Value Added</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Cost Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Lawn Installation</span>
+                        <span class="breakdown-value" id="displayLawn">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Plants & Trees</span>
+                        <span class="breakdown-value" id="displayPlants">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Hardscape</span>
+                        <span class="breakdown-value" id="displayHardscape">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Irrigation</span>
+                        <span class="breakdown-value" id="displayIrrigation">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Lighting</span>
+                        <span class="breakdown-value" id="displayLighting">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Design & Labor</span>
+                        <span class="breakdown-value" id="displayLabor">$0</span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="ad-container" style="text-align: center; margin: 25px 0;">
+        <div class="ad-container">
             <script>
                 atOptions = {
                     'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
@@ -310,82 +281,114 @@
         </div>
 
         <div class="tools-promo">
-            <h4>More Outdoor Tools</h4>
-            <a href="mulch-calculator.html">Mulch Calculator</a>
-            <a href="sod-calculator.html">Sod Calculator</a>
-            <a href="paver-calculator.html">Paver Calculator</a>
-            <a href="index.html">View All 100+ Tools</a>
+            <h4>More Outdoor Calculators</h4>
+            <a href="fence-cost-calculator.html">Fence Cost</a>
+            <a href="deck-cost-calculator.html">Deck Cost</a>
+            <a href="patio-cost-calculator.html">Patio Cost</a>
+            <a href="index.html">View All Tools</a>
         </div>
     </div>
 
     <footer>
         <p>Landscaping Cost Calculator by WebAudit Pro</p>
-        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+        <p><a href="index.html">More Free Tools</a></p>
     </footer>
 
     <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
         function calculate() {
-            const sqft = parseFloat(document.getElementById('sqft').value) || 2000;
+            const sqft = parseFloat(document.getElementById('sqft').value);
             const scope = document.getElementById('scope').value;
-            const hardscape = document.getElementById('hardscape').value;
+            const lawn = document.getElementById('lawn').value;
             const plants = document.getElementById('plants').value;
+            const hardscape = document.getElementById('hardscape').value;
             const irrigation = document.getElementById('irrigation').value;
+            const lighting = document.getElementById('lighting').value;
+            const region = document.getElementById('region').value;
 
-            // Base cost per sq ft by scope
-            const scopeCosts = {
-                basic: 2,
-                moderate: 4,
-                extensive: 7,
-                luxury: 12
+            // Lawn costs per sqft
+            const lawnCosts = { none: 0, overseed: 0.15, sod: 1.5, hydroseed: 0.10 };
+            let lawnCost = sqft * lawnCosts[lawn];
+
+            // Plants costs
+            const plantCosts = {
+                minimal: sqft * 0.5,
+                moderate: sqft * 1.5,
+                extensive: sqft * 3,
+                mature: sqft * 5
             };
-            let costPerSqft = scopeCosts[scope];
+            let plantsCost = plantCosts[plants];
 
-            const baseCost = sqft * costPerSqft;
-
-            // Design cost
-            const designCost = scope === 'basic' ? 200 : (scope === 'moderate' ? 500 : (scope === 'extensive' ? 1000 : 2000));
-
-            // Plant costs
-            const plantCounts = { few: 8, moderate: 20, many: 40, extensive: 60 };
-            const avgPlantCost = scope === 'luxury' ? 100 : (scope === 'extensive' ? 75 : 50);
-            const plantCost = Math.round(plantCounts[plants] * avgPlantCost);
-
-            // Soil and mulch
-            const soilCost = Math.round(sqft * 0.4);
-
-            // Hardscaping
-            const hardCosts = {
+            // Hardscape
+            const hardscapeCosts = {
                 none: 0,
-                walkway: 1500,
-                patio: 3500,
-                retaining: 4000,
-                full: 8000
+                walkway: sqft * 0.4,
+                patio: sqft * 1.2,
+                extensive: sqft * 2.5
             };
-            const hardCost = hardCosts[hardscape];
+            let hardscapeCost = hardscapeCosts[hardscape];
 
             // Irrigation
-            const irrCosts = { none: 0, drip: 1500, sprinkler: 3000 };
-            const irrCost = irrCosts[irrigation];
+            const irrigationCosts = {
+                none: 0,
+                drip: sqft * 0.3,
+                sprinkler: sqft * 0.6,
+                smart: sqft * 0.8
+            };
+            let irrigationCost = irrigationCosts[irrigation];
 
-            const laborCost = Math.round(baseCost * 0.4);
+            // Lighting
+            const lightingCosts = {
+                none: 0,
+                path: 1500,
+                accent: 3000,
+                full: 6000
+            };
+            let lightingCost = lightingCosts[lighting];
 
-            const totalMid = designCost + plantCost + soilCost + hardCost + irrCost + laborCost;
-            const totalLow = Math.round(totalMid * 0.8);
-            const totalHigh = Math.round(totalMid * 1.3);
+            // Scope multiplier for labor
+            const scopeMults = { basic: 0.8, moderate: 1.0, extensive: 1.4, complete: 1.8 };
+            const materialsCost = lawnCost + plantsCost + hardscapeCost + irrigationCost + lightingCost;
+            let laborCost = materialsCost * 0.4 * scopeMults[scope];
 
-            // Update display
-            document.getElementById('totalCost').textContent = '$' + totalLow.toLocaleString() + '-' + totalHigh.toLocaleString();
-            document.getElementById('perSqft').textContent = '$' + (totalLow / sqft).toFixed(2) + '-' + (totalHigh / sqft).toFixed(2) + ' per sq ft';
+            // Region multiplier
+            const regionMults = { low: 0.75, average: 1.0, high: 1.4 };
+            const regionMult = regionMults[region];
 
-            document.getElementById('matCost').textContent = '$' + (plantCost + soilCost).toLocaleString();
-            document.getElementById('laborCost').textContent = '$' + laborCost.toLocaleString();
-            document.getElementById('hardCost').textContent = hardCost > 0 ? '$' + hardCost.toLocaleString() : 'N/A';
+            lawnCost *= regionMult;
+            plantsCost *= regionMult;
+            hardscapeCost *= regionMult;
+            irrigationCost *= regionMult;
+            lightingCost *= regionMult;
+            laborCost *= regionMult;
 
-            document.getElementById('designCost').textContent = '$' + designCost.toLocaleString();
-            document.getElementById('plantCost').textContent = '$' + plantCost.toLocaleString();
-            document.getElementById('soilCost').textContent = '$' + soilCost.toLocaleString();
-            document.getElementById('hardBreak').textContent = hardCost > 0 ? '$' + hardCost.toLocaleString() : 'N/A';
-            document.getElementById('laborBreak').textContent = '$' + laborCost.toLocaleString();
+            const totalCost = lawnCost + plantsCost + hardscapeCost + irrigationCost + lightingCost + laborCost;
+            const perSqft = totalCost / sqft;
+
+            // Estimate value added (typically 100-200% ROI for landscaping)
+            const homeValue = totalCost * 1.5;
+
+            // Range
+            const lowEstimate = totalCost * 0.8;
+            const highEstimate = totalCost * 1.3;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalCost').textContent = formatMoney(totalCost);
+            document.getElementById('costRange').textContent = 'Range: ' + formatMoney(lowEstimate) + ' - ' + formatMoney(highEstimate);
+            document.getElementById('perSqft').textContent = formatMoney(perSqft);
+            document.getElementById('plantsCost').textContent = formatMoney(plantsCost);
+            document.getElementById('laborCost').textContent = formatMoney(laborCost);
+            document.getElementById('homeValue').textContent = '+' + formatMoney(homeValue);
+
+            document.getElementById('displayLawn').textContent = formatMoney(lawnCost);
+            document.getElementById('displayPlants').textContent = formatMoney(plantsCost);
+            document.getElementById('displayHardscape').textContent = formatMoney(hardscapeCost);
+            document.getElementById('displayIrrigation').textContent = formatMoney(irrigationCost);
+            document.getElementById('displayLighting').textContent = formatMoney(lightingCost);
+            document.getElementById('displayLabor').textContent = formatMoney(laborCost);
         }
 
         calculate();

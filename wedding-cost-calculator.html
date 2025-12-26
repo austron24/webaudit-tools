@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Wedding Cost Calculator - Wedding Budget Estimator</title>
+    <meta name="description" content="Calculate wedding costs. Estimate venue, catering, photography, and more. Free wedding budget calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #db2777 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #db2777;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #db2777;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #ec4899; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #db2777 0%, #ec4899 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 48px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .result-range { font-size: 16px; opacity: 0.8; margin-top: 10px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #fce7f3;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #db2777; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #db2777; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #db2777; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #ec4899;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #f9a8d4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💒 Wedding Cost Calculator</h1>
+            <p class="subtitle">Estimate your wedding budget</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Guest Count</label>
+                    <input type="number" id="guests" value="100" min="10" max="500" step="10">
+                </div>
+                <div class="input-group">
+                    <label>Wedding Style</label>
+                    <select id="style">
+                        <option value="budget">Budget/DIY</option>
+                        <option value="average" selected>Average</option>
+                        <option value="upscale">Upscale</option>
+                        <option value="luxury">Luxury</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Venue Type</label>
+                    <select id="venue">
+                        <option value="backyard">Backyard/Home</option>
+                        <option value="community">Community Center</option>
+                        <option value="banquet" selected>Banquet Hall</option>
+                        <option value="hotel">Hotel Ballroom</option>
+                        <option value="estate">Estate/Mansion</option>
+                        <option value="destination">Destination</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Catering Style</label>
+                    <select id="catering">
+                        <option value="buffet" selected>Buffet</option>
+                        <option value="plated">Plated Dinner</option>
+                        <option value="stations">Food Stations</option>
+                        <option value="premium">Premium/Gourmet</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Photography</label>
+                    <select id="photo">
+                        <option value="basic">Basic (4-6 hrs)</option>
+                        <option value="standard" selected>Standard (8 hrs)</option>
+                        <option value="premium">Premium + Video</option>
+                        <option value="luxury">Luxury Package</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Flowers/Decor</label>
+                    <select id="flowers">
+                        <option value="minimal">Minimal</option>
+                        <option value="standard" selected>Standard</option>
+                        <option value="elaborate">Elaborate</option>
+                        <option value="luxury">Luxury Florals</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Entertainment</label>
+                    <select id="entertainment">
+                        <option value="dj" selected>DJ</option>
+                        <option value="band">Live Band</option>
+                        <option value="both">DJ + Band</option>
+                        <option value="orchestra">Orchestra</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Location</label>
+                    <select id="location">
+                        <option value="rural">Rural/Small Town</option>
+                        <option value="suburban" selected>Suburban</option>
+                        <option value="urban">Urban/City</option>
+                        <option value="metro">Major Metro</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Budget</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalCost">$0</div>
+                    <div class="result-label-main">Estimated Wedding Cost</div>
+                    <div class="result-range" id="costRange">Range: $0 - $0</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="perGuest">$0</div>
+                        <div class="summary-label">Cost Per Guest</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="venueCost">$0</div>
+                        <div class="summary-label">Venue</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="cateringCost">$0</div>
+                        <div class="summary-label">Catering</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="photoCost">$0</div>
+                        <div class="summary-label">Photo/Video</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Budget Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Venue Rental</span>
+                        <span class="breakdown-value" id="displayVenue">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Catering & Bar</span>
+                        <span class="breakdown-value" id="displayCatering">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Photography/Video</span>
+                        <span class="breakdown-value" id="displayPhoto">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Flowers & Decor</span>
+                        <span class="breakdown-value" id="displayFlowers">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Entertainment</span>
+                        <span class="breakdown-value" id="displayEntertainment">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Attire & Beauty</span>
+                        <span class="breakdown-value" id="displayAttire">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Other (Cake, Invites, etc.)</span>
+                        <span class="breakdown-value" id="displayOther">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Event Calculators</h4>
+            <a href="gift-budget-calculator.html">Gift Budget</a>
+            <a href="vacation-budget-calculator.html">Vacation Budget</a>
+            <a href="savings-calculator.html">Savings</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Wedding Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const guests = parseInt(document.getElementById('guests').value);
+            const style = document.getElementById('style').value;
+            const venue = document.getElementById('venue').value;
+            const catering = document.getElementById('catering').value;
+            const photo = document.getElementById('photo').value;
+            const flowers = document.getElementById('flowers').value;
+            const entertainment = document.getElementById('entertainment').value;
+            const location = document.getElementById('location').value;
+
+            // Style multiplier
+            const styleMults = { budget: 0.5, average: 1.0, upscale: 1.8, luxury: 3.5 };
+            const styleMult = styleMults[style];
+
+            // Venue costs
+            const venueCosts = {
+                backyard: 500,
+                community: 1500,
+                banquet: 4000,
+                hotel: 8000,
+                estate: 15000,
+                destination: 25000
+            };
+            let venueCost = venueCosts[venue] * styleMult;
+
+            // Catering per person
+            const cateringPP = {
+                buffet: 60,
+                plated: 85,
+                stations: 75,
+                premium: 150
+            };
+            let cateringCost = guests * cateringPP[catering] * styleMult;
+
+            // Photo/video
+            const photoCosts = {
+                basic: 1500,
+                standard: 3500,
+                premium: 6000,
+                luxury: 12000
+            };
+            let photoCost = photoCosts[photo] * styleMult;
+
+            // Flowers/decor
+            const flowerCosts = {
+                minimal: 1000,
+                standard: 3000,
+                elaborate: 7000,
+                luxury: 15000
+            };
+            let flowerCost = flowerCosts[flowers] * styleMult;
+
+            // Entertainment
+            const entertainmentCosts = {
+                dj: 1200,
+                band: 4000,
+                both: 6000,
+                orchestra: 15000
+            };
+            let entertainmentCost = entertainmentCosts[entertainment] * styleMult;
+
+            // Location multiplier
+            const locationMults = { rural: 0.7, suburban: 1.0, urban: 1.4, metro: 1.8 };
+            const locationMult = locationMults[location];
+
+            venueCost *= locationMult;
+            cateringCost *= locationMult;
+
+            // Attire and beauty
+            let attireCost = 3000 * styleMult;
+
+            // Other costs (cake, invites, favors, officiant, etc.)
+            let otherCost = (guests * 15 + 2000) * styleMult;
+
+            // Total
+            const totalCost = venueCost + cateringCost + photoCost + flowerCost + entertainmentCost + attireCost + otherCost;
+            const perGuest = totalCost / guests;
+
+            // Range
+            const lowEstimate = totalCost * 0.85;
+            const highEstimate = totalCost * 1.25;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalCost').textContent = formatMoney(totalCost);
+            document.getElementById('costRange').textContent = 'Range: ' + formatMoney(lowEstimate) + ' - ' + formatMoney(highEstimate);
+            document.getElementById('perGuest').textContent = formatMoney(perGuest);
+            document.getElementById('venueCost').textContent = formatMoney(venueCost);
+            document.getElementById('cateringCost').textContent = formatMoney(cateringCost);
+            document.getElementById('photoCost').textContent = formatMoney(photoCost);
+
+            document.getElementById('displayVenue').textContent = formatMoney(venueCost);
+            document.getElementById('displayCatering').textContent = formatMoney(cateringCost);
+            document.getElementById('displayPhoto').textContent = formatMoney(photoCost);
+            document.getElementById('displayFlowers').textContent = formatMoney(flowerCost);
+            document.getElementById('displayEntertainment').textContent = formatMoney(entertainmentCost);
+            document.getElementById('displayAttire').textContent = formatMoney(attireCost);
+            document.getElementById('displayOther').textContent = formatMoney(otherCost);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

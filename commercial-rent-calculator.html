@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Commercial Rent Calculator - Office & Retail Lease Estimator</title>
+    <meta name="description" content="Calculate commercial rent costs. Estimate office, retail, warehouse lease expenses. Free commercial property rent calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #1e40af;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #1e40af;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #2563eb; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 48px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .result-range { font-size: 16px; opacity: 0.8; margin-top: 10px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #dbeafe;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #1e40af; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #1e40af; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #1e40af; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #2563eb;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #93c5fd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏢 Commercial Rent Calculator</h1>
+            <p class="subtitle">Estimate office & retail lease costs</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Space Size (sq ft)</label>
+                    <input type="number" id="sqft" value="2000" min="100" max="100000" step="100">
+                </div>
+                <div class="input-group">
+                    <label>Property Type</label>
+                    <select id="propType">
+                        <option value="office" selected>Office Space</option>
+                        <option value="retail">Retail Storefront</option>
+                        <option value="warehouse">Warehouse/Industrial</option>
+                        <option value="medical">Medical Office</option>
+                        <option value="restaurant">Restaurant</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Location/Market</label>
+                    <select id="market">
+                        <option value="cbd">CBD/Downtown</option>
+                        <option value="suburban" selected>Suburban</option>
+                        <option value="rural">Rural/Small Town</option>
+                        <option value="premium">Premium/Class A</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Lease Type</label>
+                    <select id="leaseType">
+                        <option value="gross">Gross Lease</option>
+                        <option value="modified">Modified Gross</option>
+                        <option value="nnn" selected>Triple Net (NNN)</option>
+                        <option value="percentage">Percentage Lease</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Lease Term (years)</label>
+                    <select id="term">
+                        <option value="1">1 Year</option>
+                        <option value="3" selected>3 Years</option>
+                        <option value="5">5 Years</option>
+                        <option value="10">10 Years</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Your Region</label>
+                    <select id="region">
+                        <option value="low">Low Cost Market</option>
+                        <option value="average" selected>Average Market</option>
+                        <option value="high">High Cost Market</option>
+                        <option value="premium">Premium Market (NYC, SF)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Rent</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="monthlyRent">$0</div>
+                    <div class="result-label-main">Monthly Base Rent</div>
+                    <div class="result-range" id="annualRent">Annual: $0</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="perSqft">$0</div>
+                        <div class="summary-label">Per Sq Ft/Year</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="camCost">$0</div>
+                        <div class="summary-label">Est. CAM/Month</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="totalMonthly">$0</div>
+                        <div class="summary-label">Total Monthly</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="leaseTotal">$0</div>
+                        <div class="summary-label">Full Lease Cost</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Cost Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Base Rent (Monthly)</span>
+                        <span class="breakdown-value" id="displayBase">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">CAM/Operating Expenses</span>
+                        <span class="breakdown-value" id="displayCAM">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Property Taxes (est.)</span>
+                        <span class="breakdown-value" id="displayTax">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Insurance (est.)</span>
+                        <span class="breakdown-value" id="displayInsurance">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Security Deposit</span>
+                        <span class="breakdown-value" id="displayDeposit">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Business Calculators</h4>
+            <a href="business-loan-calculator.html">Business Loan</a>
+            <a href="sba-loan-calculator.html">SBA Loan</a>
+            <a href="roi-calculator.html">ROI Calculator</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Commercial Rent Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const sqft = parseFloat(document.getElementById('sqft').value);
+            const propType = document.getElementById('propType').value;
+            const market = document.getElementById('market').value;
+            const leaseType = document.getElementById('leaseType').value;
+            const term = parseInt(document.getElementById('term').value);
+            const region = document.getElementById('region').value;
+
+            // Base rent per sqft/year by property type
+            const baseRates = {
+                office: 25,
+                retail: 30,
+                warehouse: 8,
+                medical: 35,
+                restaurant: 28
+            };
+            let baseRate = baseRates[propType];
+
+            // Market multiplier
+            const marketMults = {
+                cbd: 1.5,
+                suburban: 1.0,
+                rural: 0.6,
+                premium: 2.0
+            };
+            baseRate *= marketMults[market];
+
+            // Region multiplier
+            const regionMults = {
+                low: 0.7,
+                average: 1.0,
+                high: 1.5,
+                premium: 2.5
+            };
+            baseRate *= regionMults[region];
+
+            // Annual base rent
+            const annualBase = sqft * baseRate;
+            const monthlyBase = annualBase / 12;
+
+            // CAM/Operating expenses per sqft
+            const camRates = {
+                office: 8,
+                retail: 10,
+                warehouse: 3,
+                medical: 12,
+                restaurant: 8
+            };
+            let camRate = camRates[propType] * regionMults[region];
+            const annualCAM = sqft * camRate;
+            const monthlyCAM = annualCAM / 12;
+
+            // Property taxes (estimate)
+            const monthlyTax = (annualBase * 0.02) / 12;
+
+            // Insurance (estimate)
+            const monthlyInsurance = (sqft * 1.5) / 12;
+
+            // Total monthly (for NNN, add all; for gross, included)
+            let totalMonthly = monthlyBase;
+            if (leaseType === 'nnn') {
+                totalMonthly = monthlyBase + monthlyCAM + monthlyTax + monthlyInsurance;
+            } else if (leaseType === 'modified') {
+                totalMonthly = monthlyBase + (monthlyCAM * 0.5);
+            }
+
+            // Full lease cost
+            const leaseTotal = totalMonthly * 12 * term;
+
+            // Security deposit (usually 2-3 months)
+            const deposit = monthlyBase * 2;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('monthlyRent').textContent = formatMoney(monthlyBase);
+            document.getElementById('annualRent').textContent = 'Annual: ' + formatMoney(annualBase);
+            document.getElementById('perSqft').textContent = formatMoney(baseRate);
+            document.getElementById('camCost').textContent = formatMoney(monthlyCAM);
+            document.getElementById('totalMonthly').textContent = formatMoney(totalMonthly);
+            document.getElementById('leaseTotal').textContent = formatMoney(leaseTotal);
+
+            document.getElementById('displayBase').textContent = formatMoney(monthlyBase);
+            document.getElementById('displayCAM').textContent = formatMoney(monthlyCAM);
+            document.getElementById('displayTax').textContent = formatMoney(monthlyTax);
+            document.getElementById('displayInsurance').textContent = formatMoney(monthlyInsurance);
+            document.getElementById('displayDeposit').textContent = formatMoney(deposit);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

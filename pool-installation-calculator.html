@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Pool Installation Calculator - Swimming Pool Cost Estimator</title>
+    <meta name="description" content="Calculate swimming pool installation costs. Estimate inground and above ground pool expenses. Free pool cost calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0284c7 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #0284c7;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #0284c7;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #0ea5e9; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 48px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .result-range { font-size: 16px; opacity: 0.8; margin-top: 10px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #e0f2fe;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #0284c7; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #0284c7; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0284c7; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0ea5e9;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #7dd3fc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏊 Pool Installation Calculator</h1>
+            <p class="subtitle">Estimate swimming pool costs</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Pool Type</label>
+                    <select id="poolType">
+                        <option value="aboveground">Above Ground</option>
+                        <option value="vinyl" selected>Inground Vinyl</option>
+                        <option value="fiberglass">Inground Fiberglass</option>
+                        <option value="concrete">Inground Concrete</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Pool Size</label>
+                    <select id="poolSize">
+                        <option value="small">Small (12x24)</option>
+                        <option value="medium" selected>Medium (16x32)</option>
+                        <option value="large">Large (20x40)</option>
+                        <option value="custom">Custom/Large</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Pool Shape</label>
+                    <select id="shape">
+                        <option value="rectangle" selected>Rectangle</option>
+                        <option value="oval">Oval</option>
+                        <option value="kidney">Kidney</option>
+                        <option value="freeform">Freeform</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Deck/Patio</label>
+                    <select id="deck">
+                        <option value="none">None</option>
+                        <option value="basic" selected>Basic Concrete</option>
+                        <option value="pavers">Pavers</option>
+                        <option value="premium">Premium Stone</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Features</label>
+                    <select id="features">
+                        <option value="basic" selected>Basic</option>
+                        <option value="lights">LED Lighting</option>
+                        <option value="spa">Hot Tub/Spa</option>
+                        <option value="waterfall">Water Features</option>
+                        <option value="full">Full Package</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Heating</label>
+                    <select id="heating">
+                        <option value="none" selected>No Heater</option>
+                        <option value="gas">Gas Heater</option>
+                        <option value="electric">Heat Pump</option>
+                        <option value="solar">Solar Heating</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Fencing Required</label>
+                    <select id="fencing">
+                        <option value="none">None (Existing)</option>
+                        <option value="basic" selected>Basic Aluminum</option>
+                        <option value="ornamental">Ornamental Iron</option>
+                        <option value="glass">Glass Panels</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Your Region</label>
+                    <select id="region">
+                        <option value="low">Low Cost Area</option>
+                        <option value="average" selected>Average</option>
+                        <option value="high">High Cost Metro</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Cost</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalCost">$0</div>
+                    <div class="result-label-main">Estimated Total Cost</div>
+                    <div class="result-range" id="costRange">Range: $0 - $0</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="poolCost">$0</div>
+                        <div class="summary-label">Pool Installation</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="deckCost">$0</div>
+                        <div class="summary-label">Decking</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="featuresCost">$0</div>
+                        <div class="summary-label">Features</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="annualCost">$0</div>
+                        <div class="summary-label">Annual Maintenance</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Cost Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Pool & Installation</span>
+                        <span class="breakdown-value" id="displayPool">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Decking/Patio</span>
+                        <span class="breakdown-value" id="displayDeck">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Features & Accessories</span>
+                        <span class="breakdown-value" id="displayFeatures">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Heating System</span>
+                        <span class="breakdown-value" id="displayHeating">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Fencing</span>
+                        <span class="breakdown-value" id="displayFencing">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Permits & Inspection</span>
+                        <span class="breakdown-value" id="displayPermits">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Outdoor Calculators</h4>
+            <a href="landscaping-cost-calculator.html">Landscaping</a>
+            <a href="deck-cost-calculator.html">Deck Cost</a>
+            <a href="fence-cost-calculator.html">Fence Cost</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Pool Installation Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const poolType = document.getElementById('poolType').value;
+            const poolSize = document.getElementById('poolSize').value;
+            const shape = document.getElementById('shape').value;
+            const deck = document.getElementById('deck').value;
+            const features = document.getElementById('features').value;
+            const heating = document.getElementById('heating').value;
+            const fencing = document.getElementById('fencing').value;
+            const region = document.getElementById('region').value;
+
+            // Base pool costs by type
+            const baseCosts = {
+                aboveground: 5000,
+                vinyl: 35000,
+                fiberglass: 45000,
+                concrete: 65000
+            };
+            let poolCost = baseCosts[poolType];
+
+            // Size multiplier
+            const sizeMults = { small: 0.7, medium: 1.0, large: 1.4, custom: 1.8 };
+            poolCost *= sizeMults[poolSize];
+
+            // Shape multiplier
+            const shapeMults = { rectangle: 1.0, oval: 1.05, kidney: 1.15, freeform: 1.3 };
+            poolCost *= shapeMults[shape];
+
+            // Deck costs (estimate 400 sqft for medium pool)
+            const deckSqft = poolSize === 'small' ? 200 : poolSize === 'medium' ? 400 : poolSize === 'large' ? 600 : 800;
+            const deckCosts = { none: 0, basic: 10, pavers: 20, premium: 35 };
+            let deckCost = deckSqft * deckCosts[deck];
+
+            // Features
+            const featureCosts = {
+                basic: 1000,
+                lights: 3000,
+                spa: 15000,
+                waterfall: 8000,
+                full: 25000
+            };
+            let featuresCost = featureCosts[features];
+
+            // Heating
+            const heatingCosts = { none: 0, gas: 4000, electric: 5500, solar: 6000 };
+            let heatingCost = heatingCosts[heating];
+
+            // Fencing (estimate 100 linear feet)
+            const fencingCosts = { none: 0, basic: 3000, ornamental: 6000, glass: 15000 };
+            let fencingCost = fencingCosts[fencing];
+
+            // Permits
+            let permitCost = poolType === 'aboveground' ? 200 : 1500;
+
+            // Region multiplier
+            const regionMults = { low: 0.8, average: 1.0, high: 1.4 };
+            const regionMult = regionMults[region];
+
+            poolCost *= regionMult;
+            deckCost *= regionMult;
+            heatingCost *= regionMult;
+            fencingCost *= regionMult;
+
+            const totalCost = poolCost + deckCost + featuresCost + heatingCost + fencingCost + permitCost;
+
+            // Annual maintenance estimate
+            const annualCost = poolType === 'aboveground' ? 1200 : 3000;
+
+            // Range
+            const lowEstimate = totalCost * 0.85;
+            const highEstimate = totalCost * 1.25;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalCost').textContent = formatMoney(totalCost);
+            document.getElementById('costRange').textContent = 'Range: ' + formatMoney(lowEstimate) + ' - ' + formatMoney(highEstimate);
+            document.getElementById('poolCost').textContent = formatMoney(poolCost);
+            document.getElementById('deckCost').textContent = formatMoney(deckCost);
+            document.getElementById('featuresCost').textContent = formatMoney(featuresCost);
+            document.getElementById('annualCost').textContent = formatMoney(annualCost) + '/yr';
+
+            document.getElementById('displayPool').textContent = formatMoney(poolCost);
+            document.getElementById('displayDeck').textContent = formatMoney(deckCost);
+            document.getElementById('displayFeatures').textContent = formatMoney(featuresCost);
+            document.getElementById('displayHeating').textContent = formatMoney(heatingCost);
+            document.getElementById('displayFencing').textContent = formatMoney(fencingCost);
+            document.getElementById('displayPermits').textContent = formatMoney(permitCost);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
