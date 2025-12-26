@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizza Calculator - How Many Pizzas for a Party?</title>
+    <meta name="description" content="Calculate how many pizzas you need for your party or event. Free pizza party calculator for any group size.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #dc2626 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #dc2626;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 64px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 16px; margin-top: 5px; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .stat-item {
+            background: #fef2f2;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .stat-item .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #b91c1c;
+        }
+        .stat-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #b91c1c;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #b91c1c; }
+        .variety-section {
+            background: #fef2f2;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .variety-section h4 {
+            color: #b91c1c;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .variety-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #fecaca;
+            font-size: 14px;
+        }
+        .variety-row:last-child { border: none; }
+        .variety-row .count { font-weight: 600; color: #b91c1c; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #b91c1c;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #b91c1c; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #dc2626;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fca5a5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍕 Pizza Calculator</h1>
+            <p class="subtitle">How many pizzas for your party?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Number of Adults</label>
+                    <input type="number" id="adults" value="10" min="0" max="100" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Number of Children</label>
+                    <input type="number" id="children" value="5" min="0" max="50" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Pizza Size</label>
+                    <select id="size" onchange="calculate()">
+                        <option value="small">Small (6 slices)</option>
+                        <option value="medium">Medium (8 slices)</option>
+                        <option value="large" selected>Large (10 slices)</option>
+                        <option value="xlarge">X-Large (12 slices)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Appetite Level</label>
+                    <select id="appetite" onchange="calculate()">
+                        <option value="light">Light (snacking)</option>
+                        <option value="normal" selected>Normal</option>
+                        <option value="hungry">Hungry crowd</option>
+                        <option value="starving">Very hungry</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Avg Price per Pizza ($)</label>
+                    <input type="number" id="price" value="18" min="5" max="50" step="1" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">You Need</div>
+                <div class="value" id="pizzas">6</div>
+                <div class="sub" id="pizzaText">Large Pizzas</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="type">Total Slices</div>
+                    <div class="value" id="totalSlices">60</div>
+                    <div class="note">Across all pizzas</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Slices/Person</div>
+                    <div class="value" id="slicesPerPerson">4</div>
+                    <div class="note">Average per guest</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Est. Cost</div>
+                    <div class="value" id="totalCost">$108</div>
+                    <div class="note">Before tax/tip</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Cost/Person</div>
+                    <div class="value" id="costPerPerson">$7.20</div>
+                    <div class="note">If splitting</div>
+                </div>
+            </div>
+
+            <div class="variety-section" id="varietySection">
+                <h4>🍕 Suggested Variety (6 pizzas)</h4>
+                <div class="variety-row">
+                    <span>🧀 Cheese/Margherita</span>
+                    <span class="count" id="cheese">2</span>
+                </div>
+                <div class="variety-row">
+                    <span>🍖 Pepperoni/Meat Lovers</span>
+                    <span class="count" id="pepperoni">2</span>
+                </div>
+                <div class="variety-row">
+                    <span>🥬 Veggie/Supreme</span>
+                    <span class="count" id="veggie">1</span>
+                </div>
+                <div class="variety-row">
+                    <span>🌶️ Specialty/Custom</span>
+                    <span class="count" id="specialty">1</span>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>📊 Calculation Details</h4>
+                <div class="break-row">
+                    <span>Adults</span>
+                    <span class="value" id="adultCount">10 × 3 slices = 30</span>
+                </div>
+                <div class="break-row">
+                    <span>Children</span>
+                    <span class="value" id="childCount">5 × 2 slices = 10</span>
+                </div>
+                <div class="break-row">
+                    <span>Total Slices Needed</span>
+                    <span class="value" id="neededSlices">40 slices</span>
+                </div>
+                <div class="break-row">
+                    <span>Slices per Pizza</span>
+                    <span class="value" id="slicesPerPizza">10 slices</span>
+                </div>
+                <div class="break-row">
+                    <span>+ Buffer (10%)</span>
+                    <span class="value" id="bufferSlices">+4 slices</span>
+                </div>
+            </div>
+
+            <div class="tips">
+                <h4>🎉 Party Tips</h4>
+                <div class="tip-item">✓ Order 10% extra for big eaters and leftovers</div>
+                <div class="tip-item">✓ Get at least one plain cheese for picky eaters</div>
+                <div class="tip-item">✓ Consider dietary restrictions (vegetarian, gluten-free)</div>
+                <div class="tip-item">✓ Kids usually eat 1-2 slices, adults 2-4</div>
+                <div class="tip-item">✓ If pizza is the only food, order more</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Party Tools</h4>
+            <a href="tip-calculator.html">Tip Calculator</a>
+            <a href="recipe-converter.html">Recipe Scaler</a>
+            <a href="wedding-budget-calculator.html">Wedding Budget</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Pizza Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const sizeSlices = {
+            small: 6,
+            medium: 8,
+            large: 10,
+            xlarge: 12
+        };
+
+        const sizeNames = {
+            small: 'Small',
+            medium: 'Medium',
+            large: 'Large',
+            xlarge: 'X-Large'
+        };
+
+        function calculate() {
+            const adults = parseInt(document.getElementById('adults').value) || 0;
+            const children = parseInt(document.getElementById('children').value) || 0;
+            const size = document.getElementById('size').value;
+            const appetite = document.getElementById('appetite').value;
+            const price = parseFloat(document.getElementById('price').value) || 18;
+
+            const totalPeople = adults + children;
+            const slicesPerPizza = sizeSlices[size];
+
+            // Slices per person based on appetite
+            let adultSlices, childSlices;
+            switch (appetite) {
+                case 'light':
+                    adultSlices = 2; childSlices = 1;
+                    break;
+                case 'normal':
+                    adultSlices = 3; childSlices = 2;
+                    break;
+                case 'hungry':
+                    adultSlices = 4; childSlices = 2;
+                    break;
+                case 'starving':
+                    adultSlices = 5; childSlices = 3;
+                    break;
+                default:
+                    adultSlices = 3; childSlices = 2;
+            }
+
+            const adultSlicesTotal = adults * adultSlices;
+            const childSlicesTotal = children * childSlices;
+            const baseSlicesNeeded = adultSlicesTotal + childSlicesTotal;
+
+            // Add 10% buffer
+            const bufferSlices = Math.ceil(baseSlicesNeeded * 0.1);
+            const totalSlicesNeeded = baseSlicesNeeded + bufferSlices;
+
+            // Calculate pizzas needed
+            const pizzas = Math.ceil(totalSlicesNeeded / slicesPerPizza);
+            const totalSlices = pizzas * slicesPerPizza;
+
+            // Costs
+            const totalCost = pizzas * price;
+            const costPerPerson = totalPeople > 0 ? totalCost / totalPeople : 0;
+
+            // Update display
+            document.getElementById('pizzas').textContent = pizzas;
+            document.getElementById('pizzaText').textContent = sizeNames[size] + ' Pizza' + (pizzas !== 1 ? 's' : '');
+
+            document.getElementById('totalSlices').textContent = totalSlices;
+            document.getElementById('slicesPerPerson').textContent = totalPeople > 0 ? Math.round(totalSlices / totalPeople) : 0;
+            document.getElementById('totalCost').textContent = '$' + totalCost;
+            document.getElementById('costPerPerson').textContent = '$' + costPerPerson.toFixed(2);
+
+            document.getElementById('adultCount').textContent = adults + ' × ' + adultSlices + ' slices = ' + adultSlicesTotal;
+            document.getElementById('childCount').textContent = children + ' × ' + childSlices + ' slices = ' + childSlicesTotal;
+            document.getElementById('neededSlices').textContent = baseSlicesNeeded + ' slices';
+            document.getElementById('slicesPerPizza').textContent = slicesPerPizza + ' slices';
+            document.getElementById('bufferSlices').textContent = '+' + bufferSlices + ' slices';
+
+            // Variety suggestions
+            document.querySelector('#varietySection h4').textContent = '🍕 Suggested Variety (' + pizzas + ' pizza' + (pizzas !== 1 ? 's' : '') + ')';
+
+            // Distribute pizzas by type
+            const cheese = Math.ceil(pizzas * 0.35);
+            const pepperoni = Math.ceil(pizzas * 0.35);
+            const veggie = Math.ceil(pizzas * 0.15);
+            const specialty = pizzas - cheese - pepperoni - veggie;
+
+            document.getElementById('cheese').textContent = Math.max(1, cheese);
+            document.getElementById('pepperoni').textContent = Math.max(1, pepperoni);
+            document.getElementById('veggie').textContent = Math.max(0, veggie);
+            document.getElementById('specialty').textContent = Math.max(0, specialty);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

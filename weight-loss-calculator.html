@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weight Loss Calculator - How Long to Lose Weight?</title>
+    <meta name="description" content="Calculate how long it will take to reach your goal weight. Free weight loss timeline calculator with calorie deficit recommendations.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #22c55e 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #22c55e;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .stat-item {
+            background: #dcfce7;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .stat-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #15803d;
+        }
+        .stat-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .timeline {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .timeline h4 {
+            color: #15803d;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .milestone {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .milestone:last-child { border: none; }
+        .milestone .dot {
+            width: 12px;
+            height: 12px;
+            background: #22c55e;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+        .milestone .date { flex: 1; font-size: 14px; }
+        .milestone .weight { font-weight: 600; color: #15803d; }
+        .calories-section {
+            background: #dcfce7;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .calories-section h4 {
+            color: #15803d;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .cal-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #bbf7d0;
+            font-size: 14px;
+        }
+        .cal-row:last-child { border: none; }
+        .cal-row .value { font-weight: 600; color: #15803d; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #15803d;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #15803d; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #22c55e;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #86efac; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Weight Loss Calculator</h1>
+            <p class="subtitle">How long will it take to reach your goal?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Current Weight (lbs)</label>
+                    <input type="number" id="currentWeight" value="180" min="80" max="500" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Goal Weight (lbs)</label>
+                    <input type="number" id="goalWeight" value="150" min="80" max="400" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Height (feet)</label>
+                    <input type="number" id="heightFeet" value="5" min="4" max="7" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Height (inches)</label>
+                    <input type="number" id="heightInches" value="8" min="0" max="11" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Age</label>
+                    <input type="number" id="age" value="35" min="18" max="80" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Gender</label>
+                    <select id="gender" onchange="calculate()">
+                        <option value="male">Male</option>
+                        <option value="female" selected>Female</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Activity Level</label>
+                    <select id="activity" onchange="calculate()">
+                        <option value="sedentary">Sedentary (desk job)</option>
+                        <option value="light" selected>Light (1-2 days/week)</option>
+                        <option value="moderate">Moderate (3-5 days/week)</option>
+                        <option value="active">Active (6-7 days/week)</option>
+                        <option value="veryactive">Very Active (athlete)</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Weight Loss Rate</label>
+                    <select id="rate" onchange="calculate()">
+                        <option value="0.5">Slow (0.5 lb/week) - Easiest</option>
+                        <option value="1" selected>Moderate (1 lb/week) - Recommended</option>
+                        <option value="1.5">Fast (1.5 lb/week)</option>
+                        <option value="2">Aggressive (2 lb/week) - Hardest</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Time to Goal Weight</div>
+                <div class="value" id="timeToGoal">30 weeks</div>
+                <div class="sub" id="goalDate">Est. completion: July 2024</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="type">Pounds to Lose</div>
+                    <div class="value" id="toLoose">30 lbs</div>
+                    <div class="note">Total weight loss</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Current BMI</div>
+                    <div class="value" id="currentBMI">27.4</div>
+                    <div class="note" id="bmiCategory">Overweight</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Goal BMI</div>
+                    <div class="value" id="goalBMI">22.8</div>
+                    <div class="note">Normal weight</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Weekly Loss</div>
+                    <div class="value" id="weeklyLoss">1 lb</div>
+                    <div class="note">Sustainable rate</div>
+                </div>
+            </div>
+
+            <div class="calories-section">
+                <h4>🍎 Daily Calorie Targets</h4>
+                <div class="cal-row">
+                    <span>Maintenance Calories (TDEE)</span>
+                    <span class="value" id="tdee">2,100 cal</span>
+                </div>
+                <div class="cal-row">
+                    <span>Daily Deficit Needed</span>
+                    <span class="value" id="deficit">-500 cal</span>
+                </div>
+                <div class="cal-row" style="font-weight: bold;">
+                    <span>Target Daily Calories</span>
+                    <span class="value" id="targetCal">1,600 cal</span>
+                </div>
+            </div>
+
+            <div class="timeline" id="timeline">
+                <h4>📅 Weight Loss Milestones</h4>
+                <!-- Milestones will be populated by JS -->
+            </div>
+
+            <div class="tips">
+                <h4>💪 Weight Loss Tips</h4>
+                <div class="tip-item">✓ 1 lb of fat = 3,500 calories deficit</div>
+                <div class="tip-item">✓ Never go below 1,200 cal (women) or 1,500 cal (men)</div>
+                <div class="tip-item">✓ Protein helps preserve muscle during weight loss</div>
+                <div class="tip-item">✓ Losing 1-2 lbs/week is healthiest long-term</div>
+                <div class="tip-item">✓ Weight fluctuates daily - track weekly averages</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Health Tools</h4>
+            <a href="bmi-calculator.html">BMI Calculator</a>
+            <a href="calorie-calculator.html">Calorie Calculator</a>
+            <a href="macro-calculator.html">Macro Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Weight Loss Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const currentWeight = parseFloat(document.getElementById('currentWeight').value) || 180;
+            const goalWeight = parseFloat(document.getElementById('goalWeight').value) || 150;
+            const heightFeet = parseFloat(document.getElementById('heightFeet').value) || 5;
+            const heightInches = parseFloat(document.getElementById('heightInches').value) || 8;
+            const age = parseFloat(document.getElementById('age').value) || 35;
+            const gender = document.getElementById('gender').value;
+            const activity = document.getElementById('activity').value;
+            const rate = parseFloat(document.getElementById('rate').value) || 1;
+
+            const heightIn = (heightFeet * 12) + heightInches;
+            const heightCm = heightIn * 2.54;
+            const weightKg = currentWeight * 0.453592;
+            const goalWeightKg = goalWeight * 0.453592;
+
+            // Calculate BMI
+            const currentBMI = (currentWeight / (heightIn * heightIn)) * 703;
+            const goalBMI = (goalWeight / (heightIn * heightIn)) * 703;
+
+            // BMI category
+            let bmiCategory = 'Normal';
+            if (currentBMI < 18.5) bmiCategory = 'Underweight';
+            else if (currentBMI < 25) bmiCategory = 'Normal';
+            else if (currentBMI < 30) bmiCategory = 'Overweight';
+            else bmiCategory = 'Obese';
+
+            // Calculate BMR (Mifflin-St Jeor)
+            let bmr;
+            if (gender === 'male') {
+                bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age) + 5;
+            } else {
+                bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age) - 161;
+            }
+
+            // Activity multiplier
+            const activityMultipliers = {
+                sedentary: 1.2,
+                light: 1.375,
+                moderate: 1.55,
+                active: 1.725,
+                veryactive: 1.9
+            };
+            const tdee = Math.round(bmr * activityMultipliers[activity]);
+
+            // Calculate deficit needed
+            const weeklyDeficit = rate * 3500; // 3500 cal = 1 lb
+            const dailyDeficit = Math.round(weeklyDeficit / 7);
+            const targetCal = Math.max(gender === 'male' ? 1500 : 1200, tdee - dailyDeficit);
+
+            // Time to goal
+            const toLoose = currentWeight - goalWeight;
+            const weeksToGoal = Math.ceil(toLoose / rate);
+
+            // Goal date
+            const goalDate = new Date();
+            goalDate.setDate(goalDate.getDate() + (weeksToGoal * 7));
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const goalDateStr = monthNames[goalDate.getMonth()] + ' ' + goalDate.getFullYear();
+
+            // Update display
+            let timeDisplay;
+            if (weeksToGoal >= 52) {
+                const years = (weeksToGoal / 52).toFixed(1);
+                timeDisplay = years + ' years';
+            } else if (weeksToGoal >= 12) {
+                const months = Math.round(weeksToGoal / 4.33);
+                timeDisplay = months + ' months';
+            } else {
+                timeDisplay = weeksToGoal + ' weeks';
+            }
+
+            document.getElementById('timeToGoal').textContent = timeDisplay;
+            document.getElementById('goalDate').textContent = 'Est. completion: ' + goalDateStr;
+            document.getElementById('toLoose').textContent = toLoose + ' lbs';
+            document.getElementById('currentBMI').textContent = currentBMI.toFixed(1);
+            document.getElementById('bmiCategory').textContent = bmiCategory;
+            document.getElementById('goalBMI').textContent = goalBMI.toFixed(1);
+            document.getElementById('weeklyLoss').textContent = rate + ' lb';
+            document.getElementById('tdee').textContent = tdee.toLocaleString() + ' cal';
+            document.getElementById('deficit').textContent = '-' + dailyDeficit + ' cal';
+            document.getElementById('targetCal').textContent = targetCal.toLocaleString() + ' cal';
+
+            // Generate milestones
+            const milestones = [];
+            const milestoneDates = [4, 8, 12, weeksToGoal];
+            const today = new Date();
+
+            for (const weeks of milestoneDates) {
+                if (weeks <= weeksToGoal) {
+                    const date = new Date(today);
+                    date.setDate(date.getDate() + (weeks * 7));
+                    const weight = Math.round(currentWeight - (weeks * rate));
+                    milestones.push({
+                        date: monthNames[date.getMonth()] + ' ' + date.getDate(),
+                        weight: Math.max(goalWeight, weight) + ' lbs',
+                        isGoal: weeks === weeksToGoal
+                    });
+                }
+            }
+
+            let timelineHtml = '';
+            for (const m of milestones) {
+                timelineHtml += `
+                    <div class="milestone">
+                        <div class="dot" style="${m.isGoal ? 'background: #16a34a; width: 16px; height: 16px;' : ''}"></div>
+                        <span class="date">${m.date}${m.isGoal ? ' 🎯' : ''}</span>
+                        <span class="weight">${m.weight}</span>
+                    </div>
+                `;
+            }
+            document.getElementById('timeline').innerHTML = '<h4>📅 Weight Loss Milestones</h4>' + timelineHtml;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

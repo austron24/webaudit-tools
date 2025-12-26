@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Size Calculator - What Size Generator Do I Need?</title>
+    <meta name="description" content="Calculate what size generator you need for your home or RV. Free generator wattage calculator for power outages and emergencies.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #eab308 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .section-title {
+            font-size: 14px;
+            color: #ca8a04;
+            font-weight: 600;
+            margin: 20px 0 10px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .section-title:first-of-type { border: none; padding-top: 0; margin-top: 0; }
+        .appliance-row {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .appliance-row label {
+            flex: 1;
+            font-size: 14px;
+        }
+        .appliance-row .watts {
+            font-size: 12px;
+            color: #64748b;
+            width: 80px;
+        }
+        .appliance-row input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+        }
+        .appliance-row input[type="number"] {
+            width: 50px;
+            padding: 6px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .stat-item {
+            background: #fef9c3;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .stat-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #a16207;
+        }
+        .stat-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .recommendations {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .recommendations h4 {
+            color: #ca8a04;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .rec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .rec-item:last-child { border: none; }
+        .rec-item .value { font-weight: 600; color: #a16207; }
+        .rec-item.selected { background: #fef9c3; margin: 0 -10px; padding: 10px; border-radius: 6px; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #ca8a04; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #eab308;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fde047; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Generator Size Calculator</h1>
+            <p class="subtitle">What size generator do you need?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="section-title">🔌 Essential Appliances</div>
+
+            <div class="appliance-row">
+                <input type="checkbox" id="fridge" checked onchange="calculate()">
+                <label for="fridge">Refrigerator</label>
+                <span class="watts">700W (2100W start)</span>
+            </div>
+            <div class="appliance-row">
+                <input type="checkbox" id="freezer" onchange="calculate()">
+                <label for="freezer">Freezer</label>
+                <span class="watts">500W (1500W start)</span>
+            </div>
+            <div class="appliance-row">
+                <input type="checkbox" id="lights" checked onchange="calculate()">
+                <label for="lights">Lights (LED)</label>
+                <input type="number" id="lightCount" value="5" min="1" max="20" onchange="calculate()"> × 10W
+            </div>
+            <div class="appliance-row">
+                <input type="checkbox" id="wifi" checked onchange="calculate()">
+                <label for="wifi">WiFi Router + Modem</label>
+                <span class="watts">30W</span>
+            </div>
+            <div class="appliance-row">
+                <input type="checkbox" id="phone" checked onchange="calculate()">
+                <label for="phone">Phone Chargers</label>
+                <input type="number" id="phoneCount" value="3" min="1" max="10" onchange="calculate()"> × 25W
+            </div>
+
+            <div class="section-title">🏠 HVAC & Comfort</div>
+
+            <div class="appliance-row">
+                <input type="checkbox" id="windowAC" onchange="calculate()">
+                <label for="windowAC">Window AC (10,000 BTU)</label>
+                <span class="watts">1200W (3600W start)</span>
+            </div>
+            <div class="appliance-row">
+                <input type="checkbox" id="centralAC" onchange="calculate()">
+                <label for="centralAC">Central AC (3 ton)</label>
+                <span class="watts">3500W (7000W start)</span>
+            </div>
+            <div class="appliance-row">
+                <input type="checkbox" id="spaceHeater" onchange="calculate()">
+                <label for="spaceHeater">Space Heater</label>
+                <span class="watts">1500W</span>
+            </div>
+            <div class="appliance-row">
+                <input type="checkbox" id="furnace" onchange="calculate()">
+                <label for="furnace">Furnace Blower</label>
+                <span class="watts">500W (1500W start)</span>
+            </div>
+
+            <div class="section-title">🍳 Kitchen</div>
+
+            <div class="appliance-row">
+                <input type="checkbox" id="microwave" onchange="calculate()">
+                <label for="microwave">Microwave</label>
+                <span class="watts">1200W</span>
+            </div>
+            <div class="appliance-row">
+                <input type="checkbox" id="coffeeMaker" onchange="calculate()">
+                <label for="coffeeMaker">Coffee Maker</label>
+                <span class="watts">1000W</span>
+            </div>
+            <div class="appliance-row">
+                <input type="checkbox" id="toaster" onchange="calculate()">
+                <label for="toaster">Toaster</label>
+                <span class="watts">1100W</span>
+            </div>
+
+            <div class="section-title">🔧 Other</div>
+
+            <div class="appliance-row">
+                <input type="checkbox" id="sumpPump" onchange="calculate()">
+                <label for="sumpPump">Sump Pump</label>
+                <span class="watts">800W (2400W start)</span>
+            </div>
+            <div class="appliance-row">
+                <input type="checkbox" id="tv" checked onchange="calculate()">
+                <label for="tv">TV (LED 50")</label>
+                <span class="watts">100W</span>
+            </div>
+            <div class="appliance-row">
+                <input type="checkbox" id="computer" onchange="calculate()">
+                <label for="computer">Computer/Laptop</label>
+                <span class="watts">150W</span>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Recommended Generator Size</div>
+                <div class="value" id="genSize">3,500W</div>
+                <div class="sub" id="genType">Portable Inverter Generator</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="type">Running Watts</div>
+                    <div class="value" id="runningWatts">1,380W</div>
+                    <div class="note">Continuous load</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Starting Watts</div>
+                    <div class="value" id="startingWatts">2,880W</div>
+                    <div class="note">Peak surge</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Items Selected</div>
+                    <div class="value" id="itemCount">5</div>
+                    <div class="note">Appliances</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Est. Cost</div>
+                    <div class="value" id="cost">$400-800</div>
+                    <div class="note">New generator</div>
+                </div>
+            </div>
+
+            <div class="recommendations">
+                <h4>⚡ Generator Size Guide</h4>
+                <div class="rec-item">
+                    <span>1,000-2,000W</span>
+                    <span class="value">Camping/RV basics</span>
+                </div>
+                <div class="rec-item">
+                    <span>3,000-4,000W</span>
+                    <span class="value">Essential home backup</span>
+                </div>
+                <div class="rec-item">
+                    <span>5,000-7,500W</span>
+                    <span class="value">Most home circuits</span>
+                </div>
+                <div class="rec-item">
+                    <span>10,000-12,000W</span>
+                    <span class="value">Whole home backup</span>
+                </div>
+                <div class="rec-item">
+                    <span>15,000W+</span>
+                    <span class="value">Large home/central AC</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Tools</h4>
+            <a href="electricity-cost-calculator.html">Electricity Cost</a>
+            <a href="ac-btu-calculator.html">AC BTU Calculator</a>
+            <a href="emergency-fund-calculator.html">Emergency Fund</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Generator Size Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const appliances = {
+            fridge: { running: 700, starting: 2100 },
+            freezer: { running: 500, starting: 1500 },
+            windowAC: { running: 1200, starting: 3600 },
+            centralAC: { running: 3500, starting: 7000 },
+            spaceHeater: { running: 1500, starting: 1500 },
+            furnace: { running: 500, starting: 1500 },
+            microwave: { running: 1200, starting: 1200 },
+            coffeeMaker: { running: 1000, starting: 1000 },
+            toaster: { running: 1100, starting: 1100 },
+            sumpPump: { running: 800, starting: 2400 },
+            tv: { running: 100, starting: 100 },
+            computer: { running: 150, starting: 150 },
+            wifi: { running: 30, starting: 30 }
+        };
+
+        function calculate() {
+            let runningWatts = 0;
+            let startingWatts = 0;
+            let itemCount = 0;
+
+            // Fixed appliances
+            for (const [id, watts] of Object.entries(appliances)) {
+                const checkbox = document.getElementById(id);
+                if (checkbox && checkbox.checked) {
+                    runningWatts += watts.running;
+                    startingWatts += watts.starting;
+                    itemCount++;
+                }
+            }
+
+            // Variable appliances
+            const lights = document.getElementById('lights');
+            if (lights.checked) {
+                const count = parseInt(document.getElementById('lightCount').value) || 5;
+                runningWatts += count * 10;
+                startingWatts += count * 10;
+                itemCount++;
+            }
+
+            const phone = document.getElementById('phone');
+            if (phone.checked) {
+                const count = parseInt(document.getElementById('phoneCount').value) || 3;
+                runningWatts += count * 25;
+                startingWatts += count * 25;
+                itemCount++;
+            }
+
+            // Calculate recommended size (account for largest surge)
+            // Find the largest single surge item
+            let maxSurge = 0;
+            for (const [id, watts] of Object.entries(appliances)) {
+                const checkbox = document.getElementById(id);
+                if (checkbox && checkbox.checked) {
+                    maxSurge = Math.max(maxSurge, watts.starting - watts.running);
+                }
+            }
+
+            // Recommended: running watts + largest surge + 20% safety margin
+            const recommended = Math.ceil((runningWatts + maxSurge) * 1.2 / 500) * 500;
+
+            // Determine generator type
+            let genType = 'Portable Inverter Generator';
+            let costLow, costHigh;
+
+            if (recommended <= 2000) {
+                genType = 'Portable Inverter Generator';
+                costLow = 300; costHigh = 600;
+            } else if (recommended <= 4000) {
+                genType = 'Portable Inverter Generator';
+                costLow = 400; costHigh = 1000;
+            } else if (recommended <= 7500) {
+                genType = 'Portable Generator';
+                costLow = 600; costHigh = 1500;
+            } else if (recommended <= 12000) {
+                genType = 'Portable Generator (Large)';
+                costLow = 1000; costHigh = 2500;
+            } else {
+                genType = 'Standby Generator';
+                costLow = 3000; costHigh = 8000;
+            }
+
+            // Update display
+            document.getElementById('genSize').textContent = recommended.toLocaleString() + 'W';
+            document.getElementById('genType').textContent = genType;
+            document.getElementById('runningWatts').textContent = runningWatts.toLocaleString() + 'W';
+            document.getElementById('startingWatts').textContent = startingWatts.toLocaleString() + 'W';
+            document.getElementById('itemCount').textContent = itemCount;
+            document.getElementById('cost').textContent = '$' + costLow.toLocaleString() + '-' + costHigh.toLocaleString();
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

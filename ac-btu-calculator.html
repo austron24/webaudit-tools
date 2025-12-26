@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AC BTU Calculator - What Size Air Conditioner Do I Need?</title>
+    <meta name="description" content="Calculate the right AC size for your room. Free BTU calculator for air conditioners. Find out what size AC unit you need.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0284c7 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #0284c7;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .stat-item {
+            background: #e0f2fe;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .stat-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #0369a1;
+        }
+        .stat-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .size-chart {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .size-chart h4 {
+            color: #0369a1;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .size-chart table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .size-chart th, .size-chart td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .size-chart th { color: #0369a1; }
+        .size-chart tr.highlight { background: #e0f2fe; }
+        .factors {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .factors h4 {
+            color: #0369a1;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .factor-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .factor-row:last-child { border: none; }
+        .factor-row .value { font-weight: 600; color: #0369a1; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0369a1; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0284c7;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #7dd3fc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AC BTU Calculator</h1>
+            <p class="subtitle">What size air conditioner do you need?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Room Length (feet)</label>
+                    <input type="number" id="length" value="15" min="5" max="100" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Room Width (feet)</label>
+                    <input type="number" id="width" value="12" min="5" max="100" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Ceiling Height (feet)</label>
+                    <input type="number" id="height" value="8" min="7" max="20" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Sun Exposure</label>
+                    <select id="sun" onchange="calculate()">
+                        <option value="light">Light/Shade</option>
+                        <option value="moderate" selected>Moderate</option>
+                        <option value="heavy">Heavy/Direct Sun</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Climate Zone</label>
+                    <select id="climate" onchange="calculate()">
+                        <option value="mild">Mild (NW, NE)</option>
+                        <option value="moderate" selected>Moderate</option>
+                        <option value="hot">Hot (SW, SE, South)</option>
+                        <option value="veryhot">Very Hot (AZ, TX, FL)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Room Type</label>
+                    <select id="roomType" onchange="calculate()">
+                        <option value="bedroom">Bedroom</option>
+                        <option value="living" selected>Living Room</option>
+                        <option value="kitchen">Kitchen</option>
+                        <option value="office">Office</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Recommended AC Size</div>
+                <div class="value" id="btu">8,000 BTU</div>
+                <div class="sub" id="tons">0.67 Tons</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="type">Room Size</div>
+                    <div class="value" id="sqft">180 sq ft</div>
+                    <div class="note">Floor area</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Volume</div>
+                    <div class="value" id="cuft">1,440 cu ft</div>
+                    <div class="note">Air volume</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Base BTU</div>
+                    <div class="value" id="baseBtu">6,000</div>
+                    <div class="note">Before adjustments</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Est. Cost</div>
+                    <div class="value" id="cost">$250-450</div>
+                    <div class="note">Window unit</div>
+                </div>
+            </div>
+
+            <div class="factors">
+                <h4>⚡ BTU Adjustments Applied</h4>
+                <div class="factor-row">
+                    <span>Base BTU (by sq ft)</span>
+                    <span class="value" id="factorBase">6,000</span>
+                </div>
+                <div class="factor-row">
+                    <span>Sun Exposure</span>
+                    <span class="value" id="factorSun">+0%</span>
+                </div>
+                <div class="factor-row">
+                    <span>Climate Zone</span>
+                    <span class="value" id="factorClimate">+0%</span>
+                </div>
+                <div class="factor-row">
+                    <span>Room Type</span>
+                    <span class="value" id="factorRoom">+0%</span>
+                </div>
+                <div class="factor-row">
+                    <span>Ceiling Height</span>
+                    <span class="value" id="factorCeiling">+0%</span>
+                </div>
+            </div>
+
+            <div class="size-chart">
+                <h4>❄️ AC Size Guide</h4>
+                <table>
+                    <tr>
+                        <th>Room Size</th>
+                        <th>BTU Needed</th>
+                        <th>Tons</th>
+                    </tr>
+                    <tr><td>150-250 sq ft</td><td>6,000</td><td>0.5</td></tr>
+                    <tr><td>250-300 sq ft</td><td>7,000</td><td>0.58</td></tr>
+                    <tr><td>300-350 sq ft</td><td>8,000</td><td>0.67</td></tr>
+                    <tr><td>350-400 sq ft</td><td>9,000</td><td>0.75</td></tr>
+                    <tr><td>400-450 sq ft</td><td>10,000</td><td>0.83</td></tr>
+                    <tr><td>450-550 sq ft</td><td>12,000</td><td>1.0</td></tr>
+                    <tr><td>550-700 sq ft</td><td>14,000</td><td>1.17</td></tr>
+                    <tr><td>700-1000 sq ft</td><td>18,000</td><td>1.5</td></tr>
+                    <tr><td>1000-1200 sq ft</td><td>21,000</td><td>1.75</td></tr>
+                    <tr><td>1200-1500 sq ft</td><td>24,000</td><td>2.0</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Tools</h4>
+            <a href="electricity-cost-calculator.html">Electricity Cost</a>
+            <a href="sqft-calculator.html">Square Footage</a>
+            <a href="insulation-calculator.html">Insulation Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>AC BTU Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const length = parseFloat(document.getElementById('length').value) || 15;
+            const width = parseFloat(document.getElementById('width').value) || 12;
+            const height = parseFloat(document.getElementById('height').value) || 8;
+            const sun = document.getElementById('sun').value;
+            const climate = document.getElementById('climate').value;
+            const roomType = document.getElementById('roomType').value;
+
+            const sqft = length * width;
+            const cuft = sqft * height;
+
+            // Base BTU: 20 BTU per sq ft
+            let baseBtu = sqft * 20;
+
+            // Adjustments
+            let sunAdj = 0, climateAdj = 0, roomAdj = 0, ceilingAdj = 0;
+
+            // Sun exposure
+            if (sun === 'light') sunAdj = -10;
+            else if (sun === 'heavy') sunAdj = 10;
+
+            // Climate zone
+            if (climate === 'mild') climateAdj = -10;
+            else if (climate === 'hot') climateAdj = 10;
+            else if (climate === 'veryhot') climateAdj = 20;
+
+            // Room type (kitchen generates more heat)
+            if (roomType === 'kitchen') roomAdj = 4000; // flat addition for appliances
+            else if (roomType === 'office') roomAdj = 600; // computers
+
+            // Ceiling height (if > 8ft)
+            if (height > 8) {
+                ceilingAdj = Math.round(((height - 8) / 8) * 100);
+            }
+
+            // Calculate total BTU
+            let totalBtu = baseBtu;
+            totalBtu *= (1 + sunAdj / 100);
+            totalBtu *= (1 + climateAdj / 100);
+            totalBtu *= (1 + ceilingAdj / 100);
+            totalBtu += roomAdj;
+
+            // Round to nearest 500
+            totalBtu = Math.ceil(totalBtu / 500) * 500;
+
+            // Minimum 5000 BTU
+            totalBtu = Math.max(5000, totalBtu);
+
+            const tons = totalBtu / 12000;
+
+            // Cost estimate for window units
+            let costLow, costHigh;
+            if (totalBtu <= 6000) { costLow = 150; costHigh = 250; }
+            else if (totalBtu <= 8000) { costLow = 200; costHigh = 350; }
+            else if (totalBtu <= 10000) { costLow = 250; costHigh = 400; }
+            else if (totalBtu <= 12000) { costLow = 300; costHigh = 500; }
+            else if (totalBtu <= 15000) { costLow = 400; costHigh = 600; }
+            else { costLow = 500; costHigh = 800; }
+
+            // Update display
+            document.getElementById('btu').textContent = totalBtu.toLocaleString() + ' BTU';
+            document.getElementById('tons').textContent = tons.toFixed(2) + ' Tons';
+            document.getElementById('sqft').textContent = sqft + ' sq ft';
+            document.getElementById('cuft').textContent = cuft.toLocaleString() + ' cu ft';
+            document.getElementById('baseBtu').textContent = Math.round(baseBtu).toLocaleString();
+            document.getElementById('cost').textContent = '$' + costLow + '-' + costHigh;
+
+            document.getElementById('factorBase').textContent = Math.round(baseBtu).toLocaleString();
+            document.getElementById('factorSun').textContent = (sunAdj >= 0 ? '+' : '') + sunAdj + '%';
+            document.getElementById('factorClimate').textContent = (climateAdj >= 0 ? '+' : '') + climateAdj + '%';
+            document.getElementById('factorRoom').textContent = roomAdj > 0 ? '+' + roomAdj + ' BTU' : '+0%';
+            document.getElementById('factorCeiling').textContent = (ceilingAdj >= 0 ? '+' : '') + ceilingAdj + '%';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
