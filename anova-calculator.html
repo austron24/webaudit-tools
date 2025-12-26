@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANOVA Calculator - One-Way Analysis of Variance</title>
+    <meta name="description" content="Free ANOVA calculator. Perform one-way analysis of variance to compare means of multiple groups. Calculate F-statistic, p-value, and effect size.">
+    <meta name="keywords" content="ANOVA calculator, one-way ANOVA, F-test, analysis of variance, compare means, statistical test">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/anova-calculator.html">
+    <style>
+        :root { --primary: #0d9488; --primary-dark: #0f766e; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
+        .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
+        .content-area { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        input, select, textarea { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        textarea { min-height: 80px; resize: vertical; font-family: monospace; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 40px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 2.5rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.9); font-size: 1.2rem; }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .result-value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .interpretation { padding: 15px; border-radius: 10px; margin-top: 15px; text-align: center; }
+        .interpretation.significant { background: rgba(16, 185, 129, 0.2); border: 2px solid var(--success); }
+        .interpretation.not-significant { background: rgba(239, 68, 68, 0.2); border: 2px solid #ef4444; }
+        .anova-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .anova-table th, .anova-table td { padding: 12px; text-align: center; border: 1px solid var(--border); }
+        .anova-table th { background: var(--bg-input); color: var(--secondary); }
+        .group-inputs { display: flex; flex-direction: column; gap: 15px; }
+        .btn { padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; }
+        .btn:hover { background: var(--primary-dark); }
+        .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        @media (max-width: 640px) { .results-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-container" style="display: none;">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
+
+    <header class="header">
+        <h1>ANOVA Calculator</h1>
+    </header>
+
+    <div class="main-container">
+        <div class="content-area">
+            <div class="card">
+                <h2>Enter Group Data</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 15px;">Enter comma-separated values for each group:</p>
+                <div class="group-inputs" id="groupInputs">
+                    <div class="form-group">
+                        <label>Group 1</label>
+                        <textarea class="group-data" oninput="calculate()">23, 25, 27, 22, 26</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Group 2</label>
+                        <textarea class="group-data" oninput="calculate()">30, 28, 31, 29, 32</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Group 3</label>
+                        <textarea class="group-data" oninput="calculate()">35, 38, 36, 40, 37</textarea>
+                    </div>
+                </div>
+                <button class="btn" onclick="addGroup()">+ Add Group</button>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label>Significance Level (α)</label>
+                    <select id="alpha" onchange="calculate()">
+                        <option value="0.1">α = 0.10</option>
+                        <option value="0.05" selected>α = 0.05</option>
+                        <option value="0.01">α = 0.01</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-hero">
+                <div class="result-hero-label">F-Statistic</div>
+                <div class="result-hero-value" id="fStatistic">45.82</div>
+            </div>
+
+            <div class="interpretation significant" id="interpretation">
+                <strong>Statistically Significant</strong><br>
+                At least one group mean is significantly different.
+            </div>
+
+            <div class="results-grid">
+                <div class="result-card">
+                    <div class="result-value" id="pValue">< 0.0001</div>
+                    <div class="result-label">P-Value</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value" id="dfBetween">2</div>
+                    <div class="result-label">df (Between)</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value" id="dfWithin">12</div>
+                    <div class="result-label">df (Within)</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>ANOVA Table</h2>
+                <table class="anova-table">
+                    <tr>
+                        <th>Source</th>
+                        <th>SS</th>
+                        <th>df</th>
+                        <th>MS</th>
+                        <th>F</th>
+                    </tr>
+                    <tr>
+                        <td>Between Groups</td>
+                        <td id="ssBetween">396.93</td>
+                        <td id="dfBetweenTable">2</td>
+                        <td id="msBetween">198.47</td>
+                        <td id="fValue">45.82</td>
+                    </tr>
+                    <tr>
+                        <td>Within Groups</td>
+                        <td id="ssWithin">51.98</td>
+                        <td id="dfWithinTable">12</td>
+                        <td id="msWithin">4.33</td>
+                        <td>—</td>
+                    </tr>
+                    <tr style="font-weight: bold;">
+                        <td>Total</td>
+                        <td id="ssTotal">448.91</td>
+                        <td id="dfTotal">14</td>
+                        <td>—</td>
+                        <td>—</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>Group Statistics</h2>
+                <div id="groupStats"></div>
+            </div>
+
+            <div class="card">
+                <h2>Effect Size</h2>
+                <div class="results-grid" style="grid-template-columns: repeat(2, 1fr);">
+                    <div class="result-card">
+                        <div class="result-value" id="etaSquared">0.884</div>
+                        <div class="result-label">η² (Eta Squared)</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="omegaSquared">0.856</div>
+                        <div class="result-label">ω² (Omega Squared)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+
+            <div class="card">
+                <h2>Related Tools</h2>
+                <div class="related-tools">
+                    <a href="t-test-calculator.html" class="related-link">T-Test Calculator</a>
+                    <a href="chi-square-calculator.html" class="related-link">Chi-Square Calculator</a>
+                    <a href="statistics-calculator.html" class="related-link">Statistics Calculator</a>
+                    <a href="sample-size-calculator.html" class="related-link">Sample Size Calculator</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let groupCount = 3;
+
+        function addGroup() {
+            groupCount++;
+            const container = document.getElementById('groupInputs');
+            const div = document.createElement('div');
+            div.className = 'form-group';
+            div.innerHTML = `
+                <label>Group ${groupCount}</label>
+                <textarea class="group-data" oninput="calculate()"></textarea>
+            `;
+            container.appendChild(div);
+        }
+
+        function parseData(input) {
+            return input.split(/[,\s\n]+/)
+                .map(s => parseFloat(s.trim()))
+                .filter(n => !isNaN(n));
+        }
+
+        function mean(arr) {
+            return arr.reduce((a, b) => a + b, 0) / arr.length;
+        }
+
+        // F-distribution CDF (simplified)
+        function fCDF(f, df1, df2) {
+            if (f <= 0) return 0;
+            // Beta function approximation
+            const x = df2 / (df2 + df1 * f);
+            return 1 - incompleteBeta(x, df2/2, df1/2);
+        }
+
+        function incompleteBeta(x, a, b) {
+            if (x === 0) return 0;
+            if (x === 1) return 1;
+            // Simple approximation
+            let sum = 0;
+            const steps = 100;
+            for (let i = 0; i < steps; i++) {
+                const t = i / steps;
+                sum += Math.pow(t, a-1) * Math.pow(1-t, b-1);
+            }
+            const full = sum / steps;
+            sum = 0;
+            const xSteps = Math.floor(x * steps);
+            for (let i = 0; i < xSteps; i++) {
+                const t = i / steps;
+                sum += Math.pow(t, a-1) * Math.pow(1-t, b-1);
+            }
+            return (sum / steps) / full;
+        }
+
+        function calculate() {
+            const textareas = document.querySelectorAll('.group-data');
+            const groups = [];
+
+            textareas.forEach(ta => {
+                const data = parseData(ta.value);
+                if (data.length > 0) groups.push(data);
+            });
+
+            if (groups.length < 2) return;
+
+            const alpha = parseFloat(document.getElementById('alpha').value);
+
+            // Calculate grand mean
+            const allData = groups.flat();
+            const grandMean = mean(allData);
+            const N = allData.length;
+            const k = groups.length;
+
+            // Sum of Squares
+            let ssBetween = 0;
+            let ssWithin = 0;
+
+            groups.forEach(group => {
+                const groupMean = mean(group);
+                const n = group.length;
+                ssBetween += n * Math.pow(groupMean - grandMean, 2);
+                group.forEach(val => {
+                    ssWithin += Math.pow(val - groupMean, 2);
+                });
+            });
+
+            const ssTotal = ssBetween + ssWithin;
+
+            // Degrees of freedom
+            const dfBetween = k - 1;
+            const dfWithin = N - k;
+            const dfTotal = N - 1;
+
+            // Mean Squares
+            const msBetween = ssBetween / dfBetween;
+            const msWithin = ssWithin / dfWithin;
+
+            // F-statistic
+            const F = msBetween / msWithin;
+
+            // P-value
+            const pValue = 1 - fCDF(F, dfBetween, dfWithin);
+
+            // Effect sizes
+            const etaSquared = ssBetween / ssTotal;
+            const omegaSquared = (ssBetween - dfBetween * msWithin) / (ssTotal + msWithin);
+
+            // Update display
+            document.getElementById('fStatistic').textContent = F.toFixed(2);
+            document.getElementById('pValue').textContent = pValue < 0.0001 ? '< 0.0001' : pValue.toFixed(4);
+            document.getElementById('dfBetween').textContent = dfBetween;
+            document.getElementById('dfWithin').textContent = dfWithin;
+
+            // ANOVA table
+            document.getElementById('ssBetween').textContent = ssBetween.toFixed(2);
+            document.getElementById('ssWithin').textContent = ssWithin.toFixed(2);
+            document.getElementById('ssTotal').textContent = ssTotal.toFixed(2);
+            document.getElementById('dfBetweenTable').textContent = dfBetween;
+            document.getElementById('dfWithinTable').textContent = dfWithin;
+            document.getElementById('dfTotal').textContent = dfTotal;
+            document.getElementById('msBetween').textContent = msBetween.toFixed(2);
+            document.getElementById('msWithin').textContent = msWithin.toFixed(2);
+            document.getElementById('fValue').textContent = F.toFixed(2);
+
+            // Effect sizes
+            document.getElementById('etaSquared').textContent = etaSquared.toFixed(3);
+            document.getElementById('omegaSquared').textContent = omegaSquared.toFixed(3);
+
+            // Group statistics
+            let statsHTML = '<table class="anova-table"><tr><th>Group</th><th>n</th><th>Mean</th><th>Std Dev</th></tr>';
+            groups.forEach((group, i) => {
+                const m = mean(group);
+                const sd = Math.sqrt(group.reduce((acc, val) => acc + Math.pow(val - m, 2), 0) / (group.length - 1));
+                statsHTML += `<tr><td>Group ${i+1}</td><td>${group.length}</td><td>${m.toFixed(2)}</td><td>${sd.toFixed(2)}</td></tr>`;
+            });
+            statsHTML += '</table>';
+            document.getElementById('groupStats').innerHTML = statsHTML;
+
+            // Interpretation
+            const interp = document.getElementById('interpretation');
+            if (pValue < alpha) {
+                interp.className = 'interpretation significant';
+                interp.innerHTML = `<strong>Statistically Significant (p < ${alpha})</strong><br>At least one group mean is significantly different from the others.`;
+            } else {
+                interp.className = 'interpretation not-significant';
+                interp.innerHTML = `<strong>Not Statistically Significant (p ≥ ${alpha})</strong><br>No significant difference between group means detected.`;
+            }
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
