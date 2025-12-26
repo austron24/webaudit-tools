@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipment Lease Calculator - Business Leasing Costs</title>
+    <meta name="description" content="Calculate equipment lease payments for your business. Compare leasing vs buying and estimate monthly costs for machinery, vehicles, and technology.">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/equipment-lease-calculator.html">
+    <meta property="og:title" content="Equipment Lease Calculator - Business Leasing Costs">
+    <meta property="og:description" content="Calculate equipment lease payments for your business.">
+    <meta property="og:type" content="website">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-input: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #475569;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        .header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--primary); }
+        .ad-top { background: var(--bg-card); padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); }
+        .ad-mobile { display: none; background: var(--bg-card); padding: 0.5rem; text-align: center; }
+        .main-layout { display: flex; max-width: 1400px; margin: 0 auto; gap: 2rem; padding: 2rem; }
+        .content { flex: 1; min-width: 0; }
+        .sidebar { width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 1rem; }
+        .hero { text-align: center; margin-bottom: 2rem; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary), #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { color: var(--text-secondary); font-size: 1.1rem; }
+        .calculator-card {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+        .section-title { font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--primary); }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+        .input-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .calculate-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 1rem;
+        }
+        .calculate-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
+        .results { display: none; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+        .results.show { display: block; }
+        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .result-box {
+            background: var(--bg-input);
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            text-align: center;
+        }
+        .result-box.highlight { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid var(--primary); }
+        .result-label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .result-value { font-size: 1.5rem; font-weight: 700; color: var(--text-primary); }
+        .comparison-section { margin-top: 1.5rem; background: var(--bg-input); border-radius: 0.75rem; padding: 1.5rem; }
+        .comparison-section h4 { margin-bottom: 1rem; color: var(--text-secondary); }
+        .comparison-row { display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+        .comparison-row:last-child { border-bottom: none; }
+        .comparison-row.winner { color: var(--success); font-weight: 600; }
+        .ad-inline { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin: 2rem 0; }
+        .info-section { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .info-section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary); }
+        .info-section p, .info-section li { color: var(--text-secondary); margin-bottom: 0.75rem; }
+        .info-section ul { padding-left: 1.5rem; }
+        .related-tools { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); }
+        .related-tools h3 { margin-bottom: 1rem; color: var(--text-primary); }
+        .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+        .tool-link {
+            display: block;
+            padding: 1rem;
+            background: var(--bg-input);
+            border-radius: 0.5rem;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: background 0.2s, transform 0.2s;
+        }
+        .tool-link:hover { background: var(--border); transform: translateY(-2px); }
+        .ad-bottom { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin-top: 2rem; }
+        .footer { background: var(--bg-card); border-top: 1px solid var(--border); padding: 2rem; text-align: center; margin-top: 3rem; }
+        .footer p { color: var(--text-secondary); font-size: 0.9rem; }
+        @media (max-width: 968px) {
+            .sidebar { display: none; }
+            .main-layout { padding: 1rem; }
+        }
+        @media (max-width: 640px) {
+            .ad-top { display: none; }
+            .ad-mobile { display: block; }
+            .hero h1 { font-size: 1.75rem; }
+            .input-row { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">CalcTools</a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="finance-calculators.html">Finance</a>
+                <a href="health-calculators.html">Health</a>
+                <a href="home-calculators.html">Home</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="ad-top">
+        <script type="text/javascript">
+            atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };
+        </script>
+        <script src="//www.topcreativeformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+
+    <div class="ad-mobile">
+        <script type="text/javascript">
+            atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };
+        </script>
+        <script src="//www.topcreativeformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+
+    <div class="main-layout">
+        <main class="content">
+            <div class="hero">
+                <h1>Equipment Lease Calculator</h1>
+                <p>Calculate monthly lease payments and compare leasing vs buying for business equipment</p>
+            </div>
+
+            <div class="calculator-card">
+                <h3 class="section-title">🏭 Equipment Details</h3>
+
+                <div class="form-group">
+                    <label>Equipment Type</label>
+                    <select id="equipmentType">
+                        <option value="general">General Equipment</option>
+                        <option value="vehicle">Commercial Vehicle</option>
+                        <option value="technology">Technology/Computers</option>
+                        <option value="machinery">Heavy Machinery</option>
+                        <option value="medical">Medical Equipment</option>
+                        <option value="restaurant">Restaurant Equipment</option>
+                    </select>
+                </div>
+
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Equipment Cost ($)</label>
+                        <input type="number" id="equipmentCost" placeholder="50000" value="50000">
+                    </div>
+                    <div class="form-group">
+                        <label>Lease Term (months)</label>
+                        <select id="leaseTerm">
+                            <option value="12">12 months</option>
+                            <option value="24">24 months</option>
+                            <option value="36" selected>36 months</option>
+                            <option value="48">48 months</option>
+                            <option value="60">60 months</option>
+                            <option value="72">72 months</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Interest Rate (%)</label>
+                        <input type="number" id="interestRate" placeholder="8" value="8" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>Residual Value (%)</label>
+                        <input type="number" id="residualValue" placeholder="10" value="10" step="1">
+                    </div>
+                </div>
+
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Down Payment ($)</label>
+                        <input type="number" id="downPayment" placeholder="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Tax Rate (%)</label>
+                        <input type="number" id="taxRate" placeholder="8" value="8" step="0.1">
+                    </div>
+                </div>
+
+                <button class="calculate-btn" onclick="calculate()">Calculate Lease Payment</button>
+
+                <div class="results" id="results">
+                    <div class="result-grid">
+                        <div class="result-box highlight">
+                            <div class="result-label">Monthly Payment</div>
+                            <div class="result-value" id="monthlyPayment">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Total Lease Cost</div>
+                            <div class="result-value" id="totalLeaseCost">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Total Interest</div>
+                            <div class="result-value" id="totalInterest">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Buyout at End</div>
+                            <div class="result-value" id="buyoutAmount">$0</div>
+                        </div>
+                    </div>
+
+                    <div class="comparison-section">
+                        <h4>📊 Lease vs. Buy Comparison</h4>
+                        <div class="comparison-row">
+                            <span>Lease: Total Cost (payments + buyout)</span>
+                            <span id="leaseTotal">$0</span>
+                        </div>
+                        <div class="comparison-row">
+                            <span>Buy: Purchase Price + Interest</span>
+                            <span id="buyTotal">$0</span>
+                        </div>
+                        <div class="comparison-row">
+                            <span>Lease: Monthly Cash Flow</span>
+                            <span id="leaseCashFlow">$0/mo</span>
+                        </div>
+                        <div class="comparison-row">
+                            <span>Buy: Monthly Payment (loan)</span>
+                            <span id="buyCashFlow">$0/mo</span>
+                        </div>
+                        <div class="comparison-row winner" id="recommendation">
+                            <span>Recommendation</span>
+                            <span id="recommendationText">--</span>
+                        </div>
+                    </div>
+
+                    <div class="comparison-section" style="margin-top: 1rem;">
+                        <h4>💰 Tax Benefits</h4>
+                        <div class="comparison-row">
+                            <span>Lease: Full payments may be deductible</span>
+                            <span id="leaseDeduction">$0/year</span>
+                        </div>
+                        <div class="comparison-row">
+                            <span>Buy: Depreciation + Interest deduction</span>
+                            <span id="buyDeduction">$0/year</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ad-inline">
+                <script type="text/javascript">
+                    atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };
+                </script>
+                <script src="//www.topcreativeformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+
+            <div class="info-section">
+                <h2>Equipment Leasing for Business</h2>
+                <p>Equipment leasing allows businesses to use equipment without the full upfront cost of purchasing. It's popular for vehicles, technology, machinery, and medical equipment.</p>
+
+                <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem;">Lease vs. Buy: Key Considerations</h3>
+                <ul>
+                    <li><strong>Cash flow</strong> - Leasing preserves capital for other investments</li>
+                    <li><strong>Technology obsolescence</strong> - Leasing is better for fast-changing tech</li>
+                    <li><strong>Tax treatment</strong> - Lease payments may be fully deductible as operating expenses</li>
+                    <li><strong>Ownership</strong> - Buying builds equity; leasing does not</li>
+                    <li><strong>Maintenance</strong> - Some leases include maintenance packages</li>
+                </ul>
+
+                <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem;">Types of Equipment Leases</h3>
+                <ul>
+                    <li><strong>Capital Lease</strong> - Similar to ownership, appears on balance sheet</li>
+                    <li><strong>Operating Lease</strong> - True rental, off-balance sheet treatment</li>
+                    <li><strong>$1 Buyout</strong> - You own equipment at end for $1</li>
+                    <li><strong>Fair Market Value</strong> - Buyout at market price at lease end</li>
+                </ul>
+            </div>
+
+            <div class="related-tools">
+                <h3>Related Business Tools</h3>
+                <div class="tool-grid">
+                    <a href="business-loan-calculator.html" class="tool-link">Business Loan Calculator</a>
+                    <a href="car-lease-calculator.html" class="tool-link">Car Lease Calculator</a>
+                    <a href="depreciation-calculator.html" class="tool-link">Depreciation Calculator</a>
+                    <a href="roi-calculator.html" class="tool-link">ROI Calculator</a>
+                </div>
+            </div>
+
+            <div class="ad-bottom">
+                <script type="text/javascript">
+                    atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };
+                </script>
+                <script src="//www.topcreativeformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="ad-sidebar">
+                <script type="text/javascript">
+                    atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };
+                </script>
+                <script src="//www.topcreativeformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+            <div class="ad-sidebar">
+                <script type="text/javascript">
+                    atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };
+                </script>
+                <script src="//www.topcreativeformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
+            </div>
+        </aside>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 CalcTools. All rights reserved. | <a href="index.html" style="color: var(--primary);">Free Online Calculators</a></p>
+    </footer>
+
+    <script>
+        function formatCurrency(num) {
+            return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        }
+
+        function getVal(id) {
+            return parseFloat(document.getElementById(id).value) || 0;
+        }
+
+        function calculate() {
+            const equipmentCost = getVal('equipmentCost');
+            const leaseTerm = parseInt(document.getElementById('leaseTerm').value);
+            const annualRate = getVal('interestRate') / 100;
+            const residualPercent = getVal('residualValue') / 100;
+            const downPayment = getVal('downPayment');
+            const taxRate = getVal('taxRate') / 100;
+
+            const residualValue = equipmentCost * residualPercent;
+            const amountFinanced = equipmentCost - downPayment - residualValue;
+            const monthlyRate = annualRate / 12;
+
+            // Calculate lease payment (similar to loan but with residual)
+            let monthlyPayment;
+            if (monthlyRate === 0) {
+                monthlyPayment = amountFinanced / leaseTerm;
+            } else {
+                monthlyPayment = (amountFinanced * monthlyRate * Math.pow(1 + monthlyRate, leaseTerm)) /
+                                 (Math.pow(1 + monthlyRate, leaseTerm) - 1);
+            }
+
+            // Add depreciation charge for residual
+            const depreciationCharge = (equipmentCost - residualValue) / leaseTerm;
+            const rentCharge = (equipmentCost + residualValue) * (monthlyRate / 2);
+            const calculatedPayment = depreciationCharge + rentCharge;
+
+            // Use more accurate lease calculation
+            monthlyPayment = calculatedPayment;
+
+            const monthlyWithTax = monthlyPayment * (1 + taxRate);
+            const totalLeaseCost = (monthlyWithTax * leaseTerm) + downPayment;
+            const totalInterest = totalLeaseCost - (equipmentCost - residualValue);
+
+            // Buy comparison (same term loan)
+            const buyMonthlyRate = annualRate / 12;
+            let buyMonthlyPayment;
+            if (buyMonthlyRate === 0) {
+                buyMonthlyPayment = (equipmentCost - downPayment) / leaseTerm;
+            } else {
+                buyMonthlyPayment = ((equipmentCost - downPayment) * buyMonthlyRate * Math.pow(1 + buyMonthlyRate, leaseTerm)) /
+                                    (Math.pow(1 + buyMonthlyRate, leaseTerm) - 1);
+            }
+            const buyTotal = (buyMonthlyPayment * leaseTerm) + downPayment;
+            const leaseTotal = totalLeaseCost + residualValue; // If you want to own it
+
+            // Tax deductions
+            const yearlyLeaseDeduction = monthlyPayment * 12;
+            const yearlyDepreciation = equipmentCost / (leaseTerm / 12);
+            const yearlyBuyInterest = (buyTotal - equipmentCost) / (leaseTerm / 12);
+            const yearlyBuyDeduction = yearlyDepreciation + yearlyBuyInterest;
+
+            document.getElementById('monthlyPayment').textContent = formatCurrency(monthlyWithTax);
+            document.getElementById('totalLeaseCost').textContent = formatCurrency(totalLeaseCost);
+            document.getElementById('totalInterest').textContent = formatCurrency(Math.max(0, totalInterest));
+            document.getElementById('buyoutAmount').textContent = formatCurrency(residualValue);
+
+            document.getElementById('leaseTotal').textContent = formatCurrency(leaseTotal);
+            document.getElementById('buyTotal').textContent = formatCurrency(buyTotal);
+            document.getElementById('leaseCashFlow').textContent = formatCurrency(monthlyWithTax) + '/mo';
+            document.getElementById('buyCashFlow').textContent = formatCurrency(buyMonthlyPayment) + '/mo';
+
+            const recommendation = document.getElementById('recommendationText');
+            if (monthlyWithTax < buyMonthlyPayment * 0.9) {
+                recommendation.textContent = 'Lease (lower monthly cost)';
+            } else if (leaseTotal > buyTotal * 1.1) {
+                recommendation.textContent = 'Buy (lower total cost)';
+            } else {
+                recommendation.textContent = 'Similar - consider cash flow needs';
+            }
+
+            document.getElementById('leaseDeduction').textContent = formatCurrency(yearlyLeaseDeduction) + '/year';
+            document.getElementById('buyDeduction').textContent = formatCurrency(yearlyBuyDeduction) + '/year';
+
+            document.getElementById('results').classList.add('show');
+        }
+    </script>
+</body>
+</html>
