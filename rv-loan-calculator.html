@@ -4,49 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RV Loan Calculator - Motorhome & Camper Financing</title>
-    <meta name="description" content="Free RV loan calculator. Calculate monthly payments for RV, motorhome, and camper financing with different loan terms.">
-    <meta name="keywords" content="rv loan calculator, motorhome loan, camper financing, rv payment calculator, recreational vehicle loan">
+    <meta name="description" content="Free RV loan calculator. Calculate monthly payments for motorhome, camper, or travel trailer financing. Compare RV loan terms.">
+    <meta name="keywords" content="RV loan calculator, motorhome financing, camper loan, travel trailer loan, recreational vehicle">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/rv-loan-calculator.html">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #84cc16; --primary-dark: #65a30d; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
         .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
-        .header { background: linear-gradient(135deg, var(--accent) 0%, #d97706 100%); padding: 40px 20px; text-align: center; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
         .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
         .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
         .content-area { display: flex; flex-direction: column; gap: 20px; }
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
         .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
         .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .rv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        .rv-btn { padding: 15px; background: var(--bg-input); border: 2px solid var(--border); border-radius: 10px; color: var(--text-primary); cursor: pointer; text-align: center; }
+        .rv-btn:hover, .rv-btn.active { background: var(--primary); border-color: var(--primary); color: #000; }
+        .rv-btn .emoji { font-size: 1.5rem; display: block; margin-bottom: 5px; }
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
         input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
         input:focus, select:focus { outline: none; border-color: var(--primary); }
-        .result-hero { background: linear-gradient(135deg, var(--success), #059669); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
-        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
-        .result-hero-label { color: rgba(255,255,255,0.8); }
-        .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 40px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 4rem; font-weight: 800; color: #000; }
+        .result-hero-label { color: rgba(0,0,0,0.8); font-size: 1.2rem; }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
-        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
         .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
-        .rv-types { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
-        .rv-type { padding: 20px; background: var(--bg-input); border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; }
-        .rv-type:hover { transform: translateY(-2px); }
-        .rv-type.selected { border-color: var(--accent); background: rgba(245, 158, 11, 0.1); }
-        .rv-icon { font-size: 2rem; margin-bottom: 10px; }
-        .rv-name { font-weight: 700; color: var(--secondary); margin-bottom: 5px; }
-        .rv-range { color: var(--text-secondary); font-size: 0.85rem; }
-        .term-comparison { margin-top: 20px; }
-        .term-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; padding: 15px; border-bottom: 1px solid var(--border); }
-        .term-row.header { font-weight: 700; color: var(--secondary); background: var(--bg-input); border-radius: 8px 8px 0 0; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .breakdown-row:last-child { border-bottom: none; }
+        .info-box { background: var(--bg-input); padding: 15px; border-radius: 10px; margin-top: 15px; border-left: 4px solid var(--accent); }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
-        .related-link:hover { background: var(--primary); }
+        .related-link:hover { background: var(--primary); color: #000; }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .results-grid, .rv-types { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 640px) { .form-grid, .rv-grid { grid-template-columns: 1fr; } .results-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -61,7 +58,7 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
-    
+
     <header class="header">
         <h1>🚐 RV Loan Calculator</h1>
     </header>
@@ -69,115 +66,95 @@
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>🏕️ RV Financing Details</h2>
+                <h2>🏕️ RV Type</h2>
+                <div class="rv-grid">
+                    <button class="rv-btn" onclick="setRV('trailer', this)"><span class="emoji">🏕️</span>Travel Trailer</button>
+                    <button class="rv-btn active" onclick="setRV('classA', this)"><span class="emoji">🚌</span>Class A</button>
+                    <button class="rv-btn" onclick="setRV('classB', this)"><span class="emoji">🚐</span>Class B/C</button>
+                    <button class="rv-btn" onclick="setRV('fifth', this)"><span class="emoji">🚛</span>Fifth Wheel</button>
+                    <button class="rv-btn" onclick="setRV('popup', this)"><span class="emoji">⛺</span>Pop-up</button>
+                    <button class="rv-btn" onclick="setRV('toy', this)"><span class="emoji">🏍️</span>Toy Hauler</button>
+                </div>
+
                 <div class="form-grid">
                     <div class="form-group">
                         <label>RV Price ($)</label>
-                        <input type="number" id="rvPrice" value="75000" oninput="calculate()">
+                        <input type="number" id="price" value="75000" step="1000" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Down Payment ($)</label>
-                        <input type="number" id="downPayment" value="15000" oninput="calculate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Interest Rate (%)</label>
-                        <input type="number" id="interestRate" value="7.0" step="0.1" oninput="calculate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Loan Term</label>
-                        <select id="loanTerm" onchange="calculate()">
-                            <option value="60">5 Years</option>
-                            <option value="84">7 Years</option>
-                            <option value="120" selected>10 Years</option>
-                            <option value="144">12 Years</option>
-                            <option value="180">15 Years</option>
-                            <option value="240">20 Years</option>
-                        </select>
+                        <input type="number" id="downPayment" value="15000" step="1000" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Trade-In Value ($)</label>
-                        <input type="number" id="tradeIn" value="0" oninput="calculate()">
+                        <input type="number" id="tradeIn" value="0" step="500" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>RV Condition</label>
-                        <select id="condition" onchange="calculate()">
+                        <label>Interest Rate (%)</label>
+                        <input type="number" id="rate" value="7.0" step="0.25" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Loan Term</label>
+                        <select id="term" onchange="calculate()">
+                            <option value="60">5 Years (60 months)</option>
+                            <option value="84">7 Years (84 months)</option>
+                            <option value="120" selected>10 Years (120 months)</option>
+                            <option value="144">12 Years (144 months)</option>
+                            <option value="180">15 Years (180 months)</option>
+                            <option value="240">20 Years (240 months)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Condition</label>
+                        <select id="condition" onchange="adjustRate()">
                             <option value="new" selected>New</option>
                             <option value="used">Used</option>
                         </select>
                     </div>
                 </div>
-                
-                <div class="result-hero">
-                    <div class="result-hero-label">Monthly Payment</div>
-                    <div class="result-hero-value" id="monthlyPayment">$0</div>
+            </div>
+
+            <div class="result-hero">
+                <div class="result-hero-label">Monthly Payment</div>
+                <div class="result-hero-value" id="monthlyPayment">$0</div>
+            </div>
+
+            <div class="results-grid">
+                <div class="result-card">
+                    <div class="result-value" id="loanAmount">$0</div>
+                    <div class="result-label">Loan Amount</div>
                 </div>
-                
-                <div class="results-grid">
-                    <div class="result-card">
-                        <div class="result-value" id="loanAmount">$0</div>
-                        <div class="result-label">Loan Amount</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="totalInterest">$0</div>
-                        <div class="result-label">Total Interest</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="totalCost">$0</div>
-                        <div class="result-label">Total Cost</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="downPercent">0%</div>
-                        <div class="result-label">Down Payment %</div>
-                    </div>
+                <div class="result-card">
+                    <div class="result-value" id="totalInterest">$0</div>
+                    <div class="result-label">Total Interest</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value" id="totalCost">$0</div>
+                    <div class="result-label">Total Cost</div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>🚐 RV Types & Price Ranges</h2>
-                <div class="rv-types">
-                    <div class="rv-type" onclick="setRVPrice(15000)">
-                        <div class="rv-icon">⛺</div>
-                        <div class="rv-name">Pop-Up Camper</div>
-                        <div class="rv-range">$10K - $20K</div>
-                    </div>
-                    <div class="rv-type" onclick="setRVPrice(35000)">
-                        <div class="rv-icon">🏕️</div>
-                        <div class="rv-name">Travel Trailer</div>
-                        <div class="rv-range">$20K - $50K</div>
-                    </div>
-                    <div class="rv-type selected" onclick="setRVPrice(75000)">
-                        <div class="rv-icon">🚐</div>
-                        <div class="rv-name">Class C</div>
-                        <div class="rv-range">$50K - $100K</div>
-                    </div>
-                    <div class="rv-type" onclick="setRVPrice(125000)">
-                        <div class="rv-icon">🚌</div>
-                        <div class="rv-name">Class A</div>
-                        <div class="rv-range">$75K - $250K+</div>
-                    </div>
-                    <div class="rv-type" onclick="setRVPrice(60000)">
-                        <div class="rv-icon">🚛</div>
-                        <div class="rv-name">Fifth Wheel</div>
-                        <div class="rv-range">$40K - $100K</div>
-                    </div>
-                    <div class="rv-type" onclick="setRVPrice(90000)">
-                        <div class="rv-icon">🏠</div>
-                        <div class="rv-name">Toy Hauler</div>
-                        <div class="rv-range">$50K - $150K</div>
-                    </div>
-                </div>
+                <h2>📊 Payment Breakdown</h2>
+                <div class="breakdown-row"><span>RV Price</span><span id="displayPrice">$0</span></div>
+                <div class="breakdown-row"><span>Down Payment</span><span id="displayDown">-$0</span></div>
+                <div class="breakdown-row"><span>Trade-In</span><span id="displayTrade">-$0</span></div>
+                <div class="breakdown-row"><span>Amount Financed</span><span id="displayLoan">$0</span></div>
+                <div class="breakdown-row"><span>Total Interest</span><span id="displayInterest">$0</span></div>
+                <div class="breakdown-row"><span>Total of Payments</span><span id="displayTotal">$0</span></div>
             </div>
 
             <div class="card">
-                <h2>📊 Term Comparison</h2>
-                <div class="term-comparison">
-                    <div class="term-row header">
-                        <span>Term</span>
-                        <span>Monthly</span>
-                        <span>Total Interest</span>
-                        <span>Total Cost</span>
-                    </div>
-                    <div id="termRows"></div>
+                <h2>💡 RV Ownership Costs</h2>
+                <div class="info-box">
+                    <strong>Annual costs</strong> beyond the loan payment:
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li>Insurance: $1,000-$3,000/year</li>
+                        <li>Storage: $1,200-$4,800/year</li>
+                        <li>Maintenance: 1-3% of value</li>
+                        <li>Campground fees: $30-$100/night</li>
+                        <li>Fuel: 6-10 MPG (Class A)</li>
+                    </ul>
                 </div>
             </div>
 
@@ -190,10 +167,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="boat-loan-calculator.html" class="related-link">⛵ Boat Loan Calculator</a>
                     <a href="auto-loan-calculator.html" class="related-link">🚗 Auto Loan</a>
-                    <a href="loan-calculator.html" class="related-link">💰 General Loan</a>
+                    <a href="boat-loan-calculator.html" class="related-link">⛵ Boat Loan</a>
                     <a href="fuel-cost-calculator.html" class="related-link">⛽ Fuel Cost</a>
+                    <a href="road-trip-calculator.html" class="related-link">🛣️ Road Trip</a>
                 </div>
             </div>
         </div>
@@ -208,59 +185,64 @@
     </div>
 
     <script>
-        function setRVPrice(price) {
-            document.getElementById('rvPrice').value = price;
-            document.getElementById('downPayment').value = Math.round(price * 0.2);
-            document.querySelectorAll('.rv-type').forEach(t => t.classList.remove('selected'));
-            event.currentTarget.classList.add('selected');
+        const rvTypes = {
+            trailer: { price: 25000, down: 5000 },
+            classA: { price: 150000, down: 30000 },
+            classB: { price: 75000, down: 15000 },
+            fifth: { price: 50000, down: 10000 },
+            popup: { price: 15000, down: 3000 },
+            toy: { price: 40000, down: 8000 }
+        };
+
+        function setRV(type, btn) {
+            document.querySelectorAll('.rv-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('price').value = rvTypes[type].price;
+            document.getElementById('downPayment').value = rvTypes[type].down;
             calculate();
         }
-        
-        function calculatePayment(principal, annualRate, months) {
-            const monthlyRate = annualRate / 100 / 12;
-            if (monthlyRate === 0) return principal / months;
-            return principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+
+        function adjustRate() {
+            const condition = document.getElementById('condition').value;
+            if (condition === 'new') {
+                document.getElementById('rate').value = '7.0';
+            } else {
+                document.getElementById('rate').value = '8.5';
+            }
+            calculate();
         }
-        
+
         function calculate() {
-            const rvPrice = parseFloat(document.getElementById('rvPrice').value) || 0;
+            const price = parseFloat(document.getElementById('price').value) || 0;
             const downPayment = parseFloat(document.getElementById('downPayment').value) || 0;
-            const interestRate = parseFloat(document.getElementById('interestRate').value) || 0;
-            const loanTerm = parseInt(document.getElementById('loanTerm').value) || 120;
             const tradeIn = parseFloat(document.getElementById('tradeIn').value) || 0;
+            const rate = parseFloat(document.getElementById('rate').value) / 100 / 12;
+            const term = parseInt(document.getElementById('term').value);
             
-            const loanAmount = rvPrice - downPayment - tradeIn;
-            const monthlyPayment = calculatePayment(loanAmount, interestRate, loanTerm);
-            const totalCost = monthlyPayment * loanTerm;
-            const totalInterest = totalCost - loanAmount;
-            const downPercent = rvPrice > 0 ? (downPayment / rvPrice) * 100 : 0;
+            const loanAmount = price - downPayment - tradeIn;
+            
+            let monthlyPayment;
+            if (rate === 0) {
+                monthlyPayment = loanAmount / term;
+            } else {
+                monthlyPayment = loanAmount * (rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1);
+            }
+            
+            const totalPayments = monthlyPayment * term;
+            const totalInterest = totalPayments - loanAmount;
+            const totalCost = price + totalInterest;
             
             document.getElementById('monthlyPayment').textContent = '$' + Math.round(monthlyPayment).toLocaleString();
             document.getElementById('loanAmount').textContent = '$' + Math.round(loanAmount).toLocaleString();
             document.getElementById('totalInterest').textContent = '$' + Math.round(totalInterest).toLocaleString();
             document.getElementById('totalCost').textContent = '$' + Math.round(totalCost).toLocaleString();
-            document.getElementById('downPercent').textContent = downPercent.toFixed(0) + '%';
             
-            // Term comparison
-            const terms = [60, 84, 120, 144, 180, 240];
-            let termRowsHtml = '';
-            
-            for (const term of terms) {
-                const payment = calculatePayment(loanAmount, interestRate, term);
-                const total = payment * term;
-                const interest = total - loanAmount;
-                const selected = term === loanTerm ? 'style="background: rgba(99, 102, 241, 0.2);"' : '';
-                const years = term / 12;
-                
-                termRowsHtml += `<div class="term-row" ${selected}>
-                    <span>${years} years</span>
-                    <span>$${Math.round(payment).toLocaleString()}</span>
-                    <span>$${Math.round(interest).toLocaleString()}</span>
-                    <span>$${Math.round(total).toLocaleString()}</span>
-                </div>`;
-            }
-            
-            document.getElementById('termRows').innerHTML = termRowsHtml;
+            document.getElementById('displayPrice').textContent = '$' + price.toLocaleString();
+            document.getElementById('displayDown').textContent = '-$' + downPayment.toLocaleString();
+            document.getElementById('displayTrade').textContent = '-$' + tradeIn.toLocaleString();
+            document.getElementById('displayLoan').textContent = '$' + Math.round(loanAmount).toLocaleString();
+            document.getElementById('displayInterest').textContent = '$' + Math.round(totalInterest).toLocaleString();
+            document.getElementById('displayTotal').textContent = '$' + Math.round(totalPayments).toLocaleString();
         }
         
         calculate();
