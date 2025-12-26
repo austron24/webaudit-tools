@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T-Test Calculator - One Sample, Two Sample & Paired</title>
+    <meta name="description" content="Free t-test calculator. Perform one-sample, two-sample independent, and paired t-tests. Calculate t-statistic, p-value, and confidence intervals.">
+    <meta name="keywords" content="t-test calculator, student t-test, paired t-test, two sample t-test, statistical significance">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/t-test-calculator.html">
+    <style>
+        :root { --primary: #0891b2; --primary-dark: #0e7490; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
+        .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
+        .content-area { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        input, select, textarea { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        textarea { min-height: 100px; resize: vertical; font-family: monospace; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 40px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 2.5rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.9); font-size: 1.2rem; }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .result-value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .interpretation { padding: 15px; border-radius: 10px; margin-top: 15px; text-align: center; }
+        .interpretation.significant { background: rgba(16, 185, 129, 0.2); border: 2px solid var(--success); }
+        .interpretation.not-significant { background: rgba(239, 68, 68, 0.2); border: 2px solid #ef4444; }
+        .tab-buttons { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 12px; background: var(--bg-input); border: 2px solid var(--border); border-radius: 10px; cursor: pointer; color: var(--text-primary); text-align: center; }
+        .tab-btn.active { border-color: var(--primary); background: rgba(8, 145, 178, 0.2); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } .tab-buttons { flex-direction: column; } }
+    </style>
+</head>
+<body>
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-container" style="display: none;">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
+
+    <header class="header">
+        <h1>T-Test Calculator</h1>
+    </header>
+
+    <div class="main-container">
+        <div class="content-area">
+            <div class="card">
+                <div class="tab-buttons">
+                    <div class="tab-btn active" onclick="switchTab('oneSample')">One-Sample</div>
+                    <div class="tab-btn" onclick="switchTab('twoSample')">Two-Sample</div>
+                    <div class="tab-btn" onclick="switchTab('paired')">Paired</div>
+                </div>
+
+                <div id="oneSample" class="tab-content active">
+                    <h2>One-Sample T-Test</h2>
+                    <p style="color: var(--text-secondary); margin-bottom: 15px;">Test if sample mean differs from a hypothesized value.</p>
+                    <div class="form-group">
+                        <label>Sample Data (comma separated)</label>
+                        <textarea id="oneSampleData" oninput="calculateOneSample()">23, 25, 28, 24, 26, 27, 25, 29, 24, 26</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Hypothesized Mean (μ₀)</label>
+                        <input type="number" id="hypothesizedMean" value="25" step="any" oninput="calculateOneSample()">
+                    </div>
+                </div>
+
+                <div id="twoSample" class="tab-content">
+                    <h2>Two-Sample Independent T-Test</h2>
+                    <p style="color: var(--text-secondary); margin-bottom: 15px;">Compare means of two independent groups.</p>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Group 1 Data</label>
+                            <textarea id="group1Data" oninput="calculateTwoSample()">23, 25, 28, 24, 26, 27, 25, 29</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Group 2 Data</label>
+                            <textarea id="group2Data" oninput="calculateTwoSample()">30, 32, 28, 31, 33, 29, 35, 34</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="paired" class="tab-content">
+                    <h2>Paired T-Test</h2>
+                    <p style="color: var(--text-secondary); margin-bottom: 15px;">Compare means of paired/matched observations.</p>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Before/First Measurement</label>
+                            <textarea id="pairedBefore" oninput="calculatePaired()">150, 155, 160, 145, 170, 165, 180, 175</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>After/Second Measurement</label>
+                            <textarea id="pairedAfter" oninput="calculatePaired()">148, 150, 155, 140, 162, 158, 172, 168</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label>Significance Level (α)</label>
+                    <select id="alpha" onchange="recalculate()">
+                        <option value="0.1">α = 0.10</option>
+                        <option value="0.05" selected>α = 0.05</option>
+                        <option value="0.01">α = 0.01</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-hero">
+                <div class="result-hero-label">T-Statistic</div>
+                <div class="result-hero-value" id="tStatistic">0.65</div>
+            </div>
+
+            <div class="interpretation not-significant" id="interpretation">
+                <strong>Not Statistically Significant</strong><br>
+                Fail to reject the null hypothesis.
+            </div>
+
+            <div class="results-grid">
+                <div class="result-card">
+                    <div class="result-value" id="pValue">0.534</div>
+                    <div class="result-label">P-Value (two-tailed)</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value" id="df">9</div>
+                    <div class="result-label">Degrees of Freedom</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value" id="criticalValue">±2.262</div>
+                    <div class="result-label">Critical Value</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Sample Statistics</h2>
+                <div class="results-grid" style="grid-template-columns: repeat(2, 1fr);">
+                    <div class="result-card">
+                        <div class="result-value" id="mean1">25.7</div>
+                        <div class="result-label" id="mean1Label">Sample Mean</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="std1">1.89</div>
+                        <div class="result-label" id="std1Label">Sample Std Dev</div>
+                    </div>
+                    <div class="result-card" id="mean2Card" style="display: none;">
+                        <div class="result-value" id="mean2">31.5</div>
+                        <div class="result-label">Group 2 Mean</div>
+                    </div>
+                    <div class="result-card" id="std2Card" style="display: none;">
+                        <div class="result-value" id="std2">2.45</div>
+                        <div class="result-label">Group 2 Std Dev</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+
+            <div class="card">
+                <h2>Related Tools</h2>
+                <div class="related-tools">
+                    <a href="chi-square-calculator.html" class="related-link">Chi-Square Calculator</a>
+                    <a href="z-score-calculator.html" class="related-link">Z-Score Calculator</a>
+                    <a href="statistics-calculator.html" class="related-link">Statistics Calculator</a>
+                    <a href="sample-size-calculator.html" class="related-link">Sample Size Calculator</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'oneSample';
+
+        function parseData(input) {
+            return input.split(/[,\s\n]+/)
+                .map(s => parseFloat(s.trim()))
+                .filter(n => !isNaN(n));
+        }
+
+        function mean(arr) {
+            return arr.reduce((a, b) => a + b, 0) / arr.length;
+        }
+
+        function stdDev(arr) {
+            const m = mean(arr);
+            return Math.sqrt(arr.reduce((acc, val) => acc + Math.pow(val - m, 2), 0) / (arr.length - 1));
+        }
+
+        // T-distribution approximation for p-value
+        function tCDF(t, df) {
+            const x = df / (df + t * t);
+            let p = 0.5 * incompleteBeta(x, df / 2, 0.5);
+            return t > 0 ? 1 - p : p;
+        }
+
+        function incompleteBeta(x, a, b) {
+            // Simplified approximation
+            if (x === 0) return 0;
+            if (x === 1) return 1;
+            let sum = 0;
+            for (let i = 0; i < 100; i++) {
+                sum += Math.pow(x, a + i) * Math.pow(1 - x, b - 1) / ((a + i) * beta(a, b));
+            }
+            return sum * a;
+        }
+
+        function beta(a, b) {
+            return gamma(a) * gamma(b) / gamma(a + b);
+        }
+
+        function gamma(n) {
+            if (n === 1) return 1;
+            if (n < 1) return gamma(n + 1) / n;
+            let result = 1;
+            for (let i = 1; i < n; i++) result *= i;
+            return result;
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(tab).classList.add('active');
+            recalculate();
+        }
+
+        function recalculate() {
+            if (currentTab === 'oneSample') calculateOneSample();
+            else if (currentTab === 'twoSample') calculateTwoSample();
+            else calculatePaired();
+        }
+
+        function calculateOneSample() {
+            const data = parseData(document.getElementById('oneSampleData').value);
+            const mu0 = parseFloat(document.getElementById('hypothesizedMean').value);
+            const alpha = parseFloat(document.getElementById('alpha').value);
+
+            if (data.length < 2) return;
+
+            const n = data.length;
+            const m = mean(data);
+            const s = stdDev(data);
+            const se = s / Math.sqrt(n);
+            const t = (m - mu0) / se;
+            const df = n - 1;
+
+            // P-value (two-tailed)
+            const pValue = 2 * (1 - tCDF(Math.abs(t), df));
+
+            updateResults(t, pValue, df, alpha, m, s);
+            document.getElementById('mean2Card').style.display = 'none';
+            document.getElementById('std2Card').style.display = 'none';
+            document.getElementById('mean1Label').textContent = 'Sample Mean';
+            document.getElementById('std1Label').textContent = 'Sample Std Dev';
+        }
+
+        function calculateTwoSample() {
+            const data1 = parseData(document.getElementById('group1Data').value);
+            const data2 = parseData(document.getElementById('group2Data').value);
+            const alpha = parseFloat(document.getElementById('alpha').value);
+
+            if (data1.length < 2 || data2.length < 2) return;
+
+            const n1 = data1.length, n2 = data2.length;
+            const m1 = mean(data1), m2 = mean(data2);
+            const s1 = stdDev(data1), s2 = stdDev(data2);
+
+            // Welch's t-test
+            const se = Math.sqrt(s1*s1/n1 + s2*s2/n2);
+            const t = (m1 - m2) / se;
+
+            // Welch-Satterthwaite df
+            const num = Math.pow(s1*s1/n1 + s2*s2/n2, 2);
+            const denom = Math.pow(s1*s1/n1, 2)/(n1-1) + Math.pow(s2*s2/n2, 2)/(n2-1);
+            const df = Math.floor(num / denom);
+
+            const pValue = 2 * (1 - tCDF(Math.abs(t), df));
+
+            updateResults(t, pValue, df, alpha, m1, s1);
+            document.getElementById('mean2Card').style.display = 'block';
+            document.getElementById('std2Card').style.display = 'block';
+            document.getElementById('mean2').textContent = m2.toFixed(2);
+            document.getElementById('std2').textContent = s2.toFixed(2);
+            document.getElementById('mean1Label').textContent = 'Group 1 Mean';
+            document.getElementById('std1Label').textContent = 'Group 1 Std Dev';
+        }
+
+        function calculatePaired() {
+            const before = parseData(document.getElementById('pairedBefore').value);
+            const after = parseData(document.getElementById('pairedAfter').value);
+            const alpha = parseFloat(document.getElementById('alpha').value);
+
+            const n = Math.min(before.length, after.length);
+            if (n < 2) return;
+
+            // Calculate differences
+            const diffs = [];
+            for (let i = 0; i < n; i++) {
+                diffs.push(before[i] - after[i]);
+            }
+
+            const m = mean(diffs);
+            const s = stdDev(diffs);
+            const se = s / Math.sqrt(n);
+            const t = m / se;
+            const df = n - 1;
+
+            const pValue = 2 * (1 - tCDF(Math.abs(t), df));
+
+            updateResults(t, pValue, df, alpha, m, s);
+            document.getElementById('mean2Card').style.display = 'none';
+            document.getElementById('std2Card').style.display = 'none';
+            document.getElementById('mean1Label').textContent = 'Mean Difference';
+            document.getElementById('std1Label').textContent = 'Std Dev of Diff';
+        }
+
+        function updateResults(t, pValue, df, alpha, m, s) {
+            document.getElementById('tStatistic').textContent = t.toFixed(4);
+            document.getElementById('pValue').textContent = pValue < 0.0001 ? '< 0.0001' : pValue.toFixed(4);
+            document.getElementById('df').textContent = df;
+            document.getElementById('mean1').textContent = m.toFixed(2);
+            document.getElementById('std1').textContent = s.toFixed(2);
+
+            // Critical values (approximate)
+            const critValues = {
+                0.1: { 5: 2.015, 10: 1.812, 20: 1.725, 30: 1.697 },
+                0.05: { 5: 2.571, 10: 2.228, 20: 2.086, 30: 2.042 },
+                0.01: { 5: 4.032, 10: 3.169, 20: 2.845, 30: 2.750 }
+            };
+            let crit = critValues[alpha][30];
+            if (df <= 5) crit = critValues[alpha][5];
+            else if (df <= 10) crit = critValues[alpha][10];
+            else if (df <= 20) crit = critValues[alpha][20];
+            document.getElementById('criticalValue').textContent = '±' + crit.toFixed(3);
+
+            const interp = document.getElementById('interpretation');
+            if (pValue < alpha) {
+                interp.className = 'interpretation significant';
+                interp.innerHTML = `<strong>Statistically Significant (p < ${alpha})</strong><br>Reject the null hypothesis. The difference is significant.`;
+            } else {
+                interp.className = 'interpretation not-significant';
+                interp.innerHTML = `<strong>Not Statistically Significant (p ≥ ${alpha})</strong><br>Fail to reject the null hypothesis.`;
+            }
+        }
+
+        calculateOneSample();
+    </script>
+</body>
+</html>
