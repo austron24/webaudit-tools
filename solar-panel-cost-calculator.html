@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Panel Cost Calculator - Installation Estimates & Savings</title>
+    <meta name="description" content="Calculate solar panel installation costs and savings. Estimate system size, payback period, and incentives.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #f59e0b 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #f59e0b;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #fef3c7;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .compare-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #b45309;
+        }
+        .compare-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #b45309;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #b45309; }
+        .savings {
+            background: #dcfce7;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .savings h4 {
+            color: #16a34a;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .savings .break-row .value { color: #16a34a; }
+        .pricing {
+            background: #fef3c7;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 {
+            color: #b45309;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .pricing table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #fcd34d;
+        }
+        .pricing th { color: #b45309; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #b45309;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #b45309; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #f59e0b;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fcd34d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>☀️ Solar Panel Cost</h1>
+            <p class="subtitle">Installation estimates & savings</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Monthly Electric Bill ($)</label>
+                    <input type="number" id="electricBill" value="150" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>System Size (kW)</label>
+                    <select id="systemSize" onchange="calculate()">
+                        <option value="4">4 kW (small home)</option>
+                        <option value="6" selected>6 kW (average home)</option>
+                        <option value="8">8 kW (large home)</option>
+                        <option value="10">10 kW (very large)</option>
+                        <option value="12">12+ kW (maximum)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Panel Quality</label>
+                    <select id="quality" onchange="calculate()">
+                        <option value="standard">Standard (18% eff)</option>
+                        <option value="premium" selected>Premium (20% eff)</option>
+                        <option value="top">Top Tier (22%+ eff)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Roof Type</label>
+                    <select id="roof" onchange="calculate()">
+                        <option value="asphalt" selected>Asphalt Shingle</option>
+                        <option value="metal">Metal</option>
+                        <option value="tile">Tile</option>
+                        <option value="flat">Flat Roof</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Installation Type</label>
+                    <select id="installType" onchange="calculate()">
+                        <option value="roof" selected>Roof Mount</option>
+                        <option value="ground">Ground Mount</option>
+                        <option value="carport">Carport/Structure</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Total Cost</div>
+                <div class="value" id="totalCost">$15,000-20,000</div>
+                <div class="sub" id="afterIncentive">After 30% federal tax credit</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Before Credit</div>
+                    <div class="value" id="grossCost">$24,000</div>
+                    <div class="note">Total system cost</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Tax Credit</div>
+                    <div class="value" id="taxCredit">-$7,200</div>
+                    <div class="note">30% federal ITC</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Payback</div>
+                    <div class="value" id="payback">7-9 yrs</div>
+                    <div class="note">Break-even period</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">25-Year Savings</div>
+                    <div class="value" id="savings25">$45,000</div>
+                    <div class="note">Total electricity savings</div>
+                </div>
+            </div>
+
+            <div class="savings">
+                <h4>💰 Annual Savings Estimate</h4>
+                <div class="break-row">
+                    <span>Current Annual Bill</span>
+                    <span class="value" id="currentBill">$1,800</span>
+                </div>
+                <div class="break-row">
+                    <span>Solar Production Value</span>
+                    <span class="value" id="solarValue">$1,600</span>
+                </div>
+                <div class="break-row">
+                    <span>Estimated Annual Savings</span>
+                    <span class="value" id="annualSavings">$1,400</span>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>📋 Cost Breakdown</h4>
+                <div class="break-row">
+                    <span>Solar Panels</span>
+                    <span class="value" id="panelCost">$12,000</span>
+                </div>
+                <div class="break-row">
+                    <span>Inverter</span>
+                    <span class="value" id="inverterCost">$2,500</span>
+                </div>
+                <div class="break-row">
+                    <span>Installation Labor</span>
+                    <span class="value" id="laborCost">$5,000</span>
+                </div>
+                <div class="break-row">
+                    <span>Permits & Inspection</span>
+                    <span class="value" id="permitCost">$500</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Average Solar Costs</h4>
+                <table>
+                    <tr>
+                        <th>System Size</th>
+                        <th>Before Credit</th>
+                        <th>After Credit</th>
+                    </tr>
+                    <tr><td>4 kW</td><td>$12,000-16,000</td><td>$8,400-11,200</td></tr>
+                    <tr><td>6 kW</td><td>$18,000-24,000</td><td>$12,600-16,800</td></tr>
+                    <tr><td>8 kW</td><td>$24,000-32,000</td><td>$16,800-22,400</td></tr>
+                    <tr><td>10 kW</td><td>$30,000-40,000</td><td>$21,000-28,000</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Solar Tips</h4>
+                <div class="tip-item">✓ 30% federal tax credit through 2032</div>
+                <div class="tip-item">✓ Many states have additional rebates</div>
+                <div class="tip-item">✓ South-facing roofs get best production</div>
+                <div class="tip-item">✓ Consider battery backup ($10-15k extra)</div>
+                <div class="tip-item">✓ Get 3+ quotes from installers</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Tools</h4>
+            <a href="electricity-cost-calculator.html">Electric Cost</a>
+            <a href="roi-calculator.html">ROI Calculator</a>
+            <a href="new-roof-cost-calculator.html">Roof Cost</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Solar Panel Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const electricBill = parseFloat(document.getElementById('electricBill').value) || 150;
+            const systemSize = parseFloat(document.getElementById('systemSize').value) || 6;
+            const quality = document.getElementById('quality').value;
+            const roof = document.getElementById('roof').value;
+            const installType = document.getElementById('installType').value;
+
+            // Cost per watt by quality
+            const costPerWatt = {
+                standard: 2.50,
+                premium: 3.00,
+                top: 3.50
+            };
+            let pricePerWatt = costPerWatt[quality];
+
+            // Roof type adjustment
+            const roofMult = {
+                asphalt: 1.0,
+                metal: 0.95,
+                tile: 1.15,
+                flat: 1.1
+            };
+            pricePerWatt *= roofMult[roof];
+
+            // Install type adjustment
+            const installMult = {
+                roof: 1.0,
+                ground: 1.15,
+                carport: 1.25
+            };
+            pricePerWatt *= installMult[installType];
+
+            // Calculate costs
+            const watts = systemSize * 1000;
+            const grossCost = Math.round(watts * pricePerWatt);
+            const taxCredit = Math.round(grossCost * 0.30);
+            const netCost = grossCost - taxCredit;
+
+            const panelCost = Math.round(grossCost * 0.55);
+            const inverterCost = Math.round(grossCost * 0.15);
+            const laborCost = Math.round(grossCost * 0.25);
+            const permitCost = Math.round(grossCost * 0.03);
+
+            // Savings
+            const annualBill = electricBill * 12;
+            const avgSunHours = 4.5; // average US
+            const annualProduction = systemSize * avgSunHours * 365;
+            const electricRate = 0.14; // average US rate
+            const solarValue = Math.round(annualProduction * electricRate);
+            const annualSavings = Math.min(solarValue, annualBill * 0.9);
+            const savings25 = Math.round(annualSavings * 25 * 1.03); // 3% annual increase
+
+            // Payback
+            const paybackYears = Math.round(netCost / annualSavings);
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + Math.round(netCost * 0.9).toLocaleString() + '-' + Math.round(netCost * 1.1).toLocaleString();
+            document.getElementById('grossCost').textContent = '$' + grossCost.toLocaleString();
+            document.getElementById('taxCredit').textContent = '-$' + taxCredit.toLocaleString();
+            document.getElementById('payback').textContent = paybackYears + '-' + (paybackYears + 2) + ' yrs';
+            document.getElementById('savings25').textContent = '$' + savings25.toLocaleString();
+
+            document.getElementById('currentBill').textContent = '$' + annualBill.toLocaleString();
+            document.getElementById('solarValue').textContent = '$' + solarValue.toLocaleString();
+            document.getElementById('annualSavings').textContent = '$' + annualSavings.toLocaleString();
+
+            document.getElementById('panelCost').textContent = '$' + panelCost.toLocaleString();
+            document.getElementById('inverterCost').textContent = '$' + inverterCost.toLocaleString();
+            document.getElementById('laborCost').textContent = '$' + laborCost.toLocaleString();
+            document.getElementById('permitCost').textContent = '$' + permitCost.toLocaleString();
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

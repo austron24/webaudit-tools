@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driveway Paving Cost Calculator - Asphalt & Concrete Estimates</title>
+    <meta name="description" content="Calculate driveway paving costs. Estimate asphalt, concrete, and gravel driveway installation prices.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #374151 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #374151;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #f3f4f6;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .compare-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #1f2937;
+        }
+        .compare-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #1f2937;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #1f2937; }
+        .pricing {
+            background: #f3f4f6;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 {
+            color: #1f2937;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .pricing table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #d1d5db;
+        }
+        .pricing th { color: #1f2937; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #1f2937;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #1f2937; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #374151;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #9ca3af; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛣️ Driveway Paving Cost</h1>
+            <p class="subtitle">Asphalt, concrete & gravel estimates</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Driveway Length (ft)</label>
+                    <input type="number" id="length" value="50" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Driveway Width (ft)</label>
+                    <input type="number" id="width" value="12" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Material</label>
+                    <select id="material" onchange="calculate()">
+                        <option value="gravel">Gravel</option>
+                        <option value="asphalt" selected>Asphalt</option>
+                        <option value="concrete">Concrete</option>
+                        <option value="pavers">Pavers</option>
+                        <option value="stamped">Stamped Concrete</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Current Condition</label>
+                    <select id="condition" onchange="calculate()">
+                        <option value="new" selected>New Installation</option>
+                        <option value="overlay">Overlay Existing</option>
+                        <option value="replace">Remove & Replace</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Terrain</label>
+                    <select id="terrain" onchange="calculate()">
+                        <option value="flat" selected>Flat</option>
+                        <option value="sloped">Sloped</option>
+                        <option value="steep">Steep/Grading Needed</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Total Cost</div>
+                <div class="value" id="totalCost">$3,000-5,000</div>
+                <div class="sub" id="perSqft">$5-8 per sq ft</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Square Feet</div>
+                    <div class="value" id="sqft">600</div>
+                    <div class="note">Total area</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Materials</div>
+                    <div class="value" id="matCost">$2,000</div>
+                    <div class="note">Paving material</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Labor</div>
+                    <div class="value" id="laborCost">$1,500</div>
+                    <div class="note">Installation</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Lifespan</div>
+                    <div class="value" id="lifespan">15-20 yrs</div>
+                    <div class="note">With maintenance</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Cost Breakdown</h4>
+                <div class="break-row">
+                    <span>Base Preparation</span>
+                    <span class="value" id="baseCost">$600</span>
+                </div>
+                <div class="break-row">
+                    <span>Paving Material</span>
+                    <span class="value" id="paveCost">$1,800</span>
+                </div>
+                <div class="break-row">
+                    <span>Labor</span>
+                    <span class="value" id="laborBreak">$1,200</span>
+                </div>
+                <div class="break-row">
+                    <span>Removal (if any)</span>
+                    <span class="value" id="removalCost">N/A</span>
+                </div>
+                <div class="break-row">
+                    <span>Sealing/Finishing</span>
+                    <span class="value" id="sealCost">$200</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Driveway Material Costs</h4>
+                <table>
+                    <tr>
+                        <th>Material</th>
+                        <th>Per Sq Ft</th>
+                        <th>Lifespan</th>
+                    </tr>
+                    <tr><td>Gravel</td><td>$1-3</td><td>5-10 yrs</td></tr>
+                    <tr><td>Asphalt</td><td>$3-7</td><td>15-20 yrs</td></tr>
+                    <tr><td>Concrete</td><td>$6-12</td><td>25-30 yrs</td></tr>
+                    <tr><td>Pavers</td><td>$10-25</td><td>25-50 yrs</td></tr>
+                    <tr><td>Stamped Concrete</td><td>$12-20</td><td>25-30 yrs</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Driveway Tips</h4>
+                <div class="tip-item">✓ Proper drainage is essential</div>
+                <div class="tip-item">✓ Seal asphalt every 2-3 years</div>
+                <div class="tip-item">✓ Concrete cracks more in cold climates</div>
+                <div class="tip-item">✓ Consider permeable options for drainage</div>
+                <div class="tip-item">✓ Get multiple contractor quotes</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Outdoor Tools</h4>
+            <a href="concrete-calculator.html">Concrete Calculator</a>
+            <a href="paver-calculator.html">Paver Calculator</a>
+            <a href="gravel-calculator.html">Gravel Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Driveway Paving Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const length = parseFloat(document.getElementById('length').value) || 50;
+            const width = parseFloat(document.getElementById('width').value) || 12;
+            const material = document.getElementById('material').value;
+            const condition = document.getElementById('condition').value;
+            const terrain = document.getElementById('terrain').value;
+
+            const sqft = length * width;
+
+            // Material cost per sq ft
+            const matCosts = {
+                gravel: 2,
+                asphalt: 5,
+                concrete: 8,
+                pavers: 15,
+                stamped: 14
+            };
+            let costPerSqft = matCosts[material];
+
+            // Terrain multiplier
+            const terrainMult = {
+                flat: 1.0,
+                sloped: 1.2,
+                steep: 1.5
+            };
+            costPerSqft *= terrainMult[terrain];
+
+            // Condition adjustment
+            let removalCost = 0;
+            if (condition === 'replace') {
+                removalCost = Math.round(sqft * 2);
+            } else if (condition === 'overlay') {
+                costPerSqft *= 0.7; // cheaper to overlay
+            }
+
+            const baseCost = Math.round(sqft * 1);
+            const paveCost = Math.round(sqft * costPerSqft * 0.6);
+            const laborCost = Math.round(sqft * costPerSqft * 0.4);
+            const sealCost = material === 'asphalt' ? Math.round(sqft * 0.3) : (material === 'concrete' ? Math.round(sqft * 0.25) : 0);
+
+            const totalMid = baseCost + paveCost + laborCost + removalCost + sealCost;
+            const totalLow = Math.round(totalMid * 0.85);
+            const totalHigh = Math.round(totalMid * 1.25);
+
+            // Lifespan
+            const lifespans = {
+                gravel: '5-10',
+                asphalt: '15-20',
+                concrete: '25-30',
+                pavers: '25-50',
+                stamped: '25-30'
+            };
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + totalLow.toLocaleString() + '-' + totalHigh.toLocaleString();
+            document.getElementById('perSqft').textContent = '$' + (totalLow / sqft).toFixed(0) + '-' + (totalHigh / sqft).toFixed(0) + ' per sq ft';
+
+            document.getElementById('sqft').textContent = sqft.toLocaleString();
+            document.getElementById('matCost').textContent = '$' + (paveCost + baseCost).toLocaleString();
+            document.getElementById('laborCost').textContent = '$' + laborCost.toLocaleString();
+            document.getElementById('lifespan').textContent = lifespans[material] + ' yrs';
+
+            document.getElementById('baseCost').textContent = '$' + baseCost.toLocaleString();
+            document.getElementById('paveCost').textContent = '$' + paveCost.toLocaleString();
+            document.getElementById('laborBreak').textContent = '$' + laborCost.toLocaleString();
+            document.getElementById('removalCost').textContent = removalCost > 0 ? '$' + removalCost.toLocaleString() : 'N/A';
+            document.getElementById('sealCost').textContent = sealCost > 0 ? '$' + sealCost : 'N/A';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garage Door Cost Calculator - Installation & Replacement Estimates</title>
+    <meta name="description" content="Calculate garage door costs. Estimate installation and replacement prices by size, material, and style.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #475569 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #475569;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #475569 0%, #334155 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #f1f5f9;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .compare-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #334155;
+        }
+        .compare-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #334155;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #334155; }
+        .pricing {
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 {
+            color: #334155;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .pricing table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #cbd5e1;
+        }
+        .pricing th { color: #334155; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #334155;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #334155; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #475569;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #94a3b8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚗 Garage Door Cost</h1>
+            <p class="subtitle">Installation & replacement estimates</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Door Size</label>
+                    <select id="doorSize" onchange="calculate()">
+                        <option value="single">Single (8-10 ft)</option>
+                        <option value="double" selected>Double (16-18 ft)</option>
+                        <option value="custom">Custom/Oversized</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Material</label>
+                    <select id="material" onchange="calculate()">
+                        <option value="steel" selected>Steel</option>
+                        <option value="aluminum">Aluminum</option>
+                        <option value="wood">Wood</option>
+                        <option value="composite">Composite</option>
+                        <option value="fiberglass">Fiberglass</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Insulation</label>
+                    <select id="insulation" onchange="calculate()">
+                        <option value="none">None (single layer)</option>
+                        <option value="standard" selected>Standard (polystyrene)</option>
+                        <option value="premium">Premium (polyurethane)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Style</label>
+                    <select id="style" onchange="calculate()">
+                        <option value="raised" selected>Raised Panel</option>
+                        <option value="carriage">Carriage House</option>
+                        <option value="contemporary">Contemporary</option>
+                        <option value="full-view">Full View (glass)</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Opener Included?</label>
+                    <select id="opener" onchange="calculate()">
+                        <option value="none">No Opener</option>
+                        <option value="chain" selected>Chain Drive ($200-300)</option>
+                        <option value="belt">Belt Drive ($300-500)</option>
+                        <option value="smart">Smart Opener ($400-600)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Total Cost</div>
+                <div class="value" id="totalCost">$1,500-2,500</div>
+                <div class="sub" id="costNote">Installed with warranty</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Door Only</div>
+                    <div class="value" id="doorCost">$900</div>
+                    <div class="note">Material cost</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Installation</div>
+                    <div class="value" id="installCost">$400</div>
+                    <div class="note">Labor + hardware</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Opener</div>
+                    <div class="value" id="openerCost">$250</div>
+                    <div class="note">With installation</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Lifespan</div>
+                    <div class="value" id="lifespan">15-30 yrs</div>
+                    <div class="note">With maintenance</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Cost Breakdown</h4>
+                <div class="break-row">
+                    <span>Garage Door</span>
+                    <span class="value" id="doorBreak">$900</span>
+                </div>
+                <div class="break-row">
+                    <span>Installation Labor</span>
+                    <span class="value" id="laborBreak">$300</span>
+                </div>
+                <div class="break-row">
+                    <span>Hardware/Tracks</span>
+                    <span class="value" id="hardwareBreak">$100</span>
+                </div>
+                <div class="break-row">
+                    <span>Opener (if selected)</span>
+                    <span class="value" id="openerBreak">$250</span>
+                </div>
+                <div class="break-row">
+                    <span>Old Door Removal</span>
+                    <span class="value" id="removalBreak">$50-100</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Garage Door Costs by Material</h4>
+                <table>
+                    <tr>
+                        <th>Material</th>
+                        <th>Single</th>
+                        <th>Double</th>
+                    </tr>
+                    <tr><td>Steel</td><td>$600-1,200</td><td>$900-2,000</td></tr>
+                    <tr><td>Aluminum</td><td>$700-1,500</td><td>$1,200-2,500</td></tr>
+                    <tr><td>Wood</td><td>$1,200-3,000</td><td>$2,000-5,000</td></tr>
+                    <tr><td>Composite</td><td>$1,000-2,500</td><td>$1,800-4,000</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Garage Door Tips</h4>
+                <div class="tip-item">✓ Insulated doors save on energy costs</div>
+                <div class="tip-item">✓ Steel is most cost-effective</div>
+                <div class="tip-item">✓ Consider smart openers for security</div>
+                <div class="tip-item">✓ Get multiple quotes from installers</div>
+                <div class="tip-item">✓ Check warranty coverage</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Tools</h4>
+            <a href="hvac-replacement-calculator.html">HVAC Calculator</a>
+            <a href="window-replacement-calculator.html">Window Replacement</a>
+            <a href="new-roof-cost-calculator.html">Roof Cost</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Garage Door Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const doorSize = document.getElementById('doorSize').value;
+            const material = document.getElementById('material').value;
+            const insulation = document.getElementById('insulation').value;
+            const style = document.getElementById('style').value;
+            const opener = document.getElementById('opener').value;
+
+            // Base door costs by size
+            const sizeCosts = {
+                single: 700,
+                double: 1200,
+                custom: 2000
+            };
+            let doorCost = sizeCosts[doorSize];
+
+            // Material multiplier
+            const matMult = {
+                steel: 1.0,
+                aluminum: 1.2,
+                wood: 2.2,
+                composite: 1.8,
+                fiberglass: 1.5
+            };
+            doorCost *= matMult[material];
+
+            // Insulation
+            const insCost = {
+                none: 0,
+                standard: 150,
+                premium: 350
+            };
+            doorCost += insCost[insulation];
+
+            // Style
+            const styleMult = {
+                raised: 1.0,
+                carriage: 1.25,
+                contemporary: 1.3,
+                'full-view': 1.5
+            };
+            doorCost *= styleMult[style];
+
+            doorCost = Math.round(doorCost);
+
+            // Installation
+            const installCost = doorSize === 'single' ? 300 : (doorSize === 'double' ? 450 : 600);
+            const hardwareCost = doorSize === 'single' ? 80 : 120;
+
+            // Opener
+            const openerCosts = {
+                none: 0,
+                chain: 250,
+                belt: 400,
+                smart: 500
+            };
+            const openerCost = openerCosts[opener];
+
+            const totalMid = doorCost + installCost + hardwareCost + openerCost;
+            const totalLow = Math.round(totalMid * 0.85);
+            const totalHigh = Math.round(totalMid * 1.2);
+
+            // Lifespan
+            const lifespans = {
+                steel: '15-20',
+                aluminum: '15-25',
+                wood: '20-30',
+                composite: '25-30',
+                fiberglass: '20-25'
+            };
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + totalLow.toLocaleString() + '-' + totalHigh.toLocaleString();
+            document.getElementById('doorCost').textContent = '$' + doorCost.toLocaleString();
+            document.getElementById('installCost').textContent = '$' + (installCost + hardwareCost);
+            document.getElementById('openerCost').textContent = openerCost > 0 ? '$' + openerCost : 'N/A';
+            document.getElementById('lifespan').textContent = lifespans[material] + ' yrs';
+
+            document.getElementById('doorBreak').textContent = '$' + doorCost.toLocaleString();
+            document.getElementById('laborBreak').textContent = '$' + installCost;
+            document.getElementById('hardwareBreak').textContent = '$' + hardwareCost;
+            document.getElementById('openerBreak').textContent = openerCost > 0 ? '$' + openerCost : 'N/A';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
