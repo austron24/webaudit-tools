@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Painting Cost Calculator - Interior & Exterior Estimates</title>
+    <meta name="description" content="Calculate house painting costs. Estimate interior and exterior painting prices for your home.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #ea580c 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #ea580c;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #fff7ed;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .compare-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #c2410c;
+        }
+        .compare-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #c2410c;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #c2410c; }
+        .pricing {
+            background: #fff7ed;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 {
+            color: #c2410c;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .pricing table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #fed7aa;
+        }
+        .pricing th { color: #c2410c; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #c2410c; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #ea580c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fed7aa; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 House Painting Cost</h1>
+            <p class="subtitle">Estimate painting costs for your home</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group full">
+                    <label>Project Type</label>
+                    <select id="projectType" onchange="calculate()">
+                        <option value="interior" selected>Interior Painting</option>
+                        <option value="exterior">Exterior Painting</option>
+                        <option value="both">Both Interior & Exterior</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Home Size (sq ft)</label>
+                    <input type="number" id="homeSize" value="2000" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Number of Stories</label>
+                    <select id="stories" onchange="calculate()">
+                        <option value="1">1 Story</option>
+                        <option value="2" selected>2 Stories</option>
+                        <option value="3">3 Stories</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Paint Quality</label>
+                    <select id="paintQuality" onchange="calculate()">
+                        <option value="basic">Basic ($25-35/gal)</option>
+                        <option value="standard" selected>Standard ($35-50/gal)</option>
+                        <option value="premium">Premium ($50-80/gal)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Current Condition</label>
+                    <select id="condition" onchange="calculate()">
+                        <option value="good">Good (minimal prep)</option>
+                        <option value="average" selected>Average</option>
+                        <option value="poor">Poor (extensive prep)</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Labor Type</label>
+                    <select id="laborType" onchange="calculate()">
+                        <option value="diy">DIY (materials only)</option>
+                        <option value="professional" selected>Professional Painter</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Total Cost</div>
+                <div class="value" id="totalCost">$4,500-7,000</div>
+                <div class="sub" id="costPerSqft">$2.25-3.50 per sq ft</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Materials</div>
+                    <div class="value" id="materialsCost">$800</div>
+                    <div class="note">Paint & supplies</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Labor</div>
+                    <div class="value" id="laborCost">$4,000</div>
+                    <div class="note">Professional</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Paint Needed</div>
+                    <div class="value" id="gallons">15 gal</div>
+                    <div class="note">2 coats</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Days to Complete</div>
+                    <div class="value" id="days">3-5</div>
+                    <div class="note">Professional</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Cost Breakdown</h4>
+                <div class="break-row">
+                    <span>Paint</span>
+                    <span class="value" id="paintCost">$600</span>
+                </div>
+                <div class="break-row">
+                    <span>Primer</span>
+                    <span class="value" id="primerCost">$100</span>
+                </div>
+                <div class="break-row">
+                    <span>Supplies (tape, brushes, etc.)</span>
+                    <span class="value" id="suppliesCost">$100</span>
+                </div>
+                <div class="break-row">
+                    <span>Prep Work</span>
+                    <span class="value" id="prepCost">$500</span>
+                </div>
+                <div class="break-row">
+                    <span>Labor</span>
+                    <span class="value" id="laborCostBreak">$4,000</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Average Painting Costs</h4>
+                <table>
+                    <tr>
+                        <th>Project</th>
+                        <th>DIY</th>
+                        <th>Professional</th>
+                    </tr>
+                    <tr><td>1 Room Interior</td><td>$100-200</td><td>$300-600</td></tr>
+                    <tr><td>Whole House Interior</td><td>$500-1,000</td><td>$3,000-8,000</td></tr>
+                    <tr><td>Exterior</td><td>$500-1,500</td><td>$3,000-10,000</td></tr>
+                    <tr><td>Per Sq Ft (Pro)</td><td>—</td><td>$2-5</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Tools</h4>
+            <a href="paint-calculator.html">Paint Calculator</a>
+            <a href="wallpaper-calculator.html">Wallpaper Calculator</a>
+            <a href="flooring-calculator.html">Flooring Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>House Painting Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const projectType = document.getElementById('projectType').value;
+            const homeSize = parseFloat(document.getElementById('homeSize').value) || 2000;
+            const stories = parseInt(document.getElementById('stories').value) || 2;
+            const paintQuality = document.getElementById('paintQuality').value;
+            const condition = document.getElementById('condition').value;
+            const laborType = document.getElementById('laborType').value;
+
+            // Paint coverage (sq ft per gallon)
+            const coveragePerGallon = 350;
+
+            // Wall sq ft (roughly 3x floor area for interior)
+            let paintableSqft;
+            if (projectType === 'interior') {
+                paintableSqft = homeSize * 3;
+            } else if (projectType === 'exterior') {
+                paintableSqft = homeSize * stories * 1.2;
+            } else {
+                paintableSqft = (homeSize * 3) + (homeSize * stories * 1.2);
+            }
+
+            // Gallons needed (2 coats)
+            const gallonsNeeded = Math.ceil((paintableSqft * 2) / coveragePerGallon);
+
+            // Paint cost per gallon
+            const paintPrices = {
+                basic: 30,
+                standard: 42,
+                premium: 65
+            };
+            const pricePerGallon = paintPrices[paintQuality];
+            const paintCost = gallonsNeeded * pricePerGallon;
+
+            // Primer (half the gallons)
+            const primerCost = Math.ceil(gallonsNeeded / 2) * 25;
+
+            // Supplies
+            const suppliesCost = 100 + (homeSize > 2000 ? 50 : 0);
+
+            // Prep work multiplier
+            const prepMultiplier = {
+                good: 1.0,
+                average: 1.2,
+                poor: 1.5
+            };
+
+            // Labor rate per sq ft
+            const laborRate = projectType === 'exterior' ? 2.5 : 2.0;
+            let laborCost = 0;
+
+            if (laborType === 'professional') {
+                laborCost = Math.round(paintableSqft * laborRate * prepMultiplier[condition] / 2);
+            }
+
+            // Prep cost
+            const prepCost = laborType === 'professional' ? Math.round(laborCost * 0.15) : 0;
+
+            // Total
+            const materialsCost = paintCost + primerCost + suppliesCost;
+            const totalLow = Math.round(materialsCost + laborCost * 0.9);
+            const totalHigh = Math.round(materialsCost + laborCost * 1.2 + prepCost);
+
+            // Days to complete
+            const days = Math.ceil(paintableSqft / (laborType === 'diy' ? 500 : 1000));
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + totalLow.toLocaleString() + '-' + totalHigh.toLocaleString();
+            document.getElementById('costPerSqft').textContent = '$' + (totalLow / homeSize).toFixed(2) + '-' + (totalHigh / homeSize).toFixed(2) + ' per sq ft';
+
+            document.getElementById('materialsCost').textContent = '$' + materialsCost.toLocaleString();
+            document.getElementById('laborCost').textContent = laborType === 'professional' ? '$' + laborCost.toLocaleString() : 'DIY';
+            document.getElementById('gallons').textContent = gallonsNeeded + ' gal';
+            document.getElementById('days').textContent = days + '-' + (days + 2);
+
+            document.getElementById('paintCost').textContent = '$' + paintCost.toLocaleString();
+            document.getElementById('primerCost').textContent = '$' + primerCost;
+            document.getElementById('suppliesCost').textContent = '$' + suppliesCost;
+            document.getElementById('prepCost').textContent = laborType === 'professional' ? '$' + prepCost : '$0';
+            document.getElementById('laborCostBreak').textContent = laborType === 'professional' ? '$' + laborCost.toLocaleString() : '$0';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

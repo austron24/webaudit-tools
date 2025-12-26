@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lawn Mowing Cost Calculator - Lawn Service Pricing</title>
+    <meta name="description" content="Calculate lawn mowing costs. Estimate lawn care service pricing based on yard size and services needed.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #22c55e 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #22c55e;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .cost-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .cost-item {
+            background: #dcfce7;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .cost-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .cost-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #16a34a;
+        }
+        .cost-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #16a34a;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #16a34a; }
+        .pricing {
+            background: #dcfce7;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 {
+            color: #16a34a;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .pricing table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #bbf7d0;
+        }
+        .pricing th { color: #16a34a; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #16a34a;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #16a34a; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #22c55e;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #bbf7d0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌱 Lawn Mowing Cost</h1>
+            <p class="subtitle">Estimate lawn care service pricing</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group full">
+                    <label>Lawn Size (sq ft)</label>
+                    <input type="number" id="lawnSize" value="5000" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Lawn Condition</label>
+                    <select id="condition" onchange="calculate()">
+                        <option value="easy">Easy (flat, no obstacles)</option>
+                        <option value="average" selected>Average</option>
+                        <option value="difficult">Difficult (hills, obstacles)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Frequency</label>
+                    <select id="frequency" onchange="calculate()">
+                        <option value="weekly" selected>Weekly</option>
+                        <option value="biweekly">Bi-Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="onetime">One-Time</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Additional Services</label>
+                    <select id="services" onchange="calculate()">
+                        <option value="mow">Mowing Only</option>
+                        <option value="basic" selected>Basic (Mow + Edge + Blow)</option>
+                        <option value="full">Full (+ Trimming)</option>
+                        <option value="premium">Premium (+ Fertilizing)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Cost Per Visit</div>
+                <div class="value" id="perVisit">$45</div>
+                <div class="sub" id="timeEst">Approx 45 min service</div>
+            </div>
+
+            <div class="cost-grid">
+                <div class="cost-item">
+                    <div class="type">Per Visit</div>
+                    <div class="value" id="visitCost">$45</div>
+                    <div class="note">Standard rate</div>
+                </div>
+                <div class="cost-item">
+                    <div class="type">Monthly</div>
+                    <div class="value" id="monthlyCost">$180</div>
+                    <div class="note">4 visits</div>
+                </div>
+                <div class="cost-item">
+                    <div class="type">Season (8 mo)</div>
+                    <div class="value" id="seasonCost">$1,440</div>
+                    <div class="note">Mowing season</div>
+                </div>
+                <div class="cost-item">
+                    <div class="type">DIY Savings</div>
+                    <div class="value" id="diySavings">$1,200</div>
+                    <div class="note">Per year</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Service Breakdown</h4>
+                <div class="break-row">
+                    <span>Mowing</span>
+                    <span class="value" id="mowCost">$35</span>
+                </div>
+                <div class="break-row">
+                    <span>Edging</span>
+                    <span class="value" id="edgeCost">$10</span>
+                </div>
+                <div class="break-row">
+                    <span>Blowing</span>
+                    <span class="value" id="blowCost">Included</span>
+                </div>
+                <div class="break-row">
+                    <span>Trimming</span>
+                    <span class="value" id="trimCost">+$15</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Average Lawn Mowing Prices</h4>
+                <table>
+                    <tr>
+                        <th>Lawn Size</th>
+                        <th>Per Visit</th>
+                        <th>Monthly</th>
+                    </tr>
+                    <tr><td>1/4 acre (10,890 sq ft)</td><td>$35-50</td><td>$140-200</td></tr>
+                    <tr><td>1/2 acre (21,780 sq ft)</td><td>$50-80</td><td>$200-320</td></tr>
+                    <tr><td>1 acre (43,560 sq ft)</td><td>$80-150</td><td>$320-600</td></tr>
+                    <tr><td>2+ acres</td><td>$150-300</td><td>$600-1,200</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Lawn Care Tips</h4>
+                <div class="tip-item">✓ Weekly mowing keeps lawns healthiest</div>
+                <div class="tip-item">✓ Bundle services for better rates</div>
+                <div class="tip-item">✓ Sign seasonal contracts for discounts</div>
+                <div class="tip-item">✓ Mow at 3-4 inch height for best results</div>
+                <div class="tip-item">✓ Water early morning, not evening</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Lawn Tools</h4>
+            <a href="lawn-seed-calculator.html">Lawn Seed Calculator</a>
+            <a href="fertilizer-calculator.html">Fertilizer Calculator</a>
+            <a href="mulch-calculator.html">Mulch Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Lawn Mowing Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const lawnSize = parseFloat(document.getElementById('lawnSize').value) || 5000;
+            const condition = document.getElementById('condition').value;
+            const frequency = document.getElementById('frequency').value;
+            const services = document.getElementById('services').value;
+
+            // Base rate per 1000 sq ft
+            const ratePerK = 8;
+
+            // Minimum charge
+            const minCharge = 30;
+
+            // Base mow cost
+            let mowCost = Math.max(minCharge, (lawnSize / 1000) * ratePerK);
+
+            // Condition multiplier
+            const conditionMultiplier = {
+                easy: 0.85,
+                average: 1.0,
+                difficult: 1.3
+            };
+            mowCost *= conditionMultiplier[condition];
+
+            // Frequency discount
+            const frequencyMultiplier = {
+                weekly: 1.0,
+                biweekly: 1.15,
+                monthly: 1.3,
+                onetime: 1.4
+            };
+            mowCost *= frequencyMultiplier[frequency];
+
+            // Service add-ons
+            let edgeCost = 0, trimCost = 0, fertCost = 0;
+            if (services !== 'mow') {
+                edgeCost = 10;
+            }
+            if (services === 'full' || services === 'premium') {
+                trimCost = 15;
+            }
+            if (services === 'premium') {
+                fertCost = 25;
+            }
+
+            const perVisit = Math.round(mowCost + edgeCost + trimCost + fertCost);
+
+            // Monthly based on frequency
+            const visitsPerMonth = {
+                weekly: 4,
+                biweekly: 2,
+                monthly: 1,
+                onetime: 0
+            };
+            const monthlyCost = perVisit * visitsPerMonth[frequency];
+            const seasonCost = monthlyCost * 8;
+
+            // Time estimate (1000 sq ft per 10 minutes)
+            const minutes = Math.round((lawnSize / 1000) * 10 * conditionMultiplier[condition]);
+
+            // DIY savings (cost of service - cost of gas/maintenance)
+            const diySavings = Math.round(seasonCost * 0.85);
+
+            // Update display
+            document.getElementById('perVisit').textContent = '$' + perVisit;
+            document.getElementById('timeEst').textContent = 'Approx ' + minutes + ' min service';
+
+            document.getElementById('visitCost').textContent = '$' + perVisit;
+            document.getElementById('monthlyCost').textContent = '$' + monthlyCost;
+            document.getElementById('seasonCost').textContent = '$' + seasonCost.toLocaleString();
+            document.getElementById('diySavings').textContent = '$' + diySavings.toLocaleString();
+
+            document.getElementById('mowCost').textContent = '$' + Math.round(mowCost);
+            document.getElementById('edgeCost').textContent = edgeCost > 0 ? '$' + edgeCost : 'Not included';
+            document.getElementById('blowCost').textContent = services !== 'mow' ? 'Included' : 'Not included';
+            document.getElementById('trimCost').textContent = trimCost > 0 ? '+$' + trimCost : 'Not included';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
