@@ -3,794 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Calculator - Free Online Calculator | WebTools Pro</title>
-    <meta name="description" content="Add or subtract hours, minutes, and seconds. Calculate total time, convert between time formats. Free time calculator.">
+    <title>Time Calculator - Add & Subtract Time</title>
+    <meta name="description" content="Free time calculator. Add and subtract hours, minutes, and seconds. Calculate time duration between two times.">
+    <meta name="keywords" content="time calculator, add time, subtract time, time duration, hours minutes calculator">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/time-calculator.html">
-    <meta property="og:title" content="Time Calculator - Free Online Calculator">
-    <meta property="og:description" content="Add or subtract hours, minutes, and seconds. Calculate total time, convert between time formats. Free time calculator.">
-    <meta property="og:type" content="website">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧮</text></svg>">
     <style>
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --bg-dark: #0f172a;
-            --bg-card: #1e293b;
-            --text-light: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
-            --white: #ffffff;
-        }
+        :root { --primary: #0ea5e9; --primary-dark: #0284c7; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-light);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-        .site-header {
-            background: linear-gradient(135deg, var(--bg-dark), var(--bg-card));
-            border-bottom: 1px solid var(--border);
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo {
-            font-size: 22px;
-            font-weight: 700;
-            text-decoration: none;
-            color: var(--text-light);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--primary), #f59e0b);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-        .nav-links { display: flex; gap: 20px; }
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .nav-links a:hover { color: var(--text-light); }
-        @media (max-width: 600px) { .nav-links { display: none; } }
-
-        .ad-top { background: var(--bg-card); padding: 12px 0; text-align: center; border-bottom: 1px solid var(--border); }
-        .ad-mobile { display: none; text-align: center; margin: 12px auto; max-width: 320px; }
-        @media (max-width: 768px) { .ad-mobile { display: block; } }
-
-        .main-layout {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 25px 20px;
-            display: grid;
-            grid-template-columns: 1fr 280px;
-            gap: 25px;
-        }
-        @media (max-width: 900px) {
-            .main-layout { grid-template-columns: 1fr; }
-            .sidebar { display: none; }
-        }
-
-        .hero { text-align: center; margin-bottom: 25px; }
-        .hero h1 {
-            font-size: 38px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, var(--text-light), var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero p { font-size: 16px; color: var(--text-muted); max-width: 500px; margin: 0 auto; }
-        @media (max-width: 600px) { .hero h1 { font-size: 28px; } }
-
-        .calc-card {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 35px;
-            color: #1e293b;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-        @media (max-width: 600px) { .calc-card { padding: 20px; } }
-
-        .unit-toggle {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 25px;
-            background: #f1f5f9;
-            padding: 5px;
-            border-radius: 12px;
-        }
-        .unit-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            background: transparent;
-            color: #64748b;
-            transition: all 0.2s;
-        }
-        .unit-btn.active {
-            background: var(--white);
-            color: var(--primary);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .input-group { margin-bottom: 20px; }
-        .input-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: 700;
-            color: #475569;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .input-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        .input-row input, .input-group input, .input-group select {
-            flex: 1;
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.2s;
-            background: #f8fafc;
-        }
-        .input-row input:focus, .input-group input:focus, .input-group select:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: var(--white);
-        }
-        .input-row span { font-size: 13px; color: #64748b; font-weight: 600; min-width: 25px; }
-
-        .btn {
-            width: 100%;
-            padding: 16px 25px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: var(--white);
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: 8px;
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.35);
-        }
-
-        .results {
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 2px solid #e2e8f0;
-            display: none;
-        }
-        .results.show { display: block; }
-        .bmi-display, .result-main { text-align: center; margin-bottom: 25px; }
-        .bmi-value, .result-value {
-            font-size: 56px;
-            font-weight: 800;
-            color: var(--primary);
-            line-height: 1.1;
-        }
-        .bmi-category, .result-label {
-            font-size: 22px;
-            font-weight: 600;
-            margin-top: 8px;
-            color: #1e293b;
-        }
-
-        .bmi-scale, .scale-bar-container { margin: 25px 0; }
-        .bmi-scale > div:first-child, .scale-bar {
-            height: 18px;
-            background: linear-gradient(to right, #3b82f6 0%, #22c55e 25%, #eab308 55%, #f97316 75%, #ef4444 100%);
-            border-radius: 9px;
-            position: relative;
-        }
-        .bmi-marker, .scale-marker {
-            position: absolute;
-            top: -6px;
-            width: 5px;
-            height: 30px;
-            background: #1e293b;
-            border-radius: 2px;
-            transform: translateX(-50%);
-            transition: left 0.4s ease;
-        }
-        .scale-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: #64748b;
-            margin-top: 10px;
-            font-weight: 600;
-        }
-
-        .category-info, .category-table {
-            background: #f8fafc;
-            border-radius: 14px;
-            overflow: hidden;
-            margin-top: 20px;
-        }
-        .category-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 14px 20px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .category-row:last-child { border: none; }
-        .category-row.active { background: #fef2f2; }
-
-        .result-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 12px;
-            margin-top: 20px;
-        }
-        .result-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 18px;
-            text-align: center;
-        }
-        .result-item-value { font-size: 22px; font-weight: 700; color: #1e293b; }
-        .result-item-label { font-size: 11px; color: #64748b; text-transform: uppercase; margin-top: 4px; letter-spacing: 0.5px; }
-
-        .ad-inline { background: #f8fafc; border-radius: 10px; padding: 15px; margin: 25px 0; text-align: center; }
-        .ad-bottom { background: var(--bg-card); padding: 25px 15px; text-align: center; margin-top: 30px; border-radius: 14px; }
-
-        .info-section {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 30px;
-            margin-top: 30px;
-        }
-        .info-section h2 { font-size: 22px; margin-bottom: 15px; color: var(--text-light); }
-        .info-section p { color: var(--text-muted); margin-bottom: 15px; font-size: 15px; line-height: 1.7; }
-        .info-section h3 { font-size: 18px; margin: 20px 0 12px; color: var(--text-light); }
-        .info-section ul { color: var(--text-muted); margin-left: 20px; }
-        .info-section li { margin-bottom: 10px; line-height: 1.6; }
-
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
+        .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
+        .content-area { display: flex; flex-direction: column; gap: 20px; }
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .sidebar-ad { background: var(--bg-card); border-radius: 14px; padding: 15px; text-align: center; }
-        .sidebar-tools {
-            background: var(--bg-card);
-            border-radius: 14px;
-            padding: 20px;
-        }
-        .sidebar-tools h3 { font-size: 16px; margin-bottom: 15px; color: var(--text-light); }
-        .tool-link {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px;
-            border-radius: 10px;
-            text-decoration: none;
-            color: var(--text-muted);
-            transition: all 0.2s;
-            margin-bottom: 6px;
-        }
-        .tool-link:hover { background: rgba(99, 102, 241, 0.1); color: var(--text-light); }
-        .tool-icon-small {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-        }
-
-        .related-tools { margin-top: 35px; }
-        .related-tools h2 { font-size: 24px; margin-bottom: 20px; text-align: center; }
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px;
-        }
-        .tool-card {
-            background: var(--bg-card);
-            border-radius: 14px;
-            padding: 20px;
-            text-decoration: none;
-            color: var(--text-light);
-            transition: all 0.3s;
-            border: 1px solid var(--border);
-        }
-        .tool-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--primary);
-            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.2);
-        }
-        .tool-card-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            margin-bottom: 12px;
-        }
-        .tool-card h4 { font-size: 14px; margin-bottom: 6px; }
-        .tool-card p { font-size: 12px; color: var(--text-muted); }
-
-        .site-footer {
-            background: var(--bg-card);
-            border-top: 1px solid var(--border);
-            padding: 40px 20px 25px;
-            margin-top: 50px;
-        }
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 30px;
-        }
-        .footer-section h4 { font-size: 14px; margin-bottom: 15px; color: var(--text-light); }
-        .footer-section a {
-            display: block;
-            color: var(--text-muted);
-            text-decoration: none;
-            padding: 6px 0;
-            font-size: 13px;
-        }
-        .footer-section a:hover { color: var(--primary); }
-        .footer-bottom {
-            max-width: 1200px;
-            margin: 30px auto 0;
-            padding-top: 25px;
-            border-top: 1px solid var(--border);
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-        .footer-bottom a { color: var(--primary); text-decoration: none; }
-
-        .tools-promo { display: none; }
-        .cta-section { display: none; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .time-row { display: grid; grid-template-columns: repeat(3, 1fr) auto; gap: 10px; margin-bottom: 15px; align-items: end; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); font-size: 0.9rem; }
+        input, select { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        .op-select { padding: 12px; border: 2px solid var(--border); border-radius: 8px; background: var(--bg-input); color: var(--text-primary); font-size: 1.2rem; }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.8); }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
+        .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        @media (max-width: 640px) { .time-row { grid-template-columns: 1fr 1fr 1fr; } }
     </style>
 </head>
 <body>
-    <header class="site-header">
-        <div class="header-container">
-            <a href="index.html" class="logo">
-                <div class="logo-icon">🧮</div>
-                WebTools Pro
-            </a>
-            <nav class="nav-links">
-                <a href="index.html">All Tools</a>
-                <a href="bmi-calculator.html">Health</a>
-                <a href="mortgage-calculator.html">Finance</a>
-            </nav>
-        </div>
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-container" style="display: none;">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
+
+    <header class="header">
+        <h1>⏱️ Time Calculator</h1>
     </header>
 
-    <div class="ad-top">
-        <script>
-            atOptions = {
-                'key' : 'b43e7cf5057864a264961884e1f34530',
-                'format' : 'iframe',
-                'height' : 90,
-                'width' : 728,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    <div class="main-container">
+        <div class="content-area">
+            <div class="card">
+                <h2>➕ Add / Subtract Time</h2>
+                <div class="time-row">
+                    <div class="form-group">
+                        <label>Hours</label>
+                        <input type="number" id="h1" value="2" min="0" oninput="calcAdd()">
+                    </div>
+                    <div class="form-group">
+                        <label>Minutes</label>
+                        <input type="number" id="m1" value="30" min="0" max="59" oninput="calcAdd()">
+                    </div>
+                    <div class="form-group">
+                        <label>Seconds</label>
+                        <input type="number" id="s1" value="0" min="0" max="59" oninput="calcAdd()">
+                    </div>
+                </div>
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <select class="op-select" id="operation" onchange="calcAdd()">
+                        <option value="add">+ Add</option>
+                        <option value="subtract">- Subtract</option>
+                    </select>
+                </div>
+                <div class="time-row">
+                    <div class="form-group">
+                        <label>Hours</label>
+                        <input type="number" id="h2" value="1" min="0" oninput="calcAdd()">
+                    </div>
+                    <div class="form-group">
+                        <label>Minutes</label>
+                        <input type="number" id="m2" value="45" min="0" max="59" oninput="calcAdd()">
+                    </div>
+                    <div class="form-group">
+                        <label>Seconds</label>
+                        <input type="number" id="s2" value="30" min="0" max="59" oninput="calcAdd()">
+                    </div>
+                </div>
+
+                <div class="result-hero">
+                    <div class="result-hero-label">Result</div>
+                    <div class="result-hero-value" id="addResult">00:00:00</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>⏰ Time Between Two Times</h2>
+                <div class="time-row" style="grid-template-columns: 1fr 1fr;">
+                    <div class="form-group">
+                        <label>Start Time</label>
+                        <input type="time" id="startTime" value="09:00" oninput="calcDuration()">
+                    </div>
+                    <div class="form-group">
+                        <label>End Time</label>
+                        <input type="time" id="endTime" value="17:30" oninput="calcDuration()">
+                    </div>
+                </div>
+                <div class="breakdown-row"><span>Duration</span><span id="duration">8 hours 30 minutes</span></div>
+                <div class="breakdown-row"><span>Total Minutes</span><span id="totalMins">510 minutes</span></div>
+                <div class="breakdown-row"><span>Decimal Hours</span><span id="decimalHours">8.5 hours</span></div>
+            </div>
+
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+
+            <div class="card">
+                <h2>🔗 Related Tools</h2>
+                <div class="related-tools">
+                    <a href="date-calculator.html" class="related-link">🗓️ Date Calculator</a>
+                    <a href="age-calculator.html" class="related-link">🎂 Age Calculator</a>
+                    <a href="hours-calculator.html" class="related-link">⏱️ Hours Worked</a>
+                    <a href="countdown-calculator.html" class="related-link">⏳ Countdown</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+        </div>
     </div>
-
-    <div class="ad-mobile">
-        <script>
-            atOptions = {
-                'key' : '9f6b66d433cad4c02b643bdd4b7eefc0',
-                'format' : 'iframe',
-                'height' : 50,
-                'width' : 320,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
-    </div>
-
-    <main class="main-layout">
-        <div class="content">
-            <section class="hero">
-                <h1>Time Calculator</h1>
-                <p>Add or subtract hours, minutes, and seconds. Calculate total time, convert between time formats. Free time calculator....</p>
-            </section>
-
-            <div class="calc-card">
-                
-            <div class="time-inputs">
-                <div class="time-group">
-                    <label>Hours</label>
-                    <input type="number" id="hours1" value="2" min="0" oninput="calculate()">
-                </div>
-                <span class="colon">:</span>
-                <div class="time-group">
-                    <label>Minutes</label>
-                    <input type="number" id="mins1" value="30" min="0" max="59" oninput="calculate()">
-                </div>
-                <span class="colon">:</span>
-                <div class="time-group">
-                    <label>Seconds</label>
-                    <input type="number" id="secs1" value="0" min="0" max="59" oninput="calculate()">
-                </div>
-            </div>
-
-            <div class="operation-row">
-                <button class="op-btn active" onclick="setOp('add')">+ Add</button>
-                <button class="op-btn" onclick="setOp('sub')">− Subtract</button>
-            </div>
-
-            <div class="time-inputs">
-                <div class="time-group">
-                    <label>Hours</label>
-                    <input type="number" id="hours2" value="1" min="0" oninput="calculate()">
-                </div>
-                <span class="colon">:</span>
-                <div class="time-group">
-                    <label>Minutes</label>
-                    <input type="number" id="mins2" value="45" min="0" max="59" oninput="calculate()">
-                </div>
-                <span class="colon">:</span>
-                <div class="time-group">
-                    <label>Seconds</label>
-                    <input type="number" id="secs2" value="30" min="0" max="59" oninput="calculate()">
-                </div>
-            </div>
-
-            <div class="result-box">
-                <div class="label">Result</div>
-                <div class="time" id="resultTime">4:15:30</div>
-                <div class="details" id="resultDetails">4 hours, 15 minutes, 30 seconds</div>
-            </div>
-
-            <div class="conversions">
-                <div class="conv-item">
-                    <div class="value" id="totalHours">0</div>
-                    <div class="label">Total Hours</div>
-                </div>
-                <div class="conv-item">
-                    <div class="value" id="totalMins">0</div>
-                    <div class="label">Total Minutes</div>
-                </div>
-                <div class="conv-item">
-                    <div class="value" id="totalSecs">0</div>
-                    <div class="label">Total Seconds</div>
-                </div>
-                <div class="conv-item">
-                    <div class="value" id="totalDays">0</div>
-                    <div class="label">Decimal Days</div>
-                </div>
-            </div>
-        
-            </div>
-
-            <div class="ad-inline">
-                <script>
-            atOptions = {
-                'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
-                'format' : 'iframe',
-                'height' : 250,
-                'width' : 300,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
-            </div>
-
-            <section class="info-section">
-                <h2>About This Tool</h2>
-                <p>Add or subtract hours, minutes, and seconds. Calculate total time, convert between time formats. Free time calculator.</p>
-                <p>This free online calculator provides instant, accurate results. No signup required - just enter your values and get your answer immediately.</p>
-            </section>
-
-            <section class="related-tools">
-                <h2>Related Tools</h2>
-                <div class="tools-grid">
-                    <a href="percentage-calc.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Percentage Calculator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                    <a href="average-calculator.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Average Calculatorulator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                    <a href="fraction-calculator.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Fraction Calculatorulator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                    <a href="scientific-calculator.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Scientific Calculatorulator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                </div>
-            </section>
-
-            <div class="ad-bottom">
-                <script>
-            atOptions = {
-                'key' : 'bca56f01884f1cf07c196213009e77ac',
-                'format' : 'iframe',
-                'height' : 60,
-                'width' : 468,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
-            </div>
-        </div>
-
-        <aside class="sidebar">
-            <div class="sidebar-ad">
-                <script>
-            atOptions = {
-                'key' : 'd4702b3e9743f9cd914a00e5026493f3',
-                'format' : 'iframe',
-                'height' : 600,
-                'width' : 160,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
-            </div>
-            <div class="sidebar-ad">
-                <script>
-            atOptions = {
-                'key' : '8398a480b05e8a3236f9ea561b7cab1a',
-                'format' : 'iframe',
-                'height' : 300,
-                'width' : 160,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
-            </div>
-            <div class="sidebar-tools">
-                <h3>Popular Tools</h3>
-                <a href="bmi-calculator.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #ef4444, #dc2626);">🏃</div>
-                    BMI Calculator
-                </a>
-                <a href="mortgage-calculator.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #1e40af, #1d4ed8);">🏠</div>
-                    Mortgage Calculator
-                </a>
-                <a href="percentage-calc.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #16a34a, #15803d);">%</div>
-                    Percentage Calculator
-                </a>
-                <a href="age-calculator.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #ec4899, #be185d);">📅</div>
-                    Age Calculator
-                </a>
-            </div>
-        </aside>
-    </main>
-
-    <footer class="site-footer">
-        <div class="footer-container">
-            <div class="footer-section">
-                <h4>Financial Tools</h4>
-                <a href="mortgage-calculator.html">Mortgage Calculator</a>
-                <a href="loan-calculator.html">Loan Calculator</a>
-                <a href="compound-interest-calculator.html">Compound Interest</a>
-                <a href="retirement-calculator.html">Retirement Calculator</a>
-            </div>
-            <div class="footer-section">
-                <h4>Health Tools</h4>
-                <a href="bmi-calculator.html">BMI Calculator</a>
-                <a href="calorie-calculator.html">Calorie Calculator</a>
-                <a href="body-fat-calculator.html">Body Fat Calculator</a>
-                <a href="water-intake-calculator.html">Water Intake</a>
-            </div>
-            <div class="footer-section">
-                <h4>Math Tools</h4>
-                <a href="percentage-calc.html">Percentage Calculator</a>
-                <a href="average-calculator.html">Average Calculator</a>
-                <a href="fraction-calculator.html">Fraction Calculator</a>
-                <a href="scientific-calculator.html">Scientific Calculator</a>
-            </div>
-            <div class="footer-section">
-                <h4>Converters</h4>
-                <a href="unit-converter.html">Unit Converter</a>
-                <a href="temperature-converter.html">Temperature</a>
-                <a href="currency-converter.html">Currency Converter</a>
-                <a href="timezone-converter.html">Time Zone</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 WebTools Pro. Free calculators & tools. | <a href="index.html">All 360+ Tools</a></p>
-        </div>
-    </footer>
 
     <script>
-        atOptions = {'key':'9f6b66d433cad4c02b643bdd4b7eefc0','format':'iframe','height':50,'width':320,'params':{}};            </script><script src="https://www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script></div>
+        function calcAdd() {
+            const h1 = parseInt(document.getElementById('h1').value) || 0;
+            const m1 = parseInt(document.getElementById('m1').value) || 0;
+            const s1 = parseInt(document.getElementById('s1').value) || 0;
+            const h2 = parseInt(document.getElementById('h2').value) || 0;
+            const m2 = parseInt(document.getElementById('m2').value) || 0;
+            const s2 = parseInt(document.getElementById('s2').value) || 0;
+            const op = document.getElementById('operation').value;
 
-        <div class="calc-card">
-            <div class="time-inputs">
-                <div class="time-group">
-                    <label>Hours</label>
-                    <input type="number" id="hours1" value="2" min="0" oninput="calculate()">
-                </div>
-                <span class="colon">:</span>
-                <div class="time-group">
-                    <label>Minutes</label>
-                    <input type="number" id="mins1" value="30" min="0" max="59" oninput="calculate()">
-                </div>
-                <span class="colon">:</span>
-                <div class="time-group">
-                    <label>Seconds</label>
-                    <input type="number" id="secs1" value="0" min="0" max="59" oninput="calculate()">
-                </div>
-            </div>
+            const total1 = h1 * 3600 + m1 * 60 + s1;
+            const total2 = h2 * 3600 + m2 * 60 + s2;
+            let result = op === 'add' ? total1 + total2 : total1 - total2;
 
-            <div class="operation-row">
-                <button class="op-btn active" onclick="setOp('add')">+ Add</button>
-                <button class="op-btn" onclick="setOp('sub')">− Subtract</button>
-            </div>
+            const negative = result < 0;
+            result = Math.abs(result);
 
-            <div class="time-inputs">
-                <div class="time-group">
-                    <label>Hours</label>
-                    <input type="number" id="hours2" value="1" min="0" oninput="calculate()">
-                </div>
-                <span class="colon">:</span>
-                <div class="time-group">
-                    <label>Minutes</label>
-                    <input type="number" id="mins2" value="45" min="0" max="59" oninput="calculate()">
-                </div>
-                <span class="colon">:</span>
-                <div class="time-group">
-                    <label>Seconds</label>
-                    <input type="number" id="secs2" value="30" min="0" max="59" oninput="calculate()">
-                </div>
-            </div>
+            const hours = Math.floor(result / 3600);
+            const mins = Math.floor((result % 3600) / 60);
+            const secs = result % 60;
 
-            <div class="result-box">
-                <div class="label">Result</div>
-                <div class="time" id="resultTime">4:15:30</div>
-                <div class="details" id="resultDetails">4 hours, 15 minutes, 30 seconds</div>
-            </div>
-
-            <div class="conversions">
-                <div class="conv-item">
-                    <div class="value" id="totalHours">0</div>
-                    <div class="label">Total Hours</div>
-                </div>
-                <div class="conv-item">
-                    <div class="value" id="totalMins">0</div>
-                    <div class="label">Total Minutes</div>
-                </div>
-                <div class="conv-item">
-                    <div class="value" id="totalSecs">0</div>
-                    <div class="label">Total Seconds</div>
-                </div>
-                <div class="conv-item">
-                    <div class="value" id="totalDays">0</div>
-                    <div class="label">Decimal Days</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="ad-container" style="text-align: center; margin: 25px 0;">
-            <script>
-                atOptions = {
-                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
-                    'format' : 'iframe',
-                    'height' : 250,
-                    'width' : 300,
-                    'params' : {}
-                };
-            </script>
-            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
-        </div>
-
-        <div class="ad-sidebar" style="text-align:center;margin:15px 0;"><script>atOptions = {'key':'8398a480b05e8a3236f9ea561b7cab1a','format':'iframe','height':300,'width':160,'params':{}};            </script><script src="https://www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script></div>
-
-        <div class="tools-promo">
-            <h4>More Time Tools</h4>
-            <a href="stopwatch.html">Stopwatch</a>
-            <a href="countdown.html">Countdown Timer</a>
-            <a href="date-calculator.html">Date Calculator</a>
-            <a href="index.html">View All 90+ Tools</a>
-        </div>
-    </div>
-
-    <footer>
-        <p>Time Calculator by WebAudit Pro</p>
-        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
-    </footer>
-
-    <script>
-        let operation = 'add';
-
-        function setOp(op) {
-            operation = op;
-            document.querySelectorAll('.op-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-            calculate();
+            document.getElementById('addResult').textContent = 
+                (negative ? '-' : '') + 
+                String(hours).padStart(2, '0') + ':' + 
+                String(mins).padStart(2, '0') + ':' + 
+                String(secs).padStart(2, '0');
         }
 
-        function calculate() {
-            const h1 = parseInt(document.getElementById('hours1').value) || 0;
-            const m1 = parseInt(document.getElementById('mins1').value) || 0;
-            const s1 = parseInt(document.getElementById('secs1').value) || 0;
+        function calcDuration() {
+            const start = document.getElementById('startTime').value;
+            const end = document.getElementById('endTime').value;
+            
+            if (!start || !end) return;
 
-            const h2 = parseInt(document.getElementById('hours2').value) || 0;
-            const m2 = parseInt(document.getElementById('mins2').value) || 0;
-            const s2 = parseInt(document.getElementById('secs2').value) || 0;
+            const [sh, sm] = start.split(':').map(Number);
+            const [eh, em] = end.split(':').map(Number);
 
-            let totalSecs1 = h1 * 3600 + m1 * 60 + s1;
-            let totalSecs2 = h2 * 3600 + m2 * 60 + s2;
+            let totalMins = (eh * 60 + em) - (sh * 60 + sm);
+            if (totalMins < 0) totalMins += 24 * 60;
 
-            let resultSecs;
-            if (operation === 'add') {
-                resultSecs = totalSecs1 + totalSecs2;
-            } else {
-                resultSecs = totalSecs1 - totalSecs2;
-            }
+            const hours = Math.floor(totalMins / 60);
+            const mins = totalMins % 60;
+            const decimal = totalMins / 60;
 
-            const isNegative = resultSecs < 0;
-            resultSecs = Math.abs(resultSecs);
-
-            const hours = Math.floor(resultSecs / 3600);
-            const mins = Math.floor((resultSecs % 3600) / 60);
-            const secs = resultSecs % 60;
-
-            const sign = isNegative ? '-' : '';
-            document.getElementById('resultTime').textContent =
-                `${sign}${hours}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-            document.getElementById('resultDetails').textContent =
-                `${sign}${hours} hour${hours !== 1 ? 's' : ''}, ${mins} minute${mins !== 1 ? 's' : ''}, ${secs} second${secs !== 1 ? 's' : ''}`;
-
-            const totalSeconds = isNegative ? -resultSecs : resultSecs;
-            document.getElementById('totalHours').textContent = (totalSeconds / 3600).toFixed(2);
-            document.getElementById('totalMins').textContent = (totalSeconds / 60).toFixed(1);
-            document.getElementById('totalSecs').textContent = totalSeconds.toLocaleString();
-            document.getElementById('totalDays').textContent = (totalSeconds / 86400).toFixed(4);
+            document.getElementById('duration').textContent = hours + ' hours ' + mins + ' minutes';
+            document.getElementById('totalMins').textContent = totalMins + ' minutes';
+            document.getElementById('decimalHours').textContent = decimal.toFixed(2) + ' hours';
         }
 
-        calculate();
-    
+        calcAdd();
+        calcDuration();
     </script>
 </body>
 </html>

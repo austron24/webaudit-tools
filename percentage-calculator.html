@@ -3,232 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Percentage Calculator - Calculate Any Percentage</title>
-    <meta name="description" content="Free percentage calculator. Find percentages, percentage change, increase/decrease, and more. Easy to use with instant results.">
-    <meta name="keywords" content="percentage calculator, percent calculator, percentage change, percentage increase, percentage decrease">
+    <title>Percentage Calculator - Calculate Percentages Easily</title>
+    <meta name="description" content="Free percentage calculator. Calculate what percent of a number, percentage increase/decrease, and more.">
+    <meta name="keywords" content="percentage calculator, percent calculator, calculate percentage, percent of number, percentage change">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/percentage-calculator.html">
-    <meta property="og:title" content="Percentage Calculator">
-    <meta property="og:description" content="Calculate any percentage instantly. Find percentage of a number, percentage change, increase/decrease.">
-    <meta property="og:type" content="website">
     <style>
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #22d3ee;
-            --accent: #f59e0b;
-            --bg-dark: #0f172a;
-            --bg-card: #1e293b;
-            --bg-input: #334155;
-            --text-primary: #f1f5f9;
-            --text-secondary: #94a3b8;
-            --border: #475569;
-            --success: #10b981;
-            --error: #ef4444;
-        }
+        :root { --primary: #10b981; --primary-dark: #059669; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-primary);
-            min-height: 100vh;
-            line-height: 1.6;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
         .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
         .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
-        .header h1 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
-        .header p { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
         .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
         .content-area { display: flex; flex-direction: column; gap: 20px; }
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); }
-        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
-        .calc-grid { display: grid; gap: 20px; }
-        .calc-section { background: var(--bg-input); padding: 20px; border-radius: 12px; }
-        .calc-section h3 { color: var(--accent); margin-bottom: 15px; font-size: 1rem; }
-        .calc-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .calc-row { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
         .calc-row span { color: var(--text-secondary); }
-        .input-small { width: 120px; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem; background: var(--bg-dark); color: var(--text-primary); }
-        .input-small:focus { outline: none; border-color: var(--primary); }
-        .btn { padding: 12px 24px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
-        .btn-primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
-        .result { margin-top: 15px; padding: 15px; background: var(--bg-dark); border-radius: 8px; border-left: 4px solid var(--success); }
-        .result-value { font-size: 1.5rem; font-weight: 700; color: var(--success); }
+        input { padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); width: 100px; }
+        input:focus { outline: none; border-color: var(--primary); }
+        .result-box { background: var(--primary); color: white; padding: 12px 20px; border-radius: 8px; font-weight: 700; font-size: 1.1rem; min-width: 100px; text-align: center; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
-        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; transition: all 0.3s ease; }
-        .related-link:hover { background: var(--primary); transform: translateX(5px); }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .header h1 { font-size: 1.8rem; } .calc-row { flex-direction: column; align-items: flex-start; } .input-small { width: 100%; } }
+        @media (max-width: 640px) { .calc-row { flex-direction: column; align-items: flex-start; } input { width: 100%; } }
     </style>
 </head>
 <body>
     <div class="ad-container">
         <div class="ad-label">Advertisement</div>
-        <script type="text/javascript">
-            atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };
-        </script>
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
         <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
     </div>
     <div class="ad-container" style="display: none;">
         <div class="ad-label">Advertisement</div>
-        <script type="text/javascript">
-            atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };
-        </script>
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
         <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
-    
+
     <header class="header">
         <h1>📊 Percentage Calculator</h1>
-        <p>Calculate any percentage instantly. Multiple calculation types for all your needs.</p>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>🔢 Calculate Percentages</h2>
-                <div class="calc-grid">
-                    <div class="calc-section">
-                        <h3>What is X% of Y?</h3>
-                        <div class="calc-row">
-                            <span>What is</span>
-                            <input type="number" id="pct1" class="input-small" placeholder="25">
-                            <span>% of</span>
-                            <input type="number" id="num1" class="input-small" placeholder="200">
-                            <span>?</span>
-                            <button class="btn btn-primary" onclick="calcPercentOf()">Calculate</button>
-                        </div>
-                        <div class="result" id="result1" style="display:none;"></div>
-                    </div>
+                <h2>🔢 What is X% of Y?</h2>
+                <div class="calc-row">
+                    <span>What is</span>
+                    <input type="number" id="pct1" value="25" oninput="calc1()">
+                    <span>% of</span>
+                    <input type="number" id="num1" value="200" oninput="calc1()">
+                    <span>=</span>
+                    <div class="result-box" id="result1">50</div>
+                </div>
+            </div>
 
-                    <div class="calc-section">
-                        <h3>X is what percent of Y?</h3>
-                        <div class="calc-row">
-                            <input type="number" id="num2a" class="input-small" placeholder="50">
-                            <span>is what % of</span>
-                            <input type="number" id="num2b" class="input-small" placeholder="200">
-                            <span>?</span>
-                            <button class="btn btn-primary" onclick="calcWhatPercent()">Calculate</button>
-                        </div>
-                        <div class="result" id="result2" style="display:none;"></div>
-                    </div>
+            <div class="card">
+                <h2>🔢 X is what % of Y?</h2>
+                <div class="calc-row">
+                    <input type="number" id="num2a" value="50" oninput="calc2()">
+                    <span>is what % of</span>
+                    <input type="number" id="num2b" value="200" oninput="calc2()">
+                    <span>=</span>
+                    <div class="result-box" id="result2">25%</div>
+                </div>
+            </div>
 
-                    <div class="calc-section">
-                        <h3>Percentage Change</h3>
-                        <div class="calc-row">
-                            <span>From</span>
-                            <input type="number" id="from" class="input-small" placeholder="80">
-                            <span>to</span>
-                            <input type="number" id="to" class="input-small" placeholder="100">
-                            <button class="btn btn-primary" onclick="calcChange()">Calculate</button>
-                        </div>
-                        <div class="result" id="result3" style="display:none;"></div>
-                    </div>
+            <div class="card">
+                <h2>🔢 X is Y% of what?</h2>
+                <div class="calc-row">
+                    <input type="number" id="num3a" value="50" oninput="calc3()">
+                    <span>is</span>
+                    <input type="number" id="pct3" value="25" oninput="calc3()">
+                    <span>% of what? =</span>
+                    <div class="result-box" id="result3">200</div>
+                </div>
+            </div>
 
-                    <div class="calc-section">
-                        <h3>Percentage Increase/Decrease</h3>
-                        <div class="calc-row">
-                            <input type="number" id="baseNum" class="input-small" placeholder="100">
-                            <select id="incdec" style="padding: 12px; border-radius: 8px; background: var(--bg-dark); color: var(--text-primary); border: 2px solid var(--border);">
-                                <option value="increase">+ increase by</option>
-                                <option value="decrease">- decrease by</option>
-                            </select>
-                            <input type="number" id="changePct" class="input-small" placeholder="15">
-                            <span>%</span>
-                            <button class="btn btn-primary" onclick="calcIncDec()">Calculate</button>
-                        </div>
-                        <div class="result" id="result4" style="display:none;"></div>
-                    </div>
+            <div class="card">
+                <h2>📈 Percentage Change</h2>
+                <div class="calc-row">
+                    <span>From</span>
+                    <input type="number" id="from" value="100" oninput="calc4()">
+                    <span>to</span>
+                    <input type="number" id="to" value="125" oninput="calc4()">
+                    <span>=</span>
+                    <div class="result-box" id="result4">+25%</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📉 Percentage Difference</h2>
+                <div class="calc-row">
+                    <span>Between</span>
+                    <input type="number" id="diff1" value="80" oninput="calc5()">
+                    <span>and</span>
+                    <input type="number" id="diff2" value="100" oninput="calc5()">
+                    <span>=</span>
+                    <div class="result-box" id="result5">22.2%</div>
                 </div>
             </div>
 
             <div class="ad-container">
                 <div class="ad-label">Advertisement</div>
-                <script type="text/javascript">
-                    atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };
-                </script>
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
                 <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
             </div>
 
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="tip-calculator.html" class="related-link">💵 Tip Calculator</a>
-                    <a href="discount-calculator.html" class="related-link">🏷️ Discount Calculator</a>
-                    <a href="sales-tax-calculator.html" class="related-link">🧾 Sales Tax Calculator</a>
-                    <a href="compound-interest-calculator.html" class="related-link">📈 Compound Interest</a>
-                    <a href="savings-goal-calculator.html" class="related-link">🎯 Savings Goal</a>
-                    <a href="roi-calculator.html" class="related-link">💹 ROI Calculator</a>
+                    <a href="discount-calculator.html" class="related-link">🏷️ Discount</a>
+                    <a href="tip-calculator.html" class="related-link">💵 Tip</a>
+                    <a href="grade-calculator.html" class="related-link">📝 Grade</a>
+                    <a href="markup-calculator.html" class="related-link">📈 Markup</a>
                 </div>
-            </div>
-
-            <div class="ad-container">
-                <div class="ad-label">Advertisement</div>
-                <script type="text/javascript">
-                    atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };
-                </script>
-                <script type="text/javascript" src="//www.highperformanceformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
             </div>
         </div>
 
         <div class="sidebar">
             <div class="ad-container">
                 <div class="ad-label">Advertisement</div>
-                <script type="text/javascript">
-                    atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };
-                </script>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
                 <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
-            </div>
-            <div class="ad-container">
-                <div class="ad-label">Advertisement</div>
-                <script type="text/javascript">
-                    atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };
-                </script>
-                <script type="text/javascript" src="//www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
             </div>
         </div>
     </div>
 
     <script>
-        function calcPercentOf() {
-            const pct = parseFloat(document.getElementById('pct1').value);
-            const num = parseFloat(document.getElementById('num1').value);
-            if (isNaN(pct) || isNaN(num)) return;
-            const result = (pct / 100) * num;
-            document.getElementById('result1').style.display = 'block';
-            document.getElementById('result1').innerHTML = `<div class="result-value">${pct}% of ${num} = ${result.toLocaleString(undefined, {maximumFractionDigits: 2})}</div>`;
+        function calc1() {
+            const pct = parseFloat(document.getElementById('pct1').value) || 0;
+            const num = parseFloat(document.getElementById('num1').value) || 0;
+            document.getElementById('result1').textContent = (pct / 100 * num).toFixed(2);
         }
 
-        function calcWhatPercent() {
-            const a = parseFloat(document.getElementById('num2a').value);
-            const b = parseFloat(document.getElementById('num2b').value);
-            if (isNaN(a) || isNaN(b) || b === 0) return;
-            const pct = (a / b) * 100;
-            document.getElementById('result2').style.display = 'block';
-            document.getElementById('result2').innerHTML = `<div class="result-value">${a} is ${pct.toFixed(2)}% of ${b}</div>`;
+        function calc2() {
+            const a = parseFloat(document.getElementById('num2a').value) || 0;
+            const b = parseFloat(document.getElementById('num2b').value) || 1;
+            document.getElementById('result2').textContent = (a / b * 100).toFixed(2) + '%';
         }
 
-        function calcChange() {
-            const from = parseFloat(document.getElementById('from').value);
-            const to = parseFloat(document.getElementById('to').value);
-            if (isNaN(from) || isNaN(to) || from === 0) return;
-            const change = ((to - from) / Math.abs(from)) * 100;
-            const direction = change >= 0 ? 'increase' : 'decrease';
-            document.getElementById('result3').style.display = 'block';
-            document.getElementById('result3').innerHTML = `<div class="result-value">${Math.abs(change).toFixed(2)}% ${direction}</div><div style="color: var(--text-secondary); margin-top: 5px;">From ${from} to ${to}</div>`;
+        function calc3() {
+            const a = parseFloat(document.getElementById('num3a').value) || 0;
+            const pct = parseFloat(document.getElementById('pct3').value) || 1;
+            document.getElementById('result3').textContent = (a / (pct / 100)).toFixed(2);
         }
 
-        function calcIncDec() {
-            const base = parseFloat(document.getElementById('baseNum').value);
-            const pct = parseFloat(document.getElementById('changePct').value);
-            const type = document.getElementById('incdec').value;
-            if (isNaN(base) || isNaN(pct)) return;
-            const change = base * (pct / 100);
-            const result = type === 'increase' ? base + change : base - change;
-            document.getElementById('result4').style.display = 'block';
-            document.getElementById('result4').innerHTML = `<div class="result-value">${result.toLocaleString(undefined, {maximumFractionDigits: 2})}</div><div style="color: var(--text-secondary); margin-top: 5px;">${base} ${type === 'increase' ? '+' : '-'} ${pct}% = ${result.toLocaleString(undefined, {maximumFractionDigits: 2})}</div>`;
+        function calc4() {
+            const from = parseFloat(document.getElementById('from').value) || 1;
+            const to = parseFloat(document.getElementById('to').value) || 0;
+            const change = ((to - from) / from) * 100;
+            document.getElementById('result4').textContent = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
         }
+
+        function calc5() {
+            const a = parseFloat(document.getElementById('diff1').value) || 0;
+            const b = parseFloat(document.getElementById('diff2').value) || 0;
+            const avg = (a + b) / 2;
+            const diff = Math.abs(a - b) / avg * 100;
+            document.getElementById('result5').textContent = diff.toFixed(2) + '%';
+        }
+
+        calc1(); calc2(); calc3(); calc4(); calc5();
     </script>
 </body>
 </html>
