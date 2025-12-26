@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solar Panel Calculator - Solar Savings Estimator</title>
-    <meta name="description" content="Free solar panel calculator. Estimate solar panel costs, savings, and payback period. Calculate your solar energy potential.">
-    <meta name="keywords" content="solar panel calculator, solar savings, solar cost estimator, solar ROI, renewable energy">
+    <title>Solar Panel Calculator - System Size & Savings</title>
+    <meta name="description" content="Free solar panel calculator. Estimate how many solar panels you need and calculate potential savings.">
+    <meta name="keywords" content="solar panel calculator, solar system size, solar savings, solar cost, renewable energy">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/solar-panel-calculator.html">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #eab308; --primary-dark: #ca8a04; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
         .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
-        .header { background: linear-gradient(135deg, var(--accent) 0%, #d97706 100%); padding: 40px 20px; text-align: center; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; color: #000; }
         .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
         .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
         .content-area { display: flex; flex-direction: column; gap: 20px; }
@@ -25,28 +25,21 @@
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
         input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
         input:focus, select:focus { outline: none; border-color: var(--primary); }
-        .result-hero { background: linear-gradient(135deg, var(--success), #059669); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
-        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
-        .result-hero-label { color: rgba(255,255,255,0.8); }
-        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; color: #000; }
+        .result-hero-value { font-size: 3rem; font-weight: 800; }
+        .result-hero-label { opacity: 0.8; }
+        .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
-        .result-value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
-        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.9rem; }
-        .savings-timeline { margin-top: 20px; padding: 20px; background: var(--bg-input); border-radius: 12px; }
-        .timeline-bar { height: 30px; background: var(--border); border-radius: 8px; overflow: hidden; margin: 15px 0; position: relative; }
-        .timeline-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--success)); border-radius: 8px; transition: width 0.5s; }
-        .timeline-marker { position: absolute; top: -5px; width: 4px; height: 40px; background: white; transform: translateX(-50%); }
-        .year-labels { display: flex; justify-content: space-between; color: var(--text-secondary); font-size: 0.85rem; }
-        .environmental { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
-        .env-card { background: var(--bg-input); padding: 15px; border-radius: 12px; text-align: center; }
-        .env-icon { font-size: 2rem; margin-bottom: 10px; }
-        .env-value { font-size: 1.3rem; font-weight: 700; color: var(--success); }
-        .env-label { color: var(--text-secondary); font-size: 0.85rem; }
+        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .savings-section { margin-top: 20px; }
+        .savings-row { display: flex; justify-content: space-between; padding: 15px; background: var(--bg-input); border-radius: 10px; margin-bottom: 10px; }
+        .savings-row.highlight { background: var(--success); color: white; font-weight: 700; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
-        .related-link:hover { background: var(--primary); }
+        .related-link:hover { background: var(--primary); color: #000; }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } .results-grid, .environmental { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
 <body>
@@ -69,105 +62,95 @@
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>🏠 Your Energy Profile</h2>
+                <h2>⚡ Energy Usage</h2>
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Monthly Electric Bill ($)</label>
-                        <input type="number" id="monthlyBill" value="150" oninput="calculate()">
+                        <input type="number" id="bill" value="150" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Electricity Rate ($/kWh)</label>
-                        <input type="number" id="electricRate" value="0.12" step="0.01" oninput="calculate()">
+                        <input type="number" id="rate" value="0.12" step="0.01" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Roof Size (sq ft)</label>
-                        <input type="number" id="roofSize" value="1500" oninput="calculate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Sun Hours Per Day</label>
+                        <label>Location (Sun Hours)</label>
                         <select id="sunHours" onchange="calculate()">
-                            <option value="3">Low (3 hrs)</option>
-                            <option value="4">Moderate (4 hrs)</option>
-                            <option value="5" selected>Good (5 hrs)</option>
-                            <option value="6">Excellent (6 hrs)</option>
+                            <option value="3.5">Low (Pacific NW, 3.5 hrs)</option>
+                            <option value="4.5" selected>Moderate (4.5 hrs)</option>
+                            <option value="5.5">Good (Southwest, 5.5 hrs)</option>
+                            <option value="6.5">Excellent (AZ, NM, 6.5 hrs)</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Energy Offset Goal (%)</label>
-                        <input type="number" id="offsetGoal" value="100" min="50" max="150" oninput="calculate()">
+                        <label>% to Offset</label>
+                        <input type="number" id="offset" value="100" min="50" max="100" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Cost Per Watt ($)</label>
-                        <input type="number" id="costPerWatt" value="2.75" step="0.25" oninput="calculate()">
+                        <label>Panel Wattage</label>
+                        <select id="panelWatts" onchange="calculate()">
+                            <option value="300">300W (budget)</option>
+                            <option value="350">350W (standard)</option>
+                            <option value="400" selected>400W (efficient)</option>
+                            <option value="450">450W (premium)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Cost per Watt ($)</label>
+                        <input type="number" id="costPerWatt" value="2.80" step="0.1" oninput="calculate()">
                     </div>
                 </div>
                 
                 <div class="result-hero">
-                    <div class="result-hero-label">Estimated System Cost</div>
-                    <div class="result-hero-value" id="systemCost">$0</div>
+                    <div class="result-hero-label">System Size Needed</div>
+                    <div class="result-hero-value" id="systemSize">0 kW</div>
                 </div>
                 
                 <div class="results-grid">
                     <div class="result-card">
-                        <div class="result-value" id="systemSize">0 kW</div>
-                        <div class="result-label">System Size</div>
+                        <div class="result-value" id="monthlyKwh">0</div>
+                        <div class="result-label">Monthly kWh</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="panelCount">0</div>
+                        <div class="result-value" id="panels">0</div>
                         <div class="result-label">Panels Needed</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="annualProduction">0 kWh</div>
-                        <div class="result-label">Annual Production</div>
+                        <div class="result-value" id="roofSpace">0</div>
+                        <div class="result-label">Roof Sq Ft</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="annualSavings">$0</div>
-                        <div class="result-label">Annual Savings</div>
+                        <div class="result-value" id="systemCost">$0</div>
+                        <div class="result-label">System Cost</div>
                     </div>
-                    <div class="result-card">
-                        <div class="result-value" id="paybackPeriod">0 yrs</div>
-                        <div class="result-label">Payback Period</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="roi25">$0</div>
-                        <div class="result-label">25-Year Savings</div>
-                    </div>
-                </div>
-                
-                <div class="savings-timeline">
-                    <h3 style="color: var(--secondary); margin-bottom: 10px;">Payback Timeline</h3>
-                    <div class="timeline-bar">
-                        <div class="timeline-fill" id="timelineFill" style="width: 30%;"></div>
-                        <div class="timeline-marker" id="paybackMarker" style="left: 30%;"></div>
-                    </div>
-                    <div class="year-labels">
-                        <span>Year 0</span>
-                        <span>Year 5</span>
-                        <span>Year 10</span>
-                        <span>Year 15</span>
-                        <span>Year 25</span>
-                    </div>
-                    <p style="text-align: center; margin-top: 15px; color: var(--text-secondary);" id="timelineText"></p>
                 </div>
             </div>
 
             <div class="card">
-                <h2>🌱 Environmental Impact</h2>
-                <div class="environmental">
-                    <div class="env-card">
-                        <div class="env-icon">🌳</div>
-                        <div class="env-value" id="treesEquiv">0</div>
-                        <div class="env-label">Trees Planted Equivalent</div>
+                <h2>💰 Savings Estimate</h2>
+                <div class="savings-section">
+                    <div class="savings-row">
+                        <span>Gross System Cost</span>
+                        <span id="grossCost">$0</span>
                     </div>
-                    <div class="env-card">
-                        <div class="env-icon">🚗</div>
-                        <div class="env-value" id="milesOffset">0</div>
-                        <div class="env-label">Miles Driven Offset</div>
+                    <div class="savings-row">
+                        <span>Federal Tax Credit (30%)</span>
+                        <span id="taxCredit">-$0</span>
                     </div>
-                    <div class="env-card">
-                        <div class="env-icon">💨</div>
-                        <div class="env-value" id="co2Reduced">0 lbs</div>
-                        <div class="env-label">CO₂ Reduced/Year</div>
+                    <div class="savings-row highlight">
+                        <span>Net Cost After Incentives</span>
+                        <span id="netCost">$0</span>
+                    </div>
+                    <div class="savings-row">
+                        <span>Annual Savings</span>
+                        <span id="annualSavings">$0/yr</span>
+                    </div>
+                    <div class="savings-row">
+                        <span>Payback Period</span>
+                        <span id="payback">0 years</span>
+                    </div>
+                    <div class="savings-row">
+                        <span>25-Year Savings</span>
+                        <span id="lifetimeSavings">$0</span>
                     </div>
                 </div>
             </div>
@@ -181,10 +164,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="electric-bill-calculator.html" class="related-link">⚡ Electric Bill Calculator</a>
-                    <a href="home-value-calculator.html" class="related-link">🏠 Home Value Calculator</a>
-                    <a href="roi-calculator.html" class="related-link">📊 ROI Calculator</a>
-                    <a href="savings-goal-calculator.html" class="related-link">💰 Savings Calculator</a>
+                    <a href="electricity-cost-calculator.html" class="related-link">⚡ Electricity Cost</a>
+                    <a href="roi-calculator.html" class="related-link">📈 ROI Calculator</a>
+                    <a href="hvac-calculator.html" class="related-link">❄️ HVAC Calculator</a>
+                    <a href="carbon-footprint-calculator.html" class="related-link">🌍 Carbon Footprint</a>
                 </div>
             </div>
         </div>
@@ -200,73 +183,39 @@
 
     <script>
         function calculate() {
-            const monthlyBill = parseFloat(document.getElementById('monthlyBill').value) || 0;
-            const electricRate = parseFloat(document.getElementById('electricRate').value) || 0.12;
-            const roofSize = parseFloat(document.getElementById('roofSize').value) || 0;
-            const sunHours = parseFloat(document.getElementById('sunHours').value) || 5;
-            const offsetGoal = parseFloat(document.getElementById('offsetGoal').value) / 100 || 1;
-            const costPerWatt = parseFloat(document.getElementById('costPerWatt').value) || 2.75;
+            const bill = parseFloat(document.getElementById('bill').value) || 0;
+            const rate = parseFloat(document.getElementById('rate').value) || 0.12;
+            const sunHours = parseFloat(document.getElementById('sunHours').value);
+            const offset = parseFloat(document.getElementById('offset').value) / 100;
+            const panelWatts = parseFloat(document.getElementById('panelWatts').value);
+            const costPerWatt = parseFloat(document.getElementById('costPerWatt').value);
             
-            // Calculate monthly kWh usage
-            const monthlyKwh = monthlyBill / electricRate;
-            const annualKwh = monthlyKwh * 12;
-            const targetKwh = annualKwh * offsetGoal;
+            const monthlyKwh = bill / rate;
+            const targetKwh = monthlyKwh * offset;
+            const dailyKwh = targetKwh / 30;
+            const systemSizeKw = dailyKwh / sunHours;
+            const panels = Math.ceil((systemSizeKw * 1000) / panelWatts);
+            const roofSpace = panels * 18;
             
-            // Calculate system size needed
-            const dailyKwhNeeded = targetKwh / 365;
-            const systemSizeKw = dailyKwhNeeded / sunHours / 0.8; // 80% efficiency factor
-            const systemSizeWatts = systemSizeKw * 1000;
+            const grossCost = systemSizeKw * 1000 * costPerWatt;
+            const taxCredit = grossCost * 0.30;
+            const netCost = grossCost - taxCredit;
+            const annualSavings = bill * 12 * offset;
+            const payback = netCost / annualSavings;
+            const lifetimeSavings = (annualSavings * 25) - netCost;
             
-            // Calculate panels (assuming 400W panels)
-            const panelWattage = 400;
-            const panelCount = Math.ceil(systemSizeWatts / panelWattage);
-            const actualSystemSize = panelCount * panelWattage;
+            document.getElementById('monthlyKwh').textContent = Math.round(monthlyKwh).toLocaleString();
+            document.getElementById('systemSize').textContent = systemSizeKw.toFixed(1) + ' kW';
+            document.getElementById('panels').textContent = panels;
+            document.getElementById('roofSpace').textContent = roofSpace + ' sq ft';
+            document.getElementById('systemCost').textContent = '$' + Math.round(netCost).toLocaleString();
             
-            // Check roof capacity (15 sq ft per panel)
-            const maxPanels = Math.floor(roofSize / 15);
-            const finalPanelCount = Math.min(panelCount, maxPanels);
-            const finalSystemSize = finalPanelCount * panelWattage;
-            
-            // Calculate costs and savings
-            const systemCost = finalSystemSize * costPerWatt;
-            const federalCredit = systemCost * 0.30; // 30% federal tax credit
-            const netCost = systemCost - federalCredit;
-            
-            const annualProduction = (finalSystemSize / 1000) * sunHours * 365 * 0.8;
-            const annualSavings = annualProduction * electricRate;
-            const paybackYears = netCost / annualSavings;
-            
-            // 25-year savings (accounting for 0.5% panel degradation)
-            let totalSavings = 0;
-            for (let year = 1; year <= 25; year++) {
-                totalSavings += annualSavings * Math.pow(0.995, year - 1);
-            }
-            const roi25 = totalSavings - netCost;
-            
-            // Environmental impact
-            const co2PerKwh = 0.92; // lbs CO2 per kWh (US average)
-            const co2Reduced = annualProduction * co2PerKwh;
-            const treesEquiv = Math.round(co2Reduced / 48); // 48 lbs CO2 per tree per year
-            const milesOffset = Math.round(co2Reduced / 0.91 * 2.5); // miles equivalent
-            
-            // Update display
-            document.getElementById('systemCost').textContent = '$' + netCost.toLocaleString(undefined, {maximumFractionDigits: 0});
-            document.getElementById('systemSize').textContent = (finalSystemSize / 1000).toFixed(1) + ' kW';
-            document.getElementById('panelCount').textContent = finalPanelCount;
-            document.getElementById('annualProduction').textContent = Math.round(annualProduction).toLocaleString() + ' kWh';
-            document.getElementById('annualSavings').textContent = '$' + annualSavings.toLocaleString(undefined, {maximumFractionDigits: 0});
-            document.getElementById('paybackPeriod').textContent = paybackYears.toFixed(1) + ' yrs';
-            document.getElementById('roi25').textContent = '$' + roi25.toLocaleString(undefined, {maximumFractionDigits: 0});
-            
-            document.getElementById('treesEquiv').textContent = treesEquiv.toLocaleString();
-            document.getElementById('milesOffset').textContent = milesOffset.toLocaleString();
-            document.getElementById('co2Reduced').textContent = Math.round(co2Reduced).toLocaleString() + ' lbs';
-            
-            // Timeline
-            const paybackPercent = Math.min(100, (paybackYears / 25) * 100);
-            document.getElementById('timelineFill').style.width = paybackPercent + '%';
-            document.getElementById('paybackMarker').style.left = paybackPercent + '%';
-            document.getElementById('timelineText').textContent = `Break even in ${paybackYears.toFixed(1)} years, then earn $${Math.round(annualSavings).toLocaleString()}/year for ${(25 - paybackYears).toFixed(0)} more years`;
+            document.getElementById('grossCost').textContent = '$' + Math.round(grossCost).toLocaleString();
+            document.getElementById('taxCredit').textContent = '-$' + Math.round(taxCredit).toLocaleString();
+            document.getElementById('netCost').textContent = '$' + Math.round(netCost).toLocaleString();
+            document.getElementById('annualSavings').textContent = '$' + Math.round(annualSavings).toLocaleString() + '/yr';
+            document.getElementById('payback').textContent = payback.toFixed(1) + ' years';
+            document.getElementById('lifetimeSavings').textContent = '$' + Math.round(lifetimeSavings).toLocaleString();
         }
         
         calculate();
