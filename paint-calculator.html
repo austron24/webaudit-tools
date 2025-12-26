@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paint Calculator - How Much Paint Do I Need?</title>
-    <meta name="description" content="Free paint calculator. Calculate how many gallons of paint you need for your room or project. Includes coverage estimates.">
-    <meta name="keywords" content="paint calculator, gallons of paint, wall paint calculator, room paint, paint coverage">
+    <title>Paint Calculator - How Much Paint Do You Need?</title>
+    <meta name="description" content="Free paint calculator. Calculate how much paint you need for walls, ceilings, and rooms based on square footage.">
+    <meta name="keywords" content="paint calculator, how much paint, wall paint, room paint, gallons of paint">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/paint-calculator.html">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #8b5cf6; --primary-dark: #7c3aed; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
         .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
-        .header { background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%); padding: 40px 20px; text-align: center; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
         .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
         .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
         .content-area { display: flex; flex-direction: column; gap: 20px; }
@@ -21,30 +21,23 @@
         .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
         .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
         input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
         input:focus, select:focus { outline: none; border-color: var(--primary); }
-        .result-hero { background: linear-gradient(135deg, var(--success), #059669); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
-        .result-hero-value { font-size: 3.5rem; font-weight: 800; color: white; }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
         .result-hero-label { color: rgba(255,255,255,0.8); }
-        .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
-        .result-value { font-size: 1.4rem; font-weight: 700; color: var(--secondary); }
-        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.9rem; }
-        .openings { margin-top: 20px; padding: 20px; background: var(--bg-input); border-radius: 12px; }
-        .opening-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 15px; align-items: center; margin-bottom: 15px; }
-        .opening-row label { color: var(--text-secondary); }
-        .opening-row input { padding: 10px; }
-        .tips { margin-top: 20px; }
-        .tip-card { background: var(--bg-input); padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; gap: 15px; align-items: flex-start; }
-        .tip-icon { font-size: 1.5rem; }
-        .tip-text { color: var(--text-secondary); }
+        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } .opening-row { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -59,7 +52,7 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
-    
+
     <header class="header">
         <h1>🎨 Paint Calculator</h1>
     </header>
@@ -70,16 +63,16 @@
                 <h2>📐 Room Dimensions</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Room Length (ft)</label>
-                        <input type="number" id="length" value="14" oninput="calculate()">
+                        <label>Room Length (feet)</label>
+                        <input type="number" id="length" value="12" step="0.5" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Room Width (ft)</label>
-                        <input type="number" id="width" value="12" oninput="calculate()">
+                        <label>Room Width (feet)</label>
+                        <input type="number" id="width" value="10" step="0.5" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Ceiling Height (ft)</label>
-                        <input type="number" id="height" value="9" step="0.5" oninput="calculate()">
+                        <label>Wall Height (feet)</label>
+                        <input type="number" id="height" value="8" step="0.5" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Number of Coats</label>
@@ -90,81 +83,42 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Paint Coverage (sq ft/gal)</label>
-                        <select id="coverage" onchange="calculate()">
-                            <option value="300">Low (300 sq ft) - Rough surfaces</option>
-                            <option value="350" selected>Standard (350 sq ft)</option>
-                            <option value="400">High (400 sq ft) - Smooth surfaces</option>
-                        </select>
+                        <label>Doors (subtract)</label>
+                        <input type="number" id="doors" value="1" min="0" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Paint Ceiling?</label>
-                        <select id="ceiling" onchange="calculate()">
-                            <option value="0" selected>No - Walls Only</option>
-                            <option value="1">Yes - Include Ceiling</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="openings">
-                    <h3 style="color: var(--secondary); margin-bottom: 15px;">Subtract Openings</h3>
-                    <div class="opening-row">
-                        <label>Standard Doors (3x7 ft)</label>
-                        <input type="number" id="doors" value="2" min="0" oninput="calculate()">
-                        <span style="color: var(--text-secondary);">= <span id="doorSqft">42</span> sq ft</span>
-                    </div>
-                    <div class="opening-row">
-                        <label>Windows (3x4 ft avg)</label>
+                        <label>Windows (subtract)</label>
                         <input type="number" id="windows" value="2" min="0" oninput="calculate()">
-                        <span style="color: var(--text-secondary);">= <span id="windowSqft">24</span> sq ft</span>
                     </div>
                 </div>
-                
+
                 <div class="result-hero">
                     <div class="result-hero-label">Paint Needed</div>
-                    <div class="result-hero-value" id="gallonsNeeded">0 gal</div>
+                    <div class="result-hero-value" id="gallons">0 gallons</div>
                 </div>
-                
+
                 <div class="results-grid">
                     <div class="result-card">
-                        <div class="result-value" id="totalSqft">0</div>
-                        <div class="result-label">Total Sq Ft</div>
+                        <div class="result-value" id="sqft">0</div>
+                        <div class="result-label">Square Feet</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="paintableSqft">0</div>
-                        <div class="result-label">Paintable Sq Ft</div>
+                        <div class="result-value" id="quarts">0</div>
+                        <div class="result-label">Quarts</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="withCoats">0</div>
-                        <div class="result-label">With Coats</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="estimatedCost">$0</div>
+                        <div class="result-value" id="cost">$0</div>
                         <div class="result-label">Est. Cost (~$35/gal)</div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>💡 Painting Tips</h2>
-                <div class="tips">
-                    <div class="tip-card">
-                        <div class="tip-icon">🛒</div>
-                        <div class="tip-text"><strong>Buy Extra:</strong> Always purchase 10-15% more paint than calculated to account for touch-ups and mistakes.</div>
-                    </div>
-                    <div class="tip-card">
-                        <div class="tip-icon">🖌️</div>
-                        <div class="tip-text"><strong>Two Coats:</strong> Two thin coats provide better coverage and durability than one thick coat.</div>
-                    </div>
-                    <div class="tip-card">
-                        <div class="tip-icon">🎯</div>
-                        <div class="tip-text"><strong>Dark Colors:</strong> Darker colors may require 3+ coats, especially over light colors.</div>
-                    </div>
-                    <div class="tip-card">
-                        <div class="tip-icon">📏</div>
-                        <div class="tip-text"><strong>Primer:</strong> Use primer for new drywall, stains, or drastic color changes for best results.</div>
-                    </div>
-                </div>
+                <h2>📊 Coverage Guide</h2>
+                <div class="breakdown-row"><span>1 Gallon covers</span><span>~350-400 sq ft</span></div>
+                <div class="breakdown-row"><span>1 Quart covers</span><span>~100 sq ft</span></div>
+                <div class="breakdown-row"><span>Standard door</span><span>~21 sq ft</span></div>
+                <div class="breakdown-row"><span>Standard window</span><span>~15 sq ft</span></div>
             </div>
 
             <div class="ad-container">
@@ -176,10 +130,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
+                    <a href="flooring-calculator.html" class="related-link">🪵 Flooring</a>
+                    <a href="wallpaper-calculator.html" class="related-link">🖼️ Wallpaper</a>
+                    <a href="tile-calculator.html" class="related-link">🔲 Tile</a>
                     <a href="square-footage-calculator.html" class="related-link">📐 Square Footage</a>
-                    <a href="concrete-calculator.html" class="related-link">🧱 Concrete Calculator</a>
-                    <a href="home-value-calculator.html" class="related-link">🏠 Home Value</a>
-                    <a href="unit-converter.html" class="related-link">📏 Unit Converter</a>
                 </div>
             </div>
         </div>
@@ -199,44 +153,22 @@
             const width = parseFloat(document.getElementById('width').value) || 0;
             const height = parseFloat(document.getElementById('height').value) || 0;
             const coats = parseInt(document.getElementById('coats').value) || 2;
-            const coverage = parseInt(document.getElementById('coverage').value) || 350;
-            const includeCeiling = document.getElementById('ceiling').value === '1';
             const doors = parseInt(document.getElementById('doors').value) || 0;
             const windows = parseInt(document.getElementById('windows').value) || 0;
-            
-            // Calculate wall area
-            const perimeter = 2 * (length + width);
-            const wallArea = perimeter * height;
-            
-            // Calculate ceiling area if included
-            const ceilingArea = includeCeiling ? (length * width) : 0;
-            
-            // Subtract openings
-            const doorArea = doors * 21; // 3x7 = 21 sq ft each
-            const windowArea = windows * 12; // 3x4 = 12 sq ft each
-            
-            const totalSqft = wallArea + ceilingArea;
-            const paintableSqft = Math.max(0, totalSqft - doorArea - windowArea);
-            const withCoatsSqft = paintableSqft * coats;
-            
-            // Calculate gallons needed
-            const gallonsExact = withCoatsSqft / coverage;
-            const gallonsNeeded = Math.ceil(gallonsExact);
-            
-            // Estimated cost
-            const estimatedCost = gallonsNeeded * 35;
-            
-            // Update display
-            document.getElementById('gallonsNeeded').textContent = gallonsNeeded + ' gal';
-            document.getElementById('totalSqft').textContent = Math.round(totalSqft).toLocaleString() + ' sq ft';
-            document.getElementById('paintableSqft').textContent = Math.round(paintableSqft).toLocaleString() + ' sq ft';
-            document.getElementById('withCoats').textContent = Math.round(withCoatsSqft).toLocaleString() + ' sq ft';
-            document.getElementById('estimatedCost').textContent = '$' + estimatedCost;
-            
-            document.getElementById('doorSqft').textContent = doorArea;
-            document.getElementById('windowSqft').textContent = windowArea;
+
+            const wallArea = 2 * (length + width) * height;
+            const doorArea = doors * 21;
+            const windowArea = windows * 15;
+            const paintableArea = (wallArea - doorArea - windowArea) * coats;
+
+            const gallons = paintableArea / 350;
+            const quarts = gallons * 4;
+
+            document.getElementById('sqft').textContent = Math.round(paintableArea) + ' sq ft';
+            document.getElementById('gallons').textContent = Math.ceil(gallons) + ' gallons';
+            document.getElementById('quarts').textContent = Math.ceil(quarts) + ' quarts';
+            document.getElementById('cost').textContent = '$' + Math.round(Math.ceil(gallons) * 35);
         }
-        
         calculate();
     </script>
 </body>

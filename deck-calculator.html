@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deck Calculator - Estimate Decking Materials & Cost</title>
-    <meta name="description" content="Free deck calculator. Estimate decking boards, joists, and costs for your deck building project.">
-    <meta name="keywords" content="deck calculator, decking cost, deck materials, deck estimator, deck boards">
+    <title>Deck Calculator - Decking Materials & Cost Estimator</title>
+    <meta name="description" content="Free deck calculator. Calculate how much decking, joists, posts, and hardware you need with cost estimates.">
+    <meta name="keywords" content="deck calculator, decking calculator, deck cost, deck materials, composite deck">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/deck-calculator.html">
     <style>
-        :root { --primary: #d97706; --primary-dark: #b45309; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #059669; --primary-dark: #047857; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -21,7 +21,7 @@
         .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
         .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
         input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
         input:focus, select:focus { outline: none; border-color: var(--primary); }
@@ -30,16 +30,14 @@
         .result-hero-label { color: rgba(255,255,255,0.8); }
         .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
-        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
-        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
-        .cost-breakdown { margin-top: 20px; }
-        .cost-row { display: flex; justify-content: space-between; padding: 15px; background: var(--bg-input); border-radius: 10px; margin-bottom: 10px; }
-        .cost-row.total { background: var(--success); color: white; font-weight: 700; }
+        .result-value { font-size: 1.2rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.8rem; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } .results-grid { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
 <body>
@@ -54,9 +52,9 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
-    
+
     <header class="header">
-        <h1>🏠 Deck Calculator</h1>
+        <h1>🏡 Deck Calculator</h1>
     </header>
 
     <div class="main-container">
@@ -65,94 +63,63 @@
                 <h2>📐 Deck Dimensions</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Deck Length (ft)</label>
-                        <input type="number" id="length" value="16" oninput="calculate()">
+                        <label>Deck Length (feet)</label>
+                        <input type="number" id="length" value="16" step="1" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Deck Width (ft)</label>
-                        <input type="number" id="width" value="12" oninput="calculate()">
+                        <label>Deck Width (feet)</label>
+                        <input type="number" id="width" value="12" step="1" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Decking Material</label>
                         <select id="material" onchange="calculate()">
-                            <option value="pt">Pressure Treated Wood</option>
-                            <option value="cedar">Cedar</option>
-                            <option value="composite">Composite</option>
-                            <option value="trex">Trex/Premium Composite</option>
+                            <option value="pt">Pressure-Treated ($2/sq ft)</option>
+                            <option value="cedar">Cedar ($4/sq ft)</option>
+                            <option value="composite" selected>Composite ($6/sq ft)</option>
+                            <option value="premium">Premium Composite ($10/sq ft)</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Board Width</label>
                         <select id="boardWidth" onchange="calculate()">
-                            <option value="5.5" selected>5.5" (standard)</option>
-                            <option value="3.5">3.5" (narrow)</option>
-                            <option value="7.25">7.25" (wide)</option>
+                            <option value="5.5" selected>5.5" (Standard)</option>
+                            <option value="7.25">7.25" (Wide)</option>
                         </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Joist Spacing</label>
-                        <select id="joistSpacing" onchange="calculate()">
-                            <option value="12">12" on center</option>
-                            <option value="16" selected>16" on center</option>
-                            <option value="24">24" on center</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Waste Factor (%)</label>
-                        <input type="number" id="waste" value="10" oninput="calculate()">
                     </div>
                 </div>
-                
+
                 <div class="result-hero">
                     <div class="result-hero-label">Estimated Total Cost</div>
                     <div class="result-hero-value" id="totalCost">$0</div>
                 </div>
-                
+
                 <div class="results-grid">
                     <div class="result-card">
-                        <div class="result-value" id="sqFeet">0</div>
+                        <div class="result-value" id="sqft">0</div>
                         <div class="result-label">Square Feet</div>
                     </div>
                     <div class="result-card">
                         <div class="result-value" id="deckBoards">0</div>
-                        <div class="result-label">Deck Boards (12ft)</div>
+                        <div class="result-label">Deck Boards</div>
                     </div>
                     <div class="result-card">
                         <div class="result-value" id="joists">0</div>
                         <div class="result-label">Joists (2x8)</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="screws">0</div>
-                        <div class="result-label">Lbs of Screws</div>
+                        <div class="result-value" id="posts">0</div>
+                        <div class="result-label">Posts (4x4)</div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
                 <h2>💰 Cost Breakdown</h2>
-                <div class="cost-breakdown">
-                    <div class="cost-row">
-                        <span>Decking Boards</span>
-                        <span id="boardsCost">$0</span>
-                    </div>
-                    <div class="cost-row">
-                        <span>Joists & Frame</span>
-                        <span id="joistsCost">$0</span>
-                    </div>
-                    <div class="cost-row">
-                        <span>Hardware & Screws</span>
-                        <span id="hardwareCost">$0</span>
-                    </div>
-                    <div class="cost-row">
-                        <span>Concrete Footings</span>
-                        <span id="footingsCost">$0</span>
-                    </div>
-                    <div class="cost-row total">
-                        <span>Materials Total</span>
-                        <span id="materialsCost">$0</span>
-                    </div>
-                </div>
-                <p style="color: var(--text-secondary); margin-top: 15px; font-size: 0.9rem;">* Labor typically adds 50-100% to materials cost</p>
+                <div class="breakdown-row"><span>Decking Material</span><span id="deckingCost">$0</span></div>
+                <div class="breakdown-row"><span>Framing Lumber</span><span id="framingCost">$0</span></div>
+                <div class="breakdown-row"><span>Hardware/Screws</span><span id="hardwareCost">$0</span></div>
+                <div class="breakdown-row"><span>Posts & Footings</span><span id="postsCost">$0</span></div>
+                <div class="breakdown-row" style="font-weight: bold;"><span>Materials Total</span><span id="materialTotal">$0</span></div>
             </div>
 
             <div class="ad-container">
@@ -164,10 +131,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="fence-calculator.html" class="related-link">🏗️ Fence Calculator</a>
-                    <a href="concrete-calculator.html" class="related-link">🧱 Concrete Calculator</a>
-                    <a href="square-footage-calculator.html" class="related-link">📐 Square Footage</a>
-                    <a href="paint-calculator.html" class="related-link">🎨 Paint Calculator</a>
+                    <a href="lumber-calculator.html" class="related-link">🪵 Lumber</a>
+                    <a href="fence-calculator.html" class="related-link">🚧 Fence</a>
+                    <a href="concrete-calculator.html" class="related-link">🏗️ Concrete</a>
+                    <a href="railing-calculator.html" class="related-link">🏠 Railing</a>
                 </div>
             </div>
         </div>
@@ -183,46 +150,53 @@
 
     <script>
         const materialPrices = {
-            pt: { board: 8, label: 'Pressure Treated' },
-            cedar: { board: 15, label: 'Cedar' },
-            composite: { board: 22, label: 'Composite' },
-            trex: { board: 35, label: 'Premium Composite' }
+            pt: 2,
+            cedar: 4,
+            composite: 6,
+            premium: 10
         };
-        
+
         function calculate() {
             const length = parseFloat(document.getElementById('length').value) || 0;
             const width = parseFloat(document.getElementById('width').value) || 0;
             const material = document.getElementById('material').value;
-            const boardWidth = parseFloat(document.getElementById('boardWidth').value) / 12;
-            const joistSpacing = parseFloat(document.getElementById('joistSpacing').value);
-            const waste = parseFloat(document.getElementById('waste').value) / 100 || 0.1;
-            
-            const sqFeet = length * width;
-            const boardsNeeded = Math.ceil((width / boardWidth) * (1 + waste));
-            const joists = Math.ceil((length * 12) / joistSpacing) + 1;
-            const screws = Math.ceil(sqFeet * 0.1);
-            const footings = Math.ceil(length / 6) * 2;
-            
-            document.getElementById('sqFeet').textContent = Math.round(sqFeet).toLocaleString();
-            document.getElementById('deckBoards').textContent = boardsNeeded;
+            const boardWidth = parseFloat(document.getElementById('boardWidth').value);
+
+            const sqft = length * width;
+            const pricePerSqft = materialPrices[material];
+
+            // Deck boards (running perpendicular to joists)
+            const boardsNeeded = Math.ceil((width * 12) / (boardWidth + 0.25));
+            const deckBoards = Math.ceil(boardsNeeded * 1.1); // 10% waste
+
+            // Joists (16" on center)
+            const joists = Math.ceil(length / 1.33) + 2;
+
+            // Posts (8' apart max)
+            const postsLength = Math.ceil(length / 8) + 1;
+            const postsWidth = Math.ceil(width / 8) + 1;
+            const posts = postsLength * postsWidth;
+
+            // Costs
+            const deckingCost = sqft * pricePerSqft;
+            const framingCost = joists * 12 + (length * 2 + width * 2) * 1.5; // Joists + rim boards
+            const hardwareCost = sqft * 0.75;
+            const postsCost = posts * 35; // Post + footing
+
+            const materialTotal = deckingCost + framingCost + hardwareCost + postsCost;
+
+            document.getElementById('sqft').textContent = sqft + ' sq ft';
+            document.getElementById('deckBoards').textContent = deckBoards + ' (12ft)';
             document.getElementById('joists').textContent = joists;
-            document.getElementById('screws').textContent = screws;
-            
-            const boardPrice = materialPrices[material].board;
-            const boardsCost = boardsNeeded * boardPrice;
-            const joistsCost = joists * 12;
-            const hardwareCost = screws * 8 + 50;
-            const footingsCost = footings * 15;
-            const totalCost = boardsCost + joistsCost + hardwareCost + footingsCost;
-            
-            document.getElementById('boardsCost').textContent = '$' + Math.round(boardsCost).toLocaleString();
-            document.getElementById('joistsCost').textContent = '$' + Math.round(joistsCost).toLocaleString();
-            document.getElementById('hardwareCost').textContent = '$' + Math.round(hardwareCost).toLocaleString();
-            document.getElementById('footingsCost').textContent = '$' + Math.round(footingsCost).toLocaleString();
-            document.getElementById('materialsCost').textContent = '$' + Math.round(totalCost).toLocaleString();
-            document.getElementById('totalCost').textContent = '$' + Math.round(totalCost).toLocaleString();
+            document.getElementById('posts').textContent = posts;
+
+            document.getElementById('deckingCost').textContent = '$' + Math.round(deckingCost);
+            document.getElementById('framingCost').textContent = '$' + Math.round(framingCost);
+            document.getElementById('hardwareCost').textContent = '$' + Math.round(hardwareCost);
+            document.getElementById('postsCost').textContent = '$' + Math.round(postsCost);
+            document.getElementById('materialTotal').textContent = '$' + Math.round(materialTotal);
+            document.getElementById('totalCost').textContent = '$' + Math.round(materialTotal);
         }
-        
         calculate();
     </script>
 </body>
