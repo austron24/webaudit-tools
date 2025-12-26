@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>College Cost Calculator - 4-Year Cost Estimator</title>
-    <meta name="description" content="Free college cost calculator. Estimate the total cost of a 4-year degree including tuition, room, board, and fees.">
-    <meta name="keywords" content="college cost calculator, university tuition, college expenses, education cost">
+    <title>College Cost Calculator - Estimate Total Education Expenses</title>
+    <meta name="description" content="Free college cost calculator. Estimate total 4-year college expenses including tuition, room and board, and fees. Plan for education costs.">
+    <meta name="keywords" content="college cost calculator, tuition calculator, education cost, college expenses, university cost">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/college-cost-calculator.html">
     <style>
-        :root { --primary: #2563eb; --primary-dark: #1d4ed8; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #0ea5e9; --primary-dark: #0284c7; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -33,11 +33,15 @@
         .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
         .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
         .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
+        .year-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 15px; }
+        .year-card { background: var(--bg-input); padding: 15px; border-radius: 10px; text-align: center; }
+        .year-label { color: var(--accent); font-weight: bold; margin-bottom: 10px; }
+        .year-value { font-size: 1.2rem; font-weight: bold; color: var(--secondary); }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) { .form-grid, .results-grid, .year-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -60,15 +64,15 @@
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>🏫 College Expenses</h2>
+                <h2>🏫 Annual Costs</h2>
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Annual Tuition ($)</label>
-                        <input type="number" id="tuition" value="35000" step="1000" oninput="calculate()">
+                        <input type="number" id="tuition" value="12000" step="500" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Room & Board ($)</label>
-                        <input type="number" id="room" value="14000" step="500" oninput="calculate()">
+                        <input type="number" id="roomBoard" value="12000" step="500" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Books & Supplies ($)</label>
@@ -76,47 +80,91 @@
                     </div>
                     <div class="form-group">
                         <label>Personal Expenses ($)</label>
-                        <input type="number" id="personal" value="2500" step="100" oninput="calculate()">
+                        <input type="number" id="personal" value="2000" step="100" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Years to Complete</label>
-                        <select id="years" onchange="calculate()">
-                            <option value="2">2 Years</option>
-                            <option value="4" selected>4 Years</option>
-                            <option value="5">5 Years</option>
-                            <option value="6">6 Years</option>
-                        </select>
+                        <label>Transportation ($)</label>
+                        <input type="number" id="transport" value="1500" step="100" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Annual Increase (%)</label>
-                        <input type="number" id="increase" value="3" step="0.5" oninput="calculate()">
-                    </div>
-                </div>
-
-                <div class="result-hero">
-                    <div class="result-hero-label">Total Cost of Degree</div>
-                    <div class="result-hero-value" id="totalCost">$0</div>
-                </div>
-
-                <div class="results-grid">
-                    <div class="result-card">
-                        <div class="result-value" id="annualCost">$0</div>
-                        <div class="result-label">Year 1 Cost</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="totalTuition">$0</div>
-                        <div class="result-label">Total Tuition</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="totalLiving">$0</div>
-                        <div class="result-label">Total Living</div>
+                        <label>Fees & Other ($)</label>
+                        <input type="number" id="fees" value="1500" step="100" oninput="calculate()">
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>📊 Year-by-Year Breakdown</h2>
-                <div id="yearlyBreakdown"></div>
+                <h2>💰 Financial Aid & Savings</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Annual Scholarships ($)</label>
+                        <input type="number" id="scholarships" value="5000" step="500" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Annual Grants ($)</label>
+                        <input type="number" id="grants" value="3000" step="500" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>529 Savings ($)</label>
+                        <input type="number" id="savings529" value="20000" step="1000" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Annual Inflation (%)</label>
+                        <input type="number" id="inflation" value="4" step="0.5" oninput="calculate()">
+                    </div>
+                </div>
+
+                <div class="result-hero">
+                    <div class="result-hero-label">Total 4-Year Cost</div>
+                    <div class="result-hero-value" id="totalCost">$0</div>
+                </div>
+
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-value" id="netCost">$0</div>
+                        <div class="result-label">Net Cost (After Aid)</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="loanNeeded">$0</div>
+                        <div class="result-label">Loans Needed</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="perYear">$0</div>
+                        <div class="result-label">Avg Per Year</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📅 Year-by-Year Breakdown</h2>
+                <div class="year-grid">
+                    <div class="year-card">
+                        <div class="year-label">Freshman</div>
+                        <div class="year-value" id="year1">$0</div>
+                    </div>
+                    <div class="year-card">
+                        <div class="year-label">Sophomore</div>
+                        <div class="year-value" id="year2">$0</div>
+                    </div>
+                    <div class="year-card">
+                        <div class="year-label">Junior</div>
+                        <div class="year-value" id="year3">$0</div>
+                    </div>
+                    <div class="year-card">
+                        <div class="year-label">Senior</div>
+                        <div class="year-value" id="year4">$0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📊 Cost Breakdown</h2>
+                <div class="breakdown-row"><span>Tuition (4 years)</span><span id="totalTuition">$0</span></div>
+                <div class="breakdown-row"><span>Room & Board (4 years)</span><span id="totalRoom">$0</span></div>
+                <div class="breakdown-row"><span>Books & Supplies (4 years)</span><span id="totalBooks">$0</span></div>
+                <div class="breakdown-row"><span>Personal & Transport (4 years)</span><span id="totalPersonal">$0</span></div>
+                <div class="breakdown-row"><span>Fees (4 years)</span><span id="totalFees">$0</span></div>
+                <div class="breakdown-row" style="background: var(--success); font-weight: bold;"><span>Total Aid Received</span><span id="totalAid">-$0</span></div>
             </div>
 
             <div class="ad-container">
@@ -128,10 +176,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="student-loan-calculator.html" class="related-link">🎓 Student Loans</a>
-                    <a href="gpa-calculator.html" class="related-link">📚 GPA Calculator</a>
-                    <a href="savings-goal-calculator.html" class="related-link">💰 Savings Goal</a>
-                    <a href="compound-interest-calculator.html" class="related-link">📈 Compound Interest</a>
+                    <a href="student-loan-calculator.html" class="related-link">🎓 Student Loan</a>
+                    <a href="savings-calculator.html" class="related-link">💰 Savings</a>
+                    <a href="budget-calculator.html" class="related-link">📊 Budget</a>
+                    <a href="investment-calculator.html" class="related-link">📈 Investment</a>
                 </div>
             </div>
         </div>
@@ -148,38 +196,54 @@
     <script>
         function calculate() {
             const tuition = parseFloat(document.getElementById('tuition').value) || 0;
-            const room = parseFloat(document.getElementById('room').value) || 0;
+            const roomBoard = parseFloat(document.getElementById('roomBoard').value) || 0;
             const books = parseFloat(document.getElementById('books').value) || 0;
             const personal = parseFloat(document.getElementById('personal').value) || 0;
-            const years = parseInt(document.getElementById('years').value);
-            const increase = parseFloat(document.getElementById('increase').value) / 100;
-
-            const year1 = tuition + room + books + personal;
+            const transport = parseFloat(document.getElementById('transport').value) || 0;
+            const fees = parseFloat(document.getElementById('fees').value) || 0;
+            
+            const scholarships = parseFloat(document.getElementById('scholarships').value) || 0;
+            const grants = parseFloat(document.getElementById('grants').value) || 0;
+            const savings529 = parseFloat(document.getElementById('savings529').value) || 0;
+            const inflation = parseFloat(document.getElementById('inflation').value) || 0;
+            
+            const annualBase = tuition + roomBoard + books + personal + transport + fees;
+            const annualAid = scholarships + grants;
+            
             let totalCost = 0;
-            let totalTuition = 0;
-            let totalLiving = 0;
-            let html = '';
-
-            for (let y = 0; y < years; y++) {
-                const mult = Math.pow(1 + increase, y);
-                const yearTuition = tuition * mult;
-                const yearRoom = room * mult;
-                const yearBooks = books * mult;
-                const yearPersonal = personal * mult;
-                const yearTotal = yearTuition + yearRoom + yearBooks + yearPersonal;
-                
-                totalTuition += yearTuition;
-                totalLiving += yearRoom + yearBooks + yearPersonal;
-                totalCost += yearTotal;
-                
-                html += '<div class="breakdown-row"><span>Year ' + (y + 1) + '</span><span>$' + Math.round(yearTotal).toLocaleString() + '</span></div>';
+            let totalAid = 0;
+            const yearCosts = [];
+            
+            for (let year = 0; year < 4; year++) {
+                const inflatedCost = annualBase * Math.pow(1 + inflation / 100, year);
+                const yearCost = inflatedCost - annualAid;
+                yearCosts.push(inflatedCost);
+                totalCost += inflatedCost;
+                totalAid += annualAid;
             }
-
-            document.getElementById('totalCost').textContent = '$' + Math.round(totalCost).toLocaleString();
-            document.getElementById('annualCost').textContent = '$' + Math.round(year1).toLocaleString();
-            document.getElementById('totalTuition').textContent = '$' + Math.round(totalTuition).toLocaleString();
-            document.getElementById('totalLiving').textContent = '$' + Math.round(totalLiving).toLocaleString();
-            document.getElementById('yearlyBreakdown').innerHTML = html;
+            
+            const netCost = totalCost - totalAid - savings529;
+            const loanNeeded = Math.max(0, netCost);
+            
+            // Update displays
+            document.getElementById('totalCost').textContent = '$' + totalCost.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('netCost').textContent = '$' + (totalCost - totalAid).toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('loanNeeded').textContent = '$' + loanNeeded.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('perYear').textContent = '$' + (totalCost / 4).toLocaleString(undefined, {maximumFractionDigits: 0});
+            
+            document.getElementById('year1').textContent = '$' + yearCosts[0].toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('year2').textContent = '$' + yearCosts[1].toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('year3').textContent = '$' + yearCosts[2].toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('year4').textContent = '$' + yearCosts[3].toLocaleString(undefined, {maximumFractionDigits: 0});
+            
+            // Breakdown totals
+            const totalTuition = tuition * 4 * (1 + (1 + inflation/100) + Math.pow(1 + inflation/100, 2) + Math.pow(1 + inflation/100, 3)) / 4;
+            document.getElementById('totalTuition').textContent = '$' + (tuition * 4.3).toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('totalRoom').textContent = '$' + (roomBoard * 4.3).toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('totalBooks').textContent = '$' + (books * 4.3).toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('totalPersonal').textContent = '$' + ((personal + transport) * 4.3).toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('totalFees').textContent = '$' + (fees * 4.3).toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('totalAid').textContent = '-$' + totalAid.toLocaleString(undefined, {maximumFractionDigits: 0});
         }
         calculate();
     </script>

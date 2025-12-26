@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Loan Calculator - Monthly Payment & Total Cost</title>
-    <meta name="description" content="Free student loan calculator. Calculate monthly payments, total interest, and payoff timeline for your student loans.">
-    <meta name="keywords" content="student loan calculator, college loan payment, student debt calculator, loan repayment">
+    <title>Student Loan Calculator - Calculate Payments & Payoff</title>
+    <meta name="description" content="Free student loan calculator. Calculate monthly payments, total interest, and payoff timeline. Compare repayment plans.">
+    <meta name="keywords" content="student loan calculator, student loan payment, education loan, loan payoff, student debt">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/student-loan-calculator.html">
     <style>
-        :root { --primary: #7c3aed; --primary-dark: #6d28d9; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #8b5cf6; --primary-dark: #7c3aed; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -28,16 +28,23 @@
         .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
         .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
         .result-hero-label { color: rgba(255,255,255,0.8); }
-        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
-        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-value { font-size: 1.2rem; font-weight: 700; color: var(--secondary); }
         .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
-        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
+        .plan-card { background: var(--bg-input); padding: 20px; border-radius: 12px; margin-bottom: 15px; }
+        .plan-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .plan-name { font-weight: bold; font-size: 1.1rem; color: var(--accent); }
+        .plan-badge { background: var(--success); color: white; padding: 3px 10px; border-radius: 15px; font-size: 0.8rem; }
+        .plan-details { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .plan-stat { text-align: center; }
+        .plan-stat-value { font-size: 1.1rem; font-weight: bold; color: var(--secondary); }
+        .plan-stat-label { font-size: 0.8rem; color: var(--text-secondary); }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) { .form-grid, .results-grid, .plan-details { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -63,35 +70,31 @@
                 <h2>📚 Loan Details</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Loan Amount ($)</label>
-                        <input type="number" id="amount" value="35000" step="1000" oninput="calculate()">
+                        <label>Total Loan Balance ($)</label>
+                        <input type="number" id="balance" value="35000" step="1000" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Interest Rate (%)</label>
-                        <input type="number" id="rate" value="5.5" step="0.25" oninput="calculate()">
+                        <input type="number" id="rate" value="6.8" step="0.1" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Loan Term (years)</label>
                         <select id="term" onchange="calculate()">
-                            <option value="10" selected>10 years (Standard)</option>
-                            <option value="15">15 years</option>
-                            <option value="20">20 years</option>
-                            <option value="25">25 years (Extended)</option>
+                            <option value="10" selected>10 Years (Standard)</option>
+                            <option value="15">15 Years</option>
+                            <option value="20">20 Years</option>
+                            <option value="25">25 Years</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Loan Type</label>
-                        <select id="type" onchange="calculate()">
-                            <option value="federal">Federal (Subsidized)</option>
-                            <option value="unsubsidized">Federal (Unsubsidized)</option>
-                            <option value="private">Private</option>
-                        </select>
+                        <label>Extra Monthly Payment ($)</label>
+                        <input type="number" id="extra" value="0" step="50" oninput="calculate()">
                     </div>
                 </div>
 
                 <div class="result-hero">
                     <div class="result-hero-label">Monthly Payment</div>
-                    <div class="result-hero-value" id="monthly">$0</div>
+                    <div class="result-hero-value" id="monthlyPayment">$0</div>
                 </div>
 
                 <div class="results-grid">
@@ -104,17 +107,79 @@
                         <div class="result-label">Total Interest</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="payoffDate">-</div>
+                        <div class="result-value" id="payoffDate">Jan 2034</div>
                         <div class="result-label">Payoff Date</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="interestSaved">$0</div>
+                        <div class="result-label">Interest Saved</div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>📊 Repayment Options</h2>
-                <div class="breakdown-row"><span>Standard 10-Year</span><span id="plan10">$0/mo</span></div>
-                <div class="breakdown-row"><span>Extended 25-Year</span><span id="plan25">$0/mo</span></div>
-                <div class="breakdown-row"><span>Income-Driven (est.)</span><span id="planIncome">$0/mo</span></div>
+                <h2>📊 Repayment Plan Comparison</h2>
+                
+                <div class="plan-card" id="standardPlan">
+                    <div class="plan-header">
+                        <span class="plan-name">Standard (10 Year)</span>
+                        <span class="plan-badge">Lowest Total Cost</span>
+                    </div>
+                    <div class="plan-details">
+                        <div class="plan-stat">
+                            <div class="plan-stat-value" id="std10Payment">$0</div>
+                            <div class="plan-stat-label">Monthly</div>
+                        </div>
+                        <div class="plan-stat">
+                            <div class="plan-stat-value" id="std10Total">$0</div>
+                            <div class="plan-stat-label">Total Paid</div>
+                        </div>
+                        <div class="plan-stat">
+                            <div class="plan-stat-value" id="std10Interest">$0</div>
+                            <div class="plan-stat-label">Interest</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <span class="plan-name">Extended (20 Year)</span>
+                    </div>
+                    <div class="plan-details">
+                        <div class="plan-stat">
+                            <div class="plan-stat-value" id="ext20Payment">$0</div>
+                            <div class="plan-stat-label">Monthly</div>
+                        </div>
+                        <div class="plan-stat">
+                            <div class="plan-stat-value" id="ext20Total">$0</div>
+                            <div class="plan-stat-label">Total Paid</div>
+                        </div>
+                        <div class="plan-stat">
+                            <div class="plan-stat-value" id="ext20Interest">$0</div>
+                            <div class="plan-stat-label">Interest</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <span class="plan-name">Aggressive (5 Year)</span>
+                    </div>
+                    <div class="plan-details">
+                        <div class="plan-stat">
+                            <div class="plan-stat-value" id="agg5Payment">$0</div>
+                            <div class="plan-stat-label">Monthly</div>
+                        </div>
+                        <div class="plan-stat">
+                            <div class="plan-stat-value" id="agg5Total">$0</div>
+                            <div class="plan-stat-label">Total Paid</div>
+                        </div>
+                        <div class="plan-stat">
+                            <div class="plan-stat-value" id="agg5Interest">$0</div>
+                            <div class="plan-stat-label">Interest</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="ad-container">
@@ -126,10 +191,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="loan-calculator.html" class="related-link">💵 Loan Calculator</a>
-                    <a href="debt-payoff-calculator.html" class="related-link">🎯 Debt Payoff</a>
-                    <a href="savings-goal-calculator.html" class="related-link">💰 Savings Goal</a>
-                    <a href="budget-calculator.html" class="related-link">📊 Budget</a>
+                    <a href="loan-comparison-calculator.html" class="related-link">📊 Loan Comparison</a>
+                    <a href="budget-calculator.html" class="related-link">💰 Budget</a>
+                    <a href="debt-payoff-calculator.html" class="related-link">💳 Debt Payoff</a>
+                    <a href="savings-calculator.html" class="related-link">🏦 Savings</a>
                 </div>
             </div>
         </div>
@@ -144,34 +209,68 @@
     </div>
 
     <script>
-        function calcPayment(principal, rate, months) {
+        function calcLoan(principal, rate, years) {
             const monthlyRate = rate / 100 / 12;
-            if (monthlyRate === 0) return principal / months;
-            return principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+            const numPayments = years * 12;
+            const payment = principal * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / (Math.pow(1 + monthlyRate, numPayments) - 1);
+            const totalPayment = payment * numPayments;
+            const totalInterest = totalPayment - principal;
+            return { payment, totalPayment, totalInterest };
         }
 
         function calculate() {
-            const amount = parseFloat(document.getElementById('amount').value) || 0;
+            const balance = parseFloat(document.getElementById('balance').value) || 0;
             const rate = parseFloat(document.getElementById('rate').value) || 0;
-            const term = parseInt(document.getElementById('term').value);
-            const months = term * 12;
-
-            const monthly = calcPayment(amount, rate, months);
-            const totalPayment = monthly * months;
-            const totalInterest = totalPayment - amount;
-
+            const term = parseInt(document.getElementById('term').value) || 10;
+            const extra = parseFloat(document.getElementById('extra').value) || 0;
+            
+            const result = calcLoan(balance, rate, term);
+            const monthlyPayment = result.payment + extra;
+            
+            // Calculate with extra payments
+            let remaining = balance;
+            let months = 0;
+            let totalPaid = 0;
+            const monthlyRate = rate / 100 / 12;
+            
+            while (remaining > 0 && months < term * 12) {
+                const interest = remaining * monthlyRate;
+                const principalPaid = Math.min(monthlyPayment - interest, remaining);
+                remaining -= principalPaid;
+                totalPaid += Math.min(monthlyPayment, principalPaid + interest);
+                months++;
+            }
+            
+            const totalInterest = totalPaid - balance;
+            const baseInterest = result.totalInterest;
+            const interestSaved = extra > 0 ? baseInterest - totalInterest : 0;
+            
             const payoffDate = new Date();
             payoffDate.setMonth(payoffDate.getMonth() + months);
-            const payoffStr = payoffDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-
-            document.getElementById('monthly').textContent = '$' + Math.round(monthly).toLocaleString();
-            document.getElementById('totalPayment').textContent = '$' + Math.round(totalPayment).toLocaleString();
-            document.getElementById('totalInterest').textContent = '$' + Math.round(totalInterest).toLocaleString();
-            document.getElementById('payoffDate').textContent = payoffStr;
-
-            document.getElementById('plan10').textContent = '$' + Math.round(calcPayment(amount, rate, 120)).toLocaleString() + '/mo';
-            document.getElementById('plan25').textContent = '$' + Math.round(calcPayment(amount, rate, 300)).toLocaleString() + '/mo';
-            document.getElementById('planIncome').textContent = '$' + Math.round(amount * 0.10 / 12).toLocaleString() + '/mo';
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            
+            document.getElementById('monthlyPayment').textContent = '$' + monthlyPayment.toFixed(2);
+            document.getElementById('totalPayment').textContent = '$' + totalPaid.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('totalInterest').textContent = '$' + totalInterest.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('payoffDate').textContent = monthNames[payoffDate.getMonth()] + ' ' + payoffDate.getFullYear();
+            document.getElementById('interestSaved').textContent = '$' + interestSaved.toLocaleString(undefined, {maximumFractionDigits: 0});
+            
+            // Plan comparisons
+            const std10 = calcLoan(balance, rate, 10);
+            const ext20 = calcLoan(balance, rate, 20);
+            const agg5 = calcLoan(balance, rate, 5);
+            
+            document.getElementById('std10Payment').textContent = '$' + std10.payment.toFixed(0);
+            document.getElementById('std10Total').textContent = '$' + std10.totalPayment.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('std10Interest').textContent = '$' + std10.totalInterest.toLocaleString(undefined, {maximumFractionDigits: 0});
+            
+            document.getElementById('ext20Payment').textContent = '$' + ext20.payment.toFixed(0);
+            document.getElementById('ext20Total').textContent = '$' + ext20.totalPayment.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('ext20Interest').textContent = '$' + ext20.totalInterest.toLocaleString(undefined, {maximumFractionDigits: 0});
+            
+            document.getElementById('agg5Payment').textContent = '$' + agg5.payment.toFixed(0);
+            document.getElementById('agg5Total').textContent = '$' + agg5.totalPayment.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('agg5Interest').textContent = '$' + agg5.totalInterest.toLocaleString(undefined, {maximumFractionDigits: 0});
         }
         calculate();
     </script>
