@@ -3,285 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retirement Calculator - How Much Do You Need to Retire?</title>
-    <meta name="description" content="Calculate how much you need to save for retirement. See if you're on track and how to reach your retirement goals.">
+    <title>Retirement Calculator - Plan Your Retirement Savings</title>
+    <meta name="description" content="Free retirement calculator. Plan your retirement savings. Calculate how much you need to retire comfortably.">
+    <meta name="keywords" content="retirement calculator, retirement planning, retirement savings, 401k calculator, pension calculator">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/retirement-calculator.html">
-    <meta property="og:title" content="Retirement Calculator - Plan Your Future">
-    <meta property="og:description" content="Calculate your retirement savings needs and create a plan.">
-    <meta property="og:type" content="website">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; }
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; min-height: 100vh; }
-        .header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
-        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; }
-        .nav-links { display: flex; gap: 1.5rem; }
-        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; }
-        .nav-links a:hover { color: var(--primary); }
-        .ad-top { background: var(--bg-card); padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); }
-        .ad-mobile { display: none; background: var(--bg-card); padding: 0.5rem; text-align: center; }
-        .main-layout { display: flex; max-width: 1400px; margin: 0 auto; gap: 2rem; padding: 2rem; }
-        .content { flex: 1; min-width: 0; }
-        .sidebar { width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 1rem; }
-        .hero { text-align: center; margin-bottom: 2rem; }
-        .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary), #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .hero p { color: var(--text-secondary); font-size: 1.1rem; }
-        .calculator-card { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
-        .section-title { font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--primary); }
-        .form-group { margin-bottom: 1.25rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; }
-        .form-group input, .form-group select { width: 100%; padding: 0.75rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 0.5rem; color: var(--text-primary); font-size: 1rem; }
-        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
-        .input-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-        .calculate-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; border-radius: 0.5rem; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; }
-        .calculate-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
-        .results { display: none; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
-        .results.show { display: block; }
-        .status-card { text-align: center; padding: 2rem; border-radius: 1rem; margin-bottom: 2rem; }
-        .status-card.on-track { background: rgba(16, 185, 129, 0.1); border: 2px solid var(--success); }
-        .status-card.behind { background: rgba(245, 158, 11, 0.1); border: 2px solid var(--warning); }
-        .status-card.far-behind { background: rgba(239, 68, 68, 0.1); border: 2px solid var(--danger); }
-        .status-card h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-        .status-card.on-track h2 { color: var(--success); }
-        .status-card.behind h2 { color: var(--warning); }
-        .status-card.far-behind h2 { color: var(--danger); }
-        .status-card p { color: var(--text-secondary); }
-        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-        .result-box { background: var(--bg-input); padding: 1.25rem; border-radius: 0.75rem; text-align: center; }
-        .result-box.highlight { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid var(--primary); }
-        .result-label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
-        .result-value { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
-        .projection { margin-top: 2rem; }
-        .projection h4 { color: var(--text-primary); margin-bottom: 1rem; }
-        .projection-bar { background: var(--bg-input); height: 40px; border-radius: 20px; overflow: hidden; position: relative; margin-bottom: 1rem; }
-        .projection-fill { height: 100%; border-radius: 20px; display: flex; align-items: center; padding: 0 1rem; font-weight: 600; font-size: 0.9rem; }
-        .projection-fill.good { background: linear-gradient(90deg, var(--success), #34d399); }
-        .projection-fill.warning { background: linear-gradient(90deg, var(--warning), #fbbf24); }
-        .projection-fill.danger { background: linear-gradient(90deg, var(--danger), #f87171); }
-        .projection-labels { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-secondary); }
-        .ad-inline { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin: 2rem 0; }
-        .info-section { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
-        .info-section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary); }
-        .info-section p, .info-section li { color: var(--text-secondary); margin-bottom: 0.75rem; }
-        .info-section ul { padding-left: 1.5rem; }
-        .related-tools { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); }
-        .related-tools h3 { margin-bottom: 1rem; color: var(--text-primary); }
-        .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
-        .tool-link { display: block; padding: 1rem; background: var(--bg-input); border-radius: 0.5rem; text-decoration: none; color: var(--text-primary); }
-        .tool-link:hover { background: var(--border); transform: translateY(-2px); }
-        .ad-bottom { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin-top: 2rem; }
-        .footer { background: var(--bg-card); border-top: 1px solid var(--border); padding: 2rem; text-align: center; margin-top: 3rem; }
-        .footer p { color: var(--text-secondary); font-size: 0.9rem; }
-        @media (max-width: 968px) { .sidebar { display: none; } .main-layout { padding: 1rem; } }
-        @media (max-width: 640px) { .ad-top { display: none; } .ad-mobile { display: block; } .hero h1 { font-size: 1.75rem; } .input-row { grid-template-columns: 1fr; } .nav-links { display: none; } }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
+        .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
+        .content-area { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        .results-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 25px; border-radius: 12px; text-align: center; }
+        .result-card.highlight { background: linear-gradient(135deg, var(--success), #059669); grid-column: span 2; }
+        .result-value { font-size: 2rem; font-weight: 800; color: var(--secondary); }
+        .result-card.highlight .result-value { color: white; font-size: 2.5rem; }
+        .result-label { color: var(--text-secondary); margin-top: 5px; }
+        .result-card.highlight .result-label { color: rgba(255,255,255,0.8); }
+        .progress-bar { height: 20px; background: var(--bg-dark); border-radius: 10px; margin-top: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--success), var(--secondary)); border-radius: 10px; transition: width 0.5s ease; }
+        .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } .results-grid { grid-template-columns: 1fr; } .result-card.highlight { grid-column: span 1; } }
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="header-content">
-            <a href="index.html" class="logo">CalcTools</a>
-            <nav class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="finance-calculators.html">Finance</a>
-                <a href="health-calculators.html">Health</a>
-                <a href="home-calculators.html">Home</a>
-            </nav>
-        </div>
-    </header>
-    <div class="ad-top">
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
         <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
-        <script src="//www.topcreativeformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
     </div>
-    <div class="ad-mobile">
+    <div class="ad-container" style="display: none;">
+        <div class="ad-label">Advertisement</div>
         <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
-        <script src="//www.topcreativeformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
-    <div class="main-layout">
-        <main class="content">
-            <div class="hero">
-                <h1>Retirement Calculator</h1>
-                <p>Plan your financial future and retire with confidence</p>
-            </div>
-            <div class="calculator-card">
-                <h2 class="section-title">Your Information</h2>
-                <div class="input-row">
+    <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
+    
+    <header class="header">
+        <h1>👴 Retirement Calculator</h1>
+    </header>
+
+    <div class="main-container">
+        <div class="content-area">
+            <div class="card">
+                <h2>📊 Your Information</h2>
+                <div class="form-grid">
                     <div class="form-group">
                         <label>Current Age</label>
-                        <input type="number" id="currentAge" value="35" placeholder="35">
+                        <input type="number" id="currentAge" value="30" min="18" max="80" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Retirement Age</label>
-                        <input type="number" id="retireAge" value="65" placeholder="65">
+                        <input type="number" id="retirementAge" value="65" min="50" max="80" oninput="calculate()">
                     </div>
-                </div>
-                <div class="input-row">
                     <div class="form-group">
-                        <label>Current Retirement Savings ($)</label>
-                        <input type="number" id="currentSavings" value="50000" placeholder="50000">
+                        <label>Current Savings ($)</label>
+                        <input type="number" id="currentSavings" value="50000" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Monthly Contribution ($)</label>
-                        <input type="number" id="monthlyContribution" value="500" placeholder="500">
+                        <input type="number" id="monthlyContribution" value="500" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Expected Return (%)</label>
+                        <input type="number" id="returnRate" value="7" step="0.1" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Desired Monthly Income ($)</label>
+                        <input type="number" id="desiredIncome" value="4000" oninput="calculate()">
                     </div>
                 </div>
-                <div class="input-row">
-                    <div class="form-group">
-                        <label>Expected Annual Return (%)</label>
-                        <input type="number" id="annualReturn" value="7" step="0.5" placeholder="7">
+                
+                <div class="results-grid">
+                    <div class="result-card highlight">
+                        <div class="result-value" id="projectedSavings">$0</div>
+                        <div class="result-label">Projected Savings at Retirement</div>
                     </div>
-                    <div class="form-group">
-                        <label>Desired Annual Retirement Income ($)</label>
-                        <input type="number" id="retireIncome" value="60000" placeholder="60000">
+                    <div class="result-card">
+                        <div class="result-value" id="yearsToRetire">0</div>
+                        <div class="result-label">Years Until Retirement</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="monthlyIncome">$0</div>
+                        <div class="result-label">Est. Monthly Income (4% rule)</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="totalContributions">$0</div>
+                        <div class="result-label">Total Contributions</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="totalInterest">$0</div>
+                        <div class="result-label">Total Interest Earned</div>
                     </div>
                 </div>
-                <div class="input-row">
-                    <div class="form-group">
-                        <label>Expected Social Security ($/month)</label>
-                        <input type="number" id="socialSecurity" value="2000" placeholder="2000">
+                
+                <div style="margin-top: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>Progress to Goal</span>
+                        <span id="progressPercent">0%</span>
                     </div>
-                    <div class="form-group">
-                        <label>Inflation Rate (%)</label>
-                        <input type="number" id="inflation" value="3" step="0.5" placeholder="3">
-                    </div>
-                </div>
-                <button class="calculate-btn" onclick="calculate()">Calculate Retirement</button>
-                <div class="results" id="results">
-                    <div class="status-card" id="statusCard"></div>
-                    <div class="result-grid">
-                        <div class="result-box highlight">
-                            <div class="result-label">Projected Savings at Retirement</div>
-                            <div class="result-value" id="projectedSavings">$0</div>
-                        </div>
-                        <div class="result-box">
-                            <div class="result-label">Amount Needed</div>
-                            <div class="result-value" id="amountNeeded">$0</div>
-                        </div>
-                        <div class="result-box">
-                            <div class="result-label">Monthly Income from Savings</div>
-                            <div class="result-value" id="monthlyFromSavings">$0</div>
-                        </div>
-                        <div class="result-box">
-                            <div class="result-label">Years Until Retirement</div>
-                            <div class="result-value" id="yearsToRetire">0</div>
-                        </div>
-                    </div>
-                    <div class="projection">
-                        <h4>Savings Progress</h4>
-                        <div class="projection-bar">
-                            <div class="projection-fill" id="progressFill"></div>
-                        </div>
-                        <div class="projection-labels">
-                            <span>$0</span>
-                            <span id="goalLabel">Goal: $0</span>
-                        </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
                     </div>
                 </div>
             </div>
-            <div class="ad-inline">
+
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
                 <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
-                <script src="//www.topcreativeformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
             </div>
-            <div class="info-section">
-                <h2>Retirement Planning Tips</h2>
-                <p>Start early and stay consistent to maximize your retirement savings.</p>
-                <ul>
-                    <li><strong>4% Rule:</strong> Plan to withdraw 4% of savings annually in retirement</li>
-                    <li><strong>Employer Match:</strong> Always contribute enough to get full employer 401(k) match</li>
-                    <li><strong>Diversification:</strong> Spread investments across stocks, bonds, and other assets</li>
-                    <li><strong>Catch-Up Contributions:</strong> After 50, you can contribute extra to retirement accounts</li>
-                    <li><strong>Healthcare Costs:</strong> Plan for significant healthcare expenses in retirement</li>
-                </ul>
-            </div>
-            <div class="related-tools">
-                <h3>Related Calculators</h3>
-                <div class="tool-grid">
-                    <a href="401k-calculator.html" class="tool-link">401(k) Calculator</a>
-                    <a href="roth-ira-calculator.html" class="tool-link">Roth IRA Calculator</a>
-                    <a href="compound-interest-calculator.html" class="tool-link">Compound Interest</a>
-                    <a href="investment-calculator.html" class="tool-link">Investment Calculator</a>
-                    <a href="social-security-calculator.html" class="tool-link">Social Security</a>
-                    <a href="inflation-calculator.html" class="tool-link">Inflation Calculator</a>
+
+            <div class="card">
+                <h2>🔗 Related Tools</h2>
+                <div class="related-tools">
+                    <a href="compound-interest-calculator.html" class="related-link">📈 Compound Interest</a>
+                    <a href="savings-goal-calculator.html" class="related-link">🎯 Savings Goal</a>
+                    <a href="inflation-calculator.html" class="related-link">📉 Inflation Calculator</a>
+                    <a href="investment-calculator.html" class="related-link">💹 Investment Calculator</a>
                 </div>
             </div>
-            <div class="ad-bottom">
-                <script type="text/javascript">atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };</script>
-                <script src="//www.topcreativeformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
-            </div>
-        </main>
-        <aside class="sidebar">
-            <div>
+        </div>
+
+        <div class="sidebar">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
                 <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
-                <script src="//www.topcreativeformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
             </div>
-            <div>
-                <script type="text/javascript">atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };</script>
-                <script src="//www.topcreativeformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
-            </div>
-        </aside>
+        </div>
     </div>
-    <footer class="footer">
-        <p>&copy; 2024 CalcTools. Free online calculators for everyone.</p>
-    </footer>
+
     <script>
-        function formatCurrency(num) {
-            if (num >= 1000000) return '$' + (num / 1000000).toFixed(1) + 'M';
-            if (num >= 1000) return '$' + (num / 1000).toFixed(0) + 'K';
-            return '$' + Math.round(num).toLocaleString('en-US');
-        }
-        function formatCurrencyFull(num) {
-            return '$' + Math.round(num).toLocaleString('en-US');
-        }
         function calculate() {
-            const currentAge = parseInt(document.getElementById('currentAge').value) || 0;
-            const retireAge = parseInt(document.getElementById('retireAge').value) || 0;
+            const currentAge = parseInt(document.getElementById('currentAge').value) || 30;
+            const retirementAge = parseInt(document.getElementById('retirementAge').value) || 65;
             const currentSavings = parseFloat(document.getElementById('currentSavings').value) || 0;
             const monthlyContribution = parseFloat(document.getElementById('monthlyContribution').value) || 0;
-            const annualReturn = parseFloat(document.getElementById('annualReturn').value) / 100 || 0;
-            const retireIncome = parseFloat(document.getElementById('retireIncome').value) || 0;
-            const socialSecurity = parseFloat(document.getElementById('socialSecurity').value) || 0;
-            const inflation = parseFloat(document.getElementById('inflation').value) / 100 || 0;
-            const yearsToRetire = retireAge - currentAge;
-            const monthsToRetire = yearsToRetire * 12;
-            const monthlyReturn = annualReturn / 12;
-            let projectedSavings = currentSavings;
-            for (let m = 0; m < monthsToRetire; m++) {
-                projectedSavings = projectedSavings * (1 + monthlyReturn) + monthlyContribution;
+            const returnRate = parseFloat(document.getElementById('returnRate').value) / 100 || 0.07;
+            const desiredIncome = parseFloat(document.getElementById('desiredIncome').value) || 4000;
+            
+            const yearsToRetire = Math.max(0, retirementAge - currentAge);
+            const months = yearsToRetire * 12;
+            const monthlyRate = returnRate / 12;
+            
+            // Future value calculation
+            let balance = currentSavings;
+            for (let i = 0; i < months; i++) {
+                balance = balance * (1 + monthlyRate) + monthlyContribution;
             }
-            const inflationAdjustedIncome = retireIncome * Math.pow(1 + inflation, yearsToRetire);
-            const annualSSIncome = socialSecurity * 12;
-            const neededFromSavings = inflationAdjustedIncome - annualSSIncome;
-            const amountNeeded = neededFromSavings * 25;
-            const monthlyFromSavings = projectedSavings * 0.04 / 12;
-            const totalMonthlyRetireIncome = monthlyFromSavings + socialSecurity;
-            const progressPct = Math.min(100, (projectedSavings / amountNeeded) * 100);
-            let statusClass, statusTitle, statusText;
-            if (progressPct >= 100) {
-                statusClass = 'on-track';
-                statusTitle = 'You\'re On Track!';
-                statusText = 'Your projected savings exceed your retirement goal. Great job!';
-            } else if (progressPct >= 70) {
-                statusClass = 'behind';
-                statusTitle = 'Almost There';
-                statusText = 'You\'re close to your goal. Consider increasing contributions slightly.';
-            } else {
-                statusClass = 'far-behind';
-                statusTitle = 'Action Needed';
-                statusText = 'You may need to increase savings or adjust retirement expectations.';
-            }
-            document.getElementById('statusCard').className = 'status-card ' + statusClass;
-            document.getElementById('statusCard').innerHTML = '<h2>' + statusTitle + '</h2><p>' + statusText + '</p>';
-            document.getElementById('projectedSavings').textContent = formatCurrency(projectedSavings);
-            document.getElementById('amountNeeded').textContent = formatCurrency(amountNeeded);
-            document.getElementById('monthlyFromSavings').textContent = formatCurrencyFull(monthlyFromSavings);
-            document.getElementById('yearsToRetire').textContent = yearsToRetire;
-            const fillClass = progressPct >= 100 ? 'good' : progressPct >= 70 ? 'warning' : 'danger';
-            document.getElementById('progressFill').className = 'projection-fill ' + fillClass;
-            document.getElementById('progressFill').style.width = progressPct + '%';
-            document.getElementById('progressFill').textContent = progressPct.toFixed(0) + '%';
-            document.getElementById('goalLabel').textContent = 'Goal: ' + formatCurrency(amountNeeded);
-            document.getElementById('results').classList.add('show');
+            
+            const totalContributions = currentSavings + (monthlyContribution * months);
+            const totalInterest = balance - totalContributions;
+            const safeWithdrawal = balance * 0.04 / 12;
+            
+            // Goal: desired income * 12 / 0.04 = nest egg needed
+            const neededNestEgg = desiredIncome * 12 / 0.04;
+            const progressPercent = Math.min(100, (balance / neededNestEgg * 100));
+            
+            document.getElementById('projectedSavings').textContent = '$' + balance.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('yearsToRetire').textContent = yearsToRetire + ' years';
+            document.getElementById('monthlyIncome').textContent = '$' + safeWithdrawal.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('totalContributions').textContent = '$' + totalContributions.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('totalInterest').textContent = '$' + totalInterest.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('progressPercent').textContent = progressPercent.toFixed(0) + '%';
+            document.getElementById('progressFill').style.width = progressPercent + '%';
         }
+        
         calculate();
     </script>
 </body>
