@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROI Calculator - Return on Investment</title>
-    <meta name="description" content="Free ROI calculator. Calculate your return on investment percentage and annualized returns for any investment.">
-    <meta name="keywords" content="ROI calculator, return on investment, investment return, investment calculator, profit calculator">
+    <title>ROI Calculator - Return on Investment Calculator</title>
+    <meta name="description" content="Free ROI calculator. Calculate your return on investment, annualized returns, and investment gains.">
+    <meta name="keywords" content="ROI calculator, return on investment, investment calculator, investment return">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/roi-calculator.html">
     <style>
-        :root { --primary: #8b5cf6; --primary-dark: #7c3aed; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #2563eb; --primary-dark: #1d4ed8; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -21,16 +21,14 @@
         .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
         .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
         input { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
         input:focus { outline: none; border-color: var(--primary); }
         .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
-        .result-hero.positive { background: linear-gradient(135deg, var(--success), #059669); }
-        .result-hero.negative { background: linear-gradient(135deg, #ef4444, #dc2626); }
         .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
         .result-hero-label { color: rgba(255,255,255,0.8); }
-        .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
         .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
         .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
@@ -39,7 +37,7 @@
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -66,54 +64,50 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Initial Investment ($)</label>
-                        <input type="number" id="initialInvestment" value="10000" oninput="calculate()">
+                        <input type="number" id="initial" value="10000" step="1000" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Final Value ($)</label>
-                        <input type="number" id="finalValue" value="15000" oninput="calculate()">
+                        <input type="number" id="final" value="15000" step="1000" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Investment Period (Years)</label>
-                        <input type="number" id="years" value="3" step="0.5" oninput="calculate()">
+                        <label>Investment Period (years)</label>
+                        <input type="number" id="years" value="3" step="0.5" min="0.1" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Additional Costs ($)</label>
-                        <input type="number" id="additionalCosts" value="0" oninput="calculate()">
+                        <input type="number" id="costs" value="0" step="100" oninput="calculate()">
                     </div>
                 </div>
 
-                <div class="result-hero" id="roiHero">
+                <div class="result-hero">
                     <div class="result-hero-label">Total ROI</div>
-                    <div class="result-hero-value" id="totalRoi">0%</div>
+                    <div class="result-hero-value" id="roi">0%</div>
                 </div>
 
                 <div class="results-grid">
                     <div class="result-card">
-                        <div class="result-value" id="netProfit">$0</div>
-                        <div class="result-label">Net Profit</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="annualizedRoi">0%</div>
+                        <div class="result-value" id="annualized">0%</div>
                         <div class="result-label">Annualized ROI</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="totalCost">$0</div>
-                        <div class="result-label">Total Cost</div>
+                        <div class="result-value" id="gain">$0</div>
+                        <div class="result-label">Total Gain</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="multiplier">1.0x</div>
+                        <div class="result-value" id="multiple">0x</div>
                         <div class="result-label">Return Multiple</div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>📊 Breakdown</h2>
-                <div class="breakdown-row"><span>Initial Investment</span><span id="initialDisplay">$0</span></div>
-                <div class="breakdown-row"><span>Additional Costs</span><span id="costsDisplay">$0</span></div>
-                <div class="breakdown-row"><span>Total Investment</span><span id="totalInvestDisplay">$0</span></div>
-                <div class="breakdown-row"><span>Final Value</span><span id="finalDisplay">$0</span></div>
-                <div class="breakdown-row" style="font-weight: 700;"><span>Net Profit/Loss</span><span id="profitDisplay">$0</span></div>
+                <h2>📊 Investment Summary</h2>
+                <div class="breakdown-row"><span>Initial Investment</span><span id="initialShow">$0</span></div>
+                <div class="breakdown-row"><span>Additional Costs</span><span id="costsShow">$0</span></div>
+                <div class="breakdown-row"><span>Total Invested</span><span id="totalInvested">$0</span></div>
+                <div class="breakdown-row"><span>Final Value</span><span id="finalShow">$0</span></div>
+                <div class="breakdown-row"><span>Net Gain/Loss</span><span id="netGain">$0</span></div>
             </div>
 
             <div class="ad-container">
@@ -125,10 +119,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="investment-calculator.html" class="related-link">📈 Investment</a>
-                    <a href="compound-interest-calculator.html" class="related-link">💵 Compound Interest</a>
-                    <a href="stock-profit-calculator.html" class="related-link">📊 Stock Profit</a>
-                    <a href="profit-margin-calculator.html" class="related-link">💰 Profit Margin</a>
+                    <a href="compound-interest-calculator.html" class="related-link">💰 Compound Interest</a>
+                    <a href="investment-calculator.html" class="related-link">📊 Investment</a>
+                    <a href="profit-margin-calculator.html" class="related-link">📈 Profit Margin</a>
+                    <a href="retirement-calculator.html" class="related-link">🏖️ Retirement</a>
                 </div>
             </div>
         </div>
@@ -144,34 +138,30 @@
 
     <script>
         function calculate() {
-            const initial = parseFloat(document.getElementById('initialInvestment').value) || 0;
-            const final = parseFloat(document.getElementById('finalValue').value) || 0;
+            const initial = parseFloat(document.getElementById('initial').value) || 0;
+            const final = parseFloat(document.getElementById('final').value) || 0;
             const years = parseFloat(document.getElementById('years').value) || 1;
-            const additionalCosts = parseFloat(document.getElementById('additionalCosts').value) || 0;
+            const costs = parseFloat(document.getElementById('costs').value) || 0;
 
-            const totalCost = initial + additionalCosts;
-            const netProfit = final - totalCost;
-            const totalRoi = totalCost > 0 ? (netProfit / totalCost) * 100 : 0;
-            const multiplier = totalCost > 0 ? final / totalCost : 0;
-            const annualizedRoi = years > 0 && totalCost > 0 ? (Math.pow(final / totalCost, 1 / years) - 1) * 100 : 0;
+            const totalInvested = initial + costs;
+            const gain = final - totalInvested;
+            const roi = totalInvested > 0 ? (gain / totalInvested * 100) : 0;
+            const multiple = totalInvested > 0 ? (final / totalInvested) : 0;
+            
+            // Annualized ROI using CAGR formula
+            const annualized = totalInvested > 0 && years > 0 ? 
+                (Math.pow(final / totalInvested, 1 / years) - 1) * 100 : 0;
 
-            document.getElementById('totalRoi').textContent = (totalRoi >= 0 ? '+' : '') + totalRoi.toFixed(1) + '%';
-            document.getElementById('netProfit').textContent = (netProfit >= 0 ? '$' : '-$') + Math.abs(Math.round(netProfit)).toLocaleString();
-            document.getElementById('annualizedRoi').textContent = (annualizedRoi >= 0 ? '+' : '') + annualizedRoi.toFixed(1) + '%';
-            document.getElementById('totalCost').textContent = '$' + Math.round(totalCost).toLocaleString();
-            document.getElementById('multiplier').textContent = multiplier.toFixed(2) + 'x';
+            document.getElementById('roi').textContent = roi.toFixed(1) + '%';
+            document.getElementById('annualized').textContent = annualized.toFixed(1) + '%';
+            document.getElementById('gain').textContent = '$' + Math.round(gain).toLocaleString();
+            document.getElementById('multiple').textContent = multiple.toFixed(2) + 'x';
 
-            document.getElementById('initialDisplay').textContent = '$' + Math.round(initial).toLocaleString();
-            document.getElementById('costsDisplay').textContent = '$' + Math.round(additionalCosts).toLocaleString();
-            document.getElementById('totalInvestDisplay').textContent = '$' + Math.round(totalCost).toLocaleString();
-            document.getElementById('finalDisplay').textContent = '$' + Math.round(final).toLocaleString();
-            document.getElementById('profitDisplay').textContent = (netProfit >= 0 ? '$' : '-$') + Math.abs(Math.round(netProfit)).toLocaleString();
-            document.getElementById('profitDisplay').style.color = netProfit >= 0 ? 'var(--success)' : '#ef4444';
-
-            const heroEl = document.getElementById('roiHero');
-            heroEl.classList.remove('positive', 'negative');
-            if (totalRoi > 0) heroEl.classList.add('positive');
-            else if (totalRoi < 0) heroEl.classList.add('negative');
+            document.getElementById('initialShow').textContent = '$' + initial.toLocaleString();
+            document.getElementById('costsShow').textContent = '$' + costs.toLocaleString();
+            document.getElementById('totalInvested').textContent = '$' + totalInvested.toLocaleString();
+            document.getElementById('finalShow').textContent = '$' + final.toLocaleString();
+            document.getElementById('netGain').textContent = (gain >= 0 ? '+' : '') + '$' + Math.round(gain).toLocaleString();
         }
         calculate();
     </script>

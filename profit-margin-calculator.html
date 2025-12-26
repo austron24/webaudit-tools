@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profit Margin Calculator - Gross & Net Margin</title>
-    <meta name="description" content="Free profit margin calculator. Calculate gross margin, net margin, and markup percentage for your business.">
+    <meta name="description" content="Free profit margin calculator. Calculate gross profit margin, net profit margin, and markup percentage for your business.">
     <meta name="keywords" content="profit margin calculator, gross margin, net margin, markup calculator, business profit">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/profit-margin-calculator.html">
     <style>
-        :root { --primary: #22c55e; --primary-dark: #16a34a; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #059669; --primary-dark: #047857; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -21,14 +21,14 @@
         .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
         .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
         input { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
         input:focus { outline: none; border-color: var(--primary); }
         .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
         .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
         .result-hero-label { color: rgba(255,255,255,0.8); }
-        .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
         .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
         .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
@@ -37,7 +37,7 @@
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -54,41 +54,45 @@
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
 
     <header class="header">
-        <h1>💰 Profit Margin Calculator</h1>
+        <h1>📈 Profit Margin Calculator</h1>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>📊 Enter Your Numbers</h2>
+                <h2>💰 Revenue & Costs</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Cost Price ($)</label>
-                        <input type="number" id="cost" value="50" step="0.01" oninput="calculate()">
+                        <label>Selling Price ($)</label>
+                        <input type="number" id="price" value="100" step="1" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Selling Price ($)</label>
-                        <input type="number" id="revenue" value="80" step="0.01" oninput="calculate()">
+                        <label>Cost of Goods ($)</label>
+                        <input type="number" id="cost" value="60" step="1" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Operating Expenses ($)</label>
+                        <input type="number" id="expenses" value="15" step="1" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Units Sold</label>
+                        <input type="number" id="units" value="1000" step="100" oninput="calculate()">
                     </div>
                 </div>
 
                 <div class="result-hero">
-                    <div class="result-hero-label">Profit Margin</div>
-                    <div class="result-hero-value" id="profitMargin">0%</div>
+                    <div class="result-hero-label">Gross Profit Margin</div>
+                    <div class="result-hero-value" id="grossMargin">0%</div>
                 </div>
 
                 <div class="results-grid">
                     <div class="result-card">
-                        <div class="result-value" id="grossProfit">$0</div>
-                        <div class="result-label">Gross Profit</div>
+                        <div class="result-value" id="netMargin">0%</div>
+                        <div class="result-label">Net Profit Margin</div>
                     </div>
                     <div class="result-card">
                         <div class="result-value" id="markup">0%</div>
                         <div class="result-label">Markup %</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="costRatio">0%</div>
-                        <div class="result-label">Cost Ratio</div>
                     </div>
                     <div class="result-card">
                         <div class="result-value" id="profitPerUnit">$0</div>
@@ -98,28 +102,12 @@
             </div>
 
             <div class="card">
-                <h2>📋 Breakdown</h2>
-                <div class="breakdown-row"><span>Revenue</span><span id="revenueDisplay">$0</span></div>
-                <div class="breakdown-row"><span>Cost</span><span id="costDisplay">$0</span></div>
-                <div class="breakdown-row" style="font-weight: 700;"><span>Profit</span><span id="profitDisplay" style="color: var(--success);">$0</span></div>
-            </div>
-
-            <div class="card">
-                <h2>🎯 Find Selling Price</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Cost Price ($)</label>
-                        <input type="number" id="findCost" value="50" step="0.01" oninput="findPrice()">
-                    </div>
-                    <div class="form-group">
-                        <label>Desired Margin (%)</label>
-                        <input type="number" id="desiredMargin" value="30" step="1" oninput="findPrice()">
-                    </div>
-                </div>
-                <div class="breakdown-row" style="font-weight: 700; font-size: 1.2rem;">
-                    <span>Required Selling Price</span>
-                    <span id="requiredPrice" style="color: var(--secondary);">$0</span>
-                </div>
+                <h2>📊 Financial Summary</h2>
+                <div class="breakdown-row"><span>Total Revenue</span><span id="revenue">$0</span></div>
+                <div class="breakdown-row"><span>Cost of Goods Sold</span><span id="cogs">$0</span></div>
+                <div class="breakdown-row"><span>Gross Profit</span><span id="grossProfit">$0</span></div>
+                <div class="breakdown-row"><span>Operating Expenses</span><span id="opex">$0</span></div>
+                <div class="breakdown-row"><span>Net Profit</span><span id="netProfit">$0</span></div>
             </div>
 
             <div class="ad-container">
@@ -131,10 +119,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="markup-calculator.html" class="related-link">📈 Markup</a>
-                    <a href="break-even-calculator.html" class="related-link">📊 Break Even</a>
+                    <a href="markup-calculator.html" class="related-link">💵 Markup Calculator</a>
+                    <a href="break-even-calculator.html" class="related-link">📊 Break-Even</a>
+                    <a href="roi-calculator.html" class="related-link">📈 ROI Calculator</a>
                     <a href="discount-calculator.html" class="related-link">🏷️ Discount</a>
-                    <a href="roi-calculator.html" class="related-link">💵 ROI</a>
                 </div>
             </div>
         </div>
@@ -150,35 +138,34 @@
 
     <script>
         function calculate() {
+            const price = parseFloat(document.getElementById('price').value) || 0;
             const cost = parseFloat(document.getElementById('cost').value) || 0;
-            const revenue = parseFloat(document.getElementById('revenue').value) || 0;
+            const expenses = parseFloat(document.getElementById('expenses').value) || 0;
+            const units = parseInt(document.getElementById('units').value) || 0;
 
-            const grossProfit = revenue - cost;
-            const profitMargin = revenue > 0 ? (grossProfit / revenue) * 100 : 0;
-            const markup = cost > 0 ? (grossProfit / cost) * 100 : 0;
-            const costRatio = revenue > 0 ? (cost / revenue) * 100 : 0;
+            const revenue = price * units;
+            const cogs = cost * units;
+            const grossProfit = revenue - cogs;
+            const opex = expenses * units;
+            const netProfit = grossProfit - opex;
 
-            document.getElementById('profitMargin').textContent = profitMargin.toFixed(1) + '%';
-            document.getElementById('grossProfit').textContent = '$' + grossProfit.toFixed(2);
+            const grossMargin = revenue > 0 ? (grossProfit / revenue * 100) : 0;
+            const netMargin = revenue > 0 ? (netProfit / revenue * 100) : 0;
+            const markup = cost > 0 ? ((price - cost) / cost * 100) : 0;
+            const profitPerUnit = price - cost - expenses;
+
+            document.getElementById('grossMargin').textContent = grossMargin.toFixed(1) + '%';
+            document.getElementById('netMargin').textContent = netMargin.toFixed(1) + '%';
             document.getElementById('markup').textContent = markup.toFixed(1) + '%';
-            document.getElementById('costRatio').textContent = costRatio.toFixed(1) + '%';
-            document.getElementById('profitPerUnit').textContent = '$' + grossProfit.toFixed(2);
-            
-            document.getElementById('revenueDisplay').textContent = '$' + revenue.toFixed(2);
-            document.getElementById('costDisplay').textContent = '$' + cost.toFixed(2);
-            document.getElementById('profitDisplay').textContent = '$' + grossProfit.toFixed(2);
+            document.getElementById('profitPerUnit').textContent = '$' + profitPerUnit.toFixed(2);
+
+            document.getElementById('revenue').textContent = '$' + revenue.toLocaleString();
+            document.getElementById('cogs').textContent = '$' + cogs.toLocaleString();
+            document.getElementById('grossProfit').textContent = '$' + grossProfit.toLocaleString();
+            document.getElementById('opex').textContent = '$' + opex.toLocaleString();
+            document.getElementById('netProfit').textContent = '$' + netProfit.toLocaleString();
         }
-
-        function findPrice() {
-            const cost = parseFloat(document.getElementById('findCost').value) || 0;
-            const margin = parseFloat(document.getElementById('desiredMargin').value) / 100 || 0;
-
-            const sellingPrice = margin < 1 ? cost / (1 - margin) : 0;
-            document.getElementById('requiredPrice').textContent = '$' + sellingPrice.toFixed(2);
-        }
-
         calculate();
-        findPrice();
     </script>
 </body>
 </html>
