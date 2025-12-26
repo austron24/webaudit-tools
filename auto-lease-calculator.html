@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Loan Calculator - Calculate Monthly Payments & Total Cost</title>
-    <meta name="description" content="Calculate your student loan monthly payment, total interest, and compare repayment plans. See how extra payments can save you money.">
-    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/student-loan-calculator.html">
-    <meta property="og:title" content="Student Loan Calculator - Payment & Interest Calculator">
-    <meta property="og:description" content="Calculate your student loan payments and total cost over time.">
+    <title>Auto Lease Calculator - Car Lease Payment Calculator</title>
+    <meta name="description" content="Calculate your monthly car lease payment. Understand residual value, money factor, and compare leasing vs buying.">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/auto-lease-calculator.html">
+    <meta property="og:title" content="Auto Lease Calculator - Car Lease Payment Calculator">
+    <meta property="og:description" content="Calculate your monthly lease payment and total lease cost.">
     <meta property="og:type" content="website">
     <style>
         :root { --primary: #6366f1; --primary-dark: #4f46e5; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --warning: #f59e0b; }
@@ -41,22 +41,19 @@
         .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
         .result-box { background: var(--bg-input); padding: 1.25rem; border-radius: 0.75rem; text-align: center; }
         .result-box.highlight { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid var(--primary); }
-        .result-box.success { background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); }
         .result-label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
         .result-value { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
-        .result-value.success { color: var(--success); }
-        .repayment-plans { margin-top: 2rem; }
-        .repayment-plans h4 { color: var(--text-primary); margin-bottom: 1rem; }
-        .plan-table { width: 100%; border-collapse: collapse; }
-        .plan-table th, .plan-table td { padding: 0.75rem; text-align: center; border-bottom: 1px solid var(--border); }
-        .plan-table th { color: var(--text-secondary); font-weight: 500; background: var(--bg-input); }
-        .plan-table td { color: var(--text-primary); }
-        .plan-table tr.selected { background: rgba(99, 102, 241, 0.1); }
-        .extra-payment { margin-top: 2rem; padding: 1.5rem; background: var(--bg-input); border-radius: 0.75rem; }
-        .extra-payment h4 { color: var(--text-primary); margin-bottom: 1rem; }
-        .extra-row { display: flex; justify-content: space-between; padding: 0.5rem 0; }
-        .extra-row span:first-child { color: var(--text-secondary); }
-        .extra-row span:last-child { color: var(--success); font-weight: 500; }
+        .payment-breakdown { margin-bottom: 2rem; }
+        .breakdown-item { display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+        .breakdown-item span:first-child { color: var(--text-secondary); }
+        .breakdown-item span:last-child { color: var(--text-primary); font-weight: 500; }
+        .lease-vs-buy { margin-top: 2rem; background: var(--bg-input); padding: 1.5rem; border-radius: 0.75rem; }
+        .lease-vs-buy h4 { color: var(--text-primary); margin-bottom: 1rem; }
+        .comparison-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; text-align: center; }
+        .comparison-row.header { color: var(--text-secondary); font-size: 0.9rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
+        .comparison-row.data { padding: 0.75rem 0; }
+        .comparison-row.data span:nth-child(2) { color: var(--warning); }
+        .comparison-row.data span:nth-child(3) { color: var(--success); }
         .ad-inline { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin: 2rem 0; }
         .info-section { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
         .info-section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary); }
@@ -71,7 +68,7 @@
         .footer { background: var(--bg-card); border-top: 1px solid var(--border); padding: 2rem; text-align: center; margin-top: 3rem; }
         .footer p { color: var(--text-secondary); font-size: 0.9rem; }
         @media (max-width: 968px) { .sidebar { display: none; } .main-layout { padding: 1rem; } }
-        @media (max-width: 640px) { .ad-top { display: none; } .ad-mobile { display: block; } .hero h1 { font-size: 1.75rem; } .input-row { grid-template-columns: 1fr; } .nav-links { display: none; } }
+        @media (max-width: 640px) { .ad-top { display: none; } .ad-mobile { display: block; } .hero h1 { font-size: 1.75rem; } .input-row { grid-template-columns: 1fr; } .nav-links { display: none; } .comparison-row { font-size: 0.85rem; } }
     </style>
 </head>
 <body>
@@ -97,37 +94,61 @@
     <div class="main-layout">
         <main class="content">
             <div class="hero">
-                <h1>Student Loan Calculator</h1>
-                <p>Calculate payments and compare repayment strategies</p>
+                <h1>Auto Lease Calculator</h1>
+                <p>Calculate your monthly car lease payment</p>
             </div>
             <div class="calculator-card">
-                <h2 class="section-title">Loan Details</h2>
+                <h2 class="section-title">Lease Details</h2>
                 <div class="input-row">
                     <div class="form-group">
-                        <label>Total Loan Balance ($)</label>
-                        <input type="number" id="loanBalance" value="35000" placeholder="35000">
+                        <label>MSRP / Sticker Price ($)</label>
+                        <input type="number" id="msrp" value="40000" placeholder="40000">
                     </div>
                     <div class="form-group">
-                        <label>Interest Rate (%)</label>
-                        <input type="number" id="interestRate" value="5.5" step="0.1" placeholder="5.5">
+                        <label>Negotiated Price ($)</label>
+                        <input type="number" id="negotiatedPrice" value="38000" placeholder="38000">
                     </div>
                 </div>
                 <div class="input-row">
                     <div class="form-group">
-                        <label>Loan Term (years)</label>
-                        <select id="loanTerm">
-                            <option value="10" selected>10 years (Standard)</option>
-                            <option value="15">15 years</option>
-                            <option value="20">20 years</option>
-                            <option value="25">25 years</option>
+                        <label>Down Payment ($)</label>
+                        <input type="number" id="downPayment" value="2000" placeholder="2000">
+                    </div>
+                    <div class="form-group">
+                        <label>Trade-In Value ($)</label>
+                        <input type="number" id="tradeIn" value="0" placeholder="0">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Residual Value (%)</label>
+                        <input type="number" id="residualPct" value="55" placeholder="55">
+                    </div>
+                    <div class="form-group">
+                        <label>Money Factor</label>
+                        <input type="number" id="moneyFactor" value="0.00125" step="0.00001" placeholder="0.00125">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Lease Term (months)</label>
+                        <select id="leaseTerm">
+                            <option value="24">24 months</option>
+                            <option value="36" selected>36 months</option>
+                            <option value="39">39 months</option>
+                            <option value="48">48 months</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Extra Monthly Payment ($)</label>
-                        <input type="number" id="extraPayment" value="100" placeholder="0">
+                        <label>Sales Tax Rate (%)</label>
+                        <input type="number" id="salesTax" value="7" step="0.1" placeholder="7">
                     </div>
                 </div>
-                <button class="calculate-btn" onclick="calculate()">Calculate Payment</button>
+                <div class="form-group">
+                    <label>Fees (Acquisition, Doc, Registration) ($)</label>
+                    <input type="number" id="fees" value="1200" placeholder="1200">
+                </div>
+                <button class="calculate-btn" onclick="calculate()">Calculate Lease Payment</button>
                 <div class="results" id="results">
                     <div class="result-grid">
                         <div class="result-box highlight">
@@ -135,33 +156,26 @@
                             <div class="result-value" id="monthlyPayment">$0</div>
                         </div>
                         <div class="result-box">
-                            <div class="result-label">Total Interest</div>
-                            <div class="result-value" id="totalInterest">$0</div>
-                        </div>
-                        <div class="result-box">
-                            <div class="result-label">Total Cost</div>
+                            <div class="result-label">Total Lease Cost</div>
                             <div class="result-value" id="totalCost">$0</div>
                         </div>
                         <div class="result-box">
-                            <div class="result-label">Payoff Date</div>
-                            <div class="result-value" id="payoffDate">-</div>
+                            <div class="result-label">Equivalent APR</div>
+                            <div class="result-value" id="equivalentApr">0%</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Residual Value</div>
+                            <div class="result-value" id="residualValue">$0</div>
                         </div>
                     </div>
-                    <div class="extra-payment" id="extraPaymentResults"></div>
-                    <div class="repayment-plans">
-                        <h4>Compare Repayment Terms</h4>
-                        <table class="plan-table">
-                            <thead>
-                                <tr>
-                                    <th>Term</th>
-                                    <th>Monthly Payment</th>
-                                    <th>Total Interest</th>
-                                    <th>Total Paid</th>
-                                </tr>
-                            </thead>
-                            <tbody id="planComparison"></tbody>
-                        </table>
+                    <div class="payment-breakdown">
+                        <h4 style="color: var(--text-primary); margin-bottom: 1rem;">Payment Breakdown</h4>
+                        <div class="breakdown-item"><span>Depreciation (per month)</span><span id="depreciationPmt">$0</span></div>
+                        <div class="breakdown-item"><span>Finance Charge (per month)</span><span id="financePmt">$0</span></div>
+                        <div class="breakdown-item"><span>Sales Tax (per month)</span><span id="taxPmt">$0</span></div>
+                        <div class="breakdown-item"><span>Due at Signing</span><span id="dueAtSigning">$0</span></div>
                     </div>
+                    <div class="lease-vs-buy" id="leaseVsBuy"></div>
                 </div>
             </div>
             <div class="ad-inline">
@@ -169,25 +183,25 @@
                 <script src="//www.topcreativeformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
             </div>
             <div class="info-section">
-                <h2>Student Loan Repayment Tips</h2>
-                <p>Paying off student loans strategically can save you thousands in interest.</p>
+                <h2>Understanding Car Leases</h2>
+                <p>Leasing lets you drive a new car for lower monthly payments, but you won't own it at the end.</p>
+                <h3 style="color: var(--text-primary); margin: 1rem 0;">Key Lease Terms</h3>
                 <ul>
-                    <li><strong>Extra Payments:</strong> Even small extra payments reduce total interest significantly</li>
-                    <li><strong>Refinancing:</strong> Consider refinancing if rates drop or credit improves</li>
-                    <li><strong>Income-Driven Plans:</strong> Federal loans offer income-based repayment options</li>
-                    <li><strong>Employer Assistance:</strong> Some employers offer student loan repayment benefits</li>
-                    <li><strong>Automatic Payments:</strong> Many servicers offer 0.25% rate reduction for autopay</li>
+                    <li><strong>Money Factor:</strong> Interest rate expressed differently. Multiply by 2400 to get APR</li>
+                    <li><strong>Residual Value:</strong> Car's estimated value at lease end (% of MSRP)</li>
+                    <li><strong>Cap Cost:</strong> The negotiated price plus fees</li>
+                    <li><strong>Cap Reduction:</strong> Down payment + trade-in that lowers monthly payment</li>
                 </ul>
             </div>
             <div class="related-tools">
                 <h3>Related Calculators</h3>
                 <div class="tool-grid">
-                    <a href="loan-payoff-calculator.html" class="tool-link">Loan Payoff Calculator</a>
-                    <a href="debt-payoff-calculator.html" class="tool-link">Debt Payoff</a>
-                    <a href="debt-to-income-calculator.html" class="tool-link">Debt-to-Income</a>
-                    <a href="refinance-calculator.html" class="tool-link">Refinance Calculator</a>
+                    <a href="car-loan-calculator.html" class="tool-link">Car Loan Calculator</a>
+                    <a href="car-depreciation-calculator.html" class="tool-link">Car Depreciation</a>
+                    <a href="gas-mileage-calculator.html" class="tool-link">Gas Mileage</a>
+                    <a href="car-cost-calculator.html" class="tool-link">Total Car Cost</a>
                     <a href="budget-calculator.html" class="tool-link">Budget Calculator</a>
-                    <a href="salary-calculator.html" class="tool-link">Salary Calculator</a>
+                    <a href="loan-comparison-calculator.html" class="tool-link">Loan Comparison</a>
                 </div>
             </div>
             <div class="ad-bottom">
@@ -213,57 +227,45 @@
         function formatCurrency(num) {
             return '$' + Math.round(num).toLocaleString('en-US');
         }
-        function calculatePayment(principal, rate, months) {
-            const monthlyRate = rate / 100 / 12;
-            if (monthlyRate === 0) return principal / months;
-            return principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
-        }
         function calculate() {
-            const loanBalance = parseFloat(document.getElementById('loanBalance').value) || 0;
-            const interestRate = parseFloat(document.getElementById('interestRate').value) || 0;
-            const loanTerm = parseInt(document.getElementById('loanTerm').value) || 10;
-            const extraPayment = parseFloat(document.getElementById('extraPayment').value) || 0;
-            const months = loanTerm * 12;
-            const monthlyPayment = calculatePayment(loanBalance, interestRate, months);
-            const totalPaid = monthlyPayment * months;
-            const totalInterest = totalPaid - loanBalance;
-            const payoffDate = new Date();
-            payoffDate.setMonth(payoffDate.getMonth() + months);
+            const msrp = parseFloat(document.getElementById('msrp').value) || 0;
+            const negotiatedPrice = parseFloat(document.getElementById('negotiatedPrice').value) || 0;
+            const downPayment = parseFloat(document.getElementById('downPayment').value) || 0;
+            const tradeIn = parseFloat(document.getElementById('tradeIn').value) || 0;
+            const residualPct = parseFloat(document.getElementById('residualPct').value) / 100 || 0;
+            const moneyFactor = parseFloat(document.getElementById('moneyFactor').value) || 0;
+            const leaseTerm = parseInt(document.getElementById('leaseTerm').value) || 36;
+            const salesTax = parseFloat(document.getElementById('salesTax').value) / 100 || 0;
+            const fees = parseFloat(document.getElementById('fees').value) || 0;
+            const residualValue = msrp * residualPct;
+            const grossCapCost = negotiatedPrice + fees;
+            const capReduction = downPayment + tradeIn;
+            const adjustedCapCost = grossCapCost - capReduction;
+            const depreciation = (adjustedCapCost - residualValue) / leaseTerm;
+            const financeCharge = (adjustedCapCost + residualValue) * moneyFactor;
+            const basePayment = depreciation + financeCharge;
+            const monthlyTax = basePayment * salesTax;
+            const monthlyPayment = basePayment + monthlyTax;
+            const totalCost = (monthlyPayment * leaseTerm) + downPayment;
+            const equivalentApr = moneyFactor * 2400;
+            const dueAtSigning = downPayment + monthlyPayment + fees;
             document.getElementById('monthlyPayment').textContent = formatCurrency(monthlyPayment);
-            document.getElementById('totalInterest').textContent = formatCurrency(totalInterest);
-            document.getElementById('totalCost').textContent = formatCurrency(totalPaid);
-            document.getElementById('payoffDate').textContent = payoffDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-            if (extraPayment > 0) {
-                const monthlyRate = interestRate / 100 / 12;
-                let balance = loanBalance;
-                let monthsWithExtra = 0;
-                let interestWithExtra = 0;
-                const totalMonthly = monthlyPayment + extraPayment;
-                while (balance > 0 && monthsWithExtra < months * 2) {
-                    const interest = balance * monthlyRate;
-                    interestWithExtra += interest;
-                    const principal = Math.min(totalMonthly - interest, balance);
-                    balance -= principal;
-                    monthsWithExtra++;
-                }
-                const timeSaved = months - monthsWithExtra;
-                const interestSaved = totalInterest - interestWithExtra;
-                const newPayoffDate = new Date();
-                newPayoffDate.setMonth(newPayoffDate.getMonth() + monthsWithExtra);
-                document.getElementById('extraPaymentResults').innerHTML = '<h4>With Extra ' + formatCurrency(extraPayment) + '/month</h4><div class="extra-row"><span>New Payoff Time</span><span>' + Math.floor(monthsWithExtra / 12) + ' years ' + (monthsWithExtra % 12) + ' months</span></div><div class="extra-row"><span>Time Saved</span><span>' + Math.floor(timeSaved / 12) + ' years ' + (timeSaved % 12) + ' months</span></div><div class="extra-row"><span>Interest Saved</span><span>' + formatCurrency(interestSaved) + '</span></div><div class="extra-row"><span>New Payoff Date</span><span>' + newPayoffDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) + '</span></div>';
-            } else {
-                document.getElementById('extraPaymentResults').innerHTML = '<h4>Add Extra Payments to Save</h4><p style="color:var(--text-secondary)">Enter an extra monthly payment above to see how much time and interest you can save.</p>';
-            }
-            const terms = [10, 15, 20, 25];
-            let planHTML = '';
-            terms.forEach(t => {
-                const m = t * 12;
-                const pmt = calculatePayment(loanBalance, interestRate, m);
-                const total = pmt * m;
-                const int = total - loanBalance;
-                planHTML += '<tr class="' + (t === loanTerm ? 'selected' : '') + '"><td>' + t + ' years</td><td>' + formatCurrency(pmt) + '</td><td>' + formatCurrency(int) + '</td><td>' + formatCurrency(total) + '</td></tr>';
-            });
-            document.getElementById('planComparison').innerHTML = planHTML;
+            document.getElementById('totalCost').textContent = formatCurrency(totalCost);
+            document.getElementById('equivalentApr').textContent = equivalentApr.toFixed(2) + '%';
+            document.getElementById('residualValue').textContent = formatCurrency(residualValue);
+            document.getElementById('depreciationPmt').textContent = formatCurrency(depreciation);
+            document.getElementById('financePmt').textContent = formatCurrency(financeCharge);
+            document.getElementById('taxPmt').textContent = formatCurrency(monthlyTax);
+            document.getElementById('dueAtSigning').textContent = formatCurrency(dueAtSigning);
+            const buyRate = equivalentApr / 100;
+            const buyMonthlyRate = buyRate / 12;
+            const buyMonths = 60;
+            const buyPayment = negotiatedPrice * (buyMonthlyRate * Math.pow(1 + buyMonthlyRate, buyMonths)) / (Math.pow(1 + buyMonthlyRate, buyMonths) - 1);
+            const buyTotal = buyPayment * buyMonths;
+            const leaseTotal3yr = totalCost;
+            const ownAfterLease = 'No';
+            const ownAfterBuy = 'Yes (' + formatCurrency(residualValue) + ')';
+            document.getElementById('leaseVsBuy').innerHTML = '<h4>Lease vs Buy Comparison</h4><div class="comparison-row header"><span></span><span>Lease (' + leaseTerm + ' mo)</span><span>Buy (60 mo)</span></div><div class="comparison-row data"><span>Monthly Payment</span><span>' + formatCurrency(monthlyPayment) + '</span><span>' + formatCurrency(buyPayment) + '</span></div><div class="comparison-row data"><span>' + leaseTerm + '-Month Cost</span><span>' + formatCurrency(leaseTotal3yr) + '</span><span>' + formatCurrency(buyPayment * leaseTerm) + '</span></div><div class="comparison-row data"><span>Own Vehicle After?</span><span>' + ownAfterLease + '</span><span>' + ownAfterBuy + '</span></div>';
             document.getElementById('results').classList.add('show');
         }
         calculate();
