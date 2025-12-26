@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Cost Calculator - Estimate Total Education Costs</title>
+    <meta name="description" content="Free college cost calculator. Estimate the total cost of a college education including tuition, room, board, and fees.">
+    <meta name="keywords" content="college cost calculator, university cost, tuition calculator, education expense, college budget">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/college-cost-calculator.html">
+    <style>
+        :root { --primary: #3b82f6; --primary-dark: #2563eb; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
+        .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
+        .content-area { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.8); }
+        .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
+        .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-container" style="display: none;">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
+    
+    <header class="header">
+        <h1>🎓 College Cost Calculator</h1>
+    </header>
+
+    <div class="main-container">
+        <div class="content-area">
+            <div class="card">
+                <h2>📚 College Information</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>School Type</label>
+                        <select id="schoolType" onchange="updateDefaults(); calculate();">
+                            <option value="publicIn" selected>Public (In-State)</option>
+                            <option value="publicOut">Public (Out-of-State)</option>
+                            <option value="private">Private</option>
+                            <option value="community">Community College</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Years of Study</label>
+                        <select id="years" onchange="calculate()">
+                            <option value="2">2 Years</option>
+                            <option value="4" selected>4 Years</option>
+                            <option value="5">5 Years</option>
+                            <option value="6">6 Years</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Annual Tuition ($)</label>
+                        <input type="number" id="tuition" value="10000" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Room & Board ($/year)</label>
+                        <input type="number" id="roomBoard" value="12000" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Books & Supplies ($/year)</label>
+                        <input type="number" id="books" value="1200" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Personal/Transportation ($/year)</label>
+                        <input type="number" id="personal" value="3000" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Annual Cost Increase (%)</label>
+                        <input type="number" id="inflation" value="3" step="0.5" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Expected Scholarships/Aid ($/year)</label>
+                        <input type="number" id="aid" value="5000" oninput="calculate()">
+                    </div>
+                </div>
+                
+                <div class="result-hero">
+                    <div class="result-hero-label">Total Cost of Attendance</div>
+                    <div class="result-hero-value" id="totalCost">$0</div>
+                </div>
+                
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-value" id="netCost">$0</div>
+                        <div class="result-label">Net Cost (After Aid)</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="yearOne">$0</div>
+                        <div class="result-label">Year 1 Cost</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="avgYear">$0</div>
+                        <div class="result-label">Average Per Year</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="totalAid">$0</div>
+                        <div class="result-label">Total Aid</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📊 Cost Breakdown by Year</h2>
+                <div id="yearBreakdown"></div>
+            </div>
+
+            <div class="card">
+                <h2>📋 Average College Costs (2024-25)</h2>
+                <div class="breakdown-row"><span>Public In-State (4-yr)</span><span>$23,250/yr</span></div>
+                <div class="breakdown-row"><span>Public Out-of-State (4-yr)</span><span>$40,550/yr</span></div>
+                <div class="breakdown-row"><span>Private Nonprofit (4-yr)</span><span>$56,190/yr</span></div>
+                <div class="breakdown-row"><span>Community College</span><span>$12,960/yr</span></div>
+            </div>
+
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+
+            <div class="card">
+                <h2>🔗 Related Tools</h2>
+                <div class="related-tools">
+                    <a href="student-loan-calculator.html" class="related-link">🎓 Student Loan</a>
+                    <a href="savings-goal-calculator.html" class="related-link">💰 Savings Goal</a>
+                    <a href="529-calculator.html" class="related-link">📚 529 Plan</a>
+                    <a href="compound-interest-calculator.html" class="related-link">📈 Compound Interest</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateDefaults() {
+            const type = document.getElementById('schoolType').value;
+            const tuition = document.getElementById('tuition');
+            const roomBoard = document.getElementById('roomBoard');
+            
+            switch(type) {
+                case 'publicIn':
+                    tuition.value = 10000;
+                    roomBoard.value = 12000;
+                    break;
+                case 'publicOut':
+                    tuition.value = 23000;
+                    roomBoard.value = 13000;
+                    break;
+                case 'private':
+                    tuition.value = 42000;
+                    roomBoard.value = 14000;
+                    break;
+                case 'community':
+                    tuition.value = 4000;
+                    roomBoard.value = 9000;
+                    break;
+            }
+        }
+        
+        function calculate() {
+            const years = parseInt(document.getElementById('years').value);
+            const tuition = parseFloat(document.getElementById('tuition').value) || 0;
+            const roomBoard = parseFloat(document.getElementById('roomBoard').value) || 0;
+            const books = parseFloat(document.getElementById('books').value) || 0;
+            const personal = parseFloat(document.getElementById('personal').value) || 0;
+            const inflation = parseFloat(document.getElementById('inflation').value) / 100 || 0;
+            const aid = parseFloat(document.getElementById('aid').value) || 0;
+            
+            const yearOneCost = tuition + roomBoard + books + personal;
+            let totalCost = 0;
+            let yearBreakdownHtml = '';
+            
+            for (let i = 0; i < years; i++) {
+                const yearCost = yearOneCost * Math.pow(1 + inflation, i);
+                totalCost += yearCost;
+                yearBreakdownHtml += `<div class="breakdown-row"><span>Year ${i + 1}</span><span>$${Math.round(yearCost).toLocaleString()}</span></div>`;
+            }
+            
+            const totalAid = aid * years;
+            const netCost = totalCost - totalAid;
+            const avgYear = totalCost / years;
+            
+            document.getElementById('totalCost').textContent = '$' + Math.round(totalCost).toLocaleString();
+            document.getElementById('netCost').textContent = '$' + Math.round(netCost).toLocaleString();
+            document.getElementById('yearOne').textContent = '$' + Math.round(yearOneCost).toLocaleString();
+            document.getElementById('avgYear').textContent = '$' + Math.round(avgYear).toLocaleString();
+            document.getElementById('totalAid').textContent = '$' + Math.round(totalAid).toLocaleString();
+            document.getElementById('yearBreakdown').innerHTML = yearBreakdownHtml;
+        }
+        
+        calculate();
+    </script>
+</body>
+</html>
