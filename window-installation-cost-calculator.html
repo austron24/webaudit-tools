@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Window Installation Cost Calculator - New Window Prices</title>
+    <meta name="description" content="Calculate window installation costs. Estimate replacement window prices by type, material, and size.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0ea5e9 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #0ea5e9;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #e0f2fe;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .compare-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #0284c7;
+        }
+        .compare-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #0284c7;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #0284c7; }
+        .pricing {
+            background: #e0f2fe;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 {
+            color: #0284c7;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .pricing table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #7dd3fc;
+        }
+        .pricing th { color: #0284c7; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #0284c7;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0284c7; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0ea5e9;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #7dd3fc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🪟 Window Installation Cost</h1>
+            <p class="subtitle">Replacement window pricing</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Number of Windows</label>
+                    <input type="number" id="windows" value="10" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Window Size</label>
+                    <select id="size" onchange="calculate()">
+                        <option value="small">Small (24x36)</option>
+                        <option value="medium" selected>Medium (36x48)</option>
+                        <option value="large">Large (48x60)</option>
+                        <option value="custom">Custom/Specialty</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Frame Material</label>
+                    <select id="material" onchange="calculate()">
+                        <option value="vinyl" selected>Vinyl</option>
+                        <option value="aluminum">Aluminum</option>
+                        <option value="wood">Wood</option>
+                        <option value="fiberglass">Fiberglass</option>
+                        <option value="composite">Composite</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Glass Type</label>
+                    <select id="glass" onchange="calculate()">
+                        <option value="double" selected>Double Pane</option>
+                        <option value="triple">Triple Pane</option>
+                        <option value="lowE">Low-E Coating</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Window Style</label>
+                    <select id="style" onchange="calculate()">
+                        <option value="doublehung" selected>Double Hung</option>
+                        <option value="casement">Casement</option>
+                        <option value="sliding">Sliding</option>
+                        <option value="bay">Bay/Bow</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Total Cost</div>
+                <div class="value" id="totalCost">$6,000-10,000</div>
+                <div class="sub" id="perWindow">$600-1,000 per window</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Windows</div>
+                    <div class="value" id="windowCost">$5,000</div>
+                    <div class="note">Materials</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Installation</div>
+                    <div class="value" id="laborCost">$2,500</div>
+                    <div class="note">Labor</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Energy Savings</div>
+                    <div class="value" id="savings">15-30%</div>
+                    <div class="note">Heating/cooling</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Timeline</div>
+                    <div class="value" id="timeline">1-2 days</div>
+                    <div class="note">Installation</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Cost Breakdown</h4>
+                <div class="break-row">
+                    <span>Window Units</span>
+                    <span class="value" id="unitCost">$4,500</span>
+                </div>
+                <div class="break-row">
+                    <span>Installation Labor</span>
+                    <span class="value" id="laborBreak">$2,500</span>
+                </div>
+                <div class="break-row">
+                    <span>Trim & Finishing</span>
+                    <span class="value" id="trimCost">$500</span>
+                </div>
+                <div class="break-row">
+                    <span>Disposal</span>
+                    <span class="value" id="disposalCost">$300</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Window Costs by Material</h4>
+                <table>
+                    <tr>
+                        <th>Frame Material</th>
+                        <th>Per Window</th>
+                    </tr>
+                    <tr><td>Vinyl</td><td>$450-750</td></tr>
+                    <tr><td>Aluminum</td><td>$400-700</td></tr>
+                    <tr><td>Wood</td><td>$800-1,500</td></tr>
+                    <tr><td>Fiberglass</td><td>$700-1,200</td></tr>
+                    <tr><td>Composite</td><td>$600-1,000</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Window Tips</h4>
+                <div class="tip-item">✓ Replace all at once for best pricing</div>
+                <div class="tip-item">✓ Low-E coating saves energy</div>
+                <div class="tip-item">✓ Check for manufacturer warranties</div>
+                <div class="tip-item">✓ Consider energy rebates/tax credits</div>
+                <div class="tip-item">✓ Get 3+ quotes from installers</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Tools</h4>
+            <a href="window-replacement-calculator.html">Window Replacement</a>
+            <a href="siding-cost-calculator.html">Siding Cost</a>
+            <a href="home-addition-cost-calculator.html">Home Addition</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Window Installation Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const windows = parseInt(document.getElementById('windows').value) || 10;
+            const size = document.getElementById('size').value;
+            const material = document.getElementById('material').value;
+            const glass = document.getElementById('glass').value;
+            const style = document.getElementById('style').value;
+
+            // Base cost per window by material
+            const matCosts = {
+                vinyl: 500,
+                aluminum: 550,
+                wood: 1000,
+                fiberglass: 900,
+                composite: 750
+            };
+            let perWindow = matCosts[material];
+
+            // Size adjustment
+            const sizeMult = { small: 0.75, medium: 1.0, large: 1.35, custom: 1.6 };
+            perWindow *= sizeMult[size];
+
+            // Glass type adjustment
+            const glassMult = { double: 1.0, triple: 1.25, lowE: 1.15 };
+            perWindow *= glassMult[glass];
+
+            // Style adjustment
+            const styleMult = { doublehung: 1.0, casement: 1.1, sliding: 0.9, bay: 2.5 };
+            perWindow *= styleMult[style];
+
+            // Calculate costs
+            const unitCost = Math.round(perWindow * windows);
+            const laborPerWindow = perWindow * 0.35;
+            const laborCost = Math.round(laborPerWindow * windows);
+            const trimCost = Math.round(windows * 50);
+            const disposalCost = Math.round(windows * 30);
+
+            const totalMid = unitCost + laborCost + trimCost + disposalCost;
+            const totalLow = Math.round(totalMid * 0.85);
+            const totalHigh = Math.round(totalMid * 1.2);
+
+            // Timeline
+            const timeline = windows <= 5 ? '1 day' : (windows <= 15 ? '1-2 days' : '2-3 days');
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + totalLow.toLocaleString() + '-' + totalHigh.toLocaleString();
+            document.getElementById('perWindow').textContent = '$' + Math.round(totalLow / windows) + '-' + Math.round(totalHigh / windows) + ' per window';
+
+            document.getElementById('windowCost').textContent = '$' + unitCost.toLocaleString();
+            document.getElementById('laborCost').textContent = '$' + laborCost.toLocaleString();
+            document.getElementById('timeline').textContent = timeline;
+
+            document.getElementById('unitCost').textContent = '$' + unitCost.toLocaleString();
+            document.getElementById('laborBreak').textContent = '$' + laborCost.toLocaleString();
+            document.getElementById('trimCost').textContent = '$' + trimCost.toLocaleString();
+            document.getElementById('disposalCost').textContent = '$' + disposalCost.toLocaleString();
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

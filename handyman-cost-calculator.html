@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handyman Cost Calculator - Repair & Service Rates</title>
+    <meta name="description" content="Calculate handyman costs. Estimate hourly rates and project costs for home repairs and maintenance services.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #059669 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #059669;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #d1fae5;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .compare-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #047857;
+        }
+        .compare-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #047857;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #047857; }
+        .pricing {
+            background: #d1fae5;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 {
+            color: #047857;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .pricing table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #a7f3d0;
+        }
+        .pricing th { color: #047857; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #047857;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #047857; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #059669;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #6ee7b7; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔨 Handyman Cost</h1>
+            <p class="subtitle">Repair & service rate estimates</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group full">
+                    <label>Job Type</label>
+                    <select id="jobType" onchange="calculate()">
+                        <option value="general" selected>General Repairs</option>
+                        <option value="drywall">Drywall Repair</option>
+                        <option value="doorwindow">Door/Window Repair</option>
+                        <option value="mounting">TV/Shelf Mounting</option>
+                        <option value="assembly">Furniture Assembly</option>
+                        <option value="caulking">Caulking/Weatherstrip</option>
+                        <option value="tile">Minor Tile Work</option>
+                        <option value="pressure">Pressure Washing</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Estimated Hours</label>
+                    <input type="number" id="hours" value="3" step="0.5" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Number of Tasks</label>
+                    <input type="number" id="tasks" value="1" min="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Skill Level Needed</label>
+                    <select id="skill" onchange="calculate()">
+                        <option value="basic">Basic</option>
+                        <option value="intermediate" selected>Intermediate</option>
+                        <option value="skilled">Skilled/Specialized</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Materials Included?</label>
+                    <select id="materials" onchange="calculate()">
+                        <option value="none" selected>Customer Provides</option>
+                        <option value="basic">Basic Materials</option>
+                        <option value="included">All Included</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Total Cost</div>
+                <div class="value" id="totalCost">$200-350</div>
+                <div class="sub" id="hourlyNote">$60-100/hour typical</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Hourly Rate</div>
+                    <div class="value" id="hourlyRate">$75</div>
+                    <div class="note">Avg. in your area</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Labor</div>
+                    <div class="value" id="laborCost">$225</div>
+                    <div class="note">Time-based</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Materials</div>
+                    <div class="value" id="matCost">$0</div>
+                    <div class="note">If applicable</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Min. Charge</div>
+                    <div class="value" id="minCharge">$75-150</div>
+                    <div class="note">1-2 hour min</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Cost Factors</h4>
+                <div class="break-row">
+                    <span>Base Hourly Rate</span>
+                    <span class="value" id="baseRate">$75/hr</span>
+                </div>
+                <div class="break-row">
+                    <span>Hours Estimated</span>
+                    <span class="value" id="hoursEst">3 hrs</span>
+                </div>
+                <div class="break-row">
+                    <span>Skill Premium</span>
+                    <span class="value" id="skillPrem">$0</span>
+                </div>
+                <div class="break-row">
+                    <span>Materials</span>
+                    <span class="value" id="matBreak">$0</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Common Handyman Rates</h4>
+                <table>
+                    <tr>
+                        <th>Job Type</th>
+                        <th>Cost Range</th>
+                    </tr>
+                    <tr><td>Hourly Rate</td><td>$50-100/hour</td></tr>
+                    <tr><td>Minimum Charge</td><td>$75-200</td></tr>
+                    <tr><td>Half Day (4 hrs)</td><td>$250-400</td></tr>
+                    <tr><td>Full Day (8 hrs)</td><td>$450-700</td></tr>
+                    <tr><td>Drywall Patch</td><td>$75-200</td></tr>
+                    <tr><td>TV Mounting</td><td>$100-250</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Handyman Tips</h4>
+                <div class="tip-item">✓ Bundle multiple small jobs to save</div>
+                <div class="tip-item">✓ Get a quote before work starts</div>
+                <div class="tip-item">✓ Check reviews and references</div>
+                <div class="tip-item">✓ Licensed for electrical/plumbing</div>
+                <div class="tip-item">✓ Clear the work area beforehand</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Tools</h4>
+            <a href="electrician-cost-calculator.html">Electrician Cost</a>
+            <a href="plumber-cost-calculator.html">Plumber Cost</a>
+            <a href="painter-cost-calculator.html">Painter Cost</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Handyman Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const jobType = document.getElementById('jobType').value;
+            const hours = parseFloat(document.getElementById('hours').value) || 3;
+            const tasks = parseInt(document.getElementById('tasks').value) || 1;
+            const skill = document.getElementById('skill').value;
+            const materials = document.getElementById('materials').value;
+
+            // Base hourly rates by skill
+            const skillRates = { basic: 50, intermediate: 75, skilled: 100 };
+            let hourlyRate = skillRates[skill];
+
+            // Job type adjustments
+            const jobMult = {
+                general: 1.0,
+                drywall: 1.1,
+                doorwindow: 1.0,
+                mounting: 0.9,
+                assembly: 0.85,
+                caulking: 0.9,
+                tile: 1.2,
+                pressure: 0.95
+            };
+            hourlyRate *= jobMult[jobType];
+            hourlyRate = Math.round(hourlyRate);
+
+            // Labor cost
+            const laborCost = Math.round(hours * hourlyRate * tasks);
+
+            // Skill premium display
+            const skillPrem = skill === 'skilled' ? Math.round(hours * 25) : 0;
+
+            // Materials cost estimate
+            const matCosts = { none: 0, basic: hours * 15, included: hours * 35 };
+            const matCost = Math.round(matCosts[materials]);
+
+            const totalMid = laborCost + matCost;
+            const totalLow = Math.round(totalMid * 0.85);
+            const totalHigh = Math.round(totalMid * 1.25);
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + totalLow.toLocaleString() + '-' + totalHigh.toLocaleString();
+            document.getElementById('hourlyNote').textContent = '$' + (hourlyRate - 15) + '-' + (hourlyRate + 15) + '/hour typical';
+
+            document.getElementById('hourlyRate').textContent = '$' + hourlyRate;
+            document.getElementById('laborCost').textContent = '$' + laborCost.toLocaleString();
+            document.getElementById('matCost').textContent = matCost > 0 ? '$' + matCost : 'N/A';
+
+            document.getElementById('baseRate').textContent = '$' + hourlyRate + '/hr';
+            document.getElementById('hoursEst').textContent = hours + ' hrs';
+            document.getElementById('skillPrem').textContent = skillPrem > 0 ? '+$' + skillPrem : '$0';
+            document.getElementById('matBreak').textContent = matCost > 0 ? '$' + matCost : '$0';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

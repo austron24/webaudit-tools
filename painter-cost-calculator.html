@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painter Cost Calculator - House Painting Price Estimates</title>
+    <meta name="description" content="Calculate painter costs. Estimate interior and exterior house painting prices per square foot and room.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #ea580c 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #ea580c;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #ffedd5;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .compare-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #c2410c;
+        }
+        .compare-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #c2410c;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #c2410c; }
+        .pricing {
+            background: #ffedd5;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 {
+            color: #c2410c;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .pricing table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #fed7aa;
+        }
+        .pricing th { color: #c2410c; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #c2410c;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #c2410c; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #ea580c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fdba74; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Painter Cost</h1>
+            <p class="subtitle">House painting price estimates</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group full">
+                    <label>Project Type</label>
+                    <select id="projectType" onchange="calculate()">
+                        <option value="introom">Interior - Single Room</option>
+                        <option value="intwhole" selected>Interior - Whole House</option>
+                        <option value="exterior">Exterior - Whole House</option>
+                        <option value="cabinet">Cabinet Painting</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Home Size (sq ft)</label>
+                    <input type="number" id="sqft" value="2000" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Number of Rooms</label>
+                    <input type="number" id="rooms" value="8" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Paint Quality</label>
+                    <select id="quality" onchange="calculate()">
+                        <option value="basic">Basic</option>
+                        <option value="standard" selected>Standard</option>
+                        <option value="premium">Premium</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Prep Work Needed</label>
+                    <select id="prep" onchange="calculate()">
+                        <option value="minimal">Minimal</option>
+                        <option value="moderate" selected>Moderate</option>
+                        <option value="extensive">Extensive</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Total Cost</div>
+                <div class="value" id="totalCost">$4,000-6,500</div>
+                <div class="sub" id="perSqft">$2.00-3.25 per sq ft</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Labor</div>
+                    <div class="value" id="laborCost">$3,500</div>
+                    <div class="note">70-85% of total</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Paint/Materials</div>
+                    <div class="value" id="matCost">$1,200</div>
+                    <div class="note">15-30% of total</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Per Room</div>
+                    <div class="value" id="perRoom">$400-600</div>
+                    <div class="note">Average</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Timeline</div>
+                    <div class="value" id="timeline">3-5 days</div>
+                    <div class="note">Typical project</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Cost Breakdown</h4>
+                <div class="break-row">
+                    <span>Prep Work (taping, patching)</span>
+                    <span class="value" id="prepCost">$600</span>
+                </div>
+                <div class="break-row">
+                    <span>Painting Labor</span>
+                    <span class="value" id="laborBreak">$2,800</span>
+                </div>
+                <div class="break-row">
+                    <span>Paint & Primer</span>
+                    <span class="value" id="paintCost">$800</span>
+                </div>
+                <div class="break-row">
+                    <span>Supplies & Equipment</span>
+                    <span class="value" id="supplyCost">$300</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Painting Costs</h4>
+                <table>
+                    <tr>
+                        <th>Project Type</th>
+                        <th>Cost Range</th>
+                    </tr>
+                    <tr><td>Interior Room</td><td>$300-800/room</td></tr>
+                    <tr><td>Interior Whole House</td><td>$2,500-8,000</td></tr>
+                    <tr><td>Exterior House</td><td>$3,000-12,000</td></tr>
+                    <tr><td>Kitchen Cabinets</td><td>$3,000-8,000</td></tr>
+                    <tr><td>Trim/Doors</td><td>$1-3/linear ft</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Painting Tips</h4>
+                <div class="tip-item">✓ Get at least 3 written quotes</div>
+                <div class="tip-item">✓ Check references and insurance</div>
+                <div class="tip-item">✓ Quality paint saves money long-term</div>
+                <div class="tip-item">✓ Prep work determines quality</div>
+                <div class="tip-item">✓ Clear the room before painters arrive</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Tools</h4>
+            <a href="house-painting-cost-calculator.html">House Painting Cost</a>
+            <a href="paint-calculator.html">Paint Calculator</a>
+            <a href="home-addition-cost-calculator.html">Home Addition</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Painter Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const projectType = document.getElementById('projectType').value;
+            const sqft = parseFloat(document.getElementById('sqft').value) || 2000;
+            const rooms = parseInt(document.getElementById('rooms').value) || 8;
+            const quality = document.getElementById('quality').value;
+            const prep = document.getElementById('prep').value;
+
+            // Base costs
+            let baseCost;
+            if (projectType === 'introom') {
+                baseCost = rooms * 500;
+            } else if (projectType === 'intwhole') {
+                baseCost = sqft * 2.5;
+            } else if (projectType === 'exterior') {
+                baseCost = sqft * 3;
+            } else {
+                baseCost = 4500; // Cabinet painting
+            }
+
+            // Quality multiplier
+            const qualityMult = { basic: 0.8, standard: 1.0, premium: 1.4 };
+            baseCost *= qualityMult[quality];
+
+            // Prep work adjustment
+            const prepMult = { minimal: 0.9, moderate: 1.0, extensive: 1.25 };
+            baseCost *= prepMult[prep];
+
+            // Cost breakdown
+            const laborCost = Math.round(baseCost * 0.75);
+            const matCost = Math.round(baseCost * 0.25);
+            const prepCost = Math.round(laborCost * 0.2);
+            const laborBreak = Math.round(laborCost * 0.8);
+            const paintCost = Math.round(matCost * 0.7);
+            const supplyCost = Math.round(matCost * 0.3);
+
+            const totalMid = laborCost + matCost;
+            const totalLow = Math.round(totalMid * 0.8);
+            const totalHigh = Math.round(totalMid * 1.3);
+
+            // Per room calculation
+            const perRoomLow = Math.round(totalLow / rooms);
+            const perRoomHigh = Math.round(totalHigh / rooms);
+
+            // Timeline
+            let timeline;
+            if (projectType === 'introom') timeline = '1-2 days';
+            else if (projectType === 'intwhole') timeline = sqft < 1500 ? '2-3 days' : (sqft < 2500 ? '3-5 days' : '5-7 days');
+            else if (projectType === 'exterior') timeline = '3-7 days';
+            else timeline = '3-5 days';
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + totalLow.toLocaleString() + '-' + totalHigh.toLocaleString();
+            document.getElementById('perSqft').textContent = '$' + (totalLow / sqft).toFixed(2) + '-' + (totalHigh / sqft).toFixed(2) + ' per sq ft';
+
+            document.getElementById('laborCost').textContent = '$' + laborCost.toLocaleString();
+            document.getElementById('matCost').textContent = '$' + matCost.toLocaleString();
+            document.getElementById('perRoom').textContent = '$' + perRoomLow + '-' + perRoomHigh;
+            document.getElementById('timeline').textContent = timeline;
+
+            document.getElementById('prepCost').textContent = '$' + prepCost.toLocaleString();
+            document.getElementById('laborBreak').textContent = '$' + laborBreak.toLocaleString();
+            document.getElementById('paintCost').textContent = '$' + paintCost.toLocaleString();
+            document.getElementById('supplyCost').textContent = '$' + supplyCost.toLocaleString();
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
