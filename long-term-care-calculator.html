@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Long-Term Care Calculator - Cost & Insurance Estimator</title>
+    <meta name="description" content="Calculate long-term care costs and insurance needs. Estimate nursing home, assisted living, and home care expenses. Free LTC calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #6d28d9 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #6d28d9;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #6d28d9;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #5b21b6; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #ede9fe;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #6d28d9; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #6d28d9; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #6d28d9; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #5b21b6;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #c4b5fd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏥 Long-Term Care Calculator</h1>
+            <p class="subtitle">Estimate long-term care costs and insurance needs</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Current Age</label>
+                    <input type="number" id="currentAge" value="55" min="40" max="80">
+                </div>
+                <div class="input-group">
+                    <label>State</label>
+                    <select id="state">
+                        <option value="avg" selected>Average State</option>
+                        <option value="high">High Cost (NY, CA, MA)</option>
+                        <option value="low">Low Cost (TX, FL, AZ)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Care Type Needed</label>
+                    <select id="careType">
+                        <option value="home">Home Health Aide</option>
+                        <option value="assisted" selected>Assisted Living</option>
+                        <option value="nursing">Nursing Home (Semi-Private)</option>
+                        <option value="nursing_private">Nursing Home (Private)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Expected Years of Care</label>
+                    <select id="yearsOfCare">
+                        <option value="2">2 Years</option>
+                        <option value="3" selected>3 Years (Average)</option>
+                        <option value="5">5 Years</option>
+                        <option value="7">7+ Years</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Years Until Care Needed</label>
+                    <input type="number" id="yearsUntilCare" value="20" min="1" max="40">
+                </div>
+                <div class="input-group">
+                    <label>Inflation Rate (%)</label>
+                    <input type="number" id="inflationRate" value="4" min="1" max="10" step="0.5">
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate LTC Costs</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="futureCost">$0</div>
+                    <div class="result-label-main">Total Future Care Cost</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="monthlyCost">$0</div>
+                        <div class="summary-label">Monthly Cost (Today)</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="futureMonthly">$0</div>
+                        <div class="summary-label">Monthly Cost (Future)</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="annualPremium">$0</div>
+                        <div class="summary-label">Est. LTC Insurance/yr</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="savingsNeeded">$0</div>
+                        <div class="summary-label">Self-Insure Amount</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Cost Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Current Annual Cost</span>
+                        <span class="breakdown-value" id="displayCurrent">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Future Annual Cost</span>
+                        <span class="breakdown-value" id="displayFuture">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Years of Care</span>
+                        <span class="breakdown-value" id="displayYears">0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Inflation Multiplier</span>
+                        <span class="breakdown-value" id="displayInflation">0x</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Total Care Cost</span>
+                        <span class="breakdown-value" id="displayTotal">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Insurance Calculators</h4>
+            <a href="life-insurance-calculator.html">Life Insurance</a>
+            <a href="disability-insurance-calculator.html">Disability Insurance</a>
+            <a href="medicare-calculator.html">Medicare</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Long-Term Care Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const currentAge = parseInt(document.getElementById('currentAge').value);
+            const state = document.getElementById('state').value;
+            const careType = document.getElementById('careType').value;
+            const yearsOfCare = parseInt(document.getElementById('yearsOfCare').value);
+            const yearsUntilCare = parseInt(document.getElementById('yearsUntilCare').value);
+            const inflationRate = parseFloat(document.getElementById('inflationRate').value) / 100;
+
+            // Current monthly costs by care type (national averages 2024)
+            const baseCosts = {
+                home: 5500,
+                assisted: 4800,
+                nursing: 8000,
+                nursing_private: 9500
+            };
+
+            // State adjustments
+            const stateFactors = {
+                avg: 1.0,
+                high: 1.4,
+                low: 0.75
+            };
+
+            const monthlyCost = baseCosts[careType] * stateFactors[state];
+            const annualCost = monthlyCost * 12;
+
+            // Calculate future cost with inflation
+            const inflationMultiplier = Math.pow(1 + inflationRate, yearsUntilCare);
+            const futureMonthly = monthlyCost * inflationMultiplier;
+            const futureAnnual = futureMonthly * 12;
+            const totalFutureCost = futureAnnual * yearsOfCare;
+
+            // Estimate LTC insurance premium (rough estimate based on age)
+            let premiumFactor = 1;
+            if (currentAge < 50) premiumFactor = 0.7;
+            else if (currentAge < 55) premiumFactor = 0.85;
+            else if (currentAge < 60) premiumFactor = 1.0;
+            else if (currentAge < 65) premiumFactor = 1.3;
+            else premiumFactor = 1.8;
+
+            const annualPremium = 2500 * premiumFactor * stateFactors[state];
+
+            // Self-insure calculation (present value)
+            const savingsNeeded = totalFutureCost / inflationMultiplier;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('futureCost').textContent = formatMoney(totalFutureCost);
+            document.getElementById('monthlyCost').textContent = formatMoney(monthlyCost);
+            document.getElementById('futureMonthly').textContent = formatMoney(futureMonthly);
+            document.getElementById('annualPremium').textContent = formatMoney(annualPremium);
+            document.getElementById('savingsNeeded').textContent = formatMoney(savingsNeeded);
+
+            document.getElementById('displayCurrent').textContent = formatMoney(annualCost);
+            document.getElementById('displayFuture').textContent = formatMoney(futureAnnual);
+            document.getElementById('displayYears').textContent = yearsOfCare + ' years';
+            document.getElementById('displayInflation').textContent = inflationMultiplier.toFixed(2) + 'x';
+            document.getElementById('displayTotal').textContent = formatMoney(totalFutureCost);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Divorce Settlement Calculator - Asset Division Estimator</title>
+    <meta name="description" content="Estimate divorce settlement and asset division. Calculate property split, alimony, and child support. Free divorce calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #881337 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .disclaimer {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: #92400e;
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #881337;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .section-title {
+            font-size: 16px;
+            color: #881337;
+            margin: 20px 0 15px;
+            padding-top: 15px;
+            border-top: 2px solid #fce7f3;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #881337;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #9f1239; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #881337 0%, #9f1239 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #fce7f3;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #881337; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #881337; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #881337; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #9f1239;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fda4af; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚖️ Divorce Settlement Calculator</h1>
+            <p class="subtitle">Estimate asset division and support</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="disclaimer">
+                <strong>Disclaimer:</strong> Divorce settlements vary by state law and individual circumstances. This is a rough estimate only. Consult a family law attorney for accurate guidance.
+            </div>
+
+            <div class="section-title">💰 Marital Assets</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Home Equity ($)</label>
+                    <input type="number" id="homeEquity" value="200000" min="0" step="10000">
+                </div>
+                <div class="input-group">
+                    <label>Retirement Accounts ($)</label>
+                    <input type="number" id="retirement" value="300000" min="0" step="10000">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Savings/Investments ($)</label>
+                    <input type="number" id="savings" value="100000" min="0" step="5000">
+                </div>
+                <div class="input-group">
+                    <label>Other Assets ($)</label>
+                    <input type="number" id="otherAssets" value="50000" min="0" step="5000">
+                </div>
+            </div>
+
+            <div class="section-title">💳 Marital Debts</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Mortgage Balance ($)</label>
+                    <input type="number" id="mortgage" value="150000" min="0" step="10000">
+                </div>
+                <div class="input-group">
+                    <label>Other Debts ($)</label>
+                    <input type="number" id="otherDebts" value="20000" min="0" step="1000">
+                </div>
+            </div>
+
+            <div class="section-title">👤 Income & Support</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Your Annual Income ($)</label>
+                    <input type="number" id="income1" value="80000" min="0" step="5000">
+                </div>
+                <div class="input-group">
+                    <label>Spouse's Annual Income ($)</label>
+                    <input type="number" id="income2" value="50000" min="0" step="5000">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Marriage Length (years)</label>
+                    <input type="number" id="marriageYears" value="15" min="0" max="50">
+                </div>
+                <div class="input-group">
+                    <label>Number of Children</label>
+                    <select id="children">
+                        <option value="0">No Children</option>
+                        <option value="1">1 Child</option>
+                        <option value="2" selected>2 Children</option>
+                        <option value="3">3+ Children</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>State Type</label>
+                <select id="stateType">
+                    <option value="equitable" selected>Equitable Distribution State</option>
+                    <option value="community">Community Property State</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Settlement</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="yourShare">$0</div>
+                    <div class="result-label-main">Your Estimated Share</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="netWorth">$0</div>
+                        <div class="summary-label">Net Marital Estate</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="spouseShare">$0</div>
+                        <div class="summary-label">Spouse's Share</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="monthlyAlimony">$0</div>
+                        <div class="summary-label">Est. Monthly Alimony</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="childSupport">$0</div>
+                        <div class="summary-label">Est. Child Support</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Settlement Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Total Assets</span>
+                        <span class="breakdown-value" id="displayAssets">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Total Debts</span>
+                        <span class="breakdown-value" id="displayDebts">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Net Estate</span>
+                        <span class="breakdown-value" id="displayNet">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Division Ratio</span>
+                        <span class="breakdown-value" id="displayRatio">50/50</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Alimony Duration</span>
+                        <span class="breakdown-value" id="displayDuration">0 years</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Family Calculators</h4>
+            <a href="alimony-calculator.html">Alimony Calculator</a>
+            <a href="child-support-calculator.html">Child Support</a>
+            <a href="net-worth-calculator.html">Net Worth</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Divorce Settlement Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const homeEquity = parseFloat(document.getElementById('homeEquity').value);
+            const retirement = parseFloat(document.getElementById('retirement').value);
+            const savings = parseFloat(document.getElementById('savings').value);
+            const otherAssets = parseFloat(document.getElementById('otherAssets').value);
+            const mortgage = parseFloat(document.getElementById('mortgage').value);
+            const otherDebts = parseFloat(document.getElementById('otherDebts').value);
+            const income1 = parseFloat(document.getElementById('income1').value);
+            const income2 = parseFloat(document.getElementById('income2').value);
+            const marriageYears = parseInt(document.getElementById('marriageYears').value);
+            const children = parseInt(document.getElementById('children').value);
+            const stateType = document.getElementById('stateType').value;
+
+            // Calculate totals
+            const totalAssets = homeEquity + retirement + savings + otherAssets;
+            const totalDebts = mortgage + otherDebts;
+            const netEstate = totalAssets - totalDebts;
+
+            // Division ratio
+            let yourRatio = 0.5;
+            let divisionText = '50/50';
+
+            if (stateType === 'equitable') {
+                // In equitable distribution, income disparity can affect division
+                const totalIncome = income1 + income2;
+                const higherEarnerRatio = Math.max(income1, income2) / totalIncome;
+
+                // Lower earner might get slightly more
+                if (income1 < income2) {
+                    yourRatio = 0.5 + (higherEarnerRatio - 0.5) * 0.2;
+                } else {
+                    yourRatio = 0.5 - (higherEarnerRatio - 0.5) * 0.2;
+                }
+                divisionText = Math.round(yourRatio * 100) + '/' + Math.round((1 - yourRatio) * 100);
+            }
+
+            const yourShare = netEstate * yourRatio;
+            const spouseShare = netEstate * (1 - yourRatio);
+
+            // Alimony calculation
+            const incomeDiff = Math.abs(income1 - income2);
+            let monthlyAlimony = 0;
+            let alimonyDuration = 0;
+
+            if (incomeDiff > 20000) {
+                monthlyAlimony = (incomeDiff / 12) * 0.3;
+                alimonyDuration = Math.ceil(marriageYears / 2);
+                if (marriageYears >= 20) alimonyDuration = marriageYears;
+            }
+
+            // Child support (simplified)
+            let childSupport = 0;
+            if (children > 0) {
+                const combinedIncome = (income1 + income2) / 12;
+                const basePercentages = [0.17, 0.25, 0.29];
+                const basePct = basePercentages[Math.min(children - 1, 2)];
+                childSupport = combinedIncome * basePct * (income1 / (income1 + income2));
+            }
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('yourShare').textContent = formatMoney(yourShare);
+            document.getElementById('netWorth').textContent = formatMoney(netEstate);
+            document.getElementById('spouseShare').textContent = formatMoney(spouseShare);
+            document.getElementById('monthlyAlimony').textContent = formatMoney(monthlyAlimony);
+            document.getElementById('childSupport').textContent = formatMoney(childSupport);
+
+            document.getElementById('displayAssets').textContent = formatMoney(totalAssets);
+            document.getElementById('displayDebts').textContent = formatMoney(totalDebts);
+            document.getElementById('displayNet').textContent = formatMoney(netEstate);
+            document.getElementById('displayRatio').textContent = divisionText;
+            document.getElementById('displayDuration').textContent = alimonyDuration + ' years';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

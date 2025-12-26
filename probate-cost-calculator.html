@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Probate Cost Calculator - Estate Administration Fees</title>
+    <meta name="description" content="Calculate probate costs including attorney fees, executor fees, and court costs. Estimate total estate administration expenses. Free probate calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #44403c 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #44403c;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #44403c;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #57534e; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #44403c 0%, #57534e 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #e7e5e4;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #44403c; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #44403c; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #44403c; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #57534e;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #a8a29e; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📜 Probate Cost Calculator</h1>
+            <p class="subtitle">Estimate estate administration expenses</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Total Estate Value ($)</label>
+                    <input type="number" id="estateValue" value="500000" min="0" step="50000">
+                </div>
+                <div class="input-group">
+                    <label>State</label>
+                    <select id="state">
+                        <option value="standard" selected>Standard State</option>
+                        <option value="ca">California (Statutory)</option>
+                        <option value="ny">New York</option>
+                        <option value="fl">Florida</option>
+                        <option value="tx">Texas</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Estate Complexity</label>
+                    <select id="complexity">
+                        <option value="simple">Simple (Few assets, no disputes)</option>
+                        <option value="moderate" selected>Moderate (Multiple assets)</option>
+                        <option value="complex">Complex (Business, real estate)</option>
+                        <option value="contested">Contested (Will dispute)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Real Estate Properties</label>
+                    <select id="realEstate">
+                        <option value="0">None</option>
+                        <option value="1" selected>1 Property</option>
+                        <option value="2">2 Properties</option>
+                        <option value="3">3+ Properties</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Number of Beneficiaries</label>
+                    <select id="beneficiaries">
+                        <option value="1">1 Beneficiary</option>
+                        <option value="2-3" selected>2-3 Beneficiaries</option>
+                        <option value="4+">4+ Beneficiaries</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Attorney Fee Structure</label>
+                    <select id="feeStructure">
+                        <option value="hourly" selected>Hourly Rate</option>
+                        <option value="percentage">Percentage of Estate</option>
+                        <option value="flat">Flat Fee</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Probate Costs</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalCost">$0</div>
+                    <div class="result-label-main">Estimated Total Probate Cost</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="attorneyFees">$0</div>
+                        <div class="summary-label">Attorney Fees</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="executorFees">$0</div>
+                        <div class="summary-label">Executor Fees</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="courtCosts">$0</div>
+                        <div class="summary-label">Court & Filing Fees</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="percentOfEstate">0%</div>
+                        <div class="summary-label">% of Estate</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Cost Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Attorney Fees</span>
+                        <span class="breakdown-value" id="displayAttorney">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Executor/Administrator</span>
+                        <span class="breakdown-value" id="displayExecutor">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Court Filing Fees</span>
+                        <span class="breakdown-value" id="displayCourt">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Appraisal Fees</span>
+                        <span class="breakdown-value" id="displayAppraisal">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Misc. Expenses</span>
+                        <span class="breakdown-value" id="displayMisc">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Estate Calculators</h4>
+            <a href="estate-tax-calculator.html">Estate Tax</a>
+            <a href="inheritance-calculator.html">Inheritance</a>
+            <a href="trust-calculator.html">Trust Calculator</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Probate Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const estateValue = parseFloat(document.getElementById('estateValue').value);
+            const state = document.getElementById('state').value;
+            const complexity = document.getElementById('complexity').value;
+            const realEstate = parseInt(document.getElementById('realEstate').value);
+            const beneficiaries = document.getElementById('beneficiaries').value;
+            const feeStructure = document.getElementById('feeStructure').value;
+
+            // Attorney fees calculation
+            let attorneyFees = 0;
+
+            if (state === 'ca') {
+                // California statutory fees
+                if (estateValue <= 100000) attorneyFees = estateValue * 0.04;
+                else if (estateValue <= 200000) attorneyFees = 4000 + (estateValue - 100000) * 0.03;
+                else if (estateValue <= 1000000) attorneyFees = 7000 + (estateValue - 200000) * 0.02;
+                else attorneyFees = 23000 + (estateValue - 1000000) * 0.01;
+            } else {
+                // Other states - based on fee structure
+                if (feeStructure === 'percentage') {
+                    attorneyFees = estateValue * 0.03; // 3% average
+                } else if (feeStructure === 'flat') {
+                    if (complexity === 'simple') attorneyFees = 2500;
+                    else if (complexity === 'moderate') attorneyFees = 5000;
+                    else if (complexity === 'complex') attorneyFees = 10000;
+                    else attorneyFees = 25000; // contested
+                } else {
+                    // Hourly estimate
+                    const hourlyRate = 350;
+                    const hours = { simple: 15, moderate: 30, complex: 60, contested: 150 };
+                    attorneyFees = hourlyRate * hours[complexity];
+                }
+            }
+
+            // Executor fees (similar to attorney in many states)
+            let executorFees = attorneyFees * 0.8;
+            if (state === 'ca') executorFees = attorneyFees; // Same as attorney in CA
+
+            // Court filing fees
+            const courtCosts = 500 + (realEstate * 200);
+
+            // Appraisal fees
+            const appraisalFees = realEstate * 500 + (estateValue > 500000 ? 1000 : 500);
+
+            // Miscellaneous (bonds, publication, copies, etc.)
+            const miscExpenses = 500 + (estateValue * 0.001);
+
+            // Total
+            const totalCost = attorneyFees + executorFees + courtCosts + appraisalFees + miscExpenses;
+            const percentOfEstate = ((totalCost / estateValue) * 100).toFixed(1);
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalCost').textContent = formatMoney(totalCost);
+            document.getElementById('attorneyFees').textContent = formatMoney(attorneyFees);
+            document.getElementById('executorFees').textContent = formatMoney(executorFees);
+            document.getElementById('courtCosts').textContent = formatMoney(courtCosts);
+            document.getElementById('percentOfEstate').textContent = percentOfEstate + '%';
+
+            document.getElementById('displayAttorney').textContent = formatMoney(attorneyFees);
+            document.getElementById('displayExecutor').textContent = formatMoney(executorFees);
+            document.getElementById('displayCourt').textContent = formatMoney(courtCosts);
+            document.getElementById('displayAppraisal').textContent = formatMoney(appraisalFees);
+            document.getElementById('displayMisc').textContent = formatMoney(miscExpenses);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

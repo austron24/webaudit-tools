@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Lawsuit Settlement Calculator - Case Value Estimator</title>
+    <meta name="description" content="Estimate lawsuit settlement value for civil cases. Calculate damages and potential recovery. Free lawsuit settlement calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #7f1d1d 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .disclaimer {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: #92400e;
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #7f1d1d;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #7f1d1d;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #991b1b; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 48px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .result-range { font-size: 16px; opacity: 0.8; margin-top: 10px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #fef2f2;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #7f1d1d; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #7f1d1d; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #7f1d1d; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #991b1b;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fca5a5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚖️ Lawsuit Settlement Calculator</h1>
+            <p class="subtitle">Estimate your case value</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="disclaimer">
+                <strong>Disclaimer:</strong> This is a rough estimate only. Actual settlements depend on many factors. Consult an attorney for case-specific advice.
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Case Type</label>
+                    <select id="caseType">
+                        <option value="pi" selected>Personal Injury</option>
+                        <option value="employment">Employment Dispute</option>
+                        <option value="contract">Contract Dispute</option>
+                        <option value="malpractice">Medical Malpractice</option>
+                        <option value="product">Product Liability</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Liability Strength</label>
+                    <select id="liability">
+                        <option value="strong">Strong (Clear liability)</option>
+                        <option value="moderate" selected>Moderate (Mixed evidence)</option>
+                        <option value="weak">Weak (Disputed)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Economic Damages ($)</label>
+                    <input type="number" id="economicDamages" value="50000" min="0" step="5000">
+                </div>
+                <div class="input-group">
+                    <label>Lost Wages/Income ($)</label>
+                    <input type="number" id="lostWages" value="25000" min="0" step="1000">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Medical Bills ($)</label>
+                    <input type="number" id="medicalBills" value="30000" min="0" step="1000">
+                </div>
+                <div class="input-group">
+                    <label>Property Damage ($)</label>
+                    <input type="number" id="propertyDamage" value="10000" min="0" step="1000">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Injury Severity</label>
+                    <select id="severity">
+                        <option value="minor">Minor (Full recovery)</option>
+                        <option value="moderate" selected>Moderate (Lengthy recovery)</option>
+                        <option value="severe">Severe (Permanent impact)</option>
+                        <option value="catastrophic">Catastrophic (Life-altering)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Defendant Type</label>
+                    <select id="defendant">
+                        <option value="individual">Individual</option>
+                        <option value="small_business">Small Business</option>
+                        <option value="corporation" selected>Corporation</option>
+                        <option value="government">Government Entity</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Settlement</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="estimatedSettlement">$0</div>
+                    <div class="result-label-main">Estimated Settlement Value</div>
+                    <div class="result-range" id="settlementRange">Range: $0 - $0</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="economicTotal">$0</div>
+                        <div class="summary-label">Economic Damages</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="nonEconomic">$0</div>
+                        <div class="summary-label">Non-Economic Damages</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="afterFees">$0</div>
+                        <div class="summary-label">After Attorney Fees</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="trialValue">$0</div>
+                        <div class="summary-label">Trial Value (Est.)</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Settlement Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Medical Bills</span>
+                        <span class="breakdown-value" id="displayMedical">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Lost Wages</span>
+                        <span class="breakdown-value" id="displayWages">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Property Damage</span>
+                        <span class="breakdown-value" id="displayProperty">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Pain & Suffering</span>
+                        <span class="breakdown-value" id="displayPain">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Liability Adjustment</span>
+                        <span class="breakdown-value" id="displayLiability">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Legal Calculators</h4>
+            <a href="personal-injury-calculator.html">Personal Injury</a>
+            <a href="workers-comp-calculator.html">Workers Comp</a>
+            <a href="alimony-calculator.html">Alimony</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Lawsuit Settlement Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const caseType = document.getElementById('caseType').value;
+            const liability = document.getElementById('liability').value;
+            const economicDamages = parseFloat(document.getElementById('economicDamages').value);
+            const lostWages = parseFloat(document.getElementById('lostWages').value);
+            const medicalBills = parseFloat(document.getElementById('medicalBills').value);
+            const propertyDamage = parseFloat(document.getElementById('propertyDamage').value);
+            const severity = document.getElementById('severity').value;
+            const defendant = document.getElementById('defendant').value;
+
+            // Calculate total economic damages
+            const totalEconomic = economicDamages + lostWages + medicalBills + propertyDamage;
+
+            // Pain and suffering multiplier based on severity
+            const severityMultipliers = {
+                minor: 1.5,
+                moderate: 3,
+                severe: 5,
+                catastrophic: 10
+            };
+            const multiplier = severityMultipliers[severity];
+            const painAndSuffering = (medicalBills + lostWages) * multiplier;
+
+            // Non-economic damages
+            const nonEconomic = painAndSuffering;
+
+            // Base case value
+            let caseValue = totalEconomic + nonEconomic;
+
+            // Case type adjustment
+            const caseTypeFactors = {
+                pi: 1.0,
+                employment: 0.8,
+                contract: 0.6,
+                malpractice: 1.3,
+                product: 1.2
+            };
+            caseValue *= caseTypeFactors[caseType];
+
+            // Liability adjustment
+            const liabilityFactors = {
+                strong: 1.0,
+                moderate: 0.7,
+                weak: 0.4
+            };
+            const liabilityFactor = liabilityFactors[liability];
+            caseValue *= liabilityFactor;
+
+            // Defendant adjustment
+            const defendantFactors = {
+                individual: 0.5,
+                small_business: 0.7,
+                corporation: 1.0,
+                government: 0.8
+            };
+            caseValue *= defendantFactors[defendant];
+
+            // Settlement vs trial (settlements typically 50-80% of trial value)
+            const trialValue = caseValue * 1.4;
+
+            // Range
+            const lowEstimate = caseValue * 0.6;
+            const highEstimate = caseValue * 1.3;
+
+            // After attorney fees (33% contingency)
+            const afterFees = caseValue * 0.67;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('estimatedSettlement').textContent = formatMoney(caseValue);
+            document.getElementById('settlementRange').textContent = 'Range: ' + formatMoney(lowEstimate) + ' - ' + formatMoney(highEstimate);
+            document.getElementById('economicTotal').textContent = formatMoney(totalEconomic);
+            document.getElementById('nonEconomic').textContent = formatMoney(nonEconomic);
+            document.getElementById('afterFees').textContent = formatMoney(afterFees);
+            document.getElementById('trialValue').textContent = formatMoney(trialValue);
+
+            document.getElementById('displayMedical').textContent = formatMoney(medicalBills);
+            document.getElementById('displayWages').textContent = formatMoney(lostWages);
+            document.getElementById('displayProperty').textContent = formatMoney(propertyDamage);
+            document.getElementById('displayPain').textContent = formatMoney(painAndSuffering);
+            document.getElementById('displayLiability').textContent = Math.round(liabilityFactor * 100) + '%';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Medicare Calculator - Premium & Cost Estimator</title>
+    <meta name="description" content="Calculate Medicare costs including Part A, B, C, and D premiums. Estimate your total Medicare expenses. Free Medicare calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0284c7 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #0284c7;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #0284c7;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #0369a1; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #e0f2fe;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #0284c7; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #0284c7; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0284c7; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0369a1;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #7dd3fc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏛️ Medicare Calculator</h1>
+            <p class="subtitle">Estimate your Medicare costs and premiums</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Annual Income (MAGI)</label>
+                    <input type="number" id="income" value="50000" min="0" step="5000">
+                </div>
+                <div class="input-group">
+                    <label>Filing Status</label>
+                    <select id="filingStatus">
+                        <option value="single" selected>Single</option>
+                        <option value="married">Married Filing Jointly</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Medicare Plan Type</label>
+                    <select id="planType">
+                        <option value="original" selected>Original Medicare (A+B)</option>
+                        <option value="advantage">Medicare Advantage (Part C)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Part D (Prescription)</label>
+                    <select id="partD">
+                        <option value="yes" selected>Yes - Need drug coverage</option>
+                        <option value="no">No - Have other coverage</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Medigap Plan</label>
+                    <select id="medigap">
+                        <option value="none">No Medigap</option>
+                        <option value="g" selected>Plan G (Most Popular)</option>
+                        <option value="n">Plan N (Lower Cost)</option>
+                        <option value="f">Plan F (Comprehensive)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Expected Doctor Visits/Year</label>
+                    <select id="doctorVisits">
+                        <option value="low">Low (1-4 visits)</option>
+                        <option value="medium" selected>Medium (5-12 visits)</option>
+                        <option value="high">High (12+ visits)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Medicare Costs</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="monthlyTotal">$0</div>
+                    <div class="result-label-main">Estimated Monthly Cost</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="annualTotal">$0</div>
+                        <div class="summary-label">Annual Total</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="partBPremium">$0</div>
+                        <div class="summary-label">Part B Premium</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="partDPremium">$0</div>
+                        <div class="summary-label">Part D Premium</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="irmaa">$0</div>
+                        <div class="summary-label">IRMAA Surcharge</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Premium Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Part A Premium</span>
+                        <span class="breakdown-value" id="displayPartA">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Part B Premium</span>
+                        <span class="breakdown-value" id="displayPartB">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Part D Premium</span>
+                        <span class="breakdown-value" id="displayPartD">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Medigap Premium</span>
+                        <span class="breakdown-value" id="displayMedigap">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Est. Out-of-Pocket</span>
+                        <span class="breakdown-value" id="displayOOP">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Health Calculators</h4>
+            <a href="long-term-care-calculator.html">Long-Term Care</a>
+            <a href="medical-bill-calculator.html">Medical Bill</a>
+            <a href="hsa-calculator.html">HSA Calculator</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Medicare Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const income = parseFloat(document.getElementById('income').value);
+            const filingStatus = document.getElementById('filingStatus').value;
+            const planType = document.getElementById('planType').value;
+            const partD = document.getElementById('partD').value;
+            const medigap = document.getElementById('medigap').value;
+            const doctorVisits = document.getElementById('doctorVisits').value;
+
+            // 2024 Medicare premiums
+            const basePartB = 174.70; // Standard Part B premium
+            let partAPremium = 0; // Most people pay $0
+
+            // IRMAA brackets (simplified)
+            let irmaa = 0;
+            const threshold = filingStatus === 'married' ? 206000 : 103000;
+            if (income > threshold) {
+                if (income <= (filingStatus === 'married' ? 258000 : 129000)) irmaa = 69.90;
+                else if (income <= (filingStatus === 'married' ? 322000 : 161000)) irmaa = 174.70;
+                else if (income <= (filingStatus === 'married' ? 386000 : 193000)) irmaa = 279.50;
+                else if (income <= (filingStatus === 'married' ? 750000 : 500000)) irmaa = 384.30;
+                else irmaa = 419.30;
+            }
+
+            const partBTotal = basePartB + irmaa;
+
+            // Part D premium (average)
+            let partDPremium = partD === 'yes' ? 55 : 0;
+            // Part D IRMAA
+            if (income > threshold && partD === 'yes') {
+                partDPremium += irmaa * 0.3;
+            }
+
+            // Medigap premiums (approximate averages)
+            const medigapPremiums = {
+                none: 0,
+                g: 175,
+                n: 125,
+                f: 225
+            };
+            const medigapPremium = planType === 'original' ? medigapPremiums[medigap] : 0;
+
+            // Medicare Advantage adjustment
+            let advantagePremium = 0;
+            if (planType === 'advantage') {
+                advantagePremium = 25; // Average MA plan premium
+            }
+
+            // Estimated out-of-pocket based on visits
+            const oopEstimates = {
+                low: 50,
+                medium: 100,
+                high: 200
+            };
+            const monthlyOOP = oopEstimates[doctorVisits];
+
+            // Total monthly cost
+            const monthlyTotal = partAPremium + partBTotal + partDPremium + medigapPremium + advantagePremium + monthlyOOP;
+            const annualTotal = monthlyTotal * 12;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('monthlyTotal').textContent = formatMoney(monthlyTotal);
+            document.getElementById('annualTotal').textContent = formatMoney(annualTotal);
+            document.getElementById('partBPremium').textContent = formatMoney(partBTotal);
+            document.getElementById('partDPremium').textContent = formatMoney(partDPremium);
+            document.getElementById('irmaa').textContent = formatMoney(irmaa);
+
+            document.getElementById('displayPartA').textContent = formatMoney(partAPremium) + '/mo';
+            document.getElementById('displayPartB').textContent = formatMoney(partBTotal) + '/mo';
+            document.getElementById('displayPartD').textContent = formatMoney(partDPremium) + '/mo';
+            document.getElementById('displayMedigap').textContent = formatMoney(medigapPremium) + '/mo';
+            document.getElementById('displayOOP').textContent = formatMoney(monthlyOOP) + '/mo';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
