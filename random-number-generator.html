@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Number Generator - Generate Random Numbers</title>
+    <meta name="description" content="Free random number generator. Generate random numbers between any range. Perfect for games, lotteries, and decisions.">
+    <meta name="keywords" content="random number generator, RNG, random picker, lottery numbers, dice roller">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/random-number-generator.html">
+    <meta property="og:title" content="Random Number Generator">
+    <meta property="og:description" content="Generate random numbers instantly. Customize range, quantity, and format.">
+    <meta property="og:type" content="website">
+    <style>
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --error: #ef4444; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
+        .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+        .header p { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
+        .content-area { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
+        .result-display { text-align: center; padding: 40px; background: var(--bg-input); border-radius: 16px; margin-bottom: 20px; }
+        .result-value { font-size: 5rem; font-weight: 800; color: var(--secondary); }
+        .result-multiple { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
+        .result-number { font-size: 2rem; font-weight: 700; background: var(--bg-dark); padding: 15px 25px; border-radius: 10px; color: var(--accent); }
+        .generate-btn { width: 100%; padding: 18px; border: none; border-radius: 12px; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; background: linear-gradient(135deg, var(--success), #059669); color: white; margin-bottom: 20px; }
+        .generate-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); font-weight: 500; }
+        input { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1.1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus { outline: none; border-color: var(--primary); }
+        .checkbox-row { display: flex; gap: 20px; margin-top: 15px; }
+        .checkbox-item { display: flex; align-items: center; gap: 10px; color: var(--text-secondary); }
+        .checkbox-item input { width: 20px; height: 20px; }
+        .quick-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+        .quick-btn { padding: 10px 20px; border: 2px solid var(--border); border-radius: 8px; background: var(--bg-input); color: var(--text-primary); cursor: pointer; transition: all 0.3s ease; }
+        .quick-btn:hover { border-color: var(--primary); background: var(--primary); }
+        .history { margin-top: 20px; max-height: 200px; overflow-y: auto; }
+        .history-item { display: flex; justify-content: space-between; padding: 10px; background: var(--bg-input); border-radius: 8px; margin-bottom: 10px; }
+        .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; transition: all 0.3s ease; }
+        .related-link:hover { background: var(--primary); transform: translateX(5px); }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        @media (max-width: 640px) { .header h1 { font-size: 1.8rem; } .form-row { grid-template-columns: 1fr; } .result-value { font-size: 3.5rem; } }
+    </style>
+</head>
+<body>
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-container" style="display: none;">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
+    
+    <header class="header">
+        <h1>🎲 Random Number Generator</h1>
+        <p>Generate random numbers instantly. Customize range, quantity, and format for any need.</p>
+    </header>
+
+    <div class="main-container">
+        <div class="content-area">
+            <div class="card">
+                <h2>🔢 Generate Numbers</h2>
+                <div class="result-display" id="resultDisplay">
+                    <div class="result-value" id="singleResult">?</div>
+                    <div class="result-multiple" id="multipleResults" style="display: none;"></div>
+                </div>
+                <button class="generate-btn" onclick="generate()">🎲 Generate Random Number</button>
+                
+                <div class="form-row">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Minimum</label>
+                        <input type="number" id="min" value="1">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Maximum</label>
+                        <input type="number" id="max" value="100">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>How many numbers?</label>
+                    <input type="number" id="quantity" value="1" min="1" max="100">
+                </div>
+                <div class="checkbox-row">
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="unique">
+                        <span>Unique numbers only</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="sorted">
+                        <span>Sort results</span>
+                    </label>
+                </div>
+                
+                <div class="quick-buttons">
+                    <button class="quick-btn" onclick="setPreset(1, 6, 1)">🎲 Dice (1-6)</button>
+                    <button class="quick-btn" onclick="setPreset(1, 10, 1)">1-10</button>
+                    <button class="quick-btn" onclick="setPreset(1, 100, 1)">1-100</button>
+                    <button class="quick-btn" onclick="setPreset(1, 69, 5)">Lotto 5</button>
+                    <button class="quick-btn" onclick="setPreset(0, 1, 1)">Coin Flip</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📋 Recent Results</h2>
+                <div class="history" id="history"></div>
+            </div>
+
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+
+            <div class="card">
+                <h2>🔗 Related Tools</h2>
+                <div class="related-tools">
+                    <a href="password-generator.html" class="related-link">🔐 Password Generator</a>
+                    <a href="coin-flip.html" class="related-link">🪙 Coin Flip</a>
+                    <a href="dice-roller.html" class="related-link">🎲 Dice Roller</a>
+                    <a href="lottery-number-generator.html" class="related-link">🎰 Lottery Numbers</a>
+                    <a href="random-name-picker.html" class="related-link">👤 Name Picker</a>
+                    <a href="uuid-generator.html" class="related-link">🆔 UUID Generator</a>
+                </div>
+            </div>
+
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let history = [];
+
+        function setPreset(min, max, qty) {
+            document.getElementById('min').value = min;
+            document.getElementById('max').value = max;
+            document.getElementById('quantity').value = qty;
+            generate();
+        }
+
+        function generate() {
+            const min = parseInt(document.getElementById('min').value);
+            const max = parseInt(document.getElementById('max').value);
+            const quantity = Math.min(parseInt(document.getElementById('quantity').value), max - min + 1, 100);
+            const unique = document.getElementById('unique').checked;
+            const sorted = document.getElementById('sorted').checked;
+
+            if (min > max) return;
+
+            let numbers = [];
+            if (unique) {
+                const pool = [];
+                for (let i = min; i <= max; i++) pool.push(i);
+                for (let i = 0; i < quantity && pool.length > 0; i++) {
+                    const idx = Math.floor(Math.random() * pool.length);
+                    numbers.push(pool.splice(idx, 1)[0]);
+                }
+            } else {
+                for (let i = 0; i < quantity; i++) {
+                    numbers.push(Math.floor(Math.random() * (max - min + 1)) + min);
+                }
+            }
+
+            if (sorted) numbers.sort((a, b) => a - b);
+
+            // Display results
+            if (quantity === 1) {
+                document.getElementById('singleResult').textContent = numbers[0];
+                document.getElementById('singleResult').style.display = 'block';
+                document.getElementById('multipleResults').style.display = 'none';
+            } else {
+                document.getElementById('singleResult').style.display = 'none';
+                document.getElementById('multipleResults').style.display = 'flex';
+                document.getElementById('multipleResults').innerHTML = numbers.map(n => 
+                    `<div class="result-number">${n}</div>`
+                ).join('');
+            }
+
+            // Add to history
+            history.unshift({ numbers: [...numbers], time: new Date().toLocaleTimeString() });
+            if (history.length > 10) history.pop();
+            updateHistory();
+        }
+
+        function updateHistory() {
+            document.getElementById('history').innerHTML = history.map(h => 
+                `<div class="history-item">
+                    <span>${h.numbers.join(', ')}</span>
+                    <span style="color: var(--text-secondary);">${h.time}</span>
+                </div>`
+            ).join('');
+        }
+
+        generate();
+    </script>
+</body>
+</html>
