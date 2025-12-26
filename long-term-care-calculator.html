@@ -3,133 +3,682 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Long-Term Care Calculator - Cost & Insurance Estimator</title>
+    <title>Long - Free Online Calculator | WebTools Pro</title>
     <meta name="description" content="Calculate long-term care costs and insurance needs. Estimate nursing home, assisted living, and home care expenses. Free LTC calculator.">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/long-term-care-calculator.html">
+    <meta property="og:title" content="Long - Free Online Calculator">
+    <meta property="og:description" content="Calculate long-term care costs and insurance needs. Estimate nursing home, assisted living, and home care expenses. Free LTC calculator.">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧮</text></svg>">
     <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --white: #ffffff;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #6d28d9 100%);
+            background: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
             min-height: 100vh;
-            color: #f8fafc;
         }
-        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
-        header { text-align: center; margin-bottom: 30px; }
-        h1 { font-size: 36px; margin-bottom: 10px; }
-        .subtitle { font-size: 16px; opacity: 0.9; }
+        .site-header {
+            background: linear-gradient(135deg, var(--bg-dark), var(--bg-card));
+            border-bottom: 1px solid var(--border);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary), #f59e0b);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .nav-links a:hover { color: var(--text-light); }
+        @media (max-width: 600px) { .nav-links { display: none; } }
+
+        .ad-top { background: var(--bg-card); padding: 12px 0; text-align: center; border-bottom: 1px solid var(--border); }
+        .ad-mobile { display: none; text-align: center; margin: 12px auto; max-width: 320px; }
+        @media (max-width: 768px) { .ad-mobile { display: block; } }
+
+        .main-layout {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 25px 20px;
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            gap: 25px;
+        }
+        @media (max-width: 900px) {
+            .main-layout { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+        }
+
+        .hero { text-align: center; margin-bottom: 25px; }
+        .hero h1 {
+            font-size: 38px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--text-light), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p { font-size: 16px; color: var(--text-muted); max-width: 500px; margin: 0 auto; }
+        @media (max-width: 600px) { .hero h1 { font-size: 28px; } }
+
         .calc-card {
-            background: white;
-            border-radius: 24px;
-            padding: 40px;
+            background: var(--white);
+            border-radius: 20px;
+            padding: 35px;
             color: #1e293b;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
+        @media (max-width: 600px) { .calc-card { padding: 20px; } }
+
+        .unit-toggle {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 25px;
+            background: #f1f5f9;
+            padding: 5px;
+            border-radius: 12px;
+        }
+        .unit-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            background: transparent;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+        .unit-btn.active {
+            background: var(--white);
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
         .input-group { margin-bottom: 20px; }
         .input-group label {
             display: block;
-            font-size: 14px;
-            color: #64748b;
+            font-size: 12px;
+            font-weight: 700;
+            color: #475569;
             margin-bottom: 8px;
-            font-weight: 500;
-        }
-        .input-group input, .input-group select {
-            width: 100%;
-            padding: 15px;
-            border: 3px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 18px;
-        }
-        .input-group input:focus, .input-group select:focus {
-            outline: none;
-            border-color: #6d28d9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .input-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
         }
+        .input-row input, .input-group input, .input-group select {
+            flex: 1;
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.2s;
+            background: #f8fafc;
+        }
+        .input-row input:focus, .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--white);
+        }
+        .input-row span { font-size: 13px; color: #64748b; font-weight: 600; min-width: 25px; }
+
         .btn {
             width: 100%;
-            padding: 18px;
+            padding: 16px 25px;
             border: none;
             border-radius: 12px;
-            font-size: 18px;
-            font-weight: 600;
+            font-size: 16px;
+            font-weight: 700;
             cursor: pointer;
-            background: #6d28d9;
-            color: white;
-            transition: all 0.2s;
-            margin-top: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--white);
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 8px;
         }
-        .btn:hover { background: #5b21b6; }
-        .results { margin-top: 30px; display: none; }
-        .result-box-main {
-            background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
-            color: white;
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            margin-bottom: 25px;
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.35);
         }
-        .result-value-main { font-size: 56px; font-weight: bold; }
-        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
+
+        .results {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e2e8f0;
+            display: none;
         }
-        .summary-box {
-            background: #ede9fe;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
+        .results.show { display: block; }
+        .bmi-display, .result-main { text-align: center; margin-bottom: 25px; }
+        .bmi-value, .result-value {
+            font-size: 56px;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1.1;
         }
-        .summary-value { font-size: 24px; font-weight: bold; color: #6d28d9; }
-        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
-        .breakdown {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 20px;
+        .bmi-category, .result-label {
+            font-size: 22px;
+            font-weight: 600;
+            margin-top: 8px;
+            color: #1e293b;
         }
-        .breakdown h4 { color: #6d28d9; margin-bottom: 15px; }
-        .breakdown-row {
+
+        .bmi-scale, .scale-bar-container { margin: 25px 0; }
+        .bmi-scale > div:first-child, .scale-bar {
+            height: 18px;
+            background: linear-gradient(to right, #3b82f6 0%, #22c55e 25%, #eab308 55%, #f97316 75%, #ef4444 100%);
+            border-radius: 9px;
+            position: relative;
+        }
+        .bmi-marker, .scale-marker {
+            position: absolute;
+            top: -6px;
+            width: 5px;
+            height: 30px;
+            background: #1e293b;
+            border-radius: 2px;
+            transform: translateX(-50%);
+            transition: left 0.4s ease;
+        }
+        .scale-labels {
             display: flex;
             justify-content: space-between;
-            padding: 12px 0;
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .category-info, .category-table {
+            background: #f8fafc;
+            border-radius: 14px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .category-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 20px;
             border-bottom: 1px solid #e2e8f0;
         }
-        .breakdown-row:last-child { border: none; }
-        .breakdown-label { color: #64748b; }
-        .breakdown-value { font-weight: 600; color: #1e293b; }
-        .ad-container { text-align: center; margin: 25px 0; }
-        .tools-promo {
-            background: white;
+        .category-row:last-child { border: none; }
+        .category-row.active { background: #fef2f2; }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .result-item {
+            background: #f8fafc;
             border-radius: 12px;
+            padding: 18px;
+            text-align: center;
+        }
+        .result-item-value { font-size: 22px; font-weight: 700; color: #1e293b; }
+        .result-item-label { font-size: 11px; color: #64748b; text-transform: uppercase; margin-top: 4px; letter-spacing: 0.5px; }
+
+        .ad-inline { background: #f8fafc; border-radius: 10px; padding: 15px; margin: 25px 0; text-align: center; }
+        .ad-bottom { background: var(--bg-card); padding: 25px 15px; text-align: center; margin-top: 30px; border-radius: 14px; }
+
+        .info-section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+        .info-section h2 { font-size: 22px; margin-bottom: 15px; color: var(--text-light); }
+        .info-section p { color: var(--text-muted); margin-bottom: 15px; font-size: 15px; line-height: 1.7; }
+        .info-section h3 { font-size: 18px; margin: 20px 0 12px; color: var(--text-light); }
+        .info-section ul { color: var(--text-muted); margin-left: 20px; }
+        .info-section li { margin-bottom: 10px; line-height: 1.6; }
+
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar-ad { background: var(--bg-card); border-radius: 14px; padding: 15px; text-align: center; }
+        .sidebar-tools {
+            background: var(--bg-card);
+            border-radius: 14px;
             padding: 20px;
-            color: #1e293b;
-            margin-top: 25px;
         }
-        .tools-promo h4 { color: #6d28d9; margin-bottom: 10px; }
-        .tools-promo a {
-            display: inline-block;
-            margin: 5px 10px 5px 0;
-            color: #5b21b6;
+        .sidebar-tools h3 { font-size: 16px; margin-bottom: 15px; color: var(--text-light); }
+        .tool-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            border-radius: 10px;
             text-decoration: none;
+            color: var(--text-muted);
+            transition: all 0.2s;
+            margin-bottom: 6px;
         }
-        .tools-promo a:hover { text-decoration: underline; }
-        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
-        footer a { color: #c4b5fd; }
+        .tool-link:hover { background: rgba(99, 102, 241, 0.1); color: var(--text-light); }
+        .tool-icon-small {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .related-tools { margin-top: 35px; }
+        .related-tools h2 { font-size: 24px; margin-bottom: 20px; text-align: center; }
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+        }
+        .tool-card {
+            background: var(--bg-card);
+            border-radius: 14px;
+            padding: 20px;
+            text-decoration: none;
+            color: var(--text-light);
+            transition: all 0.3s;
+            border: 1px solid var(--border);
+        }
+        .tool-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.2);
+        }
+        .tool-card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+        .tool-card h4 { font-size: 14px; margin-bottom: 6px; }
+        .tool-card p { font-size: 12px; color: var(--text-muted); }
+
+        .site-footer {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            padding: 40px 20px 25px;
+            margin-top: 50px;
+        }
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 30px;
+        }
+        .footer-section h4 { font-size: 14px; margin-bottom: 15px; color: var(--text-light); }
+        .footer-section a {
+            display: block;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 6px 0;
+            font-size: 13px;
+        }
+        .footer-section a:hover { color: var(--primary); }
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 30px auto 0;
+            padding-top: 25px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        .footer-bottom a { color: var(--primary); text-decoration: none; }
+
+        .tools-promo { display: none; }
+        .cta-section { display: none; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🏥 Long-Term Care Calculator</h1>
-            <p class="subtitle">Estimate long-term care costs and insurance needs</p>
-        </header>
+    <header class="site-header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">🧮</div>
+                WebTools Pro
+            </a>
+            <nav class="nav-links">
+                <a href="index.html">All Tools</a>
+                <a href="bmi-calculator.html">Health</a>
+                <a href="mortgage-calculator.html">Finance</a>
+            </nav>
+        </div>
+    </header>
 
-        <div class="ad-mobile" style="text-align:center;margin:10px 0;"><script>atOptions = {'key':'9f6b66d433cad4c02b643bdd4b7eefc0','format':'iframe','height':50,'width':320,'params':{}};            </script><script src="https://www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script></div>
+    <div class="ad-top">
+        <script>
+            atOptions = {
+                'key' : 'b43e7cf5057864a264961884e1f34530',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+            };
+        </script>
+        <script src="https://www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+
+    <div class="ad-mobile">
+        <script>
+            atOptions = {
+                'key' : '9f6b66d433cad4c02b643bdd4b7eefc0',
+                'format' : 'iframe',
+                'height' : 50,
+                'width' : 320,
+                'params' : {}
+            };
+        </script>
+        <script src="https://www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+
+    <main class="main-layout">
+        <div class="content">
+            <section class="hero">
+                <h1>Long</h1>
+                <p>Calculate long-term care costs and insurance needs. Estimate nursing home, assisted living, and home care expenses. Free LTC calculator....</p>
+            </section>
+
+            <div class="calc-card">
+                
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Current Age</label>
+                    <input type="number" id="currentAge" value="55" min="40" max="80">
+                </div>
+                <div class="input-group">
+                    <label>State</label>
+                    <select id="state">
+                        <option value="avg" selected>Average State</option>
+                        <option value="high">High Cost (NY, CA, MA)</option>
+                        <option value="low">Low Cost (TX, FL, AZ)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Care Type Needed</label>
+                    <select id="careType">
+                        <option value="home">Home Health Aide</option>
+                        <option value="assisted" selected>Assisted Living</option>
+                        <option value="nursing">Nursing Home (Semi-Private)</option>
+                        <option value="nursing_private">Nursing Home (Private)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Expected Years of Care</label>
+                    <select id="yearsOfCare">
+                        <option value="2">2 Years</option>
+                        <option value="3" selected>3 Years (Average)</option>
+                        <option value="5">5 Years</option>
+                        <option value="7">7+ Years</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Years Until Care Needed</label>
+                    <input type="number" id="yearsUntilCare" value="20" min="1" max="40">
+                </div>
+                <div class="input-group">
+                    <label>Inflation Rate (%)</label>
+                    <input type="number" id="inflationRate" value="4" min="1" max="10" step="0.5">
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate LTC Costs</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="futureCost">$0</div>
+                    <div class="result-label-main">Total Future Care Cost</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="monthlyCost">$0</div>
+                        <div class="summary-label">Monthly Cost (Today)</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="futureMonthly">$0</div>
+                        <div class="summary-label">Monthly Cost (Future)</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="annualPremium">$0</div>
+                        <div class="summary-label">Est. LTC Insurance/yr</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="savingsNeeded">$0</div>
+                        <div class="summary-label">Self-Insure Amount</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Cost Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Current Annual Cost</span>
+                        <span class="breakdown-value" id="displayCurrent">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Future Annual Cost</span>
+                        <span class="breakdown-value" id="displayFuture">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Years of Care</span>
+                        <span class="breakdown-value" id="displayYears">0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Inflation Multiplier</span>
+                        <span class="breakdown-value" id="displayInflation">0x</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Total Care Cost</span>
+                        <span class="breakdown-value" id="displayTotal">$0</span>
+                    </div>
+                </div>
+            </div>
+        
+            </div>
+
+            <div class="ad-inline">
+                <script>
+            atOptions = {
+                'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                'format' : 'iframe',
+                'height' : 250,
+                'width' : 300,
+                'params' : {}
+            };
+        </script>
+        <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+
+            <section class="info-section">
+                <h2>About This Tool</h2>
+                <p>Calculate long-term care costs and insurance needs. Estimate nursing home, assisted living, and home care expenses. Free LTC calculator.</p>
+                <p>This free online calculator provides instant, accurate results. No signup required - just enter your values and get your answer immediately.</p>
+            </section>
+
+            <section class="related-tools">
+                <h2>Related Tools</h2>
+                <div class="tools-grid">
+                    <a href="percentage-calc.html" class="tool-card">
+                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
+                        <h4>Percentage Calculator</h4>
+                        <p>Free online tool</p>
+                    </a>
+                    <a href="average-calculator.html" class="tool-card">
+                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
+                        <h4>Average Calculatorulator</h4>
+                        <p>Free online tool</p>
+                    </a>
+                    <a href="fraction-calculator.html" class="tool-card">
+                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
+                        <h4>Fraction Calculatorulator</h4>
+                        <p>Free online tool</p>
+                    </a>
+                    <a href="scientific-calculator.html" class="tool-card">
+                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
+                        <h4>Scientific Calculatorulator</h4>
+                        <p>Free online tool</p>
+                    </a>
+                </div>
+            </section>
+
+            <div class="ad-bottom">
+                <script>
+            atOptions = {
+                'key' : 'bca56f01884f1cf07c196213009e77ac',
+                'format' : 'iframe',
+                'height' : 60,
+                'width' : 468,
+                'params' : {}
+            };
+        </script>
+        <script src="https://www.highperformanceformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
+            </div>
+        </div>
+
+        <aside class="sidebar">
+            <div class="sidebar-ad">
+                <script>
+            atOptions = {
+                'key' : 'd4702b3e9743f9cd914a00e5026493f3',
+                'format' : 'iframe',
+                'height' : 600,
+                'width' : 160,
+                'params' : {}
+            };
+        </script>
+        <script src="https://www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+            <div class="sidebar-ad">
+                <script>
+            atOptions = {
+                'key' : '8398a480b05e8a3236f9ea561b7cab1a',
+                'format' : 'iframe',
+                'height' : 300,
+                'width' : 160,
+                'params' : {}
+            };
+        </script>
+        <script src="https://www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
+            </div>
+            <div class="sidebar-tools">
+                <h3>Popular Tools</h3>
+                <a href="bmi-calculator.html" class="tool-link">
+                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #ef4444, #dc2626);">🏃</div>
+                    BMI Calculator
+                </a>
+                <a href="mortgage-calculator.html" class="tool-link">
+                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #1e40af, #1d4ed8);">🏠</div>
+                    Mortgage Calculator
+                </a>
+                <a href="percentage-calc.html" class="tool-link">
+                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #16a34a, #15803d);">%</div>
+                    Percentage Calculator
+                </a>
+                <a href="age-calculator.html" class="tool-link">
+                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #ec4899, #be185d);">📅</div>
+                    Age Calculator
+                </a>
+            </div>
+        </aside>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>Financial Tools</h4>
+                <a href="mortgage-calculator.html">Mortgage Calculator</a>
+                <a href="loan-calculator.html">Loan Calculator</a>
+                <a href="compound-interest-calculator.html">Compound Interest</a>
+                <a href="retirement-calculator.html">Retirement Calculator</a>
+            </div>
+            <div class="footer-section">
+                <h4>Health Tools</h4>
+                <a href="bmi-calculator.html">BMI Calculator</a>
+                <a href="calorie-calculator.html">Calorie Calculator</a>
+                <a href="body-fat-calculator.html">Body Fat Calculator</a>
+                <a href="water-intake-calculator.html">Water Intake</a>
+            </div>
+            <div class="footer-section">
+                <h4>Math Tools</h4>
+                <a href="percentage-calc.html">Percentage Calculator</a>
+                <a href="average-calculator.html">Average Calculator</a>
+                <a href="fraction-calculator.html">Fraction Calculator</a>
+                <a href="scientific-calculator.html">Scientific Calculator</a>
+            </div>
+            <div class="footer-section">
+                <h4>Converters</h4>
+                <a href="unit-converter.html">Unit Converter</a>
+                <a href="temperature-converter.html">Temperature</a>
+                <a href="currency-converter.html">Currency Converter</a>
+                <a href="timezone-converter.html">Time Zone</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 WebTools Pro. Free calculators & tools. | <a href="index.html">All 360+ Tools</a></p>
+        </div>
+    </footer>
+
+    <script>
+        atOptions = {'key':'9f6b66d433cad4c02b643bdd4b7eefc0','format':'iframe','height':50,'width':320,'params':{}};            </script><script src="https://www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script></div>
 
         <div class="calc-card">
             <div class="input-row">
@@ -326,6 +875,7 @@
         }
 
         calculate();
+    
     </script>
 </body>
 </html>
