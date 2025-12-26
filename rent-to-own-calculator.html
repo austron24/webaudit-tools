@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rent to Own Calculator - Lease Option Analysis</title>
+    <meta name="description" content="Calculate rent to own costs and compare to traditional buying. Analyze lease option fees, rent credits, and total cost of rent-to-own agreements.">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/rent-to-own-calculator.html">
+    <meta property="og:title" content="Rent to Own Calculator - Lease Option Analysis">
+    <meta property="og:description" content="Analyze rent to own costs vs traditional home buying.">
+    <meta property="og:type" content="website">
+    <style>
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; min-height: 100vh; }
+        .header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; }
+        .nav-links a:hover { color: var(--primary); }
+        .ad-top { background: var(--bg-card); padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); }
+        .ad-mobile { display: none; background: var(--bg-card); padding: 0.5rem; text-align: center; }
+        .main-layout { display: flex; max-width: 1400px; margin: 0 auto; gap: 2rem; padding: 2rem; }
+        .content { flex: 1; min-width: 0; }
+        .sidebar { width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 1rem; }
+        .hero { text-align: center; margin-bottom: 2rem; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary), #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { color: var(--text-secondary); font-size: 1.1rem; }
+        .calculator-card { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .section-title { font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--primary); }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.75rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 0.5rem; color: var(--text-primary); font-size: 1rem; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+        .input-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .calculate-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; border-radius: 0.5rem; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; }
+        .calculate-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
+        .results { display: none; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+        .results.show { display: block; }
+        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .result-box { background: var(--bg-input); padding: 1.25rem; border-radius: 0.75rem; text-align: center; }
+        .result-box.highlight { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid var(--primary); }
+        .result-label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .result-value { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
+        .comparison-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1.5rem; }
+        .compare-card { background: var(--bg-input); padding: 1.5rem; border-radius: 0.75rem; }
+        .compare-card h4 { color: var(--primary); margin-bottom: 1rem; font-size: 1.1rem; }
+        .compare-row { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
+        .compare-row:last-child { border-bottom: none; font-weight: 600; padding-top: 0.75rem; }
+        .compare-label { color: var(--text-secondary); font-size: 0.9rem; }
+        .compare-value { color: var(--text-primary); }
+        .verdict { margin-top: 1.5rem; padding: 1.25rem; border-radius: 0.75rem; text-align: center; }
+        .verdict.good { background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); }
+        .verdict.bad { background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); }
+        .verdict.neutral { background: rgba(245, 158, 11, 0.1); border: 1px solid var(--warning); }
+        .verdict h4 { margin-bottom: 0.5rem; }
+        .verdict.good h4 { color: var(--success); }
+        .verdict.bad h4 { color: var(--danger); }
+        .verdict.neutral h4 { color: var(--warning); }
+        .verdict p { color: var(--text-secondary); margin: 0; }
+        .ad-inline { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin: 2rem 0; }
+        .info-section { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .info-section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary); }
+        .info-section p, .info-section li { color: var(--text-secondary); margin-bottom: 0.75rem; }
+        .info-section ul { padding-left: 1.5rem; }
+        .related-tools { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); }
+        .related-tools h3 { margin-bottom: 1rem; color: var(--text-primary); }
+        .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+        .tool-link { display: block; padding: 1rem; background: var(--bg-input); border-radius: 0.5rem; text-decoration: none; color: var(--text-primary); }
+        .tool-link:hover { background: var(--border); transform: translateY(-2px); }
+        .ad-bottom { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin-top: 2rem; }
+        .footer { background: var(--bg-card); border-top: 1px solid var(--border); padding: 2rem; text-align: center; margin-top: 3rem; }
+        .footer p { color: var(--text-secondary); font-size: 0.9rem; }
+        @media (max-width: 968px) { .sidebar { display: none; } .main-layout { padding: 1rem; } .comparison-cards { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) { .ad-top { display: none; } .ad-mobile { display: block; } .hero h1 { font-size: 1.75rem; } .input-row { grid-template-columns: 1fr; } .nav-links { display: none; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">CalcTools</a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="finance-calculators.html">Finance</a>
+                <a href="health-calculators.html">Health</a>
+                <a href="home-calculators.html">Home</a>
+            </nav>
+        </div>
+    </header>
+    <div class="ad-top">
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-mobile">
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <div class="main-layout">
+        <main class="content">
+            <div class="hero">
+                <h1>Rent to Own Calculator</h1>
+                <p>Analyze lease option costs vs traditional home buying</p>
+            </div>
+            <div class="calculator-card">
+                <h3 class="section-title">Property Details</h3>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Home Price ($)</label>
+                        <input type="number" id="homePrice" placeholder="350000" value="350000">
+                    </div>
+                    <div class="form-group">
+                        <label>Option Fee / Upfront ($)</label>
+                        <input type="number" id="optionFee" placeholder="10000" value="10000">
+                    </div>
+                </div>
+                <h3 class="section-title" style="margin-top: 1.5rem;">Rent-to-Own Terms</h3>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Monthly Rent ($)</label>
+                        <input type="number" id="monthlyRent" placeholder="2500" value="2500">
+                    </div>
+                    <div class="form-group">
+                        <label>Rent Credit (% of rent)</label>
+                        <input type="number" id="rentCredit" step="5" placeholder="25" value="25">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Lease Period (years)</label>
+                        <select id="leasePeriod">
+                            <option value="1">1 year</option>
+                            <option value="2">2 years</option>
+                            <option value="3" selected>3 years</option>
+                            <option value="5">5 years</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Fair Market Rent ($)</label>
+                        <input type="number" id="marketRent" placeholder="2000" value="2000">
+                    </div>
+                </div>
+                <h3 class="section-title" style="margin-top: 1.5rem;">Traditional Purchase Comparison</h3>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Down Payment (%)</label>
+                        <input type="number" id="downPayment" placeholder="10" value="10">
+                    </div>
+                    <div class="form-group">
+                        <label>Mortgage Rate (%)</label>
+                        <input type="number" id="mortgageRate" step="0.125" placeholder="7.0" value="7.0">
+                    </div>
+                </div>
+                <button class="calculate-btn" onclick="calculate()">Compare Options</button>
+                <div class="results" id="results">
+                    <div class="result-grid">
+                        <div class="result-box highlight">
+                            <div class="result-label">Total Rent-to-Own Cost</div>
+                            <div class="result-value" id="rtoTotal">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Accumulated Rent Credits</div>
+                            <div class="result-value" id="totalCredits">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Premium Over Market Rent</div>
+                            <div class="result-value" id="rentPremium">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Needed at Purchase</div>
+                            <div class="result-value" id="neededAtPurchase">$0</div>
+                        </div>
+                    </div>
+                    <div class="comparison-cards">
+                        <div class="compare-card">
+                            <h4>Rent-to-Own Path</h4>
+                            <div class="compare-row">
+                                <span class="compare-label">Option Fee (upfront)</span>
+                                <span class="compare-value" id="rtoOptionFee">$0</span>
+                            </div>
+                            <div class="compare-row">
+                                <span class="compare-label">Total Rent Paid</span>
+                                <span class="compare-value" id="rtoRentPaid">$0</span>
+                            </div>
+                            <div class="compare-row">
+                                <span class="compare-label">Rent Credits Earned</span>
+                                <span class="compare-value" id="rtoCredits">$0</span>
+                            </div>
+                            <div class="compare-row">
+                                <span class="compare-label">Remaining Down Payment</span>
+                                <span class="compare-value" id="rtoRemaining">$0</span>
+                            </div>
+                            <div class="compare-row">
+                                <span class="compare-label">Total Out-of-Pocket</span>
+                                <span class="compare-value" id="rtoOOP">$0</span>
+                            </div>
+                        </div>
+                        <div class="compare-card">
+                            <h4>Traditional Buy Path</h4>
+                            <div class="compare-row">
+                                <span class="compare-label">Down Payment</span>
+                                <span class="compare-value" id="tradDown">$0</span>
+                            </div>
+                            <div class="compare-row">
+                                <span class="compare-label">Closing Costs (~3%)</span>
+                                <span class="compare-value" id="tradClosing">$0</span>
+                            </div>
+                            <div class="compare-row">
+                                <span class="compare-label">Monthly Mortgage</span>
+                                <span class="compare-value" id="tradMortgage">$0</span>
+                            </div>
+                            <div class="compare-row">
+                                <span class="compare-label">Rent While Saving</span>
+                                <span class="compare-value" id="tradRent">$0</span>
+                            </div>
+                            <div class="compare-row">
+                                <span class="compare-label">Total to Purchase</span>
+                                <span class="compare-value" id="tradTotal">$0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="verdict" id="verdict">
+                        <h4>Analysis</h4>
+                        <p id="verdictText"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="ad-inline">
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+            <div class="info-section">
+                <h2>Understanding Rent-to-Own</h2>
+                <p>Rent-to-own (lease option) agreements let you rent a home with the option to buy it at a predetermined price after a set period. A portion of your rent may go toward the purchase.</p>
+                <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Key Components</h3>
+                <ul>
+                    <li><strong>Option Fee:</strong> Upfront payment (1-5% of price) for the right to buy later</li>
+                    <li><strong>Rent Premium:</strong> Higher-than-market rent, with extra going toward purchase</li>
+                    <li><strong>Rent Credit:</strong> Portion of rent applied to down payment (15-30% typical)</li>
+                    <li><strong>Purchase Price:</strong> Often locked in at signing, can work for or against you</li>
+                </ul>
+                <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Risks to Consider</h3>
+                <p>If you don't exercise the option, you lose the option fee and rent credits. Make sure you can qualify for a mortgage by the end of the lease period.</p>
+            </div>
+            <div class="ad-bottom">
+                <script type="text/javascript">atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
+            </div>
+            <div class="related-tools">
+                <h3>Related Calculators</h3>
+                <div class="tool-grid">
+                    <a href="rent-vs-buy-calculator.html" class="tool-link">Rent vs Buy Calculator</a>
+                    <a href="mortgage-calculator.html" class="tool-link">Mortgage Calculator</a>
+                    <a href="down-payment-calculator.html" class="tool-link">Down Payment Calculator</a>
+                    <a href="home-affordability-calculator.html" class="tool-link">Home Affordability</a>
+                    <a href="fha-loan-calculator.html" class="tool-link">FHA Loan Calculator</a>
+                    <a href="closing-cost-calculator.html" class="tool-link">Closing Costs</a>
+                </div>
+            </div>
+        </main>
+        <aside class="sidebar">
+            <div class="ad-sidebar">
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+            <div class="ad-sidebar">
+                <script type="text/javascript">atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
+            </div>
+        </aside>
+    </div>
+    <footer class="footer">
+        <p>&copy; 2024 CalcTools. Free online calculators for everyone.</p>
+    </footer>
+    <script>
+        function calcPayment(principal, annualRate, years) {
+            const monthlyRate = annualRate / 100 / 12;
+            const numPayments = years * 12;
+            if (monthlyRate === 0) return principal / numPayments;
+            return (principal * monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / (Math.pow(1 + monthlyRate, numPayments) - 1);
+        }
+        function formatCurrency(num) {
+            return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        }
+        function calculate() {
+            const homePrice = parseFloat(document.getElementById('homePrice').value) || 0;
+            const optionFee = parseFloat(document.getElementById('optionFee').value) || 0;
+            const monthlyRent = parseFloat(document.getElementById('monthlyRent').value) || 0;
+            const rentCreditPercent = parseFloat(document.getElementById('rentCredit').value) || 0;
+            const leasePeriod = parseFloat(document.getElementById('leasePeriod').value) || 3;
+            const marketRent = parseFloat(document.getElementById('marketRent').value) || 0;
+            const downPaymentPercent = parseFloat(document.getElementById('downPayment').value) || 10;
+            const mortgageRate = parseFloat(document.getElementById('mortgageRate').value) || 7;
+            const leaseMonths = leasePeriod * 12;
+            const totalRent = monthlyRent * leaseMonths;
+            const monthlyCredit = monthlyRent * (rentCreditPercent / 100);
+            const totalCredits = monthlyCredit * leaseMonths;
+            const totalEquityBuilt = optionFee + totalCredits;
+            const rentPremium = (monthlyRent - marketRent) * leaseMonths;
+            const requiredDown = homePrice * (downPaymentPercent / 100);
+            const neededAtPurchase = Math.max(0, requiredDown - totalEquityBuilt);
+            const rtoTotal = optionFee + totalRent;
+            const tradDown = requiredDown;
+            const tradClosing = homePrice * 0.03;
+            const tradRentPaid = marketRent * leaseMonths;
+            const tradTotal = tradDown + tradClosing;
+            const loanAmount = homePrice - requiredDown;
+            const tradMortgage = calcPayment(loanAmount, mortgageRate, 30);
+            document.getElementById('rtoTotal').textContent = formatCurrency(rtoTotal);
+            document.getElementById('totalCredits').textContent = formatCurrency(totalCredits);
+            document.getElementById('rentPremium').textContent = formatCurrency(rentPremium);
+            document.getElementById('neededAtPurchase').textContent = formatCurrency(neededAtPurchase);
+            document.getElementById('rtoOptionFee').textContent = formatCurrency(optionFee);
+            document.getElementById('rtoRentPaid').textContent = formatCurrency(totalRent);
+            document.getElementById('rtoCredits').textContent = formatCurrency(totalCredits);
+            document.getElementById('rtoRemaining').textContent = formatCurrency(neededAtPurchase);
+            document.getElementById('rtoOOP').textContent = formatCurrency(rtoTotal + neededAtPurchase);
+            document.getElementById('tradDown').textContent = formatCurrency(tradDown);
+            document.getElementById('tradClosing').textContent = formatCurrency(tradClosing);
+            document.getElementById('tradMortgage').textContent = formatCurrency(tradMortgage) + '/mo';
+            document.getElementById('tradRent').textContent = formatCurrency(tradRentPaid);
+            document.getElementById('tradTotal').textContent = formatCurrency(tradTotal);
+            const verdict = document.getElementById('verdict');
+            const verdictText = document.getElementById('verdictText');
+            const effectiveCreditRate = (totalCredits / totalRent) * 100;
+            const premiumVsCredits = rentPremium - totalCredits;
+            if (premiumVsCredits > 0) {
+                verdict.className = 'verdict bad';
+                verdictText.textContent = `Caution: You're paying ${formatCurrency(rentPremium)} more than market rent but only getting ${formatCurrency(totalCredits)} in credits. The ${formatCurrency(premiumVsCredits)} difference is lost if you don't complete the purchase.`;
+            } else if (totalCredits >= requiredDown * 0.5) {
+                verdict.className = 'verdict good';
+                verdictText.textContent = `This rent-to-own deal builds ${formatCurrency(totalEquityBuilt)} toward your purchase (${((totalEquityBuilt / requiredDown) * 100).toFixed(0)}% of required down payment). If home values rise, your locked-in price could be advantageous.`;
+            } else {
+                verdict.className = 'verdict neutral';
+                verdictText.textContent = `This deal builds ${formatCurrency(totalEquityBuilt)} toward purchase. Compare this to saving ${formatCurrency(rentPremium)} by renting at market rate. Make sure you can qualify for a mortgage by end of lease.`;
+            }
+            document.getElementById('results').classList.add('show');
+        }
+        calculate();
+    </script>
+</body>
+</html>
