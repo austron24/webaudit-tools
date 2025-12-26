@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Loan Calculator - Unsecured Loan Calculator</title>
-    <meta name="description" content="Free personal loan calculator. Calculate monthly payments, total interest, and compare personal loan terms and rates.">
-    <meta name="keywords" content="personal loan calculator, unsecured loan, loan payment calculator, personal loan rates, loan comparison">
+    <title>Personal Loan Calculator - Monthly Payment & Interest</title>
+    <meta name="description" content="Free personal loan calculator. Calculate monthly payments, total interest, and compare loan offers to find the best deal.">
+    <meta name="keywords" content="personal loan calculator, loan payment calculator, loan interest, installment loan">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/personal-loan-calculator.html">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #7c3aed; --primary-dark: #6d28d9; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -21,33 +21,27 @@
         .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
         .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
         input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
         input:focus, select:focus { outline: none; border-color: var(--primary); }
-        .result-hero { background: linear-gradient(135deg, var(--success), #059669); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
         .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
         .result-hero-label { color: rgba(255,255,255,0.8); }
-        .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
         .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
         .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
-        .rate-comparison { margin-top: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .rate-box { padding: 20px; background: var(--bg-input); border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; }
-        .rate-box:hover { transform: translateY(-2px); }
-        .rate-box.selected { border-color: var(--success); background: rgba(16, 185, 129, 0.1); }
-        .rate-label { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 5px; }
-        .rate-value { font-size: 2rem; font-weight: 800; color: var(--secondary); }
-        .rate-box.selected .rate-value { color: var(--success); }
-        .rate-desc { color: var(--text-secondary); font-size: 0.8rem; margin-top: 5px; }
-        .amortization { margin-top: 20px; max-height: 300px; overflow-y: auto; }
-        .amort-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; padding: 10px; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
-        .amort-row.header { font-weight: 700; color: var(--secondary); background: var(--bg-input); position: sticky; top: 0; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
+        .pie-chart { width: 200px; height: 200px; border-radius: 50%; margin: 20px auto; position: relative; }
+        .pie-legend { display: flex; justify-content: center; gap: 20px; margin-top: 10px; }
+        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+        .legend-color { width: 16px; height: 16px; border-radius: 4px; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .results-grid, .rate-comparison { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -62,7 +56,7 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
-    
+
     <header class="header">
         <h1>💳 Personal Loan Calculator</h1>
     </header>
@@ -70,19 +64,19 @@
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>💰 Loan Details</h2>
+                <h2>📋 Loan Details</h2>
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Loan Amount ($)</label>
-                        <input type="number" id="loanAmount" value="15000" oninput="calculate()">
+                        <input type="number" id="amount" value="15000" step="500" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Interest Rate (APR %)</label>
-                        <input type="number" id="interestRate" value="10.5" step="0.1" oninput="calculate()">
+                        <input type="number" id="rate" value="10.5" step="0.25" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Loan Term</label>
-                        <select id="loanTerm" onchange="calculate()">
+                        <select id="term" onchange="calculate()">
                             <option value="12">12 months (1 year)</option>
                             <option value="24">24 months (2 years)</option>
                             <option value="36" selected>36 months (3 years)</option>
@@ -94,67 +88,45 @@
                     </div>
                     <div class="form-group">
                         <label>Origination Fee (%)</label>
-                        <input type="number" id="originationFee" value="2" step="0.5" oninput="calculate()">
+                        <input type="number" id="fee" value="2" step="0.5" oninput="calculate()">
                     </div>
                 </div>
-                
+
                 <div class="result-hero">
                     <div class="result-hero-label">Monthly Payment</div>
-                    <div class="result-hero-value" id="monthlyPayment">$0</div>
+                    <div class="result-hero-value" id="payment">$0</div>
                 </div>
-                
+
                 <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-value" id="totalPayment">$0</div>
+                        <div class="result-label">Total of Payments</div>
+                    </div>
                     <div class="result-card">
                         <div class="result-value" id="totalInterest">$0</div>
                         <div class="result-label">Total Interest</div>
                     </div>
                     <div class="result-card">
                         <div class="result-value" id="totalCost">$0</div>
-                        <div class="result-label">Total Cost</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="feeAmount">$0</div>
-                        <div class="result-label">Origination Fee</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="netProceeds">$0</div>
-                        <div class="result-label">Net Proceeds</div>
+                        <div class="result-label">Total Cost (with fees)</div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>📊 Rates by Credit Score</h2>
-                <div class="rate-comparison">
-                    <div class="rate-box" onclick="setRate(7.5)">
-                        <div class="rate-label">Excellent (720+)</div>
-                        <div class="rate-value">7.5%</div>
-                        <div class="rate-desc">Best rates available</div>
-                    </div>
-                    <div class="rate-box selected" onclick="setRate(10.5)">
-                        <div class="rate-label">Good (680-719)</div>
-                        <div class="rate-value">10.5%</div>
-                        <div class="rate-desc">Competitive rates</div>
-                    </div>
-                    <div class="rate-box" onclick="setRate(16)">
-                        <div class="rate-label">Fair (640-679)</div>
-                        <div class="rate-value">16%</div>
-                        <div class="rate-desc">Higher rates apply</div>
-                    </div>
+                <h2>📊 Payment Breakdown</h2>
+                <div class="pie-chart" id="pieChart"></div>
+                <div class="pie-legend">
+                    <div class="legend-item"><div class="legend-color" style="background: var(--secondary);"></div>Principal</div>
+                    <div class="legend-item"><div class="legend-color" style="background: var(--accent);"></div>Interest</div>
+                    <div class="legend-item"><div class="legend-color" style="background: var(--primary);"></div>Fees</div>
                 </div>
-            </div>
-
-            <div class="card">
-                <h2>📋 Amortization Schedule</h2>
-                <div class="amortization">
-                    <div class="amort-row header">
-                        <span>Month</span>
-                        <span>Payment</span>
-                        <span>Principal</span>
-                        <span>Interest</span>
-                        <span>Balance</span>
-                    </div>
-                    <div id="amortRows"></div>
+                
+                <div style="margin-top: 20px;">
+                    <div class="breakdown-row"><span>Loan Amount</span><span id="principal">$0</span></div>
+                    <div class="breakdown-row"><span>Origination Fee</span><span id="feeAmount">$0</span></div>
+                    <div class="breakdown-row"><span>Amount Financed</span><span id="amountFinanced">$0</span></div>
+                    <div class="breakdown-row"><span>Total Interest</span><span id="interestTotal">$0</span></div>
                 </div>
             </div>
 
@@ -167,10 +139,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="loan-calculator.html" class="related-link">💰 General Loan</a>
                     <a href="debt-payoff-calculator.html" class="related-link">💳 Debt Payoff</a>
-                    <a href="debt-consolidation-calculator.html" class="related-link">🔄 Debt Consolidation</a>
-                    <a href="credit-card-payoff-calculator.html" class="related-link">💳 Credit Card Payoff</a>
+                    <a href="credit-card-payoff-calculator.html" class="related-link">💰 Credit Card Payoff</a>
+                    <a href="loan-comparison-calculator.html" class="related-link">📊 Loan Comparison</a>
+                    <a href="auto-loan-calculator.html" class="related-link">🚗 Auto Loan</a>
                 </div>
             </div>
         </div>
@@ -185,60 +157,49 @@
     </div>
 
     <script>
-        function setRate(rate) {
-            document.getElementById('interestRate').value = rate;
-            document.querySelectorAll('.rate-box').forEach(b => b.classList.remove('selected'));
-            event.currentTarget.classList.add('selected');
-            calculate();
-        }
-        
         function calculate() {
-            const loanAmount = parseFloat(document.getElementById('loanAmount').value) || 0;
-            const interestRate = parseFloat(document.getElementById('interestRate').value) / 100 / 12 || 0;
-            const loanTerm = parseInt(document.getElementById('loanTerm').value) || 36;
-            const originationFee = parseFloat(document.getElementById('originationFee').value) / 100 || 0;
-            
-            const feeAmount = loanAmount * originationFee;
-            const netProceeds = loanAmount - feeAmount;
-            
-            let monthlyPayment = 0;
-            if (interestRate > 0) {
-                monthlyPayment = loanAmount * (interestRate * Math.pow(1 + interestRate, loanTerm)) / (Math.pow(1 + interestRate, loanTerm) - 1);
+            const amount = parseFloat(document.getElementById('amount').value) || 0;
+            const rate = parseFloat(document.getElementById('rate').value) || 0;
+            const term = parseInt(document.getElementById('term').value) || 36;
+            const feePercent = parseFloat(document.getElementById('fee').value) || 0;
+
+            const feeAmount = amount * (feePercent / 100);
+            const amountFinanced = amount - feeAmount;
+            const monthlyRate = rate / 100 / 12;
+
+            let payment;
+            if (monthlyRate === 0) {
+                payment = amount / term;
             } else {
-                monthlyPayment = loanAmount / loanTerm;
+                payment = amount * (monthlyRate * Math.pow(1 + monthlyRate, term)) / (Math.pow(1 + monthlyRate, term) - 1);
             }
-            
-            const totalCost = monthlyPayment * loanTerm;
-            const totalInterest = totalCost - loanAmount;
-            
-            document.getElementById('monthlyPayment').textContent = '$' + Math.round(monthlyPayment).toLocaleString();
+
+            const totalPayment = payment * term;
+            const totalInterest = totalPayment - amount;
+            const totalCost = totalPayment + feeAmount;
+
+            document.getElementById('payment').textContent = '$' + Math.round(payment).toLocaleString();
+            document.getElementById('totalPayment').textContent = '$' + Math.round(totalPayment).toLocaleString();
             document.getElementById('totalInterest').textContent = '$' + Math.round(totalInterest).toLocaleString();
             document.getElementById('totalCost').textContent = '$' + Math.round(totalCost).toLocaleString();
+
+            document.getElementById('principal').textContent = '$' + amount.toLocaleString();
             document.getElementById('feeAmount').textContent = '$' + Math.round(feeAmount).toLocaleString();
-            document.getElementById('netProceeds').textContent = '$' + Math.round(netProceeds).toLocaleString();
+            document.getElementById('amountFinanced').textContent = '$' + Math.round(amountFinanced).toLocaleString();
+            document.getElementById('interestTotal').textContent = '$' + Math.round(totalInterest).toLocaleString();
+
+            // Update pie chart
+            const total = amount + totalInterest + feeAmount;
+            const principalPercent = (amount / total) * 100;
+            const interestPercent = (totalInterest / total) * 100;
+            const feePercent2 = (feeAmount / total) * 100;
             
-            // Amortization
-            let balance = loanAmount;
-            let amortHtml = '';
-            for (let i = 1; i <= Math.min(loanTerm, 60); i++) {
-                const interest = balance * interestRate;
-                const principal = monthlyPayment - interest;
-                balance -= principal;
-                
-                amortHtml += `<div class="amort-row">
-                    <span>${i}</span>
-                    <span>$${Math.round(monthlyPayment).toLocaleString()}</span>
-                    <span>$${Math.round(principal).toLocaleString()}</span>
-                    <span>$${Math.round(interest).toLocaleString()}</span>
-                    <span>$${Math.max(0, Math.round(balance)).toLocaleString()}</span>
-                </div>`;
-            }
-            if (loanTerm > 60) {
-                amortHtml += '<div class="amort-row"><span colspan="5" style="grid-column: span 5; text-align: center; color: var(--text-secondary);">... showing first 60 months</span></div>';
-            }
-            document.getElementById('amortRows').innerHTML = amortHtml;
+            document.getElementById('pieChart').style.background = `conic-gradient(
+                var(--secondary) 0% ${principalPercent}%,
+                var(--accent) ${principalPercent}% ${principalPercent + interestPercent}%,
+                var(--primary) ${principalPercent + interestPercent}% 100%
+            )`;
         }
-        
         calculate();
     </script>
 </body>

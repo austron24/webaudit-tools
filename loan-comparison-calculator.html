@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Comparison Calculator - Compare Loan Offers</title>
+    <meta name="description" content="Free loan comparison calculator. Compare multiple loan offers side by side to find the best deal based on payments, interest, and total cost.">
+    <meta name="keywords" content="loan comparison calculator, compare loans, best loan rate, loan offer comparison">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/loan-comparison-calculator.html">
+    <style>
+        :root { --primary: #0891b2; --primary-dark: #0e7490; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
+        .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
+        .content-area { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .loan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .loan-card { background: var(--bg-input); border-radius: 12px; padding: 20px; position: relative; }
+        .loan-card.best { border: 3px solid var(--success); }
+        .loan-card.best::before { content: '✓ Best Option'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--success); color: white; padding: 3px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
+        .loan-label { color: var(--accent); font-weight: bold; margin-bottom: 15px; text-align: center; font-size: 1.1rem; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; margin-bottom: 5px; color: var(--text-secondary); font-size: 0.85rem; }
+        input { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 0.95rem; background: var(--bg-card); color: var(--text-primary); }
+        input:focus { outline: none; border-color: var(--primary); }
+        .result-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
+        .result-row:last-child { border-bottom: none; }
+        .result-value { font-weight: bold; color: var(--secondary); }
+        .comparison-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .comparison-table th, .comparison-table td { padding: 15px; text-align: center; border-bottom: 1px solid var(--border); }
+        .comparison-table th { background: var(--bg-input); color: var(--secondary); }
+        .best-cell { background: rgba(16, 185, 129, 0.2); color: var(--success); font-weight: bold; }
+        .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } .loan-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-container" style="display: none;">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
+
+    <header class="header">
+        <h1>📊 Loan Comparison Calculator</h1>
+    </header>
+
+    <div class="main-container">
+        <div class="content-area">
+            <div class="card">
+                <h2>🔢 Enter Loan Details</h2>
+                <div class="loan-grid">
+                    <div class="loan-card" id="loan1Card">
+                        <div class="loan-label">Loan A</div>
+                        <div class="form-group">
+                            <label>Amount ($)</label>
+                            <input type="number" id="amount1" value="20000" step="500" oninput="calculate()">
+                        </div>
+                        <div class="form-group">
+                            <label>Interest Rate (%)</label>
+                            <input type="number" id="rate1" value="8.5" step="0.25" oninput="calculate()">
+                        </div>
+                        <div class="form-group">
+                            <label>Term (months)</label>
+                            <input type="number" id="term1" value="48" step="6" oninput="calculate()">
+                        </div>
+                        <div class="form-group">
+                            <label>Fees ($)</label>
+                            <input type="number" id="fee1" value="500" step="50" oninput="calculate()">
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <div class="result-row"><span>Monthly</span><span class="result-value" id="payment1">$0</span></div>
+                            <div class="result-row"><span>Total Interest</span><span class="result-value" id="interest1">$0</span></div>
+                            <div class="result-row"><span>Total Cost</span><span class="result-value" id="total1">$0</span></div>
+                        </div>
+                    </div>
+
+                    <div class="loan-card" id="loan2Card">
+                        <div class="loan-label">Loan B</div>
+                        <div class="form-group">
+                            <label>Amount ($)</label>
+                            <input type="number" id="amount2" value="20000" step="500" oninput="calculate()">
+                        </div>
+                        <div class="form-group">
+                            <label>Interest Rate (%)</label>
+                            <input type="number" id="rate2" value="10.0" step="0.25" oninput="calculate()">
+                        </div>
+                        <div class="form-group">
+                            <label>Term (months)</label>
+                            <input type="number" id="term2" value="36" step="6" oninput="calculate()">
+                        </div>
+                        <div class="form-group">
+                            <label>Fees ($)</label>
+                            <input type="number" id="fee2" value="0" step="50" oninput="calculate()">
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <div class="result-row"><span>Monthly</span><span class="result-value" id="payment2">$0</span></div>
+                            <div class="result-row"><span>Total Interest</span><span class="result-value" id="interest2">$0</span></div>
+                            <div class="result-row"><span>Total Cost</span><span class="result-value" id="total2">$0</span></div>
+                        </div>
+                    </div>
+
+                    <div class="loan-card" id="loan3Card">
+                        <div class="loan-label">Loan C</div>
+                        <div class="form-group">
+                            <label>Amount ($)</label>
+                            <input type="number" id="amount3" value="20000" step="500" oninput="calculate()">
+                        </div>
+                        <div class="form-group">
+                            <label>Interest Rate (%)</label>
+                            <input type="number" id="rate3" value="7.0" step="0.25" oninput="calculate()">
+                        </div>
+                        <div class="form-group">
+                            <label>Term (months)</label>
+                            <input type="number" id="term3" value="60" step="6" oninput="calculate()">
+                        </div>
+                        <div class="form-group">
+                            <label>Fees ($)</label>
+                            <input type="number" id="fee3" value="800" step="50" oninput="calculate()">
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <div class="result-row"><span>Monthly</span><span class="result-value" id="payment3">$0</span></div>
+                            <div class="result-row"><span>Total Interest</span><span class="result-value" id="interest3">$0</span></div>
+                            <div class="result-row"><span>Total Cost</span><span class="result-value" id="total3">$0</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📈 Side-by-Side Comparison</h2>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Loan A</th>
+                            <th>Loan B</th>
+                            <th>Loan C</th>
+                        </tr>
+                    </thead>
+                    <tbody id="comparisonBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+
+            <div class="card">
+                <h2>🔗 Related Tools</h2>
+                <div class="related-tools">
+                    <a href="personal-loan-calculator.html" class="related-link">💳 Personal Loan</a>
+                    <a href="auto-loan-calculator.html" class="related-link">🚗 Auto Loan</a>
+                    <a href="mortgage-calculator.html" class="related-link">🏡 Mortgage</a>
+                    <a href="apr-calculator.html" class="related-link">📊 APR Calculator</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calcLoan(amount, rate, term, fee) {
+            const monthlyRate = rate / 100 / 12;
+            let payment;
+            if (monthlyRate === 0) {
+                payment = amount / term;
+            } else {
+                payment = amount * (monthlyRate * Math.pow(1 + monthlyRate, term)) / (Math.pow(1 + monthlyRate, term) - 1);
+            }
+            const totalPayment = payment * term;
+            const totalInterest = totalPayment - amount;
+            const totalCost = totalPayment + fee;
+            return { payment, totalInterest, totalCost };
+        }
+
+        function calculate() {
+            const loans = [];
+            for (let i = 1; i <= 3; i++) {
+                const amount = parseFloat(document.getElementById('amount' + i).value) || 0;
+                const rate = parseFloat(document.getElementById('rate' + i).value) || 0;
+                const term = parseInt(document.getElementById('term' + i).value) || 1;
+                const fee = parseFloat(document.getElementById('fee' + i).value) || 0;
+                
+                const result = calcLoan(amount, rate, term, fee);
+                loans.push({ ...result, amount, rate, term, fee });
+                
+                document.getElementById('payment' + i).textContent = '$' + Math.round(result.payment).toLocaleString();
+                document.getElementById('interest' + i).textContent = '$' + Math.round(result.totalInterest).toLocaleString();
+                document.getElementById('total' + i).textContent = '$' + Math.round(result.totalCost).toLocaleString();
+            }
+
+            // Find best (lowest total cost)
+            let bestIdx = 0;
+            for (let i = 1; i < loans.length; i++) {
+                if (loans[i].totalCost < loans[bestIdx].totalCost) {
+                    bestIdx = i;
+                }
+            }
+
+            // Update best styling
+            for (let i = 0; i < 3; i++) {
+                const card = document.getElementById('loan' + (i + 1) + 'Card');
+                if (i === bestIdx) {
+                    card.classList.add('best');
+                } else {
+                    card.classList.remove('best');
+                }
+            }
+
+            // Build comparison table
+            const metrics = [
+                { label: 'Monthly Payment', key: 'payment', format: v => '$' + Math.round(v).toLocaleString(), lower: true },
+                { label: 'Total Interest', key: 'totalInterest', format: v => '$' + Math.round(v).toLocaleString(), lower: true },
+                { label: 'Total Cost', key: 'totalCost', format: v => '$' + Math.round(v).toLocaleString(), lower: true },
+                { label: 'Interest Rate', key: 'rate', format: v => v.toFixed(2) + '%', lower: true },
+                { label: 'Loan Term', key: 'term', format: v => v + ' months', lower: null },
+                { label: 'Fees', key: 'fee', format: v => '$' + v.toLocaleString(), lower: true }
+            ];
+
+            let tableHTML = '';
+            metrics.forEach(m => {
+                let bestVal = loans[0][m.key];
+                let bestIdx = 0;
+                if (m.lower !== null) {
+                    for (let i = 1; i < loans.length; i++) {
+                        if ((m.lower && loans[i][m.key] < bestVal) || (!m.lower && loans[i][m.key] > bestVal)) {
+                            bestVal = loans[i][m.key];
+                            bestIdx = i;
+                        }
+                    }
+                }
+                
+                tableHTML += '<tr><td>' + m.label + '</td>';
+                for (let i = 0; i < loans.length; i++) {
+                    const isBest = m.lower !== null && i === bestIdx;
+                    tableHTML += '<td class="' + (isBest ? 'best-cell' : '') + '">' + m.format(loans[i][m.key]) + '</td>';
+                }
+                tableHTML += '</tr>';
+            });
+            
+            document.getElementById('comparisonBody').innerHTML = tableHTML;
+        }
+        calculate();
+    </script>
+</body>
+</html>
