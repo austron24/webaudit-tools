@@ -3,880 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>College Savings Calculator - Free Online Calculator | WebTools Pro</title>
-    <meta name="description" content="Calculate how much to save for college. Estimate 529 plan growth and future tuition costs. Free college savings calculator.">
+    <title>College Savings Calculator - Education Fund Planner</title>
+    <meta name="description" content="Free college savings calculator. Plan how much to save for college with projected costs, 529 plans, and investment growth projections.">
+    <meta name="keywords" content="college savings calculator, 529 plan, education fund, college planning, tuition savings">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/college-savings-calculator.html">
-    <meta property="og:title" content="College Savings Calculator - Free Online Calculator">
-    <meta property="og:description" content="Calculate how much to save for college. Estimate 529 plan growth and future tuition costs. Free college savings calculator.">
-    <meta property="og:type" content="website">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧮</text></svg>">
     <style>
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --bg-dark: #0f172a;
-            --bg-card: #1e293b;
-            --text-light: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
-            --white: #ffffff;
-        }
+        :root { --primary: #3b82f6; --primary-dark: #2563eb; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-light);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-        .site-header {
-            background: linear-gradient(135deg, var(--bg-dark), var(--bg-card));
-            border-bottom: 1px solid var(--border);
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo {
-            font-size: 22px;
-            font-weight: 700;
-            text-decoration: none;
-            color: var(--text-light);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--primary), #f59e0b);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-        .nav-links { display: flex; gap: 20px; }
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .nav-links a:hover { color: var(--text-light); }
-        @media (max-width: 600px) { .nav-links { display: none; } }
-
-        .ad-top { background: var(--bg-card); padding: 12px 0; text-align: center; border-bottom: 1px solid var(--border); }
-        .ad-mobile { display: none; text-align: center; margin: 12px auto; max-width: 320px; }
-        @media (max-width: 768px) { .ad-mobile { display: block; } }
-
-        .main-layout {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 25px 20px;
-            display: grid;
-            grid-template-columns: 1fr 280px;
-            gap: 25px;
-        }
-        @media (max-width: 900px) {
-            .main-layout { grid-template-columns: 1fr; }
-            .sidebar { display: none; }
-        }
-
-        .hero { text-align: center; margin-bottom: 25px; }
-        .hero h1 {
-            font-size: 38px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, var(--text-light), var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero p { font-size: 16px; color: var(--text-muted); max-width: 500px; margin: 0 auto; }
-        @media (max-width: 600px) { .hero h1 { font-size: 28px; } }
-
-        .calc-card {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 35px;
-            color: #1e293b;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-        @media (max-width: 600px) { .calc-card { padding: 20px; } }
-
-        .unit-toggle {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 25px;
-            background: #f1f5f9;
-            padding: 5px;
-            border-radius: 12px;
-        }
-        .unit-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            background: transparent;
-            color: #64748b;
-            transition: all 0.2s;
-        }
-        .unit-btn.active {
-            background: var(--white);
-            color: var(--primary);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .input-group { margin-bottom: 20px; }
-        .input-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: 700;
-            color: #475569;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .input-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        .input-row input, .input-group input, .input-group select {
-            flex: 1;
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.2s;
-            background: #f8fafc;
-        }
-        .input-row input:focus, .input-group input:focus, .input-group select:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: var(--white);
-        }
-        .input-row span { font-size: 13px; color: #64748b; font-weight: 600; min-width: 25px; }
-
-        .btn {
-            width: 100%;
-            padding: 16px 25px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: var(--white);
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: 8px;
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.35);
-        }
-
-        .results {
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 2px solid #e2e8f0;
-            display: none;
-        }
-        .results.show { display: block; }
-        .bmi-display, .result-main { text-align: center; margin-bottom: 25px; }
-        .bmi-value, .result-value {
-            font-size: 56px;
-            font-weight: 800;
-            color: var(--primary);
-            line-height: 1.1;
-        }
-        .bmi-category, .result-label {
-            font-size: 22px;
-            font-weight: 600;
-            margin-top: 8px;
-            color: #1e293b;
-        }
-
-        .bmi-scale, .scale-bar-container { margin: 25px 0; }
-        .bmi-scale > div:first-child, .scale-bar {
-            height: 18px;
-            background: linear-gradient(to right, #3b82f6 0%, #22c55e 25%, #eab308 55%, #f97316 75%, #ef4444 100%);
-            border-radius: 9px;
-            position: relative;
-        }
-        .bmi-marker, .scale-marker {
-            position: absolute;
-            top: -6px;
-            width: 5px;
-            height: 30px;
-            background: #1e293b;
-            border-radius: 2px;
-            transform: translateX(-50%);
-            transition: left 0.4s ease;
-        }
-        .scale-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: #64748b;
-            margin-top: 10px;
-            font-weight: 600;
-        }
-
-        .category-info, .category-table {
-            background: #f8fafc;
-            border-radius: 14px;
-            overflow: hidden;
-            margin-top: 20px;
-        }
-        .category-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 14px 20px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .category-row:last-child { border: none; }
-        .category-row.active { background: #fef2f2; }
-
-        .result-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 12px;
-            margin-top: 20px;
-        }
-        .result-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 18px;
-            text-align: center;
-        }
-        .result-item-value { font-size: 22px; font-weight: 700; color: #1e293b; }
-        .result-item-label { font-size: 11px; color: #64748b; text-transform: uppercase; margin-top: 4px; letter-spacing: 0.5px; }
-
-        .ad-inline { background: #f8fafc; border-radius: 10px; padding: 15px; margin: 25px 0; text-align: center; }
-        .ad-bottom { background: var(--bg-card); padding: 25px 15px; text-align: center; margin-top: 30px; border-radius: 14px; }
-
-        .info-section {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 30px;
-            margin-top: 30px;
-        }
-        .info-section h2 { font-size: 22px; margin-bottom: 15px; color: var(--text-light); }
-        .info-section p { color: var(--text-muted); margin-bottom: 15px; font-size: 15px; line-height: 1.7; }
-        .info-section h3 { font-size: 18px; margin: 20px 0 12px; color: var(--text-light); }
-        .info-section ul { color: var(--text-muted); margin-left: 20px; }
-        .info-section li { margin-bottom: 10px; line-height: 1.6; }
-
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
+        .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
+        .content-area { display: flex; flex-direction: column; gap: 20px; }
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .sidebar-ad { background: var(--bg-card); border-radius: 14px; padding: 15px; text-align: center; }
-        .sidebar-tools {
-            background: var(--bg-card);
-            border-radius: 14px;
-            padding: 20px;
-        }
-        .sidebar-tools h3 { font-size: 16px; margin-bottom: 15px; color: var(--text-light); }
-        .tool-link {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px;
-            border-radius: 10px;
-            text-decoration: none;
-            color: var(--text-muted);
-            transition: all 0.2s;
-            margin-bottom: 6px;
-        }
-        .tool-link:hover { background: rgba(99, 102, 241, 0.1); color: var(--text-light); }
-        .tool-icon-small {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-        }
-
-        .related-tools { margin-top: 35px; }
-        .related-tools h2 { font-size: 24px; margin-bottom: 20px; text-align: center; }
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px;
-        }
-        .tool-card {
-            background: var(--bg-card);
-            border-radius: 14px;
-            padding: 20px;
-            text-decoration: none;
-            color: var(--text-light);
-            transition: all 0.3s;
-            border: 1px solid var(--border);
-        }
-        .tool-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--primary);
-            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.2);
-        }
-        .tool-card-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            margin-bottom: 12px;
-        }
-        .tool-card h4 { font-size: 14px; margin-bottom: 6px; }
-        .tool-card p { font-size: 12px; color: var(--text-muted); }
-
-        .site-footer {
-            background: var(--bg-card);
-            border-top: 1px solid var(--border);
-            padding: 40px 20px 25px;
-            margin-top: 50px;
-        }
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 30px;
-        }
-        .footer-section h4 { font-size: 14px; margin-bottom: 15px; color: var(--text-light); }
-        .footer-section a {
-            display: block;
-            color: var(--text-muted);
-            text-decoration: none;
-            padding: 6px 0;
-            font-size: 13px;
-        }
-        .footer-section a:hover { color: var(--primary); }
-        .footer-bottom {
-            max-width: 1200px;
-            margin: 30px auto 0;
-            padding-top: 25px;
-            border-top: 1px solid var(--border);
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-        .footer-bottom a { color: var(--primary); text-decoration: none; }
-
-        .tools-promo { display: none; }
-        .cta-section { display: none; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 40px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 2.5rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.9); font-size: 1.2rem; }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .result-value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .breakdown-row:last-child { border-bottom: none; }
+        .progress-bar { background: var(--bg-input); border-radius: 10px; height: 20px; margin-top: 15px; overflow: hidden; }
+        .progress-fill { background: linear-gradient(90deg, var(--primary), var(--success)); height: 100%; transition: width 0.3s; }
+        .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <header class="site-header">
-        <div class="header-container">
-            <a href="index.html" class="logo">
-                <div class="logo-icon">🧮</div>
-                WebTools Pro
-            </a>
-            <nav class="nav-links">
-                <a href="index.html">All Tools</a>
-                <a href="bmi-calculator.html">Health</a>
-                <a href="mortgage-calculator.html">Finance</a>
-            </nav>
-        </div>
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-container" style="display: none;">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
+
+    <header class="header">
+        <h1>🎓 College Savings Calculator</h1>
     </header>
 
-    <div class="ad-top">
-        <script>
-            atOptions = {
-                'key' : 'b43e7cf5057864a264961884e1f34530',
-                'format' : 'iframe',
-                'height' : 90,
-                'width' : 728,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
-    </div>
+    <div class="main-container">
+        <div class="content-area">
+            <div class="card">
+                <h2>👶 Child & Education Details</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Child's Current Age</label>
+                        <input type="number" id="childAge" value="5" min="0" max="17" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>College Start Age</label>
+                        <input type="number" id="startAge" value="18" min="16" max="22" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>School Type</label>
+                        <select id="schoolType" onchange="calculate()">
+                            <option value="community">Community College (2-year)</option>
+                            <option value="instate" selected>Public In-State (4-year)</option>
+                            <option value="outstate">Public Out-of-State</option>
+                            <option value="private">Private University</option>
+                            <option value="ivy">Elite/Ivy League</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Coverage Goal</label>
+                        <select id="coverage" onchange="calculate()">
+                            <option value="50">50% of costs</option>
+                            <option value="75">75% of costs</option>
+                            <option value="100" selected>100% of costs</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
 
-    <div class="ad-mobile">
-        <script>
-            atOptions = {
-                'key' : '9f6b66d433cad4c02b643bdd4b7eefc0',
-                'format' : 'iframe',
-                'height' : 50,
-                'width' : 320,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
-    </div>
+            <div class="card">
+                <h2>💰 Current Savings</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Current Savings ($)</label>
+                        <input type="number" id="currentSavings" value="10000" min="0" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Expected Annual Return (%)</label>
+                        <select id="returnRate" onchange="calculate()">
+                            <option value="4">Conservative (4%)</option>
+                            <option value="6" selected>Moderate (6%)</option>
+                            <option value="8">Aggressive (8%)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
 
-    <main class="main-layout">
-        <div class="content">
-            <section class="hero">
-                <h1>College Savings Calculator</h1>
-                <p>Calculate how much to save for college. Estimate 529 plan growth and future tuition costs. Free college savings calculator....</p>
-            </section>
+            <div class="result-hero">
+                <div class="result-hero-label">Monthly Savings Needed</div>
+                <div class="result-hero-value" id="monthlySavings">$0</div>
+            </div>
 
-            <div class="calc-card">
+            <div class="results-grid">
+                <div class="result-card">
+                    <div class="result-value" id="projectedCost">$0</div>
+                    <div class="result-label">Projected 4-Year Cost</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value" id="targetSavings">$0</div>
+                    <div class="result-label">Savings Goal</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value" id="yearsToSave">0</div>
+                    <div class="result-label">Years to Save</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📊 Savings Progress</h2>
+                <div class="breakdown-row"><span>Current Savings</span><span id="currentBreak">$0</span></div>
+                <div class="breakdown-row"><span>Growth on Current Savings</span><span id="growthBreak">$0</span></div>
+                <div class="breakdown-row"><span>Total Contributions Needed</span><span id="contributionsBreak">$0</span></div>
+                <div class="breakdown-row"><span>Growth on Contributions</span><span id="contributionGrowth">$0</span></div>
+                <div class="breakdown-row" style="font-weight: bold;"><span>Total at College Start</span><span id="totalAtStart">$0</span></div>
                 
-            <div class="input-row">
-                <div class="input-group">
-                    <label>Child's Current Age</label>
-                    <input type="number" id="currentAge" value="5" min="0" max="17">
-                </div>
-                <div class="input-group">
-                    <label>College Start Age</label>
-                    <input type="number" id="collegeAge" value="18" min="16" max="25">
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label>College Type</label>
-                <select id="collegeType">
-                    <option value="public-in">Public In-State ($25,000/yr)</option>
-                    <option value="public-out">Public Out-of-State ($45,000/yr)</option>
-                    <option value="private" selected>Private University ($55,000/yr)</option>
-                    <option value="ivy">Elite/Ivy League ($75,000/yr)</option>
-                    <option value="community">Community College ($12,000/yr)</option>
-                </select>
-            </div>
-
-            <div class="input-row">
-                <div class="input-group">
-                    <label>Current Savings ($)</label>
-                    <input type="number" id="currentSavings" value="5000" min="0" step="1000">
-                </div>
-                <div class="input-group">
-                    <label>Monthly Contribution ($)</label>
-                    <input type="number" id="monthlyContrib" value="300" min="0" step="50">
-                </div>
-            </div>
-
-            <div class="input-row">
-                <div class="input-group">
-                    <label>Expected Return (%)</label>
-                    <input type="number" id="returnRate" value="7" min="1" max="15" step="0.5">
-                </div>
-                <div class="input-group">
-                    <label>Years of College</label>
-                    <select id="yearsCollege">
-                        <option value="2">2 years</option>
-                        <option value="4" selected>4 years</option>
-                        <option value="5">5 years</option>
-                        <option value="6">6 years (grad school)</option>
-                    </select>
-                </div>
-            </div>
-
-            <button class="btn" onclick="calculate()">Calculate College Fund</button>
-
-            <div class="results" id="results">
-                <div class="result-box-main">
-                    <div class="result-value-main" id="projectedSavings">$0</div>
-                    <div class="result-label-main">Projected Savings at College</div>
-                </div>
-
-                <div class="summary-grid">
-                    <div class="summary-box">
-                        <div class="summary-value" id="totalCost">$0</div>
-                        <div class="summary-label">Projected College Cost</div>
-                    </div>
-                    <div class="summary-box">
-                        <div class="summary-value" id="shortfall">$0</div>
-                        <div class="summary-label">Gap/Surplus</div>
-                    </div>
-                    <div class="summary-box">
-                        <div class="summary-value" id="totalContrib">$0</div>
-                        <div class="summary-label">Total Contributions</div>
-                    </div>
-                    <div class="summary-box">
-                        <div class="summary-value" id="earnedInterest">$0</div>
-                        <div class="summary-label">Investment Growth</div>
-                    </div>
-                </div>
-
-                <div class="breakdown">
-                    <h4>📊 Savings Plan</h4>
-                    <div class="breakdown-row">
-                        <span class="breakdown-label">Years Until College</span>
-                        <span class="breakdown-value" id="yearsUntil">0</span>
-                    </div>
-                    <div class="breakdown-row">
-                        <span class="breakdown-label">Current Cost/Year</span>
-                        <span class="breakdown-value" id="currentCost">$0</span>
-                    </div>
-                    <div class="breakdown-row">
-                        <span class="breakdown-label">Future Cost/Year (5% inflation)</span>
-                        <span class="breakdown-value" id="futureCost">$0</span>
-                    </div>
-                    <div class="breakdown-row">
-                        <span class="breakdown-label">Needed Monthly (to cover 100%)</span>
-                        <span class="breakdown-value" id="neededMonthly">$0</span>
+                <div style="margin-top: 15px;">
+                    <span style="color: var(--text-secondary);">Progress to Goal: <span id="progressPercent">0%</span></span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
                     </div>
                 </div>
             </div>
-        
+
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
             </div>
 
-            <div class="ad-inline">
-                <script>
-            atOptions = {
-                'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
-                'format' : 'iframe',
-                'height' : 250,
-                'width' : 300,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
-            </div>
-
-            <section class="info-section">
-                <h2>About This Tool</h2>
-                <p>Calculate how much to save for college. Estimate 529 plan growth and future tuition costs. Free college savings calculator.</p>
-                <p>This free online calculator provides instant, accurate results. No signup required - just enter your values and get your answer immediately.</p>
-            </section>
-
-            <section class="related-tools">
-                <h2>Related Tools</h2>
-                <div class="tools-grid">
-                    <a href="percentage-calc.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Percentage Calculator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                    <a href="average-calculator.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Average Calculatorulator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                    <a href="fraction-calculator.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Fraction Calculatorulator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                    <a href="scientific-calculator.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Scientific Calculatorulator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                </div>
-            </section>
-
-            <div class="ad-bottom">
-                <script>
-            atOptions = {
-                'key' : 'bca56f01884f1cf07c196213009e77ac',
-                'format' : 'iframe',
-                'height' : 60,
-                'width' : 468,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
-            </div>
-        </div>
-
-        <aside class="sidebar">
-            <div class="sidebar-ad">
-                <script>
-            atOptions = {
-                'key' : 'd4702b3e9743f9cd914a00e5026493f3',
-                'format' : 'iframe',
-                'height' : 600,
-                'width' : 160,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
-            </div>
-            <div class="sidebar-ad">
-                <script>
-            atOptions = {
-                'key' : '8398a480b05e8a3236f9ea561b7cab1a',
-                'format' : 'iframe',
-                'height' : 300,
-                'width' : 160,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
-            </div>
-            <div class="sidebar-tools">
-                <h3>Popular Tools</h3>
-                <a href="bmi-calculator.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #ef4444, #dc2626);">🏃</div>
-                    BMI Calculator
-                </a>
-                <a href="mortgage-calculator.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #1e40af, #1d4ed8);">🏠</div>
-                    Mortgage Calculator
-                </a>
-                <a href="percentage-calc.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #16a34a, #15803d);">%</div>
-                    Percentage Calculator
-                </a>
-                <a href="age-calculator.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #ec4899, #be185d);">📅</div>
-                    Age Calculator
-                </a>
-            </div>
-        </aside>
-    </main>
-
-    <footer class="site-footer">
-        <div class="footer-container">
-            <div class="footer-section">
-                <h4>Financial Tools</h4>
-                <a href="mortgage-calculator.html">Mortgage Calculator</a>
-                <a href="loan-calculator.html">Loan Calculator</a>
-                <a href="compound-interest-calculator.html">Compound Interest</a>
-                <a href="retirement-calculator.html">Retirement Calculator</a>
-            </div>
-            <div class="footer-section">
-                <h4>Health Tools</h4>
-                <a href="bmi-calculator.html">BMI Calculator</a>
-                <a href="calorie-calculator.html">Calorie Calculator</a>
-                <a href="body-fat-calculator.html">Body Fat Calculator</a>
-                <a href="water-intake-calculator.html">Water Intake</a>
-            </div>
-            <div class="footer-section">
-                <h4>Math Tools</h4>
-                <a href="percentage-calc.html">Percentage Calculator</a>
-                <a href="average-calculator.html">Average Calculator</a>
-                <a href="fraction-calculator.html">Fraction Calculator</a>
-                <a href="scientific-calculator.html">Scientific Calculator</a>
-            </div>
-            <div class="footer-section">
-                <h4>Converters</h4>
-                <a href="unit-converter.html">Unit Converter</a>
-                <a href="temperature-converter.html">Temperature</a>
-                <a href="currency-converter.html">Currency Converter</a>
-                <a href="timezone-converter.html">Time Zone</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 WebTools Pro. Free calculators & tools. | <a href="index.html">All 360+ Tools</a></p>
-        </div>
-    </footer>
-
-    <script>
-        atOptions = {'key':'9f6b66d433cad4c02b643bdd4b7eefc0','format':'iframe','height':50,'width':320,'params':{}};            </script><script src="https://www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script></div>
-
-        <div class="calc-card">
-            <div class="input-row">
-                <div class="input-group">
-                    <label>Child's Current Age</label>
-                    <input type="number" id="currentAge" value="5" min="0" max="17">
-                </div>
-                <div class="input-group">
-                    <label>College Start Age</label>
-                    <input type="number" id="collegeAge" value="18" min="16" max="25">
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label>College Type</label>
-                <select id="collegeType">
-                    <option value="public-in">Public In-State ($25,000/yr)</option>
-                    <option value="public-out">Public Out-of-State ($45,000/yr)</option>
-                    <option value="private" selected>Private University ($55,000/yr)</option>
-                    <option value="ivy">Elite/Ivy League ($75,000/yr)</option>
-                    <option value="community">Community College ($12,000/yr)</option>
-                </select>
-            </div>
-
-            <div class="input-row">
-                <div class="input-group">
-                    <label>Current Savings ($)</label>
-                    <input type="number" id="currentSavings" value="5000" min="0" step="1000">
-                </div>
-                <div class="input-group">
-                    <label>Monthly Contribution ($)</label>
-                    <input type="number" id="monthlyContrib" value="300" min="0" step="50">
-                </div>
-            </div>
-
-            <div class="input-row">
-                <div class="input-group">
-                    <label>Expected Return (%)</label>
-                    <input type="number" id="returnRate" value="7" min="1" max="15" step="0.5">
-                </div>
-                <div class="input-group">
-                    <label>Years of College</label>
-                    <select id="yearsCollege">
-                        <option value="2">2 years</option>
-                        <option value="4" selected>4 years</option>
-                        <option value="5">5 years</option>
-                        <option value="6">6 years (grad school)</option>
-                    </select>
-                </div>
-            </div>
-
-            <button class="btn" onclick="calculate()">Calculate College Fund</button>
-
-            <div class="results" id="results">
-                <div class="result-box-main">
-                    <div class="result-value-main" id="projectedSavings">$0</div>
-                    <div class="result-label-main">Projected Savings at College</div>
-                </div>
-
-                <div class="summary-grid">
-                    <div class="summary-box">
-                        <div class="summary-value" id="totalCost">$0</div>
-                        <div class="summary-label">Projected College Cost</div>
-                    </div>
-                    <div class="summary-box">
-                        <div class="summary-value" id="shortfall">$0</div>
-                        <div class="summary-label">Gap/Surplus</div>
-                    </div>
-                    <div class="summary-box">
-                        <div class="summary-value" id="totalContrib">$0</div>
-                        <div class="summary-label">Total Contributions</div>
-                    </div>
-                    <div class="summary-box">
-                        <div class="summary-value" id="earnedInterest">$0</div>
-                        <div class="summary-label">Investment Growth</div>
-                    </div>
-                </div>
-
-                <div class="breakdown">
-                    <h4>📊 Savings Plan</h4>
-                    <div class="breakdown-row">
-                        <span class="breakdown-label">Years Until College</span>
-                        <span class="breakdown-value" id="yearsUntil">0</span>
-                    </div>
-                    <div class="breakdown-row">
-                        <span class="breakdown-label">Current Cost/Year</span>
-                        <span class="breakdown-value" id="currentCost">$0</span>
-                    </div>
-                    <div class="breakdown-row">
-                        <span class="breakdown-label">Future Cost/Year (5% inflation)</span>
-                        <span class="breakdown-value" id="futureCost">$0</span>
-                    </div>
-                    <div class="breakdown-row">
-                        <span class="breakdown-label">Needed Monthly (to cover 100%)</span>
-                        <span class="breakdown-value" id="neededMonthly">$0</span>
-                    </div>
+            <div class="card">
+                <h2>🔗 Related Tools</h2>
+                <div class="related-tools">
+                    <a href="529-calculator.html" class="related-link">📚 529 Plan</a>
+                    <a href="college-cost-calculator.html" class="related-link">🏫 College Cost</a>
+                    <a href="student-loan-calculator.html" class="related-link">💳 Student Loans</a>
+                    <a href="compound-interest-calculator.html" class="related-link">📈 Compound Interest</a>
                 </div>
             </div>
         </div>
 
-        <div class="ad-container">
-            <script>
-                atOptions = {
-                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
-                    'format' : 'iframe',
-                    'height' : 250,
-                    'width' : 300,
-                    'params' : {}
-                };
-            </script>
-            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
-        </div>
-
-        <div class="ad-sidebar" style="text-align:center;margin:15px 0;"><script>atOptions = {'key':'8398a480b05e8a3236f9ea561b7cab1a','format':'iframe','height':300,'width':160,'params':{}};            </script><script src="https://www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script></div>
-
-        <div class="tools-promo">
-            <h4>More Savings Calculators</h4>
-            <a href="savings-calculator.html">Savings</a>
-            <a href="compound-interest.html">Compound Interest</a>
-            <a href="investment-calculator.html">Investment</a>
-            <a href="index.html">View All Tools</a>
+        <div class="sidebar">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
         </div>
     </div>
 
-    <footer>
-        <p>College Savings Calculator by WebAudit Pro</p>
-        <p><a href="index.html">More Free Tools</a></p>
-    </footer>
-
     <script>
-        function formatMoney(amount) {
-            return '$' + Math.round(amount).toLocaleString();
-        }
+        // Current annual costs (2024 averages including tuition, fees, room & board)
+        const schoolCosts = {
+            community: 12000,
+            instate: 26000,
+            outstate: 43000,
+            private: 58000,
+            ivy: 85000
+        };
+        const INFLATION_RATE = 0.05; // 5% college cost inflation
 
         function calculate() {
-            const currentAge = parseInt(document.getElementById('currentAge').value);
-            const collegeAge = parseInt(document.getElementById('collegeAge').value);
-            const collegeType = document.getElementById('collegeType').value;
-            const currentSavings = parseFloat(document.getElementById('currentSavings').value);
-            const monthlyContrib = parseFloat(document.getElementById('monthlyContrib').value);
+            const childAge = parseInt(document.getElementById('childAge').value) || 5;
+            const startAge = parseInt(document.getElementById('startAge').value) || 18;
+            const schoolType = document.getElementById('schoolType').value;
+            const coverage = parseInt(document.getElementById('coverage').value) / 100;
+            const currentSavings = parseFloat(document.getElementById('currentSavings').value) || 0;
             const returnRate = parseFloat(document.getElementById('returnRate').value) / 100;
-            const yearsCollege = parseInt(document.getElementById('yearsCollege').value);
 
-            // Current annual costs
-            const costs = {
-                'public-in': 25000,
-                'public-out': 45000,
-                'private': 55000,
-                'ivy': 75000,
-                'community': 12000
-            };
-            const currentCost = costs[collegeType];
-
-            const yearsUntil = collegeAge - currentAge;
-            const months = yearsUntil * 12;
-
-            // Future cost with 5% education inflation
-            const futureCostYear = currentCost * Math.pow(1.05, yearsUntil);
-            const totalFutureCost = futureCostYear * yearsCollege;
-
-            // Project savings with compound growth
+            const yearsToSave = Math.max(0, startAge - childAge);
+            const currentAnnualCost = schoolCosts[schoolType];
+            const years = schoolType === 'community' ? 2 : 4;
+            
+            // Project future cost with inflation
+            let projectedCost = 0;
+            for (let i = 0; i < years; i++) {
+                projectedCost += currentAnnualCost * Math.pow(1 + INFLATION_RATE, yearsToSave + i);
+            }
+            
+            const targetSavings = projectedCost * coverage;
+            
+            // Calculate future value of current savings
+            const fvCurrentSavings = currentSavings * Math.pow(1 + returnRate, yearsToSave);
+            
+            // Amount still needed
+            const amountNeeded = Math.max(0, targetSavings - fvCurrentSavings);
+            
+            // Monthly payment needed (PMT formula for annuity)
             const monthlyRate = returnRate / 12;
-            let projectedSavings = currentSavings * Math.pow(1 + returnRate, yearsUntil);
-
-            // Add monthly contributions with growth
-            if (monthlyRate > 0) {
-                const futureValueContribs = monthlyContrib * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
-                projectedSavings += futureValueContribs;
-            } else {
-                projectedSavings += monthlyContrib * months;
+            const months = yearsToSave * 12;
+            let monthlySavings = 0;
+            if (months > 0 && monthlyRate > 0) {
+                monthlySavings = amountNeeded * monthlyRate / (Math.pow(1 + monthlyRate, months) - 1);
+            } else if (months > 0) {
+                monthlySavings = amountNeeded / months;
             }
 
-            const totalContrib = currentSavings + (monthlyContrib * months);
-            const earnedInterest = projectedSavings - totalContrib;
-            const shortfall = projectedSavings - totalFutureCost;
+            // Calculate contribution growth
+            const totalContributions = monthlySavings * months;
+            const contributionGrowth = amountNeeded - totalContributions;
+            const growthOnCurrent = fvCurrentSavings - currentSavings;
+            const totalAtStart = fvCurrentSavings + amountNeeded;
 
-            // Calculate needed monthly to hit 100%
-            const targetValue = totalFutureCost;
-            const futureValueCurrent = currentSavings * Math.pow(1 + returnRate, yearsUntil);
-            const stillNeeded = targetValue - futureValueCurrent;
-            let neededMonthly = 0;
-            if (stillNeeded > 0 && months > 0) {
-                neededMonthly = stillNeeded / ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
-            }
+            // Progress calculation
+            const progressPercent = targetSavings > 0 ? Math.min(100, (currentSavings / targetSavings) * 100) : 0;
 
-            document.getElementById('results').style.display = 'block';
-            document.getElementById('projectedSavings').textContent = formatMoney(projectedSavings);
-            document.getElementById('totalCost').textContent = formatMoney(totalFutureCost);
-            document.getElementById('shortfall').textContent = (shortfall >= 0 ? '+' : '') + formatMoney(shortfall);
-            document.getElementById('totalContrib').textContent = formatMoney(totalContrib);
-            document.getElementById('earnedInterest').textContent = formatMoney(earnedInterest);
+            document.getElementById('monthlySavings').textContent = '$' + Math.round(monthlySavings).toLocaleString();
+            document.getElementById('projectedCost').textContent = '$' + Math.round(projectedCost).toLocaleString();
+            document.getElementById('targetSavings').textContent = '$' + Math.round(targetSavings).toLocaleString();
+            document.getElementById('yearsToSave').textContent = yearsToSave + ' years';
 
-            document.getElementById('yearsUntil').textContent = yearsUntil + ' years';
-            document.getElementById('currentCost').textContent = formatMoney(currentCost);
-            document.getElementById('futureCost').textContent = formatMoney(futureCostYear);
-            document.getElementById('neededMonthly').textContent = formatMoney(neededMonthly);
+            document.getElementById('currentBreak').textContent = '$' + currentSavings.toLocaleString();
+            document.getElementById('growthBreak').textContent = '$' + Math.round(growthOnCurrent).toLocaleString();
+            document.getElementById('contributionsBreak').textContent = '$' + Math.round(totalContributions).toLocaleString();
+            document.getElementById('contributionGrowth').textContent = '$' + Math.round(contributionGrowth).toLocaleString();
+            document.getElementById('totalAtStart').textContent = '$' + Math.round(totalAtStart).toLocaleString();
+
+            document.getElementById('progressPercent').textContent = progressPercent.toFixed(1) + '%';
+            document.getElementById('progressFill').style.width = progressPercent + '%';
         }
 
         calculate();
-    
     </script>
 </body>
 </html>
