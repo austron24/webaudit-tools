@@ -4,47 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GPA Calculator - Calculate Your Grade Point Average</title>
-    <meta name="description" content="Free GPA calculator. Calculate your cumulative and semester GPA. Add courses and credits to get instant results.">
+    <meta name="description" content="Free GPA calculator. Calculate your semester and cumulative GPA based on your grades and credit hours.">
     <meta name="keywords" content="GPA calculator, grade point average, college GPA, semester GPA, cumulative GPA">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/gpa-calculator.html">
-    <meta property="og:title" content="GPA Calculator">
-    <meta property="og:description" content="Calculate your GPA instantly. Add courses, credits, and grades to see your grade point average.">
-    <meta property="og:type" content="website">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --error: #ef4444; }
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
         .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
         .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
-        .header h1 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
-        .header p { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
         .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
         .content-area { display: flex; flex-direction: column; gap: 20px; }
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); }
-        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
-        .gpa-display { text-align: center; padding: 30px; background: var(--bg-input); border-radius: 16px; margin-bottom: 20px; }
-        .gpa-value { font-size: 5rem; font-weight: 800; }
-        .gpa-label { color: var(--text-secondary); font-size: 1.1rem; margin-top: 5px; }
-        .course-row { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 10px; margin-bottom: 10px; align-items: center; }
-        .course-row input, .course-row select { padding: 12px; border: 2px solid var(--border); border-radius: 8px; background: var(--bg-input); color: var(--text-primary); font-size: 1rem; }
-        .course-row input:focus, .course-row select:focus { outline: none; border-color: var(--primary); }
-        .remove-btn { width: 40px; height: 40px; border: none; border-radius: 8px; background: var(--error); color: white; cursor: pointer; font-size: 1.2rem; }
-        .add-btn { padding: 12px 20px; border: 2px dashed var(--border); border-radius: 8px; background: transparent; color: var(--text-secondary); cursor: pointer; width: 100%; margin-top: 10px; transition: all 0.3s ease; }
-        .add-btn:hover { border-color: var(--primary); color: var(--primary); }
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
-        .stat-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
-        .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
-        .stat-label { color: var(--text-secondary); font-size: 0.9rem; margin-top: 5px; }
-        .grade-scale { margin-top: 20px; }
-        .scale-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
-        .scale-row:last-child { border-bottom: none; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .course-row { display: grid; grid-template-columns: 2fr 1fr 1fr 40px; gap: 10px; margin-bottom: 10px; align-items: center; }
+        input, select { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        .btn { padding: 12px 20px; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; transition: all 0.2s; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-danger { background: #ef4444; color: white; padding: 8px 12px; }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.8); }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
-        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; transition: all 0.3s ease; }
-        .related-link:hover { background: var(--primary); transform: translateX(5px); }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .header h1 { font-size: 1.8rem; } .course-row { grid-template-columns: 1fr 1fr; } .course-row input:first-child { grid-column: span 2; } .stats-grid { grid-template-columns: 1fr; } .gpa-value { font-size: 3.5rem; } }
+        @media (max-width: 640px) { .course-row { grid-template-columns: 1fr 1fr; } .results-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -59,65 +54,52 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
-    
+
     <header class="header">
         <h1>🎓 GPA Calculator</h1>
-        <p>Calculate your grade point average. Add courses, credits, and grades to get your GPA.</p>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>📊 Your GPA</h2>
-                <div class="gpa-display">
-                    <div class="gpa-value" id="gpaValue" style="color: var(--success);">0.00</div>
-                    <div class="gpa-label">Grade Point Average</div>
-                </div>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value" id="totalCredits">0</div>
-                        <div class="stat-label">Total Credits</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="totalPoints">0</div>
-                        <div class="stat-label">Grade Points</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="courseCount">0</div>
-                        <div class="stat-label">Courses</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>📚 Add Your Courses</h2>
-                <div class="course-row" style="color: var(--text-secondary); font-weight: 600; margin-bottom: 15px;">
+                <h2>📚 Enter Your Courses</h2>
+                <div class="course-row" style="font-weight: 600; color: var(--text-secondary);">
                     <span>Course Name</span>
                     <span>Credits</span>
                     <span>Grade</span>
                     <span></span>
                 </div>
-                <div id="courseList">
-                    <div class="course-row">
-                        <input type="text" placeholder="Course name (optional)">
-                        <input type="number" placeholder="Credits" min="0" max="10" value="3">
-                        <select>
-                            <option value="4.0">A (4.0)</option>
-                            <option value="3.7">A- (3.7)</option>
-                            <option value="3.3">B+ (3.3)</option>
-                            <option value="3.0">B (3.0)</option>
-                            <option value="2.7">B- (2.7)</option>
-                            <option value="2.3">C+ (2.3)</option>
-                            <option value="2.0">C (2.0)</option>
-                            <option value="1.7">C- (1.7)</option>
-                            <option value="1.3">D+ (1.3)</option>
-                            <option value="1.0">D (1.0)</option>
-                            <option value="0.0">F (0.0)</option>
-                        </select>
-                        <button class="remove-btn" onclick="removeCourse(this)">×</button>
+                <div id="coursesContainer"></div>
+                <button class="btn btn-primary" onclick="addCourse()" style="margin-top: 15px;">+ Add Course</button>
+
+                <div class="result-hero">
+                    <div class="result-hero-label">Semester GPA</div>
+                    <div class="result-hero-value" id="gpa">0.00</div>
+                </div>
+
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-value" id="totalCredits">0</div>
+                        <div class="result-label">Total Credits</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="totalPoints">0</div>
+                        <div class="result-label">Total Points</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="letterGrade">--</div>
+                        <div class="result-label">Letter Grade</div>
                     </div>
                 </div>
-                <button class="add-btn" onclick="addCourse()">+ Add Another Course</button>
+            </div>
+
+            <div class="card">
+                <h2>📊 Grade Scale</h2>
+                <div class="breakdown-row"><span>A (4.0)</span><span>90-100%</span></div>
+                <div class="breakdown-row"><span>B (3.0)</span><span>80-89%</span></div>
+                <div class="breakdown-row"><span>C (2.0)</span><span>70-79%</span></div>
+                <div class="breakdown-row"><span>D (1.0)</span><span>60-69%</span></div>
+                <div class="breakdown-row"><span>F (0.0)</span><span>Below 60%</span></div>
             </div>
 
             <div class="ad-container">
@@ -127,38 +109,13 @@
             </div>
 
             <div class="card">
-                <h2>📋 Grade Scale</h2>
-                <div class="grade-scale">
-                    <div class="scale-row"><span>A</span><span style="color: var(--success);">4.0</span></div>
-                    <div class="scale-row"><span>A-</span><span>3.7</span></div>
-                    <div class="scale-row"><span>B+</span><span>3.3</span></div>
-                    <div class="scale-row"><span>B</span><span style="color: var(--secondary);">3.0</span></div>
-                    <div class="scale-row"><span>B-</span><span>2.7</span></div>
-                    <div class="scale-row"><span>C+</span><span>2.3</span></div>
-                    <div class="scale-row"><span>C</span><span style="color: var(--accent);">2.0</span></div>
-                    <div class="scale-row"><span>C-</span><span>1.7</span></div>
-                    <div class="scale-row"><span>D+</span><span>1.3</span></div>
-                    <div class="scale-row"><span>D</span><span>1.0</span></div>
-                    <div class="scale-row"><span>F</span><span style="color: var(--error);">0.0</span></div>
-                </div>
-            </div>
-
-            <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
                     <a href="grade-calculator.html" class="related-link">📝 Grade Calculator</a>
-                    <a href="final-grade-calculator.html" class="related-link">🎯 Final Grade Calculator</a>
-                    <a href="cgpa-calculator.html" class="related-link">📊 CGPA Calculator</a>
-                    <a href="percentage-to-gpa-calculator.html" class="related-link">🔄 Percentage to GPA</a>
-                    <a href="weighted-grade-calculator.html" class="related-link">⚖️ Weighted Grade</a>
-                    <a href="scholarship-calculator.html" class="related-link">🎓 Scholarship Calculator</a>
+                    <a href="percentage-calculator.html" class="related-link">📊 Percentage</a>
+                    <a href="college-cost-calculator.html" class="related-link">🏫 College Cost</a>
+                    <a href="student-loan-calculator.html" class="related-link">💰 Student Loan</a>
                 </div>
-            </div>
-
-            <div class="ad-container">
-                <div class="ad-label">Advertisement</div>
-                <script type="text/javascript">atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };</script>
-                <script type="text/javascript" src="//www.highperformanceformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
             </div>
         </div>
 
@@ -168,87 +125,63 @@
                 <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
                 <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
             </div>
-            <div class="ad-container">
-                <div class="ad-label">Advertisement</div>
-                <script type="text/javascript">atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };</script>
-                <script type="text/javascript" src="//www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
-            </div>
         </div>
     </div>
 
     <script>
+        const gradePoints = { 'A+': 4.0, 'A': 4.0, 'A-': 3.7, 'B+': 3.3, 'B': 3.0, 'B-': 2.7, 'C+': 2.3, 'C': 2.0, 'C-': 1.7, 'D+': 1.3, 'D': 1.0, 'D-': 0.7, 'F': 0.0 };
+        let courseId = 0;
+
         function addCourse() {
-            const list = document.getElementById('courseList');
+            courseId++;
+            const container = document.getElementById('coursesContainer');
             const row = document.createElement('div');
             row.className = 'course-row';
-            row.innerHTML = `
-                <input type="text" placeholder="Course name (optional)">
-                <input type="number" placeholder="Credits" min="0" max="10" value="3">
-                <select>
-                    <option value="4.0">A (4.0)</option>
-                    <option value="3.7">A- (3.7)</option>
-                    <option value="3.3">B+ (3.3)</option>
-                    <option value="3.0">B (3.0)</option>
-                    <option value="2.7">B- (2.7)</option>
-                    <option value="2.3">C+ (2.3)</option>
-                    <option value="2.0">C (2.0)</option>
-                    <option value="1.7">C- (1.7)</option>
-                    <option value="1.3">D+ (1.3)</option>
-                    <option value="1.0">D (1.0)</option>
-                    <option value="0.0">F (0.0)</option>
-                </select>
-                <button class="remove-btn" onclick="removeCourse(this)">×</button>
-            `;
-            list.appendChild(row);
-            attachListeners(row);
-            calculateGPA();
+            row.id = 'course-' + courseId;
+            row.innerHTML = '<input type="text" placeholder="Course name" oninput="calculate()">' +
+                '<input type="number" placeholder="Credits" value="3" min="1" max="6" oninput="calculate()">' +
+                '<select onchange="calculate()">' + Object.keys(gradePoints).map(g => '<option value="' + g + '">' + g + '</option>').join('') + '</select>' +
+                '<button class="btn btn-danger" onclick="removeCourse(' + courseId + ')">×</button>';
+            container.appendChild(row);
+            calculate();
         }
 
-        function removeCourse(btn) {
-            const rows = document.querySelectorAll('.course-row');
-            if (rows.length > 2) { // Keep header + at least one row
-                btn.closest('.course-row').remove();
-                calculateGPA();
-            }
+        function removeCourse(id) {
+            document.getElementById('course-' + id).remove();
+            calculate();
         }
 
-        function calculateGPA() {
-            const rows = document.querySelectorAll('#courseList .course-row');
+        function calculate() {
+            const rows = document.querySelectorAll('.course-row:not(:first-child)');
             let totalCredits = 0;
             let totalPoints = 0;
-            let courseCount = 0;
 
             rows.forEach(row => {
                 const credits = parseFloat(row.querySelector('input[type="number"]').value) || 0;
-                const grade = parseFloat(row.querySelector('select').value) || 0;
-                
-                if (credits > 0) {
-                    totalCredits += credits;
-                    totalPoints += credits * grade;
-                    courseCount++;
-                }
+                const grade = row.querySelector('select').value;
+                const points = gradePoints[grade] || 0;
+                totalCredits += credits;
+                totalPoints += credits * points;
             });
 
             const gpa = totalCredits > 0 ? totalPoints / totalCredits : 0;
-            
-            const gpaEl = document.getElementById('gpaValue');
-            gpaEl.textContent = gpa.toFixed(2);
-            gpaEl.style.color = gpa >= 3.5 ? 'var(--success)' : gpa >= 2.5 ? 'var(--accent)' : 'var(--error)';
-            
+            let letterGrade = 'F';
+            if (gpa >= 3.7) letterGrade = 'A';
+            else if (gpa >= 3.3) letterGrade = 'A-';
+            else if (gpa >= 3.0) letterGrade = 'B+';
+            else if (gpa >= 2.7) letterGrade = 'B';
+            else if (gpa >= 2.3) letterGrade = 'B-';
+            else if (gpa >= 2.0) letterGrade = 'C+';
+            else if (gpa >= 1.7) letterGrade = 'C';
+            else if (gpa >= 1.0) letterGrade = 'D';
+
+            document.getElementById('gpa').textContent = gpa.toFixed(2);
             document.getElementById('totalCredits').textContent = totalCredits;
             document.getElementById('totalPoints').textContent = totalPoints.toFixed(1);
-            document.getElementById('courseCount').textContent = courseCount;
+            document.getElementById('letterGrade').textContent = letterGrade;
         }
 
-        function attachListeners(row) {
-            row.querySelectorAll('input, select').forEach(el => {
-                el.addEventListener('input', calculateGPA);
-                el.addEventListener('change', calculateGPA);
-            });
-        }
-
-        document.querySelectorAll('#courseList .course-row').forEach(attachListeners);
-        calculateGPA();
+        for (let i = 0; i < 4; i++) addCourse();
     </script>
 </body>
 </html>
