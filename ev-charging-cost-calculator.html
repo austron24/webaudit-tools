@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free EV Charging Cost Calculator - Electric Vehicle Charging Calculator</title>
+    <meta name="description" content="Calculate electric vehicle charging costs. Compare home vs public charging. Find out how much it costs to charge your Tesla, Rivian, or any EV.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #10b981 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #10b981;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #10b981;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #059669; }
+        .results { margin-top: 30px; display: none; }
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .result-box.large {
+            grid-column: span 2;
+            padding: 30px;
+        }
+        .result-value { font-size: 32px; font-weight: bold; }
+        .result-box.large .result-value { font-size: 48px; }
+        .result-label { font-size: 14px; opacity: 0.9; margin-top: 5px; }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .compare-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-box h4 { color: #64748b; margin-bottom: 10px; font-size: 14px; }
+        .compare-value { font-size: 24px; font-weight: bold; color: #10b981; }
+        .compare-sub { font-size: 12px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .savings-box {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #10b981; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #059669;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #6ee7b7; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>EV Charging Calculator</h1>
+            <p class="subtitle">Calculate your electric vehicle charging costs</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Select Your EV (or enter battery size)</label>
+                <select id="evModel" onchange="updateBattery()">
+                    <option value="custom">Custom / Other</option>
+                    <option value="75">Tesla Model 3 Long Range (75 kWh)</option>
+                    <option value="100">Tesla Model S/X (100 kWh)</option>
+                    <option value="60">Tesla Model 3 Standard (60 kWh)</option>
+                    <option value="135">Rivian R1T/R1S (135 kWh)</option>
+                    <option value="77">Ford Mustang Mach-E (77 kWh)</option>
+                    <option value="131">Ford F-150 Lightning (131 kWh)</option>
+                    <option value="66">Chevrolet Bolt (66 kWh)</option>
+                    <option value="100">Lucid Air (100 kWh)</option>
+                </select>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Battery Capacity (kWh)</label>
+                    <input type="number" id="batterySize" value="75" min="20" max="200">
+                </div>
+                <div class="input-group">
+                    <label>Charging From-To (%)</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="number" id="chargeFrom" value="20" min="0" max="100" style="width: 50%;">
+                        <span>to</span>
+                        <input type="number" id="chargeTo" value="80" min="0" max="100" style="width: 50%;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Home Electricity Rate ($/kWh)</label>
+                    <input type="number" id="homeRate" value="0.12" min="0.01" max="1" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label>Public Charger Rate ($/kWh)</label>
+                    <input type="number" id="publicRate" value="0.35" min="0.01" max="2" step="0.01">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Monthly Miles Driven</label>
+                    <input type="number" id="monthlyMiles" value="1000" min="0">
+                </div>
+                <div class="input-group">
+                    <label>EV Efficiency (miles/kWh)</label>
+                    <input type="number" id="efficiency" value="3.5" min="1" max="6" step="0.1">
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Charging Costs</button>
+
+            <div class="results" id="results">
+                <div class="result-grid">
+                    <div class="result-box large">
+                        <div class="result-value" id="chargeCost">$0</div>
+                        <div class="result-label">Cost Per Full Charge (Home)</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-value" id="costPerMile">$0</div>
+                        <div class="result-label">Cost Per Mile</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-value" id="monthlyTotal">$0</div>
+                        <div class="result-label">Monthly Charging Cost</div>
+                    </div>
+                </div>
+
+                <div class="comparison">
+                    <div class="compare-box">
+                        <h4>🏠 Home Charging</h4>
+                        <div class="compare-value" id="homeMonthly">$0</div>
+                        <div class="compare-sub" id="homePerCharge">$0 per charge</div>
+                    </div>
+                    <div class="compare-box">
+                        <h4>⚡ Public Charging</h4>
+                        <div class="compare-value" id="publicMonthly">$0</div>
+                        <div class="compare-sub" id="publicPerCharge">$0 per charge</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">kWh Per Charge</span>
+                        <span class="breakdown-value" id="kwhPerCharge">0 kWh</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Range Added Per Charge</span>
+                        <span class="breakdown-value" id="rangeAdded">0 miles</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Charges Needed Monthly</span>
+                        <span class="breakdown-value" id="chargesPerMonth">0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Annual Charging Cost</span>
+                        <span class="breakdown-value" id="annualCost">$0</span>
+                    </div>
+                </div>
+
+                <div class="savings-box">
+                    <div style="font-size: 14px; margin-bottom: 5px;">vs. Gas Vehicle (30 MPG @ $3.50/gal)</div>
+                    <div style="font-size: 28px; font-weight: bold;" id="gasSavings">Save $0/year</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Cost Calculators</h4>
+            <a href="gas-mileage-calculator.html">Gas Mileage</a>
+            <a href="electricity-cost-calculator.html">Electricity Cost</a>
+            <a href="fuel-calculator.html">Fuel Calculator</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>EV Charging Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + amount.toFixed(2);
+        }
+
+        function updateBattery() {
+            const select = document.getElementById('evModel');
+            if (select.value !== 'custom') {
+                document.getElementById('batterySize').value = select.value;
+            }
+        }
+
+        function calculate() {
+            const batterySize = parseFloat(document.getElementById('batterySize').value);
+            const chargeFrom = parseFloat(document.getElementById('chargeFrom').value) / 100;
+            const chargeTo = parseFloat(document.getElementById('chargeTo').value) / 100;
+            const homeRate = parseFloat(document.getElementById('homeRate').value);
+            const publicRate = parseFloat(document.getElementById('publicRate').value);
+            const monthlyMiles = parseFloat(document.getElementById('monthlyMiles').value);
+            const efficiency = parseFloat(document.getElementById('efficiency').value);
+
+            const kwhPerCharge = batterySize * (chargeTo - chargeFrom);
+            const rangeAdded = kwhPerCharge * efficiency;
+            const chargesPerMonth = monthlyMiles / rangeAdded;
+
+            const homeCostPerCharge = kwhPerCharge * homeRate;
+            const publicCostPerCharge = kwhPerCharge * publicRate;
+
+            const homeMonthly = chargesPerMonth * homeCostPerCharge;
+            const publicMonthly = chargesPerMonth * publicCostPerCharge;
+
+            const costPerMile = homeCostPerCharge / rangeAdded;
+            const annualCost = homeMonthly * 12;
+
+            // Gas comparison
+            const gasMPG = 30;
+            const gasPrice = 3.50;
+            const annualMiles = monthlyMiles * 12;
+            const annualGasCost = (annualMiles / gasMPG) * gasPrice;
+            const savings = annualGasCost - annualCost;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('chargeCost').textContent = formatMoney(homeCostPerCharge);
+            document.getElementById('costPerMile').textContent = formatMoney(costPerMile);
+            document.getElementById('monthlyTotal').textContent = formatMoney(homeMonthly);
+            document.getElementById('homeMonthly').textContent = formatMoney(homeMonthly) + '/mo';
+            document.getElementById('publicMonthly').textContent = formatMoney(publicMonthly) + '/mo';
+            document.getElementById('homePerCharge').textContent = formatMoney(homeCostPerCharge) + ' per charge';
+            document.getElementById('publicPerCharge').textContent = formatMoney(publicCostPerCharge) + ' per charge';
+            document.getElementById('kwhPerCharge').textContent = kwhPerCharge.toFixed(1) + ' kWh';
+            document.getElementById('rangeAdded').textContent = rangeAdded.toFixed(0) + ' miles';
+            document.getElementById('chargesPerMonth').textContent = chargesPerMonth.toFixed(1);
+            document.getElementById('annualCost').textContent = formatMoney(annualCost);
+            document.getElementById('gasSavings').textContent = 'Save ' + formatMoney(savings) + '/year';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

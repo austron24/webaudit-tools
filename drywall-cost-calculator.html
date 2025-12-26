@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Drywall Cost Calculator - Sheetrock Installation Estimator</title>
+    <meta name="description" content="Calculate drywall installation costs. Estimate materials and labor for sheetrock projects. Get accurate drywall pricing. Free calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #737373 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #525252;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #525252;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #404040; }
+        .results { margin-top: 30px; display: none; }
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #525252 0%, #404040 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .result-box.large {
+            grid-column: span 2;
+            padding: 30px;
+        }
+        .result-value { font-size: 32px; font-weight: bold; }
+        .result-box.large .result-value { font-size: 48px; }
+        .result-label { font-size: 14px; opacity: 0.9; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .materials-section {
+            background: #f5f5f4;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .materials-section h4 { color: #525252; margin-bottom: 15px; }
+        .finish-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .finish-card {
+            background: #fafaf9;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .finish-card.active {
+            background: #525252;
+            color: white;
+        }
+        .finish-card h5 { margin-bottom: 5px; font-size: 14px; }
+        .finish-card .price { font-weight: bold; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #525252; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #404040;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #d4d4d4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Drywall Cost Calculator</h1>
+            <p class="subtitle">Estimate your drywall installation project</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Wall Area (sq ft)</label>
+                    <input type="number" id="wallArea" value="500" min="50" max="10000">
+                </div>
+                <div class="input-group">
+                    <label>Ceiling Area (sq ft)</label>
+                    <input type="number" id="ceilingArea" value="200" min="0" max="10000">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Drywall Thickness</label>
+                    <select id="thickness">
+                        <option value="0.375">3/8" (lightweight)</option>
+                        <option value="0.5" selected>1/2" (standard)</option>
+                        <option value="0.625">5/8" (fire-rated)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Drywall Type</label>
+                    <select id="drywallType">
+                        <option value="regular" data-price="0.40">Regular ($0.40/sq ft)</option>
+                        <option value="moisture" data-price="0.55">Moisture Resistant ($0.55/sq ft)</option>
+                        <option value="fire" data-price="0.60">Fire Resistant ($0.60/sq ft)</option>
+                        <option value="soundproof" data-price="1.00">Soundproof ($1.00/sq ft)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Finish Level</label>
+                <select id="finishLevel">
+                    <option value="0" data-price="0">Level 0 - No finish</option>
+                    <option value="1" data-price="0.50">Level 1 - Fire tape only ($0.50/sq ft)</option>
+                    <option value="2" data-price="0.75">Level 2 - Tape + one coat ($0.75/sq ft)</option>
+                    <option value="3" data-price="1.00" selected>Level 3 - Standard ($1.00/sq ft)</option>
+                    <option value="4" data-price="1.50">Level 4 - Smooth ($1.50/sq ft)</option>
+                    <option value="5" data-price="2.00">Level 5 - Premium smooth ($2.00/sq ft)</option>
+                </select>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Project Type</label>
+                    <select id="projectType">
+                        <option value="new">New Construction</option>
+                        <option value="renovation" selected>Renovation</option>
+                        <option value="repair">Repair/Patch</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Include Labor?</label>
+                    <select id="includeLabor">
+                        <option value="yes" selected>Yes - Professional Install</option>
+                        <option value="no">No - DIY</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Drywall Cost</button>
+
+            <div class="results" id="results">
+                <div class="result-grid">
+                    <div class="result-box large">
+                        <div class="result-value" id="totalCost">$0</div>
+                        <div class="result-label">Total Estimated Cost</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-value" id="costPerSqft">$0</div>
+                        <div class="result-label">Cost Per Sq Ft</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-value" id="totalSqft">0</div>
+                        <div class="result-label">Total Area</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Drywall Sheets</span>
+                        <span class="breakdown-value" id="sheetsCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Tape & Mud</span>
+                        <span class="breakdown-value" id="tapeMudCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Screws & Fasteners</span>
+                        <span class="breakdown-value" id="fastenersCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Corner Bead</span>
+                        <span class="breakdown-value" id="cornerCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Labor</span>
+                        <span class="breakdown-value" id="laborCost">$0</span>
+                    </div>
+                </div>
+
+                <div class="materials-section">
+                    <h4>Materials Needed</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">4x8 Drywall Sheets</span>
+                        <span class="breakdown-value" id="sheetsNeeded">0 sheets</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Joint Compound</span>
+                        <span class="breakdown-value" id="mudNeeded">0 gallons</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Drywall Tape</span>
+                        <span class="breakdown-value" id="tapeNeeded">0 ft</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Drywall Screws</span>
+                        <span class="breakdown-value" id="screwsNeeded">0 lbs</span>
+                    </div>
+                </div>
+
+                <div class="finish-options">
+                    <div class="finish-card" id="finishBasic">
+                        <h5>Basic</h5>
+                        <div class="price" id="basicPrice">$0</div>
+                        <small>Level 3</small>
+                    </div>
+                    <div class="finish-card active" id="finishStandard">
+                        <h5>Standard</h5>
+                        <div class="price" id="standardPrice">$0</div>
+                        <small>Level 4</small>
+                    </div>
+                    <div class="finish-card" id="finishPremium">
+                        <h5>Premium</h5>
+                        <div class="price" id="premiumPrice">$0</div>
+                        <small>Level 5</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Improvement Calculators</h4>
+            <a href="drywall-calculator.html">Drywall Quantity</a>
+            <a href="paint-calculator.html">Paint Calculator</a>
+            <a href="flooring-calculator.html">Flooring Calculator</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Drywall Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const wallArea = parseFloat(document.getElementById('wallArea').value);
+            const ceilingArea = parseFloat(document.getElementById('ceilingArea').value);
+            const totalArea = wallArea + ceilingArea;
+
+            const drywallSelect = document.getElementById('drywallType');
+            const drywallPrice = parseFloat(drywallSelect.options[drywallSelect.selectedIndex].dataset.price);
+
+            const finishSelect = document.getElementById('finishLevel');
+            const finishPrice = parseFloat(finishSelect.options[finishSelect.selectedIndex].dataset.price);
+            const finishLevel = parseInt(finishSelect.value);
+
+            const includeLabor = document.getElementById('includeLabor').value === 'yes';
+            const projectType = document.getElementById('projectType').value;
+
+            // Materials calculations
+            const sheetArea = 32; // 4x8 sheet
+            const sheetsNeeded = Math.ceil(totalArea / sheetArea * 1.1); // 10% waste
+            const sheetsCost = sheetsNeeded * (drywallPrice * sheetArea);
+
+            // Tape & mud (approximately $0.15/sq ft for materials)
+            const tapeMudCost = totalArea * 0.15 * (finishLevel / 3);
+
+            // Fasteners ($0.05/sq ft)
+            const fastenersCost = totalArea * 0.05;
+
+            // Corner bead (estimate based on wall area)
+            const cornerCost = (wallArea / 50) * 5; // Roughly 1 8ft corner bead per 50 sq ft
+
+            // Labor costs
+            let laborRate;
+            if (projectType === 'new') laborRate = 1.50;
+            else if (projectType === 'renovation') laborRate = 2.00;
+            else laborRate = 2.50; // repair is most labor intensive
+
+            laborRate += finishPrice; // Add finish labor
+            const laborCost = includeLabor ? totalArea * laborRate : 0;
+
+            const totalCost = sheetsCost + tapeMudCost + fastenersCost + cornerCost + laborCost;
+            const costPerSqft = totalCost / totalArea;
+
+            // Materials needed
+            const mudNeeded = Math.ceil(totalArea / 100); // ~1 gallon per 100 sq ft
+            const tapeNeeded = Math.ceil(totalArea / 10); // ~10 ft tape per sq ft area (for seams)
+            const screwsNeeded = Math.ceil(totalArea / 50); // ~1 lb per 50 sq ft
+
+            // Comparison pricing
+            const basicTotal = totalArea * (drywallPrice + 0.15 + 0.05 + 1.00 + 1.50);
+            const standardTotal = totalArea * (drywallPrice + 0.15 + 0.05 + 1.50 + 2.00);
+            const premiumTotal = totalArea * (drywallPrice + 0.15 + 0.05 + 2.00 + 2.50);
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalCost').textContent = formatMoney(totalCost);
+            document.getElementById('costPerSqft').textContent = '$' + costPerSqft.toFixed(2);
+            document.getElementById('totalSqft').textContent = totalArea + ' sq ft';
+            document.getElementById('sheetsCost').textContent = formatMoney(sheetsCost);
+            document.getElementById('tapeMudCost').textContent = formatMoney(tapeMudCost);
+            document.getElementById('fastenersCost').textContent = formatMoney(fastenersCost);
+            document.getElementById('cornerCost').textContent = formatMoney(cornerCost);
+            document.getElementById('laborCost').textContent = formatMoney(laborCost);
+
+            document.getElementById('sheetsNeeded').textContent = sheetsNeeded + ' sheets';
+            document.getElementById('mudNeeded').textContent = mudNeeded + ' gallons';
+            document.getElementById('tapeNeeded').textContent = tapeNeeded + ' ft';
+            document.getElementById('screwsNeeded').textContent = screwsNeeded + ' lbs';
+
+            document.getElementById('basicPrice').textContent = formatMoney(basicTotal);
+            document.getElementById('standardPrice').textContent = formatMoney(standardTotal);
+            document.getElementById('premiumPrice').textContent = formatMoney(premiumTotal);
+
+            // Highlight selected finish level
+            document.querySelectorAll('.finish-card').forEach(c => c.classList.remove('active'));
+            if (finishLevel <= 3) document.getElementById('finishBasic').classList.add('active');
+            else if (finishLevel === 4) document.getElementById('finishStandard').classList.add('active');
+            else document.getElementById('finishPremium').classList.add('active');
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

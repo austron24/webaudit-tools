@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free 401(k) Calculator - Retirement Savings Calculator</title>
+    <meta name="description" content="Calculate your 401(k) retirement savings. See how much your contributions will grow with employer matching and compound interest. Free 401k calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #059669 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #059669;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #059669;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #047857; }
+        .results {
+            margin-top: 30px;
+            display: none;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .result-value {
+            font-size: 48px;
+            font-weight: bold;
+        }
+        .result-label {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .chart-container {
+            margin-top: 20px;
+            height: 200px;
+            position: relative;
+        }
+        .chart-bar {
+            position: absolute;
+            bottom: 0;
+            width: 30%;
+            border-radius: 8px 8px 0 0;
+            transition: height 0.5s;
+        }
+        .chart-label {
+            position: absolute;
+            bottom: -25px;
+            width: 30%;
+            text-align: center;
+            font-size: 12px;
+            color: #64748b;
+        }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #059669; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #047857;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #6ee7b7; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>401(k) Calculator</h1>
+            <p class="subtitle">Plan your retirement savings</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Current Age</label>
+                    <input type="number" id="currentAge" value="30" min="18" max="80">
+                </div>
+                <div class="input-group">
+                    <label>Retirement Age</label>
+                    <input type="number" id="retireAge" value="65" min="50" max="80">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Annual Salary</label>
+                <input type="number" id="salary" value="75000" placeholder="75000">
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Your Contribution (%)</label>
+                    <input type="number" id="contribution" value="6" min="0" max="100" step="0.5">
+                </div>
+                <div class="input-group">
+                    <label>Employer Match (%)</label>
+                    <input type="number" id="match" value="3" min="0" max="100" step="0.5">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Current 401(k) Balance</label>
+                    <input type="number" id="currentBalance" value="25000" placeholder="0">
+                </div>
+                <div class="input-group">
+                    <label>Expected Return (%)</label>
+                    <input type="number" id="returnRate" value="7" min="1" max="15" step="0.5">
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Retirement Savings</button>
+
+            <div class="results" id="results">
+                <div class="result-box">
+                    <div class="result-value" id="totalValue">$0</div>
+                    <div class="result-label">Estimated 401(k) Balance at Retirement</div>
+                </div>
+
+                <div class="breakdown">
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Years to Retirement</span>
+                        <span class="breakdown-value" id="years">35</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Your Total Contributions</span>
+                        <span class="breakdown-value" id="yourContrib">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Employer Match Total</span>
+                        <span class="breakdown-value" id="employerContrib">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Investment Growth</span>
+                        <span class="breakdown-value" id="growth">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Monthly Contribution</span>
+                        <span class="breakdown-value" id="monthly">$0</span>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-bar" id="bar1" style="left: 5%; background: #10b981;"></div>
+                    <div class="chart-label" style="left: 5%;">Your Contributions</div>
+                    <div class="chart-bar" id="bar2" style="left: 35%; background: #059669;"></div>
+                    <div class="chart-label" style="left: 35%;">Employer Match</div>
+                    <div class="chart-bar" id="bar3" style="left: 65%; background: #047857;"></div>
+                    <div class="chart-label" style="left: 65%;">Growth</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Financial Calculators</h4>
+            <a href="retirement-calculator.html">Retirement Calculator</a>
+            <a href="compound-interest.html">Compound Interest</a>
+            <a href="investment-calculator.html">Investment Calculator</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>401(k) Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const currentAge = parseInt(document.getElementById('currentAge').value);
+            const retireAge = parseInt(document.getElementById('retireAge').value);
+            const salary = parseFloat(document.getElementById('salary').value);
+            const contribPct = parseFloat(document.getElementById('contribution').value) / 100;
+            const matchPct = parseFloat(document.getElementById('match').value) / 100;
+            const currentBalance = parseFloat(document.getElementById('currentBalance').value) || 0;
+            const returnRate = parseFloat(document.getElementById('returnRate').value) / 100;
+
+            const years = retireAge - currentAge;
+            const annualContrib = salary * contribPct;
+            const annualMatch = salary * matchPct;
+            const totalAnnual = annualContrib + annualMatch;
+
+            let balance = currentBalance;
+            let totalYourContrib = 0;
+            let totalEmployerContrib = 0;
+
+            for (let i = 0; i < years; i++) {
+                balance = balance * (1 + returnRate) + totalAnnual;
+                totalYourContrib += annualContrib;
+                totalEmployerContrib += annualMatch;
+            }
+
+            const growth = balance - currentBalance - totalYourContrib - totalEmployerContrib;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalValue').textContent = formatMoney(balance);
+            document.getElementById('years').textContent = years + ' years';
+            document.getElementById('yourContrib').textContent = formatMoney(totalYourContrib);
+            document.getElementById('employerContrib').textContent = formatMoney(totalEmployerContrib);
+            document.getElementById('growth').textContent = formatMoney(growth);
+            document.getElementById('monthly').textContent = formatMoney(totalAnnual / 12);
+
+            // Update chart
+            const maxVal = Math.max(totalYourContrib, totalEmployerContrib, growth);
+            document.getElementById('bar1').style.height = (totalYourContrib / maxVal * 150) + 'px';
+            document.getElementById('bar2').style.height = (totalEmployerContrib / maxVal * 150) + 'px';
+            document.getElementById('bar3').style.height = (growth / maxVal * 150) + 'px';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

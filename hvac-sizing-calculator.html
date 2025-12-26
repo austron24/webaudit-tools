@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free HVAC Sizing Calculator - AC & Furnace Size Calculator</title>
+    <meta name="description" content="Calculate the right HVAC size for your home. Determine AC tonnage and furnace BTU requirements. Get accurate heating and cooling estimates. Free calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0284c7 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #0284c7;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #0284c7;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #0369a1; }
+        .results { margin-top: 30px; display: none; }
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .result-box.heating {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+        }
+        .result-value { font-size: 32px; font-weight: bold; }
+        .result-label { font-size: 14px; opacity: 0.9; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .size-guide {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .size-card {
+            background: #f0f9ff;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .size-card.recommended {
+            background: #0284c7;
+            color: white;
+        }
+        .size-card h5 { margin-bottom: 5px; font-size: 14px; }
+        .size-card .size { font-size: 20px; font-weight: bold; }
+        .cost-estimate {
+            background: #fef3c7;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .cost-estimate h4 { color: #92400e; margin-bottom: 10px; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0284c7; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0369a1;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #7dd3fc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>HVAC Sizing Calculator</h1>
+            <p class="subtitle">Find the right AC and furnace size for your home</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Home Square Footage</label>
+                <input type="number" id="sqft" value="2000" min="100" max="20000">
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Climate Zone</label>
+                    <select id="climate">
+                        <option value="1">Zone 1 - Hot & Humid (FL, TX coast)</option>
+                        <option value="2">Zone 2 - Hot & Dry (AZ, NV)</option>
+                        <option value="3" selected>Zone 3 - Mixed/Moderate (Most US)</option>
+                        <option value="4">Zone 4 - Cold (Northern states)</option>
+                        <option value="5">Zone 5 - Very Cold (MN, WI, MT)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Ceiling Height (ft)</label>
+                    <select id="ceiling">
+                        <option value="8">Standard (8 ft)</option>
+                        <option value="9">9 ft</option>
+                        <option value="10">10 ft</option>
+                        <option value="12">Vaulted (12+ ft)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Insulation Quality</label>
+                    <select id="insulation">
+                        <option value="poor">Poor (old home, minimal)</option>
+                        <option value="average" selected>Average (standard)</option>
+                        <option value="good">Good (newer home)</option>
+                        <option value="excellent">Excellent (well-insulated)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Number of Windows</label>
+                    <select id="windows">
+                        <option value="few">Few (1-5)</option>
+                        <option value="average" selected>Average (6-12)</option>
+                        <option value="many">Many (13-20)</option>
+                        <option value="lots">Lots of windows (20+)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Number of Stories</label>
+                    <select id="stories">
+                        <option value="1">1 Story</option>
+                        <option value="2" selected>2 Stories</option>
+                        <option value="3">3 Stories</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Sun Exposure</label>
+                    <select id="sun">
+                        <option value="low">Low (lots of shade)</option>
+                        <option value="average" selected>Average</option>
+                        <option value="high">High (full sun)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate HVAC Size</button>
+
+            <div class="results" id="results">
+                <div class="result-grid">
+                    <div class="result-box">
+                        <div class="result-value" id="acTons">0</div>
+                        <div class="result-label">AC Size (Tons)</div>
+                    </div>
+                    <div class="result-box heating">
+                        <div class="result-value" id="furnaceBtu">0</div>
+                        <div class="result-label">Furnace (BTU)</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-value" id="coolingBtu">0</div>
+                        <div class="result-label">Cooling BTU</div>
+                    </div>
+                    <div class="result-box heating">
+                        <div class="result-value" id="heatingBtu">0</div>
+                        <div class="result-label">Heating BTU</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Home Volume</span>
+                        <span class="breakdown-value" id="volume">0 cu ft</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Base BTU (20 BTU/sq ft)</span>
+                        <span class="breakdown-value" id="baseBtu">0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Climate Adjustment</span>
+                        <span class="breakdown-value" id="climateAdj">+0%</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Total Adjustment Factor</span>
+                        <span class="breakdown-value" id="totalAdj">1.0x</span>
+                    </div>
+                </div>
+
+                <div class="size-guide">
+                    <div class="size-card" id="sizeSmall">
+                        <h5>Smaller Unit</h5>
+                        <div class="size" id="smallerTon">1.5 ton</div>
+                        <small>May run longer</small>
+                    </div>
+                    <div class="size-card recommended" id="sizeRec">
+                        <h5>Recommended</h5>
+                        <div class="size" id="recTon">2 ton</div>
+                        <small>Best efficiency</small>
+                    </div>
+                    <div class="size-card" id="sizeLarge">
+                        <h5>Larger Unit</h5>
+                        <div class="size" id="largerTon">2.5 ton</div>
+                        <small>Extra capacity</small>
+                    </div>
+                </div>
+
+                <div class="cost-estimate">
+                    <h4>Estimated Equipment Cost</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Central AC Unit</span>
+                        <span class="breakdown-value" id="acCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Gas Furnace</span>
+                        <span class="breakdown-value" id="furnaceCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Full System + Install</span>
+                        <span class="breakdown-value" id="totalCost">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More HVAC & Home Calculators</h4>
+            <a href="hvac-replacement-calculator.html">HVAC Replacement Cost</a>
+            <a href="ac-btu-calculator.html">AC BTU Calculator</a>
+            <a href="electricity-cost-calculator.html">Electricity Cost</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>HVAC Sizing Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatNumber(num) {
+            return Math.round(num).toLocaleString();
+        }
+
+        function calculate() {
+            const sqft = parseFloat(document.getElementById('sqft').value);
+            const climate = document.getElementById('climate').value;
+            const ceiling = parseFloat(document.getElementById('ceiling').value);
+            const insulation = document.getElementById('insulation').value;
+            const windows = document.getElementById('windows').value;
+            const stories = parseInt(document.getElementById('stories').value);
+            const sun = document.getElementById('sun').value;
+
+            const volume = sqft * ceiling;
+            const baseBtu = sqft * 20;
+
+            // Climate adjustments
+            const climateFactors = { '1': 1.15, '2': 1.1, '3': 1.0, '4': 0.95, '5': 0.9 };
+            const climateFactor = climateFactors[climate];
+
+            // Insulation adjustments
+            const insulationFactors = { poor: 1.2, average: 1.0, good: 0.9, excellent: 0.8 };
+            const insulationFactor = insulationFactors[insulation];
+
+            // Window adjustments
+            const windowFactors = { few: 0.9, average: 1.0, many: 1.1, lots: 1.2 };
+            const windowFactor = windowFactors[windows];
+
+            // Sun exposure
+            const sunFactors = { low: 0.9, average: 1.0, high: 1.1 };
+            const sunFactor = sunFactors[sun];
+
+            // Ceiling adjustment
+            const ceilingFactor = ceiling > 8 ? 1 + ((ceiling - 8) * 0.025) : 1;
+
+            // Stories adjustment
+            const storyFactor = 1 + ((stories - 1) * 0.05);
+
+            const totalFactor = climateFactor * insulationFactor * windowFactor * sunFactor * ceilingFactor * storyFactor;
+            const adjustedCoolingBtu = baseBtu * totalFactor;
+            const acTons = adjustedCoolingBtu / 12000;
+
+            // Heating BTU (generally 1.5x cooling for colder climates)
+            const heatingFactor = { '1': 0.8, '2': 0.9, '3': 1.2, '4': 1.5, '5': 1.8 };
+            const adjustedHeatingBtu = baseBtu * heatingFactor[climate] * insulationFactor;
+
+            // Round to standard sizes
+            const standardTons = [1, 1.5, 2, 2.5, 3, 3.5, 4, 5];
+            let recommendedTons = standardTons.find(t => t >= acTons) || 5;
+            const smallerTons = standardTons[standardTons.indexOf(recommendedTons) - 1] || recommendedTons;
+            const largerTons = standardTons[standardTons.indexOf(recommendedTons) + 1] || recommendedTons;
+
+            // Cost estimates
+            const acCost = recommendedTons * 1500;
+            const furnaceCost = (adjustedHeatingBtu / 1000) * 30;
+            const installCost = 3000 + (recommendedTons * 500);
+            const totalCost = acCost + furnaceCost + installCost;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('acTons').textContent = recommendedTons + ' ton';
+            document.getElementById('furnaceBtu').textContent = formatNumber(adjustedHeatingBtu);
+            document.getElementById('coolingBtu').textContent = formatNumber(adjustedCoolingBtu);
+            document.getElementById('heatingBtu').textContent = formatNumber(adjustedHeatingBtu);
+            document.getElementById('volume').textContent = formatNumber(volume) + ' cu ft';
+            document.getElementById('baseBtu').textContent = formatNumber(baseBtu);
+            document.getElementById('climateAdj').textContent = ((climateFactor - 1) * 100).toFixed(0) + '%';
+            document.getElementById('totalAdj').textContent = totalFactor.toFixed(2) + 'x';
+
+            document.getElementById('smallerTon').textContent = smallerTons + ' ton';
+            document.getElementById('recTon').textContent = recommendedTons + ' ton';
+            document.getElementById('largerTon').textContent = largerTons + ' ton';
+
+            document.getElementById('acCost').textContent = '$' + formatNumber(acCost);
+            document.getElementById('furnaceCost').textContent = '$' + formatNumber(furnaceCost);
+            document.getElementById('totalCost').textContent = '$' + formatNumber(totalCost);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

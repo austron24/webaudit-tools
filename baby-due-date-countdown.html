@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Baby Due Date Countdown - Pregnancy Countdown Timer</title>
+    <meta name="description" content="Count down to your baby's due date. Track your pregnancy week by week with our countdown timer. See days until baby arrives. Free pregnancy countdown.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #ec4899 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #ec4899;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #ec4899;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #db2777; }
+        .results { margin-top: 30px; display: none; }
+        .countdown-display {
+            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .countdown-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .countdown-item {
+            background: rgba(255,255,255,0.2);
+            padding: 20px 10px;
+            border-radius: 12px;
+        }
+        .countdown-value {
+            font-size: 42px;
+            font-weight: bold;
+        }
+        .countdown-label {
+            font-size: 12px;
+            opacity: 0.9;
+            text-transform: uppercase;
+        }
+        .baby-message {
+            font-size: 24px;
+            margin-top: 15px;
+        }
+        .progress-section {
+            background: #fdf2f8;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        .progress-bar {
+            background: #fce7f3;
+            border-radius: 10px;
+            height: 30px;
+            position: relative;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #ec4899 0%, #f472b6 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .week-display {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .week-box {
+            text-align: center;
+        }
+        .week-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ec4899;
+        }
+        .week-label { color: #64748b; font-size: 14px; }
+        .milestones {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .milestone-row {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .milestone-row:last-child { border: none; }
+        .milestone-icon {
+            width: 40px;
+            height: 40px;
+            background: #fdf2f8;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 20px;
+        }
+        .milestone-icon.passed { background: #dcfce7; }
+        .milestone-info { flex: 1; }
+        .milestone-title { font-weight: 600; color: #1e293b; }
+        .milestone-desc { font-size: 12px; color: #64748b; }
+        .milestone-status { font-weight: 600; }
+        .milestone-status.passed { color: #22c55e; }
+        .milestone-status.upcoming { color: #ec4899; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #ec4899; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #db2777;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #f9a8d4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Baby Due Date Countdown</h1>
+            <p class="subtitle">Count down the days until baby arrives</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Your Due Date</label>
+                <input type="date" id="dueDate">
+            </div>
+
+            <button class="btn" onclick="calculate()">Start Countdown</button>
+
+            <div class="results" id="results">
+                <div class="countdown-display">
+                    <div class="countdown-grid">
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="countDays">0</div>
+                            <div class="countdown-label">Days</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="countHours">0</div>
+                            <div class="countdown-label">Hours</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="countMinutes">0</div>
+                            <div class="countdown-label">Minutes</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-value" id="countSeconds">0</div>
+                            <div class="countdown-label">Seconds</div>
+                        </div>
+                    </div>
+                    <div class="baby-message" id="babyMessage">Until you meet your baby! 👶</div>
+                </div>
+
+                <div class="progress-section">
+                    <h4 style="color: #ec4899; margin-bottom: 5px;">Pregnancy Progress</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill">0%</div>
+                    </div>
+                    <div class="week-display">
+                        <div class="week-box">
+                            <div class="week-number" id="currentWeek">0</div>
+                            <div class="week-label">Current Week</div>
+                        </div>
+                        <div class="week-box">
+                            <div class="week-number" id="daysLeft">0</div>
+                            <div class="week-label">Days Left</div>
+                        </div>
+                        <div class="week-box">
+                            <div class="week-number" id="trimester">1</div>
+                            <div class="week-label">Trimester</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="milestones">
+                    <h4 style="color: #1e293b; margin-bottom: 15px;">Pregnancy Milestones</h4>
+                    <div class="milestone-row">
+                        <div class="milestone-icon" id="icon12">🔬</div>
+                        <div class="milestone-info">
+                            <div class="milestone-title">End of First Trimester</div>
+                            <div class="milestone-desc">Week 12 - Morning sickness may ease</div>
+                        </div>
+                        <div class="milestone-status" id="status12">Upcoming</div>
+                    </div>
+                    <div class="milestone-row">
+                        <div class="milestone-icon" id="icon20">🦋</div>
+                        <div class="milestone-info">
+                            <div class="milestone-title">Halfway Point</div>
+                            <div class="milestone-desc">Week 20 - Anatomy scan, may feel kicks</div>
+                        </div>
+                        <div class="milestone-status" id="status20">Upcoming</div>
+                    </div>
+                    <div class="milestone-row">
+                        <div class="milestone-icon" id="icon28">🫁</div>
+                        <div class="milestone-info">
+                            <div class="milestone-title">Third Trimester Begins</div>
+                            <div class="milestone-desc">Week 28 - Baby's lungs developing</div>
+                        </div>
+                        <div class="milestone-status" id="status28">Upcoming</div>
+                    </div>
+                    <div class="milestone-row">
+                        <div class="milestone-icon" id="icon37">✅</div>
+                        <div class="milestone-info">
+                            <div class="milestone-title">Full Term</div>
+                            <div class="milestone-desc">Week 37 - Baby is ready to be born</div>
+                        </div>
+                        <div class="milestone-status" id="status37">Upcoming</div>
+                    </div>
+                    <div class="milestone-row">
+                        <div class="milestone-icon" id="icon40">👶</div>
+                        <div class="milestone-info">
+                            <div class="milestone-title">Due Date</div>
+                            <div class="milestone-desc">Week 40 - Expected arrival!</div>
+                        </div>
+                        <div class="milestone-status" id="status40">Upcoming</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Pregnancy & Baby Tools</h4>
+            <a href="due-date-calculator.html">Due Date Calculator</a>
+            <a href="pregnancy-weight-calculator.html">Pregnancy Weight</a>
+            <a href="baby-age-calculator.html">Baby Age Calculator</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Baby Due Date Countdown by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        // Set default due date to 6 months from now
+        const defaultDate = new Date();
+        defaultDate.setMonth(defaultDate.getMonth() + 6);
+        document.getElementById('dueDate').valueAsDate = defaultDate;
+
+        let countdownInterval;
+
+        function calculate() {
+            const dueDate = new Date(document.getElementById('dueDate').value);
+            const now = new Date();
+
+            document.getElementById('results').style.display = 'block';
+
+            if (countdownInterval) clearInterval(countdownInterval);
+
+            function updateCountdown() {
+                const now = new Date();
+                const diff = dueDate - now;
+
+                if (diff <= 0) {
+                    document.getElementById('babyMessage').textContent = '🎉 Your baby is here! Congratulations! 🎉';
+                    document.getElementById('countDays').textContent = '0';
+                    document.getElementById('countHours').textContent = '0';
+                    document.getElementById('countMinutes').textContent = '0';
+                    document.getElementById('countSeconds').textContent = '0';
+                    return;
+                }
+
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById('countDays').textContent = days;
+                document.getElementById('countHours').textContent = hours;
+                document.getElementById('countMinutes').textContent = minutes;
+                document.getElementById('countSeconds').textContent = seconds;
+            }
+
+            updateCountdown();
+            countdownInterval = setInterval(updateCountdown, 1000);
+
+            // Calculate pregnancy progress
+            const pregnancyStart = new Date(dueDate);
+            pregnancyStart.setDate(pregnancyStart.getDate() - 280); // 40 weeks
+
+            const totalDays = 280;
+            const daysPregnant = Math.floor((now - pregnancyStart) / (1000 * 60 * 60 * 24));
+            const daysLeft = Math.max(0, 280 - daysPregnant);
+            const weeksPregnant = Math.floor(daysPregnant / 7);
+            const progressPercent = Math.min(100, Math.max(0, (daysPregnant / totalDays) * 100));
+
+            let trimester = 1;
+            if (weeksPregnant >= 28) trimester = 3;
+            else if (weeksPregnant >= 13) trimester = 2;
+
+            document.getElementById('progressFill').style.width = progressPercent + '%';
+            document.getElementById('progressFill').textContent = Math.round(progressPercent) + '%';
+            document.getElementById('currentWeek').textContent = Math.min(weeksPregnant, 40);
+            document.getElementById('daysLeft').textContent = daysLeft;
+            document.getElementById('trimester').textContent = trimester;
+
+            // Update milestones
+            const milestones = [
+                { week: 12, id: '12' },
+                { week: 20, id: '20' },
+                { week: 28, id: '28' },
+                { week: 37, id: '37' },
+                { week: 40, id: '40' }
+            ];
+
+            milestones.forEach(m => {
+                const icon = document.getElementById('icon' + m.id);
+                const status = document.getElementById('status' + m.id);
+                if (weeksPregnant >= m.week) {
+                    icon.classList.add('passed');
+                    status.textContent = '✓ Passed';
+                    status.className = 'milestone-status passed';
+                } else {
+                    icon.classList.remove('passed');
+                    const weeksUntil = m.week - weeksPregnant;
+                    status.textContent = weeksUntil + ' weeks';
+                    status.className = 'milestone-status upcoming';
+                }
+            });
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Crypto Profit Calculator - Bitcoin & Cryptocurrency Calculator</title>
+    <meta name="description" content="Calculate your cryptocurrency profits and losses. Track gains on Bitcoin, Ethereum and other crypto investments. Free crypto profit calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #f59e0b 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #f59e0b;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #f59e0b;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #d97706; }
+        .results { margin-top: 30px; display: none; }
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .result-box.large {
+            grid-column: span 2;
+            padding: 30px;
+        }
+        .result-box.profit { background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); }
+        .result-box.loss { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+        .result-value { font-size: 32px; font-weight: bold; }
+        .result-box.large .result-value { font-size: 48px; }
+        .result-label { font-size: 14px; opacity: 0.9; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .breakdown-value.profit { color: #22c55e; }
+        .breakdown-value.loss { color: #ef4444; }
+        .crypto-icons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .crypto-icon {
+            padding: 8px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .crypto-icon:hover, .crypto-icon.active {
+            background: #f59e0b;
+            color: white;
+            border-color: #f59e0b;
+        }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #f59e0b; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #d97706;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fcd34d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Crypto Profit Calculator</h1>
+            <p class="subtitle">Calculate your cryptocurrency gains & losses</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="crypto-icons">
+                <span class="crypto-icon active" onclick="selectCrypto(this, 'BTC')">₿ Bitcoin</span>
+                <span class="crypto-icon" onclick="selectCrypto(this, 'ETH')">Ξ Ethereum</span>
+                <span class="crypto-icon" onclick="selectCrypto(this, 'SOL')">◎ Solana</span>
+                <span class="crypto-icon" onclick="selectCrypto(this, 'OTHER')">Other</span>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Buy Price (per coin)</label>
+                    <input type="number" id="buyPrice" value="30000" placeholder="30000" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label>Sell Price (per coin)</label>
+                    <input type="number" id="sellPrice" value="45000" placeholder="45000" step="0.01">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Amount Invested ($)</label>
+                    <input type="number" id="investAmount" value="1000" placeholder="1000">
+                </div>
+                <div class="input-group">
+                    <label>OR Quantity Bought</label>
+                    <input type="number" id="quantity" placeholder="0.033" step="0.00000001">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Trading Fees (%)</label>
+                <input type="number" id="fees" value="0.5" min="0" max="10" step="0.1">
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Profit/Loss</button>
+
+            <div class="results" id="results">
+                <div class="result-grid">
+                    <div class="result-box large" id="profitBox">
+                        <div class="result-value" id="profitAmount">$0</div>
+                        <div class="result-label" id="profitLabel">Total Profit</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-value" id="percentGain">0%</div>
+                        <div class="result-label">Return on Investment</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-value" id="currentValue">$0</div>
+                        <div class="result-label">Current Value</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Coins Purchased</span>
+                        <span class="breakdown-value" id="coinsBought">0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Initial Investment</span>
+                        <span class="breakdown-value" id="initialInvest">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Exit Value (before fees)</span>
+                        <span class="breakdown-value" id="exitValue">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Total Fees Paid</span>
+                        <span class="breakdown-value" id="feesPaid">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Net Profit/Loss</span>
+                        <span class="breakdown-value" id="netProfit">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Financial Calculators</h4>
+            <a href="stock-profit-calculator.html">Stock Profit</a>
+            <a href="investment-calculator.html">Investment Calculator</a>
+            <a href="compound-interest.html">Compound Interest</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Crypto Profit Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            if (Math.abs(amount) >= 1000000) {
+                return '$' + (amount / 1000000).toFixed(2) + 'M';
+            }
+            return '$' + amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        }
+
+        function selectCrypto(el, crypto) {
+            document.querySelectorAll('.crypto-icon').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function calculate() {
+            const buyPrice = parseFloat(document.getElementById('buyPrice').value);
+            const sellPrice = parseFloat(document.getElementById('sellPrice').value);
+            const investAmount = parseFloat(document.getElementById('investAmount').value) || 0;
+            const quantityInput = parseFloat(document.getElementById('quantity').value) || 0;
+            const feePercent = parseFloat(document.getElementById('fees').value) / 100;
+
+            let quantity;
+            let investment;
+
+            if (quantityInput > 0) {
+                quantity = quantityInput;
+                investment = quantity * buyPrice;
+            } else {
+                investment = investAmount;
+                quantity = investment / buyPrice;
+            }
+
+            const buyFee = investment * feePercent;
+            const exitValueGross = quantity * sellPrice;
+            const sellFee = exitValueGross * feePercent;
+            const totalFees = buyFee + sellFee;
+
+            const currentValue = exitValueGross - sellFee;
+            const profit = currentValue - investment;
+            const roi = (profit / investment) * 100;
+
+            const isProfit = profit >= 0;
+
+            document.getElementById('results').style.display = 'block';
+
+            const profitBox = document.getElementById('profitBox');
+            profitBox.className = 'result-box large ' + (isProfit ? 'profit' : 'loss');
+
+            document.getElementById('profitAmount').textContent = (isProfit ? '+' : '') + formatMoney(profit);
+            document.getElementById('profitLabel').textContent = isProfit ? 'Total Profit' : 'Total Loss';
+            document.getElementById('percentGain').textContent = (isProfit ? '+' : '') + roi.toFixed(2) + '%';
+            document.getElementById('currentValue').textContent = formatMoney(currentValue);
+
+            document.getElementById('coinsBought').textContent = quantity.toFixed(8);
+            document.getElementById('initialInvest').textContent = formatMoney(investment);
+            document.getElementById('exitValue').textContent = formatMoney(exitValueGross);
+            document.getElementById('feesPaid').textContent = formatMoney(totalFees);
+
+            const netProfitEl = document.getElementById('netProfit');
+            netProfitEl.textContent = (isProfit ? '+' : '') + formatMoney(profit);
+            netProfitEl.className = 'breakdown-value ' + (isProfit ? 'profit' : 'loss');
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

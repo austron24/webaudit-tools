@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Cabinet Cost Calculator - Kitchen Cabinet Estimator</title>
+    <meta name="description" content="Calculate kitchen cabinet costs. Estimate stock, semi-custom, and custom cabinet prices. Get installation cost estimates. Free cabinet calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #854d0e 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #854d0e;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #854d0e;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #713f12; }
+        .results { margin-top: 30px; display: none; }
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #854d0e 0%, #713f12 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .result-box.large {
+            grid-column: span 2;
+            padding: 30px;
+        }
+        .result-value { font-size: 32px; font-weight: bold; }
+        .result-box.large .result-value { font-size: 48px; }
+        .result-label { font-size: 14px; opacity: 0.9; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .tier-comparison {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .tier-card {
+            background: #fef3c7;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .tier-card.selected { background: #854d0e; color: white; }
+        .tier-card h5 { margin-bottom: 5px; }
+        .tier-card .price { font-size: 18px; font-weight: bold; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #854d0e; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #713f12;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fcd34d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Cabinet Cost Calculator</h1>
+            <p class="subtitle">Estimate your kitchen cabinet project</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Cabinet Type</label>
+                <select id="cabinetType">
+                    <option value="stock" data-min="100" data-max="300">Stock Cabinets ($100-300/linear ft)</option>
+                    <option value="semicustom" data-min="150" data-max="650" selected>Semi-Custom ($150-650/linear ft)</option>
+                    <option value="custom" data-min="500" data-max="1500">Custom Cabinets ($500-1500/linear ft)</option>
+                </select>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Linear Feet of Base Cabinets</label>
+                    <input type="number" id="baseCabinets" value="15" min="0">
+                </div>
+                <div class="input-group">
+                    <label>Linear Feet of Wall Cabinets</label>
+                    <input type="number" id="wallCabinets" value="12" min="0">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Cabinet Material</label>
+                    <select id="material">
+                        <option value="0.8">Laminate/Thermofoil</option>
+                        <option value="1" selected>Plywood/MDF</option>
+                        <option value="1.3">Hardwood</option>
+                        <option value="1.5">Solid Wood Premium</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Door Style</label>
+                    <select id="doorStyle">
+                        <option value="1">Flat/Slab</option>
+                        <option value="1.1" selected>Shaker</option>
+                        <option value="1.2">Raised Panel</option>
+                        <option value="1.3">Glass Insert</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Hardware Quality</label>
+                    <select id="hardware">
+                        <option value="50">Basic ($50 total)</option>
+                        <option value="200" selected>Standard ($200 total)</option>
+                        <option value="500">Premium ($500 total)</option>
+                        <option value="1000">Luxury ($1000 total)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Include Installation?</label>
+                    <select id="installation">
+                        <option value="yes" selected>Yes - Professional Install</option>
+                        <option value="no">No - DIY</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Additional Features</label>
+                <select id="features" multiple size="4" style="height: auto;">
+                    <option value="300">Soft-Close Hinges (+$300)</option>
+                    <option value="500">Pull-Out Shelves (+$500)</option>
+                    <option value="400">Lazy Susan (+$400)</option>
+                    <option value="600">Under-Cabinet Lighting (+$600)</option>
+                </select>
+                <small style="color: #64748b;">Hold Ctrl/Cmd to select multiple</small>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Cabinet Cost</button>
+
+            <div class="results" id="results">
+                <div class="result-grid">
+                    <div class="result-box large">
+                        <div class="result-value" id="totalCost">$0</div>
+                        <div class="result-label">Estimated Total Cost</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-value" id="perFootCost">$0</div>
+                        <div class="result-label">Cost Per Linear Foot</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-value" id="totalLinear">0</div>
+                        <div class="result-label">Total Linear Feet</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Base Cabinets</span>
+                        <span class="breakdown-value" id="baseCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Wall Cabinets</span>
+                        <span class="breakdown-value" id="wallCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Hardware</span>
+                        <span class="breakdown-value" id="hardwareCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Additional Features</span>
+                        <span class="breakdown-value" id="featuresCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Installation</span>
+                        <span class="breakdown-value" id="installCost">$0</span>
+                    </div>
+                </div>
+
+                <div class="tier-comparison">
+                    <div class="tier-card" id="stockTier">
+                        <h5>Stock</h5>
+                        <div class="price" id="stockPrice">$0</div>
+                        <small>2-3 week lead</small>
+                    </div>
+                    <div class="tier-card selected" id="semiTier">
+                        <h5>Semi-Custom</h5>
+                        <div class="price" id="semiPrice">$0</div>
+                        <small>4-8 week lead</small>
+                    </div>
+                    <div class="tier-card" id="customTier">
+                        <h5>Custom</h5>
+                        <div class="price" id="customPrice">$0</div>
+                        <small>10-16 week lead</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Kitchen Calculators</h4>
+            <a href="kitchen-remodel-calculator.html">Kitchen Remodel</a>
+            <a href="countertop-cost-calculator.html">Countertop Cost</a>
+            <a href="cabinet-refacing-cost-calculator.html">Cabinet Refacing</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Cabinet Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const typeSelect = document.getElementById('cabinetType');
+            const typeOption = typeSelect.options[typeSelect.selectedIndex];
+            const minPrice = parseFloat(typeOption.dataset.min);
+            const maxPrice = parseFloat(typeOption.dataset.max);
+            const avgPrice = (minPrice + maxPrice) / 2;
+
+            const baseFeet = parseFloat(document.getElementById('baseCabinets').value) || 0;
+            const wallFeet = parseFloat(document.getElementById('wallCabinets').value) || 0;
+            const materialMult = parseFloat(document.getElementById('material').value);
+            const doorMult = parseFloat(document.getElementById('doorStyle').value);
+            const hardwareCost = parseFloat(document.getElementById('hardware').value);
+            const includeInstall = document.getElementById('installation').value === 'yes';
+
+            // Get selected features
+            const featureSelect = document.getElementById('features');
+            let featuresCost = 0;
+            for (let option of featureSelect.selectedOptions) {
+                featuresCost += parseFloat(option.value);
+            }
+
+            const totalLinear = baseFeet + wallFeet;
+            const adjustedPrice = avgPrice * materialMult * doorMult;
+
+            // Wall cabinets typically cost 80% of base cabinets
+            const baseCost = baseFeet * adjustedPrice;
+            const wallCost = wallFeet * adjustedPrice * 0.8;
+            const cabinetCost = baseCost + wallCost;
+
+            // Installation: typically $50-100 per linear foot
+            const installCost = includeInstall ? totalLinear * 75 : 0;
+
+            const totalCost = cabinetCost + hardwareCost + featuresCost + installCost;
+            const perFootCost = totalCost / totalLinear;
+
+            // Comparison calculations
+            const stockTotal = totalLinear * 200 * materialMult + hardwareCost + (includeInstall ? totalLinear * 50 : 0);
+            const semiTotal = totalLinear * 400 * materialMult + hardwareCost + (includeInstall ? totalLinear * 75 : 0);
+            const customTotal = totalLinear * 1000 * materialMult + hardwareCost + (includeInstall ? totalLinear * 100 : 0);
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalCost').textContent = formatMoney(totalCost);
+            document.getElementById('perFootCost').textContent = formatMoney(perFootCost);
+            document.getElementById('totalLinear').textContent = totalLinear + ' linear ft';
+            document.getElementById('baseCost').textContent = formatMoney(baseCost);
+            document.getElementById('wallCost').textContent = formatMoney(wallCost);
+            document.getElementById('hardwareCost').textContent = formatMoney(hardwareCost);
+            document.getElementById('featuresCost').textContent = formatMoney(featuresCost);
+            document.getElementById('installCost').textContent = formatMoney(installCost);
+
+            document.getElementById('stockPrice').textContent = formatMoney(stockTotal);
+            document.getElementById('semiPrice').textContent = formatMoney(semiTotal);
+            document.getElementById('customPrice').textContent = formatMoney(customTotal);
+
+            // Update tier highlighting
+            document.querySelectorAll('.tier-card').forEach(c => c.classList.remove('selected'));
+            const type = typeSelect.value;
+            if (type === 'stock') document.getElementById('stockTier').classList.add('selected');
+            else if (type === 'semicustom') document.getElementById('semiTier').classList.add('selected');
+            else document.getElementById('customTier').classList.add('selected');
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

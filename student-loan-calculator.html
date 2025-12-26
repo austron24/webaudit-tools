@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Student Loan Calculator - Repayment & Interest Calculator</title>
+    <meta name="description" content="Calculate your student loan payments. See monthly payments, total interest, and payoff timeline. Free student loan repayment calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #7c3aed 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #7c3aed;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #7c3aed;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #6d28d9; }
+        .results { margin-top: 30px; display: none; }
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .result-box.large {
+            grid-column: span 2;
+            padding: 30px;
+        }
+        .result-value { font-size: 32px; font-weight: bold; }
+        .result-box.large .result-value { font-size: 48px; }
+        .result-label { font-size: 14px; opacity: 0.9; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .tip-box {
+            background: #faf5ff;
+            border-left: 4px solid #7c3aed;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        .tip-box h4 { color: #7c3aed; margin-bottom: 5px; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #7c3aed; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #6d28d9;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #c4b5fd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Student Loan Calculator</h1>
+            <p class="subtitle">Plan your loan repayment</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Total Loan Amount</label>
+                <input type="number" id="loanAmount" value="35000" placeholder="35000">
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Interest Rate (%)</label>
+                    <input type="number" id="interestRate" value="5.5" min="0" max="30" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label>Loan Term (years)</label>
+                    <input type="number" id="loanTerm" value="10" min="1" max="30">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Loan Type</label>
+                <select id="loanType">
+                    <option value="federal">Federal Student Loan</option>
+                    <option value="private">Private Student Loan</option>
+                    <option value="parent">Parent PLUS Loan</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Payments</button>
+
+            <div class="results" id="results">
+                <div class="result-grid">
+                    <div class="result-box large">
+                        <div class="result-value" id="monthlyPayment">$0</div>
+                        <div class="result-label">Monthly Payment</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-value" id="totalInterest">$0</div>
+                        <div class="result-label">Total Interest</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-value" id="totalPaid">$0</div>
+                        <div class="result-label">Total Amount Paid</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Original Loan</span>
+                        <span class="breakdown-value" id="principal">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Interest Rate (APR)</span>
+                        <span class="breakdown-value" id="apr">0%</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Number of Payments</span>
+                        <span class="breakdown-value" id="numPayments">0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Payoff Date</span>
+                        <span class="breakdown-value" id="payoffDate">-</span>
+                    </div>
+                </div>
+
+                <div class="tip-box">
+                    <h4>Save Money Tip</h4>
+                    <p id="savingsTip">Paying an extra $50/month could save you money!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Financial Calculators</h4>
+            <a href="loan-calculator.html">Loan Calculator</a>
+            <a href="debt-payoff-calculator.html">Debt Payoff</a>
+            <a href="compound-interest.html">Compound Interest</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Student Loan Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const principal = parseFloat(document.getElementById('loanAmount').value);
+            const annualRate = parseFloat(document.getElementById('interestRate').value) / 100;
+            const years = parseInt(document.getElementById('loanTerm').value);
+
+            const monthlyRate = annualRate / 12;
+            const numPayments = years * 12;
+
+            let monthlyPayment;
+            if (monthlyRate === 0) {
+                monthlyPayment = principal / numPayments;
+            } else {
+                monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / (Math.pow(1 + monthlyRate, numPayments) - 1);
+            }
+
+            const totalPaid = monthlyPayment * numPayments;
+            const totalInterest = totalPaid - principal;
+
+            // Calculate payoff date
+            const payoffDate = new Date();
+            payoffDate.setMonth(payoffDate.getMonth() + numPayments);
+            const options = { year: 'numeric', month: 'long' };
+
+            // Calculate savings with extra payment
+            const extraPayment = 50;
+            let balanceExtra = principal;
+            let monthsExtra = 0;
+            while (balanceExtra > 0 && monthsExtra < numPayments * 2) {
+                const interestPayment = balanceExtra * monthlyRate;
+                const principalPayment = monthlyPayment + extraPayment - interestPayment;
+                balanceExtra -= principalPayment;
+                monthsExtra++;
+            }
+            const monthsSaved = numPayments - monthsExtra;
+            const savingsAmount = monthsSaved * monthlyPayment;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('monthlyPayment').textContent = formatMoney(monthlyPayment);
+            document.getElementById('totalInterest').textContent = formatMoney(totalInterest);
+            document.getElementById('totalPaid').textContent = formatMoney(totalPaid);
+            document.getElementById('principal').textContent = formatMoney(principal);
+            document.getElementById('apr').textContent = (annualRate * 100).toFixed(2) + '%';
+            document.getElementById('numPayments').textContent = numPayments + ' payments';
+            document.getElementById('payoffDate').textContent = payoffDate.toLocaleDateString('en-US', options);
+            document.getElementById('savingsTip').textContent = `Paying an extra $${extraPayment}/month could save you ${formatMoney(savingsAmount)} and pay off your loan ${monthsSaved} months early!`;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

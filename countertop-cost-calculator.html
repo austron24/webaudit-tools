@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Countertop Cost Calculator - Kitchen Countertop Estimator</title>
+    <meta name="description" content="Calculate countertop costs for granite, quartz, marble, and more. Estimate installation costs for kitchen and bathroom countertops. Free calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #be185d 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #be185d;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #be185d;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #9d174d; }
+        .results { margin-top: 30px; display: none; }
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #be185d 0%, #9d174d 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .result-box.large {
+            grid-column: span 2;
+            padding: 30px;
+        }
+        .result-value { font-size: 32px; font-weight: bold; }
+        .result-box.large .result-value { font-size: 48px; }
+        .result-label { font-size: 14px; opacity: 0.9; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .materials-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .material-card {
+            background: #fdf2f8;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .material-card h5 { color: #be185d; margin-bottom: 5px; }
+        .material-card .price { font-weight: bold; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #be185d; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #9d174d;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #f9a8d4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Countertop Cost Calculator</h1>
+            <p class="subtitle">Estimate your countertop project costs</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Countertop Material</label>
+                <select id="material" onchange="updatePrices()">
+                    <option value="laminate" data-min="10" data-max="40">Laminate ($10-40/sq ft)</option>
+                    <option value="tile" data-min="10" data-max="80">Tile ($10-80/sq ft)</option>
+                    <option value="butcher" data-min="40" data-max="100">Butcher Block ($40-100/sq ft)</option>
+                    <option value="concrete" data-min="65" data-max="135">Concrete ($65-135/sq ft)</option>
+                    <option value="granite" data-min="50" data-max="200" selected>Granite ($50-200/sq ft)</option>
+                    <option value="quartz" data-min="55" data-max="155">Quartz ($55-155/sq ft)</option>
+                    <option value="marble" data-min="75" data-max="250">Marble ($75-250/sq ft)</option>
+                    <option value="quartzite" data-min="60" data-max="200">Quartzite ($60-200/sq ft)</option>
+                    <option value="soapstone" data-min="70" data-max="150">Soapstone ($70-150/sq ft)</option>
+                </select>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Length (feet)</label>
+                    <input type="number" id="length" value="20" min="1">
+                </div>
+                <div class="input-group">
+                    <label>Depth (inches)</label>
+                    <input type="number" id="depth" value="25" min="12" max="48">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Edge Profile</label>
+                    <select id="edge">
+                        <option value="0">Standard/Eased (Included)</option>
+                        <option value="10">Beveled (+$10/ft)</option>
+                        <option value="15">Bullnose (+$15/ft)</option>
+                        <option value="20">Ogee (+$20/ft)</option>
+                        <option value="25">Waterfall (+$25/ft)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Backsplash</label>
+                    <select id="backsplash">
+                        <option value="0">No Backsplash</option>
+                        <option value="4">4" Standard Backsplash</option>
+                        <option value="18">Full Height Backsplash</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Number of Cutouts (Sink, Cooktop)</label>
+                    <input type="number" id="cutouts" value="1" min="0" max="5">
+                </div>
+                <div class="input-group">
+                    <label>Include Installation?</label>
+                    <select id="installation">
+                        <option value="yes">Yes - Professional Install</option>
+                        <option value="no">No - Material Only</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Cost</button>
+
+            <div class="results" id="results">
+                <div class="result-grid">
+                    <div class="result-box large">
+                        <div class="result-value" id="totalCost">$0</div>
+                        <div class="result-label">Estimated Total Cost</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-value" id="sqftCost">$0</div>
+                        <div class="result-label">Cost Per Sq Ft</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-value" id="totalSqft">0</div>
+                        <div class="result-label">Total Square Feet</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Material Cost</span>
+                        <span class="breakdown-value" id="materialCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Edge Profile</span>
+                        <span class="breakdown-value" id="edgeCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Backsplash</span>
+                        <span class="breakdown-value" id="backsplashCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Cutouts</span>
+                        <span class="breakdown-value" id="cutoutCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Installation</span>
+                        <span class="breakdown-value" id="installCost">$0</span>
+                    </div>
+                </div>
+
+                <div class="materials-grid">
+                    <div class="material-card">
+                        <h5>Budget Option</h5>
+                        <div class="price" id="budgetPrice">$0</div>
+                        <small>Laminate</small>
+                    </div>
+                    <div class="material-card">
+                        <h5>Mid-Range</h5>
+                        <div class="price" id="midPrice">$0</div>
+                        <small>Granite</small>
+                    </div>
+                    <div class="material-card">
+                        <h5>Premium</h5>
+                        <div class="price" id="premiumPrice">$0</div>
+                        <small>Quartz</small>
+                    </div>
+                    <div class="material-card">
+                        <h5>Luxury</h5>
+                        <div class="price" id="luxuryPrice">$0</div>
+                        <small>Marble</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Improvement Calculators</h4>
+            <a href="kitchen-remodel-calculator.html">Kitchen Remodel</a>
+            <a href="bathroom-remodel-calculator.html">Bathroom Remodel</a>
+            <a href="tile-calculator.html">Tile Calculator</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Countertop Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function updatePrices() {
+            calculate();
+        }
+
+        function calculate() {
+            const materialSelect = document.getElementById('material');
+            const materialOption = materialSelect.options[materialSelect.selectedIndex];
+            const minPrice = parseFloat(materialOption.dataset.min);
+            const maxPrice = parseFloat(materialOption.dataset.max);
+            const avgPrice = (minPrice + maxPrice) / 2;
+
+            const length = parseFloat(document.getElementById('length').value);
+            const depth = parseFloat(document.getElementById('depth').value) / 12; // convert to feet
+            const edgeCostPerFt = parseFloat(document.getElementById('edge').value);
+            const backsplashHeight = parseFloat(document.getElementById('backsplash').value);
+            const cutouts = parseInt(document.getElementById('cutouts').value);
+            const includeInstall = document.getElementById('installation').value === 'yes';
+
+            const sqft = length * depth;
+            const backsplashSqft = backsplashHeight > 0 ? length * (backsplashHeight / 12) : 0;
+            const totalSqft = sqft + backsplashSqft;
+
+            const materialCost = sqft * avgPrice;
+            const edgeCost = length * edgeCostPerFt;
+            const backsplashCost = backsplashSqft * avgPrice;
+            const cutoutCost = cutouts * 150; // $150 per cutout average
+            const installCost = includeInstall ? totalSqft * 40 : 0; // $40/sqft for installation
+
+            const totalCost = materialCost + edgeCost + backsplashCost + cutoutCost + installCost;
+            const costPerSqft = totalCost / totalSqft;
+
+            // Calculate comparison prices
+            const budgetTotal = sqft * 25 + (includeInstall ? sqft * 20 : 0);
+            const midTotal = sqft * 100 + (includeInstall ? sqft * 40 : 0);
+            const premiumTotal = sqft * 105 + (includeInstall ? sqft * 45 : 0);
+            const luxuryTotal = sqft * 150 + (includeInstall ? sqft * 50 : 0);
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalCost').textContent = formatMoney(totalCost);
+            document.getElementById('sqftCost').textContent = formatMoney(costPerSqft);
+            document.getElementById('totalSqft').textContent = totalSqft.toFixed(1) + ' sq ft';
+            document.getElementById('materialCost').textContent = formatMoney(materialCost);
+            document.getElementById('edgeCost').textContent = formatMoney(edgeCost);
+            document.getElementById('backsplashCost').textContent = formatMoney(backsplashCost);
+            document.getElementById('cutoutCost').textContent = formatMoney(cutoutCost);
+            document.getElementById('installCost').textContent = formatMoney(installCost);
+
+            document.getElementById('budgetPrice').textContent = formatMoney(budgetTotal);
+            document.getElementById('midPrice').textContent = formatMoney(midTotal);
+            document.getElementById('premiumPrice').textContent = formatMoney(premiumTotal);
+            document.getElementById('luxuryPrice').textContent = formatMoney(luxuryTotal);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

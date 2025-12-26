@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Property Tax Calculator - Estimate Your Property Taxes</title>
+    <meta name="description" content="Calculate your property taxes instantly. Estimate annual and monthly property tax payments. Compare tax rates by state. Free property tax calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #6366f1 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #6366f1;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #4f46e5; }
+        .results { margin-top: 30px; display: none; }
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .result-box.large {
+            grid-column: span 2;
+            padding: 30px;
+        }
+        .result-value { font-size: 32px; font-weight: bold; }
+        .result-box.large .result-value { font-size: 48px; }
+        .result-label { font-size: 14px; opacity: 0.9; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .state-rates {
+            background: #eef2ff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .state-rates h4 { color: #6366f1; margin-bottom: 15px; }
+        .rate-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 14px;
+        }
+        .rate-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            background: white;
+            border-radius: 6px;
+        }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #6366f1; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #4f46e5;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #a5b4fc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Property Tax Calculator</h1>
+            <p class="subtitle">Estimate your annual property taxes</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Home Value (or Assessed Value)</label>
+                <input type="number" id="homeValue" value="400000" placeholder="400000">
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>State</label>
+                    <select id="state" onchange="updateRate()">
+                        <option value="1.10">Alabama (0.41%)</option>
+                        <option value="1.19">Alaska (1.19%)</option>
+                        <option value="0.66">Arizona (0.66%)</option>
+                        <option value="0.62">Arkansas (0.62%)</option>
+                        <option value="0.76">California (0.76%)</option>
+                        <option value="0.51">Colorado (0.51%)</option>
+                        <option value="2.14">Connecticut (2.14%)</option>
+                        <option value="0.57">Delaware (0.57%)</option>
+                        <option value="0.89">Florida (0.89%)</option>
+                        <option value="0.92">Georgia (0.92%)</option>
+                        <option value="0.28">Hawaii (0.28%)</option>
+                        <option value="0.69">Idaho (0.69%)</option>
+                        <option value="2.27">Illinois (2.27%)</option>
+                        <option value="0.85">Indiana (0.85%)</option>
+                        <option value="1.57">Iowa (1.57%)</option>
+                        <option value="1.41">Kansas (1.41%)</option>
+                        <option value="0.86">Kentucky (0.86%)</option>
+                        <option value="0.55">Louisiana (0.55%)</option>
+                        <option value="1.30">Maine (1.30%)</option>
+                        <option value="1.09">Maryland (1.09%)</option>
+                        <option value="1.23">Massachusetts (1.23%)</option>
+                        <option value="1.54">Michigan (1.54%)</option>
+                        <option value="1.12">Minnesota (1.12%)</option>
+                        <option value="0.81">Mississippi (0.81%)</option>
+                        <option value="0.97">Missouri (0.97%)</option>
+                        <option value="0.84">Montana (0.84%)</option>
+                        <option value="1.73">Nebraska (1.73%)</option>
+                        <option value="0.60">Nevada (0.60%)</option>
+                        <option value="2.18">New Hampshire (2.18%)</option>
+                        <option value="2.49" selected>New Jersey (2.49%)</option>
+                        <option value="0.80">New Mexico (0.80%)</option>
+                        <option value="1.72">New York (1.72%)</option>
+                        <option value="0.84">North Carolina (0.84%)</option>
+                        <option value="0.98">North Dakota (0.98%)</option>
+                        <option value="1.56">Ohio (1.56%)</option>
+                        <option value="0.90">Oklahoma (0.90%)</option>
+                        <option value="0.97">Oregon (0.97%)</option>
+                        <option value="1.58">Pennsylvania (1.58%)</option>
+                        <option value="1.63">Rhode Island (1.63%)</option>
+                        <option value="0.57">South Carolina (0.57%)</option>
+                        <option value="1.31">South Dakota (1.31%)</option>
+                        <option value="0.71">Tennessee (0.71%)</option>
+                        <option value="1.80">Texas (1.80%)</option>
+                        <option value="0.63">Utah (0.63%)</option>
+                        <option value="1.90">Vermont (1.90%)</option>
+                        <option value="0.82">Virginia (0.82%)</option>
+                        <option value="0.98">Washington (0.98%)</option>
+                        <option value="0.58">West Virginia (0.58%)</option>
+                        <option value="1.85">Wisconsin (1.85%)</option>
+                        <option value="0.61">Wyoming (0.61%)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Custom Tax Rate (%)</label>
+                    <input type="number" id="taxRate" value="2.49" min="0" max="10" step="0.01">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Assessment Ratio (% of market value taxed)</label>
+                <input type="number" id="assessmentRatio" value="100" min="0" max="100" step="1">
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Property Tax</button>
+
+            <div class="results" id="results">
+                <div class="result-grid">
+                    <div class="result-box large">
+                        <div class="result-value" id="annualTax">$0</div>
+                        <div class="result-label">Annual Property Tax</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-value" id="monthlyTax">$0</div>
+                        <div class="result-label">Monthly Tax</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-value" id="effectiveRate">0%</div>
+                        <div class="result-label">Effective Tax Rate</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Home Market Value</span>
+                        <span class="breakdown-value" id="marketValue">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Assessed Value</span>
+                        <span class="breakdown-value" id="assessedValue">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Tax Rate Applied</span>
+                        <span class="breakdown-value" id="rateApplied">0%</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Quarterly Payment</span>
+                        <span class="breakdown-value" id="quarterlyTax">$0</span>
+                    </div>
+                </div>
+
+                <div class="state-rates">
+                    <h4>Property Tax by State (Highest vs Lowest)</h4>
+                    <div class="rate-grid">
+                        <div class="rate-item"><span>New Jersey</span><span>2.49%</span></div>
+                        <div class="rate-item"><span>Illinois</span><span>2.27%</span></div>
+                        <div class="rate-item"><span>New Hampshire</span><span>2.18%</span></div>
+                        <div class="rate-item"><span>Connecticut</span><span>2.14%</span></div>
+                        <div class="rate-item"><span>Hawaii</span><span>0.28%</span></div>
+                        <div class="rate-item"><span>Alabama</span><span>0.41%</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home & Finance Calculators</h4>
+            <a href="mortgage-calculator.html">Mortgage Calculator</a>
+            <a href="home-affordability-calculator.html">Home Affordability</a>
+            <a href="home-equity-calculator.html">Home Equity</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Property Tax Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function updateRate() {
+            const state = document.getElementById('state').value;
+            document.getElementById('taxRate').value = state;
+        }
+
+        function calculate() {
+            const homeValue = parseFloat(document.getElementById('homeValue').value);
+            const taxRate = parseFloat(document.getElementById('taxRate').value) / 100;
+            const assessmentRatio = parseFloat(document.getElementById('assessmentRatio').value) / 100;
+
+            const assessedValue = homeValue * assessmentRatio;
+            const annualTax = assessedValue * taxRate;
+            const monthlyTax = annualTax / 12;
+            const quarterlyTax = annualTax / 4;
+            const effectiveRate = (annualTax / homeValue) * 100;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('annualTax').textContent = formatMoney(annualTax);
+            document.getElementById('monthlyTax').textContent = formatMoney(monthlyTax);
+            document.getElementById('effectiveRate').textContent = effectiveRate.toFixed(2) + '%';
+            document.getElementById('marketValue').textContent = formatMoney(homeValue);
+            document.getElementById('assessedValue').textContent = formatMoney(assessedValue);
+            document.getElementById('rateApplied').textContent = (taxRate * 100).toFixed(2) + '%';
+            document.getElementById('quarterlyTax').textContent = formatMoney(quarterlyTax);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

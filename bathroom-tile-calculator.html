@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Bathroom Tile Calculator - Floor & Wall Tile Estimator</title>
+    <meta name="description" content="Calculate bathroom tile needs for floors and walls. Estimate tiles, grout, and adhesive for your bathroom project. Free tile quantity calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #06b6d4 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #06b6d4;
+            margin: 25px 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #06b6d4;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #06b6d4;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #0891b2; }
+        .results { margin-top: 30px; display: none; }
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .result-box.large {
+            grid-column: span 2;
+            padding: 30px;
+        }
+        .result-value { font-size: 32px; font-weight: bold; }
+        .result-box.large .result-value { font-size: 48px; }
+        .result-label { font-size: 14px; opacity: 0.9; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .breakdown h4 {
+            color: #06b6d4;
+            margin-bottom: 15px;
+        }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .materials-section {
+            background: #ecfeff;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .materials-section h4 { color: #06b6d4; margin-bottom: 15px; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #06b6d4; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0891b2;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #67e8f9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Bathroom Tile Calculator</h1>
+            <p class="subtitle">Calculate tiles for floor and walls</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="section-title">🏠 Bathroom Dimensions</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Bathroom Length (ft)</label>
+                    <input type="number" id="roomLength" value="8" min="1" max="50" step="0.5">
+                </div>
+                <div class="input-group">
+                    <label>Bathroom Width (ft)</label>
+                    <input type="number" id="roomWidth" value="5" min="1" max="50" step="0.5">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Wall Height (ft)</label>
+                    <input type="number" id="wallHeight" value="8" min="6" max="12" step="0.5">
+                </div>
+                <div class="input-group">
+                    <label>Tile Wall Height (ft)</label>
+                    <input type="number" id="tileHeight" value="4" min="0" max="12" step="0.5">
+                </div>
+            </div>
+
+            <div class="section-title">🪟 Openings to Subtract</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Door Size (sq ft)</label>
+                    <input type="number" id="doorArea" value="21" min="0" step="1">
+                </div>
+                <div class="input-group">
+                    <label>Window Size (sq ft)</label>
+                    <input type="number" id="windowArea" value="6" min="0" step="1">
+                </div>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="includeShower" checked>
+                <label for="includeShower">Include shower/tub surround (3 walls, full height)</label>
+            </div>
+
+            <div class="section-title">🔲 Tile Selection</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Floor Tile Size</label>
+                    <select id="floorTileSize">
+                        <option value="1">1" x 1" Mosaic</option>
+                        <option value="4">4" x 4"</option>
+                        <option value="6">6" x 6"</option>
+                        <option value="12" selected>12" x 12"</option>
+                        <option value="18">18" x 18"</option>
+                        <option value="24">24" x 24"</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Wall Tile Size</label>
+                    <select id="wallTileSize">
+                        <option value="3">3" x 6" Subway</option>
+                        <option value="4" selected>4" x 4"</option>
+                        <option value="6">6" x 6"</option>
+                        <option value="12">12" x 12"</option>
+                        <option value="24">12" x 24"</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Floor Tile Price (per sq ft)</label>
+                    <input type="number" id="floorPrice" value="6" min="1" max="100" step="0.5">
+                </div>
+                <div class="input-group">
+                    <label>Wall Tile Price (per sq ft)</label>
+                    <input type="number" id="wallPrice" value="5" min="1" max="100" step="0.5">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Waste Factor</label>
+                <select id="wasteFactor">
+                    <option value="0.10" selected>10% (standard)</option>
+                    <option value="0.15">15% (complex pattern)</option>
+                    <option value="0.20">20% (diagonal/herringbone)</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Tiles Needed</button>
+
+            <div class="results" id="results">
+                <div class="result-grid">
+                    <div class="result-box large">
+                        <div class="result-value" id="totalCost">$0</div>
+                        <div class="result-label">Total Tile Cost</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-value" id="floorTiles">0</div>
+                        <div class="result-label">Floor Tiles</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-value" id="wallTiles">0</div>
+                        <div class="result-label">Wall Tiles</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📐 Area Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Floor Area</span>
+                        <span class="breakdown-value" id="floorArea">0 sq ft</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Wall Tile Area</span>
+                        <span class="breakdown-value" id="wallArea">0 sq ft</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Shower Surround</span>
+                        <span class="breakdown-value" id="showerArea">0 sq ft</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Openings Subtracted</span>
+                        <span class="breakdown-value" id="openingsArea">0 sq ft</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Total with Waste</span>
+                        <span class="breakdown-value" id="totalArea">0 sq ft</span>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>💰 Cost Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Floor Tile Cost</span>
+                        <span class="breakdown-value" id="floorCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Wall Tile Cost</span>
+                        <span class="breakdown-value" id="wallCost">$0</span>
+                    </div>
+                </div>
+
+                <div class="materials-section">
+                    <h4>🛠 Additional Materials Needed</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Thinset Mortar</span>
+                        <span class="breakdown-value" id="thinset">0 bags</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Grout</span>
+                        <span class="breakdown-value" id="grout">0 lbs</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Waterproof Membrane</span>
+                        <span class="breakdown-value" id="membrane">0 sq ft</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Tile Spacers</span>
+                        <span class="breakdown-value" id="spacers">0 bags</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Backer Board</span>
+                        <span class="breakdown-value" id="backerBoard">0 sheets</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Tile & Bathroom Calculators</h4>
+            <a href="tile-calculator.html">Tile Calculator</a>
+            <a href="shower-tile-calculator.html">Shower Tile</a>
+            <a href="bathroom-remodel-calculator.html">Bathroom Remodel</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Bathroom Tile Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const roomLength = parseFloat(document.getElementById('roomLength').value);
+            const roomWidth = parseFloat(document.getElementById('roomWidth').value);
+            const wallHeight = parseFloat(document.getElementById('wallHeight').value);
+            const tileHeight = parseFloat(document.getElementById('tileHeight').value);
+            const doorArea = parseFloat(document.getElementById('doorArea').value);
+            const windowArea = parseFloat(document.getElementById('windowArea').value);
+            const includeShower = document.getElementById('includeShower').checked;
+
+            const floorTileSize = parseFloat(document.getElementById('floorTileSize').value);
+            const wallTileSize = parseFloat(document.getElementById('wallTileSize').value);
+            const floorPrice = parseFloat(document.getElementById('floorPrice').value);
+            const wallPrice = parseFloat(document.getElementById('wallPrice').value);
+            const wasteFactor = parseFloat(document.getElementById('wasteFactor').value);
+
+            // Calculate floor area
+            const floorArea = roomLength * roomWidth;
+
+            // Calculate wall tile area (perimeter * tile height)
+            const perimeter = 2 * (roomLength + roomWidth);
+            let wallTileArea = perimeter * tileHeight;
+
+            // Shower surround (3ft x 8ft typical shower, 3 walls, full height)
+            let showerArea = 0;
+            if (includeShower) {
+                showerArea = (3 * 3 + 3 * 2) * wallHeight; // Back wall (3ft) + 2 side walls (3ft each)
+            }
+
+            // Subtract openings
+            const openingsTotal = doorArea + windowArea;
+            wallTileArea = Math.max(0, wallTileArea - openingsTotal);
+
+            const totalWallArea = wallTileArea + showerArea;
+
+            // Add waste factor
+            const floorWithWaste = floorArea * (1 + wasteFactor);
+            const wallWithWaste = totalWallArea * (1 + wasteFactor);
+            const totalWithWaste = floorWithWaste + wallWithWaste;
+
+            // Calculate tiles needed
+            const floorTileSqft = (floorTileSize * floorTileSize) / 144;
+            const wallTileSqft = (wallTileSize * wallTileSize) / 144;
+            const floorTilesNeeded = Math.ceil(floorWithWaste / floorTileSqft);
+            const wallTilesNeeded = Math.ceil(wallWithWaste / wallTileSqft);
+
+            // Calculate costs
+            const floorCost = floorWithWaste * floorPrice;
+            const wallCost = wallWithWaste * wallPrice;
+            const totalCost = floorCost + wallCost;
+
+            // Materials
+            const thinsetBags = Math.ceil(totalWithWaste / 50);
+            const groutLbs = Math.ceil(totalWithWaste * 0.5);
+            const membraneSqft = Math.ceil(showerArea * 1.1 + floorArea);
+            const spacerBags = Math.ceil((floorTilesNeeded + wallTilesNeeded) / 200);
+            const backerBoardSheets = Math.ceil(totalWithWaste / 32);
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalCost').textContent = formatMoney(totalCost);
+            document.getElementById('floorTiles').textContent = floorTilesNeeded;
+            document.getElementById('wallTiles').textContent = wallTilesNeeded;
+            document.getElementById('floorArea').textContent = floorArea.toFixed(1) + ' sq ft';
+            document.getElementById('wallArea').textContent = wallTileArea.toFixed(1) + ' sq ft';
+            document.getElementById('showerArea').textContent = showerArea.toFixed(1) + ' sq ft';
+            document.getElementById('openingsArea').textContent = openingsTotal.toFixed(1) + ' sq ft';
+            document.getElementById('totalArea').textContent = totalWithWaste.toFixed(1) + ' sq ft';
+            document.getElementById('floorCost').textContent = formatMoney(floorCost);
+            document.getElementById('wallCost').textContent = formatMoney(wallCost);
+
+            document.getElementById('thinset').textContent = thinsetBags + ' bags';
+            document.getElementById('grout').textContent = groutLbs + ' lbs';
+            document.getElementById('membrane').textContent = membraneSqft + ' sq ft';
+            document.getElementById('spacers').textContent = spacerBags + ' bags';
+            document.getElementById('backerBoard').textContent = backerBoardSheets + ' sheets';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

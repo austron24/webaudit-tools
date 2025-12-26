@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Bathroom Renovation Cost Calculator - Remodel Estimator</title>
+    <meta name="description" content="Calculate bathroom renovation costs. Estimate your bathroom remodel budget including fixtures, labor, and materials. Free bathroom renovation calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0891b2 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #0891b2;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        .checkbox-item input { width: 18px; height: 18px; }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #0891b2;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #0e7490; }
+        .results { margin-top: 30px; display: none; }
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .result-box.large {
+            grid-column: span 2;
+            padding: 30px;
+        }
+        .result-value { font-size: 32px; font-weight: bold; }
+        .result-box.large .result-value { font-size: 48px; }
+        .result-label { font-size: 14px; opacity: 0.9; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .breakdown h4 {
+            color: #0891b2;
+            margin-bottom: 15px;
+        }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .tier-comparison {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .tier-card {
+            background: #ecfeff;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .tier-card.selected { background: #0891b2; color: white; }
+        .tier-card h5 { margin-bottom: 5px; font-size: 14px; }
+        .tier-card .price { font-size: 18px; font-weight: bold; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0891b2; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0e7490;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #67e8f9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Bathroom Renovation Calculator</h1>
+            <p class="subtitle">Estimate your bathroom remodel costs</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Bathroom Size (sq ft)</label>
+                    <input type="number" id="bathroomSize" value="50" min="20" max="300">
+                </div>
+                <div class="input-group">
+                    <label>Renovation Level</label>
+                    <select id="renovationLevel">
+                        <option value="budget">Budget Refresh</option>
+                        <option value="midrange" selected>Mid-Range Remodel</option>
+                        <option value="upscale">Upscale Renovation</option>
+                        <option value="luxury">Luxury Remodel</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>What's Included? (check all that apply)</label>
+            </div>
+            <div class="checkbox-grid">
+                <label class="checkbox-item">
+                    <input type="checkbox" id="toilet" checked> Toilet
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" id="vanity" checked> Vanity/Sink
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" id="tub" checked> Bathtub/Shower
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" id="flooring" checked> Flooring
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" id="wallTile"> Wall Tile
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" id="lighting" checked> Lighting
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" id="plumbing"> Plumbing Update
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" id="electrical"> Electrical Update
+                </label>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Layout Change?</label>
+                    <select id="layoutChange">
+                        <option value="none" selected>No layout change</option>
+                        <option value="minor">Minor adjustments</option>
+                        <option value="major">Major reconfiguration</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Your Region</label>
+                    <select id="region">
+                        <option value="0.85">Low cost area</option>
+                        <option value="1" selected>Average cost area</option>
+                        <option value="1.2">High cost area (NYC, SF)</option>
+                        <option value="1.35">Very high cost area</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Renovation Cost</button>
+
+            <div class="results" id="results">
+                <div class="result-grid">
+                    <div class="result-box large">
+                        <div class="result-value" id="totalCost">$0</div>
+                        <div class="result-label">Estimated Total Cost</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-value" id="costPerSqft">$0</div>
+                        <div class="result-label">Cost Per Sq Ft</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-value" id="laborPercent">0%</div>
+                        <div class="result-label">Labor Cost</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>💰 Cost Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Fixtures (toilet, tub, vanity)</span>
+                        <span class="breakdown-value" id="fixturesCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Flooring & Wall Tile</span>
+                        <span class="breakdown-value" id="tileCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Plumbing & Electrical</span>
+                        <span class="breakdown-value" id="mechCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Labor</span>
+                        <span class="breakdown-value" id="laborCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Permits & Misc</span>
+                        <span class="breakdown-value" id="permitsCost">$0</span>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📋 Project Timeline</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Estimated Duration</span>
+                        <span class="breakdown-value" id="duration">2-3 weeks</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">ROI (resale value add)</span>
+                        <span class="breakdown-value" id="roi">60-70%</span>
+                    </div>
+                </div>
+
+                <div class="tier-comparison">
+                    <div class="tier-card" id="tierBudget">
+                        <h5>Budget</h5>
+                        <div class="price" id="budgetPrice">$0</div>
+                        <small>Basic refresh</small>
+                    </div>
+                    <div class="tier-card selected" id="tierMid">
+                        <h5>Mid-Range</h5>
+                        <div class="price" id="midPrice">$0</div>
+                        <small>Quality finishes</small>
+                    </div>
+                    <div class="tier-card" id="tierLuxury">
+                        <h5>Luxury</h5>
+                        <div class="price" id="luxuryPrice">$0</div>
+                        <small>Premium materials</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Renovation Calculators</h4>
+            <a href="bathroom-remodel-calculator.html">Bathroom Remodel</a>
+            <a href="bathroom-tile-calculator.html">Bathroom Tile</a>
+            <a href="kitchen-remodel-calculator.html">Kitchen Remodel</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Bathroom Renovation Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const size = parseFloat(document.getElementById('bathroomSize').value);
+            const level = document.getElementById('renovationLevel').value;
+            const region = parseFloat(document.getElementById('region').value);
+            const layoutChange = document.getElementById('layoutChange').value;
+
+            // Base cost per sq ft by renovation level
+            const baseCosts = {
+                budget: 150,
+                midrange: 300,
+                upscale: 500,
+                luxury: 800
+            };
+            let baseCost = baseCosts[level];
+
+            // Individual item costs by level
+            const itemCosts = {
+                budget: { toilet: 200, vanity: 400, tub: 600, flooring: 8, wallTile: 10, lighting: 150, plumbing: 500, electrical: 300 },
+                midrange: { toilet: 400, vanity: 1200, tub: 2000, flooring: 15, wallTile: 18, lighting: 400, plumbing: 1500, electrical: 800 },
+                upscale: { toilet: 700, vanity: 2500, tub: 4000, flooring: 25, wallTile: 30, lighting: 800, plumbing: 3000, electrical: 1500 },
+                luxury: { toilet: 1200, vanity: 5000, tub: 8000, flooring: 40, wallTile: 50, lighting: 1500, plumbing: 5000, electrical: 2500 }
+            };
+            const costs = itemCosts[level];
+
+            // Calculate fixture costs
+            let fixturesCost = 0;
+            if (document.getElementById('toilet').checked) fixturesCost += costs.toilet;
+            if (document.getElementById('vanity').checked) fixturesCost += costs.vanity;
+            if (document.getElementById('tub').checked) fixturesCost += costs.tub;
+            if (document.getElementById('lighting').checked) fixturesCost += costs.lighting;
+
+            // Calculate tile costs
+            let tileCost = 0;
+            if (document.getElementById('flooring').checked) tileCost += size * costs.flooring;
+            if (document.getElementById('wallTile').checked) tileCost += size * 2 * costs.wallTile;
+
+            // Calculate mechanical costs
+            let mechCost = 0;
+            if (document.getElementById('plumbing').checked) mechCost += costs.plumbing;
+            if (document.getElementById('electrical').checked) mechCost += costs.electrical;
+
+            // Layout change costs
+            let layoutCost = 0;
+            if (layoutChange === 'minor') layoutCost = 2000;
+            else if (layoutChange === 'major') layoutCost = 8000;
+
+            // Labor (typically 40-50% of materials)
+            const materialTotal = fixturesCost + tileCost + mechCost + layoutCost;
+            const laborCost = materialTotal * 0.5;
+
+            // Permits and misc (5-10%)
+            const permitsCost = materialTotal * 0.08;
+
+            // Total with region adjustment
+            const totalCost = (materialTotal + laborCost + permitsCost) * region;
+            const costPerSqft = totalCost / size;
+            const laborPercent = (laborCost / totalCost) * 100;
+
+            // Comparison prices
+            const budgetTotal = size * 150 * region;
+            const midTotal = size * 300 * region;
+            const luxuryTotal = size * 800 * region;
+
+            // Duration
+            let duration = '1-2 weeks';
+            if (level === 'midrange') duration = '2-3 weeks';
+            else if (level === 'upscale') duration = '3-4 weeks';
+            else if (level === 'luxury') duration = '4-6 weeks';
+
+            // ROI
+            let roi = '50-60%';
+            if (level === 'midrange') roi = '60-70%';
+            else if (level === 'upscale') roi = '55-65%';
+            else if (level === 'luxury') roi = '50-60%';
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalCost').textContent = formatMoney(totalCost);
+            document.getElementById('costPerSqft').textContent = formatMoney(costPerSqft);
+            document.getElementById('laborPercent').textContent = Math.round(laborPercent) + '%';
+            document.getElementById('fixturesCost').textContent = formatMoney(fixturesCost * region);
+            document.getElementById('tileCost').textContent = formatMoney(tileCost * region);
+            document.getElementById('mechCost').textContent = formatMoney((mechCost + layoutCost) * region);
+            document.getElementById('laborCost').textContent = formatMoney(laborCost * region);
+            document.getElementById('permitsCost').textContent = formatMoney(permitsCost * region);
+            document.getElementById('duration').textContent = duration;
+            document.getElementById('roi').textContent = roi;
+
+            document.getElementById('budgetPrice').textContent = formatMoney(budgetTotal);
+            document.getElementById('midPrice').textContent = formatMoney(midTotal);
+            document.getElementById('luxuryPrice').textContent = formatMoney(luxuryTotal);
+
+            // Highlight selected tier
+            document.querySelectorAll('.tier-card').forEach(c => c.classList.remove('selected'));
+            if (level === 'budget') document.getElementById('tierBudget').classList.add('selected');
+            else if (level === 'midrange' || level === 'upscale') document.getElementById('tierMid').classList.add('selected');
+            else document.getElementById('tierLuxury').classList.add('selected');
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Dog Weight Calculator - Puppy Weight Predictor</title>
+    <meta name="description" content="Calculate your puppy's adult weight. Predict how big your dog will get based on breed and current weight. Free dog weight calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #ea580c 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #ea580c;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #ea580c;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #c2410c; }
+        .results { margin-top: 30px; display: none; }
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .result-box.large {
+            grid-column: span 2;
+            padding: 30px;
+        }
+        .result-value { font-size: 32px; font-weight: bold; }
+        .result-box.large .result-value { font-size: 48px; }
+        .result-label { font-size: 14px; opacity: 0.9; margin-top: 5px; }
+        .growth-chart {
+            background: #fff7ed;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .growth-bar {
+            background: #fed7aa;
+            border-radius: 10px;
+            height: 30px;
+            position: relative;
+            margin: 15px 0;
+        }
+        .growth-fill {
+            background: linear-gradient(90deg, #ea580c 0%, #fb923c 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-weight: bold;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .size-categories {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .size-card {
+            background: #fff7ed;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 12px;
+        }
+        .size-card.active {
+            background: #ea580c;
+            color: white;
+        }
+        .size-card h5 { margin-bottom: 3px; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #ea580c; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #c2410c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fdba74; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Dog Weight Calculator</h1>
+            <p class="subtitle">Predict your puppy's adult weight</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Dog Size Category</label>
+                <select id="sizeCategory">
+                    <option value="toy">Toy (Chihuahua, Yorkie, Pomeranian)</option>
+                    <option value="small">Small (Beagle, Corgi, French Bulldog)</option>
+                    <option value="medium" selected>Medium (Border Collie, Bulldog, Cocker Spaniel)</option>
+                    <option value="large">Large (Lab, Golden Retriever, German Shepherd)</option>
+                    <option value="giant">Giant (Great Dane, Mastiff, Saint Bernard)</option>
+                </select>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Current Weight (lbs)</label>
+                    <input type="number" id="currentWeight" value="15" min="0.5" max="200" step="0.5">
+                </div>
+                <div class="input-group">
+                    <label>Current Age</label>
+                    <select id="currentAge">
+                        <option value="8">8 weeks</option>
+                        <option value="12">12 weeks</option>
+                        <option value="16" selected>16 weeks (4 months)</option>
+                        <option value="20">20 weeks (5 months)</option>
+                        <option value="24">24 weeks (6 months)</option>
+                        <option value="32">32 weeks (8 months)</option>
+                        <option value="40">40 weeks (10 months)</option>
+                        <option value="52">52 weeks (1 year)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Gender</label>
+                    <select id="gender">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Is Parent Weight Known?</label>
+                    <select id="parentKnown" onchange="toggleParent()">
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group" id="parentWeight" style="display: none;">
+                <label>Average Parent Weight (lbs)</label>
+                <input type="number" id="parentWeightVal" value="50" min="5" max="200">
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Adult Weight</button>
+
+            <div class="results" id="results">
+                <div class="result-grid">
+                    <div class="result-box large">
+                        <div class="result-value" id="adultWeight">0 lbs</div>
+                        <div class="result-label">Predicted Adult Weight</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-value" id="weightRange">0-0</div>
+                        <div class="result-label">Weight Range (lbs)</div>
+                    </div>
+                    <div class="result-box">
+                        <div class="result-value" id="growthLeft">0%</div>
+                        <div class="result-label">Growth Remaining</div>
+                    </div>
+                </div>
+
+                <div class="growth-chart">
+                    <h4 style="color: #ea580c; margin-bottom: 10px;">Growth Progress</h4>
+                    <div class="growth-bar">
+                        <div class="growth-fill" id="growthFill">0%</div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: #64748b;">
+                        <span>Birth</span>
+                        <span>6 months</span>
+                        <span>Adult</span>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Current Weight</span>
+                        <span class="breakdown-value" id="currentDisplay">0 lbs</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Weight to Gain</span>
+                        <span class="breakdown-value" id="toGain">0 lbs</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Full Grown Age</span>
+                        <span class="breakdown-value" id="fullGrownAge">12 months</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Daily Food (estimated)</span>
+                        <span class="breakdown-value" id="dailyFood">0 cups</span>
+                    </div>
+                </div>
+
+                <div class="size-categories">
+                    <div class="size-card" id="catToy">
+                        <h5>Toy</h5>
+                        <span>&lt;12 lbs</span>
+                    </div>
+                    <div class="size-card" id="catSmall">
+                        <h5>Small</h5>
+                        <span>12-25 lbs</span>
+                    </div>
+                    <div class="size-card" id="catMedium">
+                        <h5>Medium</h5>
+                        <span>25-50 lbs</span>
+                    </div>
+                    <div class="size-card" id="catLarge">
+                        <h5>Large</h5>
+                        <span>50+ lbs</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Pet Calculators</h4>
+            <a href="dog-age-calculator.html">Dog Age Calculator</a>
+            <a href="dog-food-calculator.html">Dog Food Calculator</a>
+            <a href="cat-age-calculator.html">Cat Age Calculator</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Dog Weight Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function toggleParent() {
+            const show = document.getElementById('parentKnown').value === 'yes';
+            document.getElementById('parentWeight').style.display = show ? 'block' : 'none';
+        }
+
+        function calculate() {
+            const sizeCategory = document.getElementById('sizeCategory').value;
+            const currentWeight = parseFloat(document.getElementById('currentWeight').value);
+            const currentAgeWeeks = parseInt(document.getElementById('currentAge').value);
+            const gender = document.getElementById('gender').value;
+            const parentKnown = document.getElementById('parentKnown').value === 'yes';
+            const parentWeight = parseFloat(document.getElementById('parentWeightVal').value);
+
+            // Growth percentages by age for different sizes
+            const growthRates = {
+                toy: { 8: 0.47, 12: 0.65, 16: 0.77, 20: 0.85, 24: 0.90, 32: 0.95, 40: 0.98, 52: 1.0, adultAge: 10 },
+                small: { 8: 0.40, 12: 0.55, 16: 0.67, 20: 0.78, 24: 0.85, 32: 0.92, 40: 0.97, 52: 1.0, adultAge: 12 },
+                medium: { 8: 0.30, 12: 0.45, 16: 0.55, 20: 0.65, 24: 0.75, 32: 0.85, 40: 0.92, 52: 0.97, adultAge: 15 },
+                large: { 8: 0.25, 12: 0.35, 16: 0.45, 20: 0.55, 24: 0.65, 32: 0.78, 40: 0.88, 52: 0.95, adultAge: 18 },
+                giant: { 8: 0.20, 12: 0.28, 16: 0.38, 20: 0.48, 24: 0.55, 32: 0.68, 40: 0.80, 52: 0.90, adultAge: 24 }
+            };
+
+            const rates = growthRates[sizeCategory];
+            const currentGrowthPercent = rates[currentAgeWeeks] || 0.5;
+
+            let predictedWeight;
+            if (parentKnown) {
+                // Use parent weight as primary predictor
+                const genderFactor = gender === 'male' ? 1.05 : 0.95;
+                predictedWeight = parentWeight * genderFactor;
+            } else {
+                // Calculate from current weight and growth rate
+                predictedWeight = currentWeight / currentGrowthPercent;
+            }
+
+            const genderFactor = gender === 'male' ? 1.0 : 0.9;
+            predictedWeight *= genderFactor;
+
+            // Weight range (±15%)
+            const minWeight = predictedWeight * 0.85;
+            const maxWeight = predictedWeight * 1.15;
+
+            const growthLeft = ((1 - currentGrowthPercent) * 100);
+            const toGain = predictedWeight - currentWeight;
+
+            // Daily food estimate (cups per day based on adult weight)
+            let dailyFood;
+            if (predictedWeight < 10) dailyFood = 0.5;
+            else if (predictedWeight < 20) dailyFood = 1;
+            else if (predictedWeight < 40) dailyFood = 1.5;
+            else if (predictedWeight < 60) dailyFood = 2;
+            else if (predictedWeight < 80) dailyFood = 2.5;
+            else dailyFood = 3;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('adultWeight').textContent = Math.round(predictedWeight) + ' lbs';
+            document.getElementById('weightRange').textContent = Math.round(minWeight) + '-' + Math.round(maxWeight);
+            document.getElementById('growthLeft').textContent = Math.round(growthLeft) + '%';
+            document.getElementById('currentDisplay').textContent = currentWeight + ' lbs';
+            document.getElementById('toGain').textContent = Math.round(toGain) + ' lbs';
+            document.getElementById('fullGrownAge').textContent = rates.adultAge + ' months';
+            document.getElementById('dailyFood').textContent = dailyFood + ' cups';
+
+            const growthPercent = currentGrowthPercent * 100;
+            const fill = document.getElementById('growthFill');
+            fill.style.width = growthPercent + '%';
+            fill.textContent = Math.round(growthPercent) + '%';
+
+            // Update size category highlighting
+            document.querySelectorAll('.size-card').forEach(c => c.classList.remove('active'));
+            if (predictedWeight < 12) document.getElementById('catToy').classList.add('active');
+            else if (predictedWeight < 25) document.getElementById('catSmall').classList.add('active');
+            else if (predictedWeight < 50) document.getElementById('catMedium').classList.add('active');
+            else document.getElementById('catLarge').classList.add('active');
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
