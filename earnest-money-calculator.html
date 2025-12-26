@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earnest Money Calculator - Good Faith Deposit Amount</title>
+    <meta name="description" content="Calculate how much earnest money to offer on a home. Understand typical earnest money percentages and what happens to your deposit.">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/earnest-money-calculator.html">
+    <meta property="og:title" content="Earnest Money Calculator - Good Faith Deposit Amount">
+    <meta property="og:description" content="Calculate the right earnest money amount for your home offer.">
+    <meta property="og:type" content="website">
+    <style>
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --warning: #f59e0b; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; min-height: 100vh; }
+        .header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; }
+        .nav-links a:hover { color: var(--primary); }
+        .ad-top { background: var(--bg-card); padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); }
+        .ad-mobile { display: none; background: var(--bg-card); padding: 0.5rem; text-align: center; }
+        .main-layout { display: flex; max-width: 1400px; margin: 0 auto; gap: 2rem; padding: 2rem; }
+        .content { flex: 1; min-width: 0; }
+        .sidebar { width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 1rem; }
+        .hero { text-align: center; margin-bottom: 2rem; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary), #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { color: var(--text-secondary); font-size: 1.1rem; }
+        .calculator-card { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .section-title { font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--primary); }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.75rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 0.5rem; color: var(--text-primary); font-size: 1rem; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+        .input-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .calculate-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; border-radius: 0.5rem; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; }
+        .calculate-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
+        .results { display: none; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+        .results.show { display: block; }
+        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .result-box { background: var(--bg-input); padding: 1.25rem; border-radius: 0.75rem; text-align: center; }
+        .result-box.highlight { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid var(--primary); }
+        .result-label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .result-value { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
+        .range-display { margin-top: 1.5rem; }
+        .range-bar { display: flex; height: 50px; border-radius: 8px; overflow: hidden; margin-bottom: 0.5rem; }
+        .range-segment { display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-size: 0.8rem; }
+        .range-segment.low { background: #64748b; }
+        .range-segment.typical { background: var(--success); }
+        .range-segment.strong { background: var(--primary); }
+        .range-labels { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-secondary); }
+        .scenario-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+        .scenario-card { background: var(--bg-input); padding: 1.25rem; border-radius: 0.75rem; text-align: center; }
+        .scenario-card h4 { color: var(--primary); margin-bottom: 0.5rem; font-size: 1rem; }
+        .scenario-card .amount { font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem; }
+        .scenario-card .pct { color: var(--text-secondary); font-size: 0.9rem; }
+        .ad-inline { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin: 2rem 0; }
+        .info-section { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .info-section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary); }
+        .info-section p, .info-section li { color: var(--text-secondary); margin-bottom: 0.75rem; }
+        .info-section ul { padding-left: 1.5rem; }
+        .related-tools { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); }
+        .related-tools h3 { margin-bottom: 1rem; color: var(--text-primary); }
+        .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+        .tool-link { display: block; padding: 1rem; background: var(--bg-input); border-radius: 0.5rem; text-decoration: none; color: var(--text-primary); }
+        .tool-link:hover { background: var(--border); transform: translateY(-2px); }
+        .ad-bottom { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin-top: 2rem; }
+        .footer { background: var(--bg-card); border-top: 1px solid var(--border); padding: 2rem; text-align: center; margin-top: 3rem; }
+        .footer p { color: var(--text-secondary); font-size: 0.9rem; }
+        @media (max-width: 968px) { .sidebar { display: none; } .main-layout { padding: 1rem; } }
+        @media (max-width: 640px) { .ad-top { display: none; } .ad-mobile { display: block; } .hero h1 { font-size: 1.75rem; } .input-row { grid-template-columns: 1fr; } .nav-links { display: none; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">CalcTools</a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="finance-calculators.html">Finance</a>
+                <a href="health-calculators.html">Health</a>
+                <a href="home-calculators.html">Home</a>
+            </nav>
+        </div>
+    </header>
+    <div class="ad-top">
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-mobile">
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <div class="main-layout">
+        <main class="content">
+            <div class="hero">
+                <h1>Earnest Money Calculator</h1>
+                <p>Calculate the right good faith deposit for your home offer</p>
+            </div>
+            <div class="calculator-card">
+                <h3 class="section-title">Offer Details</h3>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Offer Price ($)</label>
+                        <input type="number" id="offerPrice" placeholder="400000" value="400000">
+                    </div>
+                    <div class="form-group">
+                        <label>Market Conditions</label>
+                        <select id="marketConditions">
+                            <option value="buyers">Buyer's Market (lots of inventory)</option>
+                            <option value="balanced" selected>Balanced Market</option>
+                            <option value="sellers">Seller's Market (competitive)</option>
+                            <option value="hot">Very Hot Market (multiple offers)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Property Type</label>
+                        <select id="propertyType">
+                            <option value="sfh" selected>Single Family Home</option>
+                            <option value="condo">Condo/Townhouse</option>
+                            <option value="newcon">New Construction</option>
+                            <option value="luxury">Luxury Property (500K+)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Custom Percentage (%)</label>
+                        <input type="number" id="customPct" step="0.5" placeholder="Leave blank for recommendation" value="">
+                    </div>
+                </div>
+                <button class="calculate-btn" onclick="calculate()">Calculate Earnest Money</button>
+                <div class="results" id="results">
+                    <div class="result-grid">
+                        <div class="result-box highlight">
+                            <div class="result-label">Recommended Earnest Money</div>
+                            <div class="result-value" id="recommendedAmount">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Percentage of Price</div>
+                            <div class="result-value" id="percentage">0%</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Applied to Closing</div>
+                            <div class="result-value" id="appliedClosing">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Typical Range</div>
+                            <div class="result-value" id="typicalRange">$0 - $0</div>
+                        </div>
+                    </div>
+                    <div class="range-display">
+                        <h4 style="color: var(--text-primary); margin-bottom: 0.75rem;">Deposit Strength Indicator</h4>
+                        <div class="range-bar">
+                            <div class="range-segment low" style="width: 25%">Low<br>1%</div>
+                            <div class="range-segment typical" style="width: 50%">Typical<br>1-3%</div>
+                            <div class="range-segment strong" style="width: 25%">Strong<br>3%+</div>
+                        </div>
+                        <div class="range-labels">
+                            <span>May weaken offer</span>
+                            <span>Standard</span>
+                            <span>Shows commitment</span>
+                        </div>
+                    </div>
+                    <div class="scenario-cards">
+                        <div class="scenario-card">
+                            <h4>Minimum (1%)</h4>
+                            <div class="amount" id="scenario1">$0</div>
+                            <div class="pct">Buyer's market</div>
+                        </div>
+                        <div class="scenario-card">
+                            <h4>Standard (2%)</h4>
+                            <div class="amount" id="scenario2">$0</div>
+                            <div class="pct">Most common</div>
+                        </div>
+                        <div class="scenario-card">
+                            <h4>Competitive (3%)</h4>
+                            <div class="amount" id="scenario3">$0</div>
+                            <div class="pct">Stand out</div>
+                        </div>
+                        <div class="scenario-card">
+                            <h4>Aggressive (5%)</h4>
+                            <div class="amount" id="scenario5">$0</div>
+                            <div class="pct">Hot market</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ad-inline">
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+            <div class="info-section">
+                <h2>What is Earnest Money?</h2>
+                <p>Earnest money (also called a good faith deposit) is a deposit made to demonstrate you're serious about buying the home. It's held in escrow and applied to your down payment or closing costs.</p>
+                <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Typical Amounts</h3>
+                <ul>
+                    <li><strong>1-2%:</strong> Common in buyer's markets or slower markets</li>
+                    <li><strong>2-3%:</strong> Standard in balanced markets</li>
+                    <li><strong>3-5%+:</strong> Competitive offers in seller's markets</li>
+                </ul>
+                <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Getting Your Deposit Back</h3>
+                <p>You typically get your earnest money back if you cancel due to contingencies (inspection, financing, appraisal). You may lose it if you back out without a valid contingency reason.</p>
+            </div>
+            <div class="ad-bottom">
+                <script type="text/javascript">atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
+            </div>
+            <div class="related-tools">
+                <h3>Related Calculators</h3>
+                <div class="tool-grid">
+                    <a href="down-payment-calculator.html" class="tool-link">Down Payment Calculator</a>
+                    <a href="closing-cost-calculator.html" class="tool-link">Closing Costs</a>
+                    <a href="home-affordability-calculator.html" class="tool-link">Home Affordability</a>
+                    <a href="mortgage-calculator.html" class="tool-link">Mortgage Calculator</a>
+                    <a href="home-inspection-cost-calculator.html" class="tool-link">Home Inspection Cost</a>
+                    <a href="title-insurance-calculator.html" class="tool-link">Title Insurance</a>
+                </div>
+            </div>
+        </main>
+        <aside class="sidebar">
+            <div class="ad-sidebar">
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+            <div class="ad-sidebar">
+                <script type="text/javascript">atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
+            </div>
+        </aside>
+    </div>
+    <footer class="footer">
+        <p>&copy; 2024 CalcTools. Free online calculators for everyone.</p>
+    </footer>
+    <script>
+        function formatCurrency(num) {
+            return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        }
+        function calculate() {
+            const offerPrice = parseFloat(document.getElementById('offerPrice').value) || 0;
+            const market = document.getElementById('marketConditions').value;
+            const propType = document.getElementById('propertyType').value;
+            const customPct = parseFloat(document.getElementById('customPct').value);
+            let basePct;
+            switch(market) {
+                case 'buyers': basePct = 1; break;
+                case 'balanced': basePct = 2; break;
+                case 'sellers': basePct = 3; break;
+                case 'hot': basePct = 5; break;
+                default: basePct = 2;
+            }
+            if (propType === 'luxury') basePct += 1;
+            if (propType === 'newcon') basePct = Math.max(basePct, 3);
+            const pct = customPct || basePct;
+            const amount = offerPrice * (pct / 100);
+            const minRange = offerPrice * 0.01;
+            const maxRange = offerPrice * 0.05;
+            document.getElementById('recommendedAmount').textContent = formatCurrency(amount);
+            document.getElementById('percentage').textContent = pct.toFixed(1) + '%';
+            document.getElementById('appliedClosing').textContent = formatCurrency(amount);
+            document.getElementById('typicalRange').textContent = formatCurrency(minRange) + ' - ' + formatCurrency(maxRange);
+            document.getElementById('scenario1').textContent = formatCurrency(offerPrice * 0.01);
+            document.getElementById('scenario2').textContent = formatCurrency(offerPrice * 0.02);
+            document.getElementById('scenario3').textContent = formatCurrency(offerPrice * 0.03);
+            document.getElementById('scenario5').textContent = formatCurrency(offerPrice * 0.05);
+            document.getElementById('results').classList.add('show');
+        }
+        calculate();
+    </script>
+</body>
+</html>

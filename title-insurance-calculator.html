@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title Insurance Calculator - Owner's & Lender's Policy Costs</title>
+    <meta name="description" content="Calculate title insurance costs for home purchases. Estimate owner's policy, lender's policy, and total title fees by state.">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/title-insurance-calculator.html">
+    <meta property="og:title" content="Title Insurance Calculator - Owner's & Lender's Policy Costs">
+    <meta property="og:description" content="Estimate title insurance costs for your home purchase.">
+    <meta property="og:type" content="website">
+    <style>
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --warning: #f59e0b; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; min-height: 100vh; }
+        .header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; }
+        .nav-links a:hover { color: var(--primary); }
+        .ad-top { background: var(--bg-card); padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); }
+        .ad-mobile { display: none; background: var(--bg-card); padding: 0.5rem; text-align: center; }
+        .main-layout { display: flex; max-width: 1400px; margin: 0 auto; gap: 2rem; padding: 2rem; }
+        .content { flex: 1; min-width: 0; }
+        .sidebar { width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 1rem; }
+        .hero { text-align: center; margin-bottom: 2rem; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary), #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { color: var(--text-secondary); font-size: 1.1rem; }
+        .calculator-card { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .section-title { font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--primary); }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.75rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 0.5rem; color: var(--text-primary); font-size: 1rem; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+        .input-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .calculate-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; border-radius: 0.5rem; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; }
+        .calculate-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
+        .results { display: none; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+        .results.show { display: block; }
+        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .result-box { background: var(--bg-input); padding: 1.25rem; border-radius: 0.75rem; text-align: center; }
+        .result-box.highlight { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid var(--primary); }
+        .result-label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .result-value { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
+        .breakdown { margin-top: 1.5rem; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+        .breakdown-row:last-child { border-bottom: none; font-weight: 600; padding-top: 1rem; border-top: 2px solid var(--border); }
+        .breakdown-row .label { color: var(--text-secondary); }
+        .breakdown-row .value { color: var(--text-primary); }
+        .breakdown-row:last-child .value { color: var(--primary); font-size: 1.1rem; }
+        .ad-inline { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin: 2rem 0; }
+        .info-section { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .info-section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary); }
+        .info-section p, .info-section li { color: var(--text-secondary); margin-bottom: 0.75rem; }
+        .info-section ul { padding-left: 1.5rem; }
+        .related-tools { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); }
+        .related-tools h3 { margin-bottom: 1rem; color: var(--text-primary); }
+        .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+        .tool-link { display: block; padding: 1rem; background: var(--bg-input); border-radius: 0.5rem; text-decoration: none; color: var(--text-primary); }
+        .tool-link:hover { background: var(--border); transform: translateY(-2px); }
+        .ad-bottom { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin-top: 2rem; }
+        .footer { background: var(--bg-card); border-top: 1px solid var(--border); padding: 2rem; text-align: center; margin-top: 3rem; }
+        .footer p { color: var(--text-secondary); font-size: 0.9rem; }
+        @media (max-width: 968px) { .sidebar { display: none; } .main-layout { padding: 1rem; } }
+        @media (max-width: 640px) { .ad-top { display: none; } .ad-mobile { display: block; } .hero h1 { font-size: 1.75rem; } .input-row { grid-template-columns: 1fr; } .nav-links { display: none; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">CalcTools</a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="finance-calculators.html">Finance</a>
+                <a href="health-calculators.html">Health</a>
+                <a href="home-calculators.html">Home</a>
+            </nav>
+        </div>
+    </header>
+    <div class="ad-top">
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-mobile">
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <div class="main-layout">
+        <main class="content">
+            <div class="hero">
+                <h1>Title Insurance Calculator</h1>
+                <p>Estimate owner's and lender's title insurance costs</p>
+            </div>
+            <div class="calculator-card">
+                <h3 class="section-title">Property Details</h3>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Purchase Price ($)</label>
+                        <input type="number" id="purchasePrice" placeholder="400000" value="400000">
+                    </div>
+                    <div class="form-group">
+                        <label>Loan Amount ($)</label>
+                        <input type="number" id="loanAmount" placeholder="320000" value="320000">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>State</label>
+                        <select id="state">
+                            <option value="avg" selected>National Average</option>
+                            <option value="tx">Texas (Regulated)</option>
+                            <option value="fl">Florida</option>
+                            <option value="ca">California</option>
+                            <option value="ny">New York</option>
+                            <option value="pa">Pennsylvania</option>
+                            <option value="oh">Ohio</option>
+                            <option value="nj">New Jersey</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Transaction Type</label>
+                        <select id="transType">
+                            <option value="purchase" selected>Purchase</option>
+                            <option value="refinance">Refinance</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="calculate-btn" onclick="calculate()">Calculate Title Costs</button>
+                <div class="results" id="results">
+                    <div class="result-grid">
+                        <div class="result-box">
+                            <div class="result-label">Owner's Policy</div>
+                            <div class="result-value" id="ownersPolicy">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Lender's Policy</div>
+                            <div class="result-value" id="lendersPolicy">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Title Search & Exam</div>
+                            <div class="result-value" id="titleSearch">$0</div>
+                        </div>
+                        <div class="result-box highlight">
+                            <div class="result-label">Total Title Costs</div>
+                            <div class="result-value" id="totalCost">$0</div>
+                        </div>
+                    </div>
+                    <div class="breakdown">
+                        <h4 style="color: var(--text-primary); margin-bottom: 1rem;">Cost Breakdown</h4>
+                        <div class="breakdown-row">
+                            <span class="label">Owner's Title Insurance</span>
+                            <span class="value" id="breakdownOwners">$0</span>
+                        </div>
+                        <div class="breakdown-row">
+                            <span class="label">Lender's Title Insurance</span>
+                            <span class="value" id="breakdownLenders">$0</span>
+                        </div>
+                        <div class="breakdown-row">
+                            <span class="label">Title Search Fee</span>
+                            <span class="value" id="breakdownSearch">$0</span>
+                        </div>
+                        <div class="breakdown-row">
+                            <span class="label">Title Exam Fee</span>
+                            <span class="value" id="breakdownExam">$0</span>
+                        </div>
+                        <div class="breakdown-row">
+                            <span class="label">Settlement/Closing Fee</span>
+                            <span class="value" id="breakdownSettlement">$0</span>
+                        </div>
+                        <div class="breakdown-row">
+                            <span class="label">Total Estimated Title Costs</span>
+                            <span class="value" id="breakdownTotal">$0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ad-inline">
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+            <div class="info-section">
+                <h2>Understanding Title Insurance</h2>
+                <p>Title insurance protects against losses from defects in the title that existed before you bought the property, such as liens, encumbrances, or ownership disputes.</p>
+                <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Two Types of Policies</h3>
+                <ul>
+                    <li><strong>Owner's Policy:</strong> Protects the buyer (one-time premium, lasts as long as you own the property)</li>
+                    <li><strong>Lender's Policy:</strong> Protects the mortgage lender (required by most lenders)</li>
+                </ul>
+                <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Who Pays?</h3>
+                <p>Varies by state and local custom. In some areas the seller pays for owner's policy, in others the buyer pays. Lender's policy is typically paid by the buyer.</p>
+            </div>
+            <div class="ad-bottom">
+                <script type="text/javascript">atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
+            </div>
+            <div class="related-tools">
+                <h3>Related Calculators</h3>
+                <div class="tool-grid">
+                    <a href="closing-cost-calculator.html" class="tool-link">Closing Cost Calculator</a>
+                    <a href="mortgage-calculator.html" class="tool-link">Mortgage Calculator</a>
+                    <a href="home-affordability-calculator.html" class="tool-link">Home Affordability</a>
+                    <a href="down-payment-calculator.html" class="tool-link">Down Payment</a>
+                    <a href="escrow-calculator.html" class="tool-link">Escrow Calculator</a>
+                    <a href="refinance-calculator.html" class="tool-link">Refinance Calculator</a>
+                </div>
+            </div>
+        </main>
+        <aside class="sidebar">
+            <div class="ad-sidebar">
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+            <div class="ad-sidebar">
+                <script type="text/javascript">atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
+            </div>
+        </aside>
+    </div>
+    <footer class="footer">
+        <p>&copy; 2024 CalcTools. Free online calculators for everyone.</p>
+    </footer>
+    <script>
+        const stateRates = {
+            avg: { owner: 0.005, lender: 0.0035 },
+            tx: { owner: 0.00575, lender: 0.00455 },
+            fl: { owner: 0.00575, lender: 0.00525 },
+            ca: { owner: 0.004, lender: 0.003 },
+            ny: { owner: 0.006, lender: 0.004 },
+            pa: { owner: 0.0055, lender: 0.004 },
+            oh: { owner: 0.0045, lender: 0.003 },
+            nj: { owner: 0.005, lender: 0.0035 }
+        };
+        function formatCurrency(num) {
+            return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        }
+        function calculate() {
+            const purchasePrice = parseFloat(document.getElementById('purchasePrice').value) || 0;
+            const loanAmount = parseFloat(document.getElementById('loanAmount').value) || 0;
+            const state = document.getElementById('state').value;
+            const transType = document.getElementById('transType').value;
+            const rates = stateRates[state];
+            const ownersPolicy = transType === 'purchase' ? purchasePrice * rates.owner : 0;
+            const lendersPolicy = loanAmount * rates.lender;
+            const titleSearch = 150;
+            const titleExam = 200;
+            const settlementFee = 450;
+            const totalCost = ownersPolicy + lendersPolicy + titleSearch + titleExam + settlementFee;
+            document.getElementById('ownersPolicy').textContent = formatCurrency(ownersPolicy);
+            document.getElementById('lendersPolicy').textContent = formatCurrency(lendersPolicy);
+            document.getElementById('titleSearch').textContent = formatCurrency(titleSearch + titleExam);
+            document.getElementById('totalCost').textContent = formatCurrency(totalCost);
+            document.getElementById('breakdownOwners').textContent = formatCurrency(ownersPolicy);
+            document.getElementById('breakdownLenders').textContent = formatCurrency(lendersPolicy);
+            document.getElementById('breakdownSearch').textContent = formatCurrency(titleSearch);
+            document.getElementById('breakdownExam').textContent = formatCurrency(titleExam);
+            document.getElementById('breakdownSettlement').textContent = formatCurrency(settlementFee);
+            document.getElementById('breakdownTotal').textContent = formatCurrency(totalCost);
+            document.getElementById('results').classList.add('show');
+        }
+        calculate();
+    </script>
+</body>
+</html>
