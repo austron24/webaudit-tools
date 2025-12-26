@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Closing Cost Calculator - Home Buying Closing Costs</title>
-    <meta name="description" content="Free closing cost calculator. Estimate your home buying closing costs including fees, taxes, and prepaid items.">
-    <meta name="keywords" content="closing cost calculator, home buying costs, mortgage closing costs, settlement costs, home purchase fees">
+    <title>Closing Cost Calculator - Estimate Home Buying Costs</title>
+    <meta name="description" content="Free closing cost calculator. Estimate all the fees and costs associated with buying a home.">
+    <meta name="keywords" content="closing cost calculator, home buying costs, closing fees, mortgage closing, title insurance">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/closing-cost-calculator.html">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #14b8a6; --primary-dark: #0d9488; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
         .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
-        .header { background: linear-gradient(135deg, var(--accent) 0%, #d97706 100%); padding: 40px 20px; text-align: center; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
         .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
         .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
         .content-area { display: flex; flex-direction: column; gap: 20px; }
@@ -30,12 +30,10 @@
         .result-hero-label { color: rgba(255,255,255,0.8); }
         .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
-        .result-value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
-        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.9rem; }
-        .breakdown-section { margin-top: 20px; }
-        .breakdown-section h3 { color: var(--secondary); margin-bottom: 15px; font-size: 1.1rem; }
-        .breakdown-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
-        .breakdown-total { display: flex; justify-content: space-between; padding: 15px 0; font-weight: 700; font-size: 1.1rem; border-top: 2px solid var(--border); margin-top: 10px; }
+        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
+        .breakdown-row.category { background: var(--bg-dark); font-weight: 600; color: var(--secondary); }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
@@ -57,21 +55,21 @@
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
     
     <header class="header">
-        <h1>🏡 Closing Cost Calculator</h1>
+        <h1>📋 Closing Cost Calculator</h1>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>💰 Property Details</h2>
+                <h2>🏠 Purchase Details</h2>
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Home Purchase Price ($)</label>
-                        <input type="number" id="purchasePrice" value="400000" oninput="calculate()">
+                        <input type="number" id="purchasePrice" value="350000" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Down Payment (%)</label>
-                        <input type="number" id="downPayment" value="20" oninput="calculate()">
+                        <input type="number" id="downPayment" value="20" step="1" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Interest Rate (%)</label>
@@ -80,27 +78,15 @@
                     <div class="form-group">
                         <label>Loan Type</label>
                         <select id="loanType" onchange="calculate()">
-                            <option value="conventional">Conventional</option>
+                            <option value="conventional" selected>Conventional</option>
                             <option value="fha">FHA</option>
                             <option value="va">VA</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>State</label>
-                        <select id="state" onchange="calculate()">
-                            <option value="average">Average (2-5%)</option>
-                            <option value="low">Low Cost State (2-3%)</option>
-                            <option value="high">High Cost State (4-5%)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Discount Points</label>
-                        <input type="number" id="points" value="0" step="0.25" oninput="calculate()">
-                    </div>
                 </div>
                 
                 <div class="result-hero">
-                    <div class="result-hero-label">Estimated Total Closing Costs</div>
+                    <div class="result-hero-label">Total Closing Costs</div>
                     <div class="result-hero-value" id="totalClosing">$0</div>
                 </div>
                 
@@ -110,44 +96,38 @@
                         <div class="result-label">Down Payment</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="loanAmount">$0</div>
-                        <div class="result-label">Loan Amount</div>
+                        <div class="result-value" id="cashNeeded">$0</div>
+                        <div class="result-label">Cash Needed at Closing</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="cashNeeded">$0</div>
-                        <div class="result-label">Total Cash Needed</div>
+                        <div class="result-value" id="closingPct">0%</div>
+                        <div class="result-label">% of Purchase Price</div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>📋 Closing Cost Breakdown</h2>
-                <div class="breakdown-section">
-                    <h3>Lender Fees</h3>
-                    <div class="breakdown-item"><span>Origination Fee (1%)</span><span id="origination">$0</span></div>
-                    <div class="breakdown-item"><span>Discount Points</span><span id="discountPoints">$0</span></div>
-                    <div class="breakdown-item"><span>Application Fee</span><span id="application">$500</span></div>
-                    <div class="breakdown-item"><span>Underwriting Fee</span><span id="underwriting">$700</span></div>
-                </div>
-                <div class="breakdown-section">
-                    <h3>Third Party Fees</h3>
-                    <div class="breakdown-item"><span>Appraisal</span><span id="appraisal">$500</span></div>
-                    <div class="breakdown-item"><span>Home Inspection</span><span id="inspection">$400</span></div>
-                    <div class="breakdown-item"><span>Title Insurance</span><span id="titleInsurance">$0</span></div>
-                    <div class="breakdown-item"><span>Title Search & Fees</span><span id="titleSearch">$500</span></div>
-                    <div class="breakdown-item"><span>Attorney Fees</span><span id="attorney">$1,000</span></div>
-                    <div class="breakdown-item"><span>Survey</span><span id="survey">$400</span></div>
-                </div>
-                <div class="breakdown-section">
-                    <h3>Prepaid Items & Escrow</h3>
-                    <div class="breakdown-item"><span>Prepaid Interest</span><span id="prepaidInterest">$0</span></div>
-                    <div class="breakdown-item"><span>Homeowners Insurance (1 year)</span><span id="homeInsurance">$0</span></div>
-                    <div class="breakdown-item"><span>Property Tax Escrow</span><span id="propertyTax">$0</span></div>
-                    <div class="breakdown-item"><span>PMI/MIP (if applicable)</span><span id="pmi">$0</span></div>
-                </div>
-                <div class="breakdown-total">
+                <h2>📊 Cost Breakdown</h2>
+                <div class="breakdown-row category"><span>Lender Fees</span><span></span></div>
+                <div class="breakdown-row"><span>Origination Fee (1%)</span><span id="origination">$0</span></div>
+                <div class="breakdown-row"><span>Discount Points</span><span id="points">$0</span></div>
+                <div class="breakdown-row"><span>Underwriting Fee</span><span id="underwriting">$850</span></div>
+                <div class="breakdown-row"><span>Credit Report</span><span id="credit">$50</span></div>
+                
+                <div class="breakdown-row category" style="margin-top: 15px;"><span>Third Party Fees</span><span></span></div>
+                <div class="breakdown-row"><span>Appraisal</span><span id="appraisal">$500</span></div>
+                <div class="breakdown-row"><span>Home Inspection</span><span id="inspection">$450</span></div>
+                <div class="breakdown-row"><span>Title Search & Insurance</span><span id="title">$0</span></div>
+                <div class="breakdown-row"><span>Attorney/Escrow Fees</span><span id="attorney">$750</span></div>
+                
+                <div class="breakdown-row category" style="margin-top: 15px;"><span>Prepaid Items</span><span></span></div>
+                <div class="breakdown-row"><span>Homeowners Insurance (1 yr)</span><span id="insurance">$0</span></div>
+                <div class="breakdown-row"><span>Property Tax (2 months)</span><span id="taxPrepaid">$0</span></div>
+                <div class="breakdown-row"><span>Prepaid Interest</span><span id="prepaidInt">$0</span></div>
+                
+                <div class="breakdown-row" style="background: var(--primary); color: white; font-weight: 700; margin-top: 15px;">
                     <span>Total Closing Costs</span>
-                    <span id="breakdownTotal" style="color: var(--success);">$0</span>
+                    <span id="totalBreakdown">$0</span>
                 </div>
             </div>
 
@@ -160,10 +140,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="mortgage-calculator.html" class="related-link">🏠 Mortgage Calculator</a>
-                    <a href="down-payment-calculator.html" class="related-link">💵 Down Payment</a>
-                    <a href="rent-vs-buy-calculator.html" class="related-link">🏘️ Rent vs Buy</a>
-                    <a href="home-value-calculator.html" class="related-link">🏡 Home Value</a>
+                    <a href="mortgage-calculator.html" class="related-link">🏦 Mortgage Calculator</a>
+                    <a href="down-payment-calculator.html" class="related-link">💰 Down Payment</a>
+                    <a href="home-affordability-calculator.html" class="related-link">🏠 Affordability</a>
+                    <a href="property-tax-calculator.html" class="related-link">📋 Property Tax</a>
                 </div>
             </div>
         </div>
@@ -180,66 +160,48 @@
     <script>
         function calculate() {
             const purchasePrice = parseFloat(document.getElementById('purchasePrice').value) || 0;
-            const downPaymentPct = parseFloat(document.getElementById('downPayment').value) / 100 || 0.20;
+            const downPaymentPct = parseFloat(document.getElementById('downPayment').value) / 100 || 0.2;
             const interestRate = parseFloat(document.getElementById('interestRate').value) / 100 || 0.065;
             const loanType = document.getElementById('loanType').value;
-            const state = document.getElementById('state').value;
-            const points = parseFloat(document.getElementById('points').value) || 0;
             
             const downPaymentAmt = purchasePrice * downPaymentPct;
             const loanAmount = purchasePrice - downPaymentAmt;
             
-            // Lender fees
             const origination = loanAmount * 0.01;
-            const discountPoints = loanAmount * (points / 100);
-            const application = 500;
-            const underwriting = 700;
+            const points = 0;
+            const underwriting = 850;
+            const credit = 50;
             
-            // Third party fees
             const appraisal = 500;
-            const inspection = 400;
-            const titleInsurance = purchasePrice * 0.005;
-            const titleSearch = 500;
-            const attorney = 1000;
-            const survey = 400;
+            const inspection = 450;
+            const title = purchasePrice * 0.005;
+            const attorney = 750;
             
-            // Prepaid items
-            const prepaidInterest = (loanAmount * interestRate / 365) * 15; // 15 days average
-            const homeInsurance = purchasePrice * 0.005; // roughly 0.5% of home value
-            const propertyTax = (purchasePrice * 0.0125) * (3/12); // 3 months escrow at 1.25%
+            const insurance = purchasePrice * 0.0035;
+            const taxPrepaid = (purchasePrice * 0.012) / 6;
+            const dailyInterest = (loanAmount * interestRate) / 365;
+            const prepaidInt = dailyInterest * 15;
             
-            // PMI if less than 20% down
-            let pmi = 0;
-            if (loanType === 'fha') {
-                pmi = loanAmount * 0.0175; // FHA upfront MIP
-            } else if (loanType === 'conventional' && downPaymentPct < 0.20) {
-                pmi = loanAmount * 0.005; // Estimate
-            }
+            const lenderFees = origination + points + underwriting + credit;
+            const thirdPartyFees = appraisal + inspection + title + attorney;
+            const prepaidItems = insurance + taxPrepaid + prepaidInt;
             
-            // Total
-            let totalClosing = origination + discountPoints + application + underwriting +
-                appraisal + inspection + titleInsurance + titleSearch + attorney + survey +
-                prepaidInterest + homeInsurance + propertyTax + pmi;
-            
-            // Adjust for state
-            if (state === 'low') totalClosing *= 0.85;
-            if (state === 'high') totalClosing *= 1.15;
-            
+            const totalClosing = lenderFees + thirdPartyFees + prepaidItems;
             const cashNeeded = downPaymentAmt + totalClosing;
+            const closingPct = (totalClosing / purchasePrice) * 100;
             
             document.getElementById('totalClosing').textContent = '$' + Math.round(totalClosing).toLocaleString();
             document.getElementById('downPaymentAmt').textContent = '$' + Math.round(downPaymentAmt).toLocaleString();
-            document.getElementById('loanAmount').textContent = '$' + Math.round(loanAmount).toLocaleString();
             document.getElementById('cashNeeded').textContent = '$' + Math.round(cashNeeded).toLocaleString();
+            document.getElementById('closingPct').textContent = closingPct.toFixed(1) + '%';
             
             document.getElementById('origination').textContent = '$' + Math.round(origination).toLocaleString();
-            document.getElementById('discountPoints').textContent = '$' + Math.round(discountPoints).toLocaleString();
-            document.getElementById('titleInsurance').textContent = '$' + Math.round(titleInsurance).toLocaleString();
-            document.getElementById('prepaidInterest').textContent = '$' + Math.round(prepaidInterest).toLocaleString();
-            document.getElementById('homeInsurance').textContent = '$' + Math.round(homeInsurance).toLocaleString();
-            document.getElementById('propertyTax').textContent = '$' + Math.round(propertyTax).toLocaleString();
-            document.getElementById('pmi').textContent = '$' + Math.round(pmi).toLocaleString();
-            document.getElementById('breakdownTotal').textContent = '$' + Math.round(totalClosing).toLocaleString();
+            document.getElementById('points').textContent = '$' + points;
+            document.getElementById('title').textContent = '$' + Math.round(title).toLocaleString();
+            document.getElementById('insurance').textContent = '$' + Math.round(insurance).toLocaleString();
+            document.getElementById('taxPrepaid').textContent = '$' + Math.round(taxPrepaid).toLocaleString();
+            document.getElementById('prepaidInt').textContent = '$' + Math.round(prepaidInt).toLocaleString();
+            document.getElementById('totalBreakdown').textContent = '$' + Math.round(totalClosing).toLocaleString();
         }
         
         calculate();

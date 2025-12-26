@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Value Calculator - Estimate Property Value</title>
-    <meta name="description" content="Free home value calculator. Estimate your property's market value. Calculate home equity and appreciation.">
-    <meta name="keywords" content="home value calculator, property value estimator, house value, home equity calculator, real estate">
+    <meta name="description" content="Free home value calculator. Estimate your home's value based on comparable sales, improvements, and market conditions.">
+    <meta name="keywords" content="home value calculator, property value, house worth, real estate value, home appraisal">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/home-value-calculator.html">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #0ea5e9; --primary-dark: #0284c7; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -25,22 +25,19 @@
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
         input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
         input:focus, select:focus { outline: none; border-color: var(--primary); }
-        .results-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 20px; }
-        .result-card { background: var(--bg-input); padding: 25px; border-radius: 12px; text-align: center; }
-        .result-card.highlight { background: linear-gradient(135deg, var(--success), #059669); grid-column: span 2; }
-        .result-value { font-size: 2rem; font-weight: 800; color: var(--secondary); }
-        .result-card.highlight .result-value { color: white; font-size: 2.5rem; }
-        .result-label { color: var(--text-secondary); margin-top: 5px; }
-        .result-card.highlight .result-label { color: rgba(255,255,255,0.8); }
-        .appreciation-chart { margin-top: 20px; padding: 20px; background: var(--bg-input); border-radius: 12px; }
-        .chart-bar { display: flex; align-items: center; margin: 10px 0; }
-        .chart-label { min-width: 80px; }
-        .chart-fill { height: 30px; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 4px; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: white; font-weight: 600; }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.8); }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } .results-grid { grid-template-columns: 1fr; } .result-card.highlight { grid-column: span 1; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -63,61 +60,102 @@
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>📊 Property Details</h2>
+                <h2>📍 Property Details</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Purchase Price ($)</label>
-                        <input type="number" id="purchasePrice" value="350000" oninput="calculate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Year Purchased</label>
-                        <input type="number" id="yearPurchased" value="2020" oninput="calculate()">
+                        <label>Base Property Value ($)</label>
+                        <input type="number" id="baseValue" value="350000" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Square Footage</label>
                         <input type="number" id="sqft" value="2000" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Annual Appreciation Rate (%)</label>
-                        <input type="number" id="appreciation" value="5" step="0.5" oninput="calculate()">
+                        <label>Bedrooms</label>
+                        <input type="number" id="bedrooms" value="3" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Remaining Mortgage ($)</label>
-                        <input type="number" id="mortgage" value="280000" oninput="calculate()">
+                        <label>Bathrooms</label>
+                        <input type="number" id="bathrooms" value="2" step="0.5" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Improvements Made ($)</label>
-                        <input type="number" id="improvements" value="25000" oninput="calculate()">
+                        <label>Lot Size (acres)</label>
+                        <input type="number" id="lot" value="0.25" step="0.01" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Year Built</label>
+                        <input type="number" id="yearBuilt" value="1995" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Condition</label>
+                        <select id="condition" onchange="calculate()">
+                            <option value="poor">Poor (-10%)</option>
+                            <option value="fair">Fair (-5%)</option>
+                            <option value="average" selected>Average</option>
+                            <option value="good">Good (+5%)</option>
+                            <option value="excellent">Excellent (+10%)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Market Trend</label>
+                        <select id="market" onchange="calculate()">
+                            <option value="declining">Declining (-5%)</option>
+                            <option value="stable" selected>Stable</option>
+                            <option value="growing">Growing (+5%)</option>
+                            <option value="hot">Hot Market (+10%)</option>
+                        </select>
                     </div>
                 </div>
                 
+                <div class="result-hero">
+                    <div class="result-hero-label">Estimated Home Value</div>
+                    <div class="result-hero-value" id="homeValue">$0</div>
+                </div>
+                
                 <div class="results-grid">
-                    <div class="result-card highlight">
-                        <div class="result-value" id="currentValue">$0</div>
-                        <div class="result-label">Estimated Current Value</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="equity">$0</div>
-                        <div class="result-label">Home Equity</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="totalGain">$0</div>
-                        <div class="result-label">Total Gain</div>
-                    </div>
                     <div class="result-card">
                         <div class="result-value" id="pricePerSqft">$0</div>
                         <div class="result-label">Price per Sq Ft</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="roi">0%</div>
-                        <div class="result-label">Return on Investment</div>
+                        <div class="result-value" id="lowEstimate">$0</div>
+                        <div class="result-label">Low Estimate</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="highEstimate">$0</div>
+                        <div class="result-label">High Estimate</div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>📈 Value Projection</h2>
-                <div class="appreciation-chart" id="chart"></div>
+                <h2>🔧 Improvements</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Kitchen Remodel ($)</label>
+                        <input type="number" id="kitchen" value="0" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Bathroom Remodel ($)</label>
+                        <input type="number" id="bathroom" value="0" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>New Roof ($)</label>
+                        <input type="number" id="roof" value="0" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Other Improvements ($)</label>
+                        <input type="number" id="other" value="0" oninput="calculate()">
+                    </div>
+                </div>
+                <div class="breakdown-row">
+                    <span>Total Improvement Value</span>
+                    <span id="improvementTotal">$0</span>
+                </div>
+                <div class="breakdown-row" style="color: var(--text-secondary);">
+                    <span>ROI on Improvements</span>
+                    <span id="roi">~70% typical</span>
+                </div>
             </div>
 
             <div class="ad-container">
@@ -129,10 +167,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="mortgage-calculator.html" class="related-link">🏠 Mortgage Calculator</a>
-                    <a href="amortization-calculator.html" class="related-link">📊 Amortization</a>
-                    <a href="square-footage-calculator.html" class="related-link">📐 Square Footage</a>
-                    <a href="roi-calculator.html" class="related-link">💰 ROI Calculator</a>
+                    <a href="mortgage-calculator.html" class="related-link">🏦 Mortgage Calculator</a>
+                    <a href="rent-vs-buy-calculator.html" class="related-link">🏠 Rent vs Buy</a>
+                    <a href="down-payment-calculator.html" class="related-link">💰 Down Payment</a>
+                    <a href="property-tax-calculator.html" class="related-link">📋 Property Tax</a>
                 </div>
             </div>
         </div>
@@ -148,47 +186,59 @@
 
     <script>
         function calculate() {
-            const purchasePrice = parseFloat(document.getElementById('purchasePrice').value) || 0;
-            const yearPurchased = parseInt(document.getElementById('yearPurchased').value) || new Date().getFullYear();
+            const baseValue = parseFloat(document.getElementById('baseValue').value) || 0;
             const sqft = parseFloat(document.getElementById('sqft').value) || 1;
-            const appreciation = parseFloat(document.getElementById('appreciation').value) / 100 || 0;
-            const mortgage = parseFloat(document.getElementById('mortgage').value) || 0;
-            const improvements = parseFloat(document.getElementById('improvements').value) || 0;
+            const bedrooms = parseInt(document.getElementById('bedrooms').value) || 0;
+            const bathrooms = parseFloat(document.getElementById('bathrooms').value) || 0;
+            const lot = parseFloat(document.getElementById('lot').value) || 0;
+            const yearBuilt = parseInt(document.getElementById('yearBuilt').value) || 2000;
+            const condition = document.getElementById('condition').value;
+            const market = document.getElementById('market').value;
+            
+            const kitchen = parseFloat(document.getElementById('kitchen').value) || 0;
+            const bathroom = parseFloat(document.getElementById('bathroom').value) || 0;
+            const roof = parseFloat(document.getElementById('roof').value) || 0;
+            const other = parseFloat(document.getElementById('other').value) || 0;
+            
+            const totalImprovements = kitchen + bathroom + roof + other;
+            const improvementValue = totalImprovements * 0.7;
+            
+            let conditionMod = 0;
+            switch(condition) {
+                case 'poor': conditionMod = -0.10; break;
+                case 'fair': conditionMod = -0.05; break;
+                case 'average': conditionMod = 0; break;
+                case 'good': conditionMod = 0.05; break;
+                case 'excellent': conditionMod = 0.10; break;
+            }
+            
+            let marketMod = 0;
+            switch(market) {
+                case 'declining': marketMod = -0.05; break;
+                case 'stable': marketMod = 0; break;
+                case 'growing': marketMod = 0.05; break;
+                case 'hot': marketMod = 0.10; break;
+            }
             
             const currentYear = new Date().getFullYear();
-            const yearsOwned = currentYear - yearPurchased;
+            const age = currentYear - yearBuilt;
+            const ageMod = Math.max(-0.15, -age * 0.003);
             
-            // Calculate current value with appreciation
-            const appreciatedValue = purchasePrice * Math.pow(1 + appreciation, yearsOwned);
-            const currentValue = appreciatedValue + (improvements * 0.7); // 70% of improvements add to value
+            let value = baseValue;
+            value *= (1 + conditionMod);
+            value *= (1 + marketMod);
+            value *= (1 + ageMod);
+            value += improvementValue;
             
-            const equity = currentValue - mortgage;
-            const totalGain = currentValue - purchasePrice;
-            const pricePerSqft = currentValue / sqft;
-            const roi = ((currentValue - purchasePrice) / purchasePrice * 100);
+            const pricePerSqft = value / sqft;
+            const lowEstimate = value * 0.92;
+            const highEstimate = value * 1.08;
             
-            document.getElementById('currentValue').textContent = '$' + currentValue.toLocaleString(undefined, {maximumFractionDigits: 0});
-            document.getElementById('equity').textContent = '$' + equity.toLocaleString(undefined, {maximumFractionDigits: 0});
-            document.getElementById('totalGain').textContent = (totalGain >= 0 ? '+' : '') + '$' + totalGain.toLocaleString(undefined, {maximumFractionDigits: 0});
-            document.getElementById('pricePerSqft').textContent = '$' + pricePerSqft.toFixed(0);
-            document.getElementById('roi').textContent = roi.toFixed(1) + '%';
-            
-            // Generate projection chart
-            let chartHtml = '';
-            const maxValue = purchasePrice * Math.pow(1 + appreciation, 10);
-            for (let year = 0; year <= 10; year++) {
-                const projectedValue = purchasePrice * Math.pow(1 + appreciation, year);
-                const width = (projectedValue / maxValue * 100);
-                const yearLabel = yearPurchased + year;
-                const isCurrent = yearLabel === currentYear;
-                chartHtml += `<div class="chart-bar">
-                    <div class="chart-label">${yearLabel}</div>
-                    <div class="chart-fill" style="width: ${width}%; ${isCurrent ? 'background: linear-gradient(90deg, var(--accent), #d97706);' : ''}">
-                        $${(projectedValue/1000).toFixed(0)}k
-                    </div>
-                </div>`;
-            }
-            document.getElementById('chart').innerHTML = chartHtml;
+            document.getElementById('homeValue').textContent = '$' + Math.round(value).toLocaleString();
+            document.getElementById('pricePerSqft').textContent = '$' + Math.round(pricePerSqft).toLocaleString();
+            document.getElementById('lowEstimate').textContent = '$' + Math.round(lowEstimate).toLocaleString();
+            document.getElementById('highEstimate').textContent = '$' + Math.round(highEstimate).toLocaleString();
+            document.getElementById('improvementTotal').textContent = '$' + totalImprovements.toLocaleString();
         }
         
         calculate();

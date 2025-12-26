@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Affordability Calculator - How Much House Can I Afford?</title>
+    <title>Home Affordability Calculator - How Much House Can You Afford</title>
     <meta name="description" content="Free home affordability calculator. Find out how much house you can afford based on your income, debts, and down payment.">
-    <meta name="keywords" content="home affordability calculator, how much house can I afford, mortgage affordability, home buying calculator">
+    <meta name="keywords" content="home affordability calculator, how much house can I afford, mortgage affordability, home buying budget">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/home-affordability-calculator.html">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #f59e0b; --primary-dark: #d97706; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
         .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
-        .header { background: linear-gradient(135deg, var(--success) 0%, #059669 100%); padding: 40px 20px; text-align: center; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
         .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
         .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
         .content-area { display: flex; flex-direction: column; gap: 20px; }
@@ -30,23 +30,17 @@
         .result-hero-label { color: rgba(255,255,255,0.8); }
         .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
-        .result-value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
-        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.9rem; }
-        .breakdown { margin-top: 20px; padding: 20px; background: var(--bg-input); border-radius: 12px; }
-        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
-        .breakdown-row:last-child { border-bottom: none; }
-        .ratio-bar { margin-top: 20px; }
-        .ratio-label { display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .ratio-track { height: 20px; background: var(--bg-input); border-radius: 10px; overflow: hidden; }
-        .ratio-fill { height: 100%; border-radius: 10px; transition: width 0.3s; }
-        .ratio-fill.good { background: var(--success); }
-        .ratio-fill.warning { background: var(--accent); }
-        .ratio-fill.danger { background: #ef4444; }
+        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .range-display { display: flex; justify-content: space-between; margin-top: 30px; padding: 20px; background: var(--bg-input); border-radius: 12px; }
+        .range-item { text-align: center; }
+        .range-label { color: var(--text-secondary); font-size: 0.85rem; }
+        .range-value { font-size: 1.5rem; font-weight: 700; margin-top: 5px; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } .range-display { flex-direction: column; gap: 15px; } }
     </style>
 </head>
 <body>
@@ -69,41 +63,55 @@
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>💰 Your Financial Information</h2>
+                <h2>💰 Your Finances</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Annual Household Income ($)</label>
-                        <input type="number" id="income" value="85000" oninput="calculate()">
+                        <label>Annual Gross Income ($)</label>
+                        <input type="number" id="income" value="100000" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Monthly Debt Payments ($)</label>
-                        <input type="number" id="monthlyDebt" value="500" oninput="calculate()">
+                        <input type="number" id="debts" value="500" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Down Payment ($)</label>
-                        <input type="number" id="downPayment" value="50000" oninput="calculate()">
+                        <input type="number" id="downPayment" value="70000" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Interest Rate (%)</label>
-                        <input type="number" id="interestRate" value="7.0" step="0.125" oninput="calculate()">
+                        <input type="number" id="rate" value="6.5" step="0.125" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Loan Term</label>
-                        <select id="loanTerm" onchange="calculate()">
-                            <option value="15">15 Years</option>
-                            <option value="20">20 Years</option>
+                        <select id="term" onchange="calculate()">
                             <option value="30" selected>30 Years</option>
+                            <option value="15">15 Years</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Property Tax Rate (%)</label>
-                        <input type="number" id="taxRate" value="1.2" step="0.1" oninput="calculate()">
+                        <label>Max DTI Ratio (%)</label>
+                        <input type="number" id="dti" value="36" oninput="calculate()">
                     </div>
                 </div>
                 
                 <div class="result-hero">
-                    <div class="result-hero-label">You Can Afford a Home Up To</div>
-                    <div class="result-hero-value" id="maxHome">$0</div>
+                    <div class="result-hero-label">You Can Afford</div>
+                    <div class="result-hero-value" id="affordableHome">$0</div>
+                </div>
+                
+                <div class="range-display">
+                    <div class="range-item">
+                        <div class="range-label">Conservative</div>
+                        <div class="range-value" id="conservative" style="color: #10b981;">$0</div>
+                    </div>
+                    <div class="range-item">
+                        <div class="range-label">Moderate</div>
+                        <div class="range-value" id="moderate" style="color: #f59e0b;">$0</div>
+                    </div>
+                    <div class="range-item">
+                        <div class="range-label">Aggressive</div>
+                        <div class="range-value" id="aggressive" style="color: #ef4444;">$0</div>
+                    </div>
                 </div>
                 
                 <div class="results-grid">
@@ -113,53 +121,11 @@
                     </div>
                     <div class="result-card">
                         <div class="result-value" id="loanAmount">$0</div>
-                        <div class="result-label">Loan Amount</div>
+                        <div class="result-label">Max Loan Amount</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="dtiRatio">0%</div>
-                        <div class="result-label">Debt-to-Income</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>📊 Monthly Payment Breakdown</h2>
-                <div class="breakdown">
-                    <div class="breakdown-row">
-                        <span>Principal & Interest</span>
-                        <span id="pi">$0</span>
-                    </div>
-                    <div class="breakdown-row">
-                        <span>Property Tax</span>
-                        <span id="tax">$0</span>
-                    </div>
-                    <div class="breakdown-row">
-                        <span>Home Insurance (est.)</span>
-                        <span id="insurance">$0</span>
-                    </div>
-                    <div class="breakdown-row">
-                        <span>PMI (if < 20% down)</span>
-                        <span id="pmi">$0</span>
-                    </div>
-                    <div class="breakdown-row" style="font-weight: 700;">
-                        <span>Total PITI</span>
-                        <span id="piti" style="color: var(--secondary);">$0</span>
-                    </div>
-                </div>
-                
-                <div class="ratio-bar">
-                    <div class="ratio-label">
-                        <span>Debt-to-Income Ratio</span>
-                        <span id="dtiDisplay">0%</span>
-                    </div>
-                    <div class="ratio-track">
-                        <div class="ratio-fill good" id="dtiFill" style="width: 0%"></div>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-top: 5px; font-size: 0.8rem; color: var(--text-secondary);">
-                        <span>0%</span>
-                        <span>28% (Ideal)</span>
-                        <span>36% (Max)</span>
-                        <span>43%+</span>
+                        <div class="result-value" id="dtiUsed">0%</div>
+                        <div class="result-label">DTI Ratio</div>
                     </div>
                 </div>
             </div>
@@ -173,10 +139,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="mortgage-calculator.html" class="related-link">🏠 Mortgage Calculator</a>
+                    <a href="mortgage-calculator.html" class="related-link">🏦 Mortgage Calculator</a>
                     <a href="down-payment-calculator.html" class="related-link">💰 Down Payment</a>
                     <a href="closing-cost-calculator.html" class="related-link">📋 Closing Costs</a>
-                    <a href="rent-vs-buy-calculator.html" class="related-link">🏘️ Rent vs Buy</a>
+                    <a href="rent-vs-buy-calculator.html" class="related-link">🏠 Rent vs Buy</a>
                 </div>
             </div>
         </div>
@@ -191,79 +157,41 @@
     </div>
 
     <script>
-        function calculatePayment(principal, annualRate, months) {
-            const monthlyRate = annualRate / 100 / 12;
-            if (monthlyRate === 0) return principal / months;
-            return principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
-        }
-        
         function calculate() {
             const income = parseFloat(document.getElementById('income').value) || 0;
-            const monthlyIncome = income / 12;
-            const monthlyDebt = parseFloat(document.getElementById('monthlyDebt').value) || 0;
+            const debts = parseFloat(document.getElementById('debts').value) || 0;
             const downPayment = parseFloat(document.getElementById('downPayment').value) || 0;
-            const interestRate = parseFloat(document.getElementById('interestRate').value) || 0;
-            const loanTerm = parseInt(document.getElementById('loanTerm').value) || 30;
-            const taxRate = parseFloat(document.getElementById('taxRate').value) / 100 || 0.012;
+            const rate = parseFloat(document.getElementById('rate').value) / 100 / 12 || 0.005;
+            const term = parseInt(document.getElementById('term').value) * 12;
+            const dti = parseFloat(document.getElementById('dti').value) / 100 || 0.36;
             
-            // Target 28% front-end ratio (housing only)
-            const maxHousingPayment = monthlyIncome * 0.28;
+            const monthlyIncome = income / 12;
+            const maxTotalDebt = monthlyIncome * dti;
+            const maxHousingPayment = maxTotalDebt - debts;
             
-            // Back-calculate max home price
-            // PITI = P&I + Tax + Insurance + PMI
-            // We need to solve for home price where total payment = maxHousingPayment
+            const taxInsurance = 0.003;
+            const piti = maxHousingPayment / (1 + taxInsurance * 12);
             
-            let lowPrice = 0;
-            let highPrice = 2000000;
-            let maxHome = 0;
-            
-            for (let i = 0; i < 50; i++) {
-                const testPrice = (lowPrice + highPrice) / 2;
-                const loanAmount = testPrice - downPayment;
-                const ltv = loanAmount / testPrice;
-                
-                const pi = calculatePayment(loanAmount, interestRate, loanTerm * 12);
-                const monthlyTax = (testPrice * taxRate) / 12;
-                const monthlyInsurance = (testPrice * 0.0035) / 12;
-                const monthlyPMI = ltv > 0.80 ? (loanAmount * 0.01) / 12 : 0;
-                
-                const totalPayment = pi + monthlyTax + monthlyInsurance + monthlyPMI;
-                
-                if (totalPayment < maxHousingPayment) {
-                    lowPrice = testPrice;
-                } else {
-                    highPrice = testPrice;
-                }
-                maxHome = testPrice;
+            let loanAmount;
+            if (rate > 0) {
+                loanAmount = piti * (Math.pow(1 + rate, term) - 1) / (rate * Math.pow(1 + rate, term));
+            } else {
+                loanAmount = piti * term;
             }
             
-            // Calculate final numbers at max home price
-            const loanAmount = maxHome - downPayment;
-            const ltv = loanAmount / maxHome;
-            const pi = calculatePayment(loanAmount, interestRate, loanTerm * 12);
-            const monthlyTax = (maxHome * taxRate) / 12;
-            const monthlyInsurance = (maxHome * 0.0035) / 12;
-            const monthlyPMI = ltv > 0.80 ? (loanAmount * 0.01) / 12 : 0;
-            const piti = pi + monthlyTax + monthlyInsurance + monthlyPMI;
+            const homePrice = loanAmount + downPayment;
             
-            // DTI with all debts
-            const dti = ((piti + monthlyDebt) / monthlyIncome) * 100;
+            const conservative = homePrice * 0.85;
+            const moderate = homePrice;
+            const aggressive = homePrice * 1.15;
             
-            document.getElementById('maxHome').textContent = '$' + Math.round(maxHome).toLocaleString();
-            document.getElementById('monthlyPayment').textContent = '$' + Math.round(piti).toLocaleString();
+            document.getElementById('affordableHome').textContent = '$' + Math.round(homePrice).toLocaleString();
+            document.getElementById('conservative').textContent = '$' + Math.round(conservative).toLocaleString();
+            document.getElementById('moderate').textContent = '$' + Math.round(moderate).toLocaleString();
+            document.getElementById('aggressive').textContent = '$' + Math.round(aggressive).toLocaleString();
+            document.getElementById('monthlyPayment').textContent = '$' + Math.round(maxHousingPayment).toLocaleString();
             document.getElementById('loanAmount').textContent = '$' + Math.round(loanAmount).toLocaleString();
-            document.getElementById('dtiRatio').textContent = dti.toFixed(1) + '%';
-            
-            document.getElementById('pi').textContent = '$' + Math.round(pi).toLocaleString();
-            document.getElementById('tax').textContent = '$' + Math.round(monthlyTax).toLocaleString();
-            document.getElementById('insurance').textContent = '$' + Math.round(monthlyInsurance).toLocaleString();
-            document.getElementById('pmi').textContent = monthlyPMI > 0 ? '$' + Math.round(monthlyPMI).toLocaleString() : '$0';
-            document.getElementById('piti').textContent = '$' + Math.round(piti).toLocaleString();
-            
-            document.getElementById('dtiDisplay').textContent = dti.toFixed(1) + '%';
-            const dtiFill = document.getElementById('dtiFill');
-            dtiFill.style.width = Math.min(dti * 2.3, 100) + '%';
-            dtiFill.className = 'ratio-fill ' + (dti <= 28 ? 'good' : dti <= 36 ? 'warning' : 'danger');
+            document.getElementById('dtiUsed').textContent = (dti * 100) + '%';
         }
         
         calculate();
