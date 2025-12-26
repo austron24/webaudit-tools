@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Lease Calculator - Monthly Payment & Total Cost</title>
-    <meta name="description" content="Free car lease calculator. Calculate monthly lease payments, total cost, and compare leasing vs buying.">
-    <meta name="keywords" content="car lease calculator, auto lease payment, lease vs buy, vehicle leasing">
-    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/car-lease-calculator.html">
+    <title>Road Trip Calculator - Gas Cost & Trip Planner</title>
+    <meta name="description" content="Free road trip calculator. Calculate gas costs, travel time, and expenses for your next road trip.">
+    <meta name="keywords" content="road trip calculator, gas cost calculator, trip planner, fuel cost">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/road-trip-calculator.html">
     <style>
-        :root { --primary: #059669; --primary-dark: #047857; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #f59e0b; --primary-dark: #d97706; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -23,8 +23,8 @@
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
-        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
-        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        input { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus { outline: none; border-color: var(--primary); }
         .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
         .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
         .result-hero-label { color: rgba(255,255,255,0.8); }
@@ -54,79 +54,82 @@
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
 
     <header class="header">
-        <h1>🚗 Car Lease Calculator</h1>
+        <h1>🚗 Road Trip Calculator</h1>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>🚙 Lease Details</h2>
+                <h2>📍 Trip Details</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Vehicle MSRP ($)</label>
-                        <input type="number" id="msrp" value="35000" step="1000" oninput="calculate()">
+                        <label>Total Distance (miles)</label>
+                        <input type="number" id="distance" value="500" step="50" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Negotiated Price ($)</label>
-                        <input type="number" id="price" value="33000" step="500" oninput="calculate()">
+                        <label>Average Speed (mph)</label>
+                        <input type="number" id="speed" value="65" step="5" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Down Payment ($)</label>
-                        <input type="number" id="down" value="2000" step="500" oninput="calculate()">
+                        <label>Your MPG</label>
+                        <input type="number" id="mpg" value="28" step="1" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Trade-In Value ($)</label>
-                        <input type="number" id="trade" value="0" step="500" oninput="calculate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Lease Term (months)</label>
-                        <select id="term" onchange="calculate()">
-                            <option value="24">24 months</option>
-                            <option value="36" selected>36 months</option>
-                            <option value="48">48 months</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Residual Value (%)</label>
-                        <input type="number" id="residual" value="55" step="1" oninput="calculate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Money Factor</label>
-                        <input type="number" id="mf" value="0.00125" step="0.0001" oninput="calculate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Sales Tax (%)</label>
-                        <input type="number" id="tax" value="7" step="0.25" oninput="calculate()">
-                    </div>
-                </div>
-
-                <div class="result-hero">
-                    <div class="result-hero-label">Monthly Lease Payment</div>
-                    <div class="result-hero-value" id="monthly">$0</div>
-                </div>
-
-                <div class="results-grid">
-                    <div class="result-card">
-                        <div class="result-value" id="totalLease">$0</div>
-                        <div class="result-label">Total Lease Cost</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="residualVal">$0</div>
-                        <div class="result-label">Residual Value</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="apr">0%</div>
-                        <div class="result-label">Equivalent APR</div>
+                        <label>Gas Price ($/gallon)</label>
+                        <input type="number" id="gasPrice" value="3.50" step="0.10" oninput="calculate()">
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>📊 Payment Breakdown</h2>
-                <div class="breakdown-row"><span>Depreciation</span><span id="depreciation">$0/mo</span></div>
-                <div class="breakdown-row"><span>Finance Charge</span><span id="financeCharge">$0/mo</span></div>
-                <div class="breakdown-row"><span>Tax</span><span id="taxAmount">$0/mo</span></div>
-                <div class="breakdown-row"><span>Due at Signing</span><span id="dueAtSign">$0</span></div>
+                <h2>💰 Additional Expenses</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Hotel/Night ($)</label>
+                        <input type="number" id="hotel" value="100" step="10" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Number of Nights</label>
+                        <input type="number" id="nights" value="2" min="0" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Food/Day ($)</label>
+                        <input type="number" id="food" value="50" step="5" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Other Expenses ($)</label>
+                        <input type="number" id="other" value="100" step="10" oninput="calculate()">
+                    </div>
+                </div>
+
+                <div class="result-hero">
+                    <div class="result-hero-label">Total Trip Cost</div>
+                    <div class="result-hero-value" id="totalCost">$0</div>
+                </div>
+
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-value" id="gasCost">$0</div>
+                        <div class="result-label">Gas Cost</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="driveTime">0h</div>
+                        <div class="result-label">Drive Time</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="gallons">0</div>
+                        <div class="result-label">Gallons Needed</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📊 Cost Breakdown</h2>
+                <div class="breakdown-row"><span>Fuel</span><span id="fuelBreak">$0</span></div>
+                <div class="breakdown-row"><span>Lodging</span><span id="lodgingBreak">$0</span></div>
+                <div class="breakdown-row"><span>Food</span><span id="foodBreak">$0</span></div>
+                <div class="breakdown-row"><span>Other</span><span id="otherBreak">$0</span></div>
+                <div class="breakdown-row"><span>Cost Per Mile</span><span id="perMile">$0</span></div>
             </div>
 
             <div class="ad-container">
@@ -138,10 +141,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="auto-loan-calculator.html" class="related-link">💵 Auto Loan</a>
                     <a href="gas-mileage-calculator.html" class="related-link">⛽ Gas Mileage</a>
-                    <a href="car-depreciation-calculator.html" class="related-link">📉 Depreciation</a>
+                    <a href="ev-savings-calculator.html" class="related-link">⚡ EV Savings</a>
                     <a href="budget-calculator.html" class="related-link">📊 Budget</a>
+                    <a href="time-calculator.html" class="related-link">⏰ Time Calculator</a>
                 </div>
             </div>
         </div>
@@ -157,34 +160,38 @@
 
     <script>
         function calculate() {
-            const msrp = parseFloat(document.getElementById('msrp').value) || 0;
-            const price = parseFloat(document.getElementById('price').value) || 0;
-            const down = parseFloat(document.getElementById('down').value) || 0;
-            const trade = parseFloat(document.getElementById('trade').value) || 0;
-            const term = parseInt(document.getElementById('term').value);
-            const residualPct = parseFloat(document.getElementById('residual').value) / 100;
-            const mf = parseFloat(document.getElementById('mf').value) || 0;
-            const taxRate = parseFloat(document.getElementById('tax').value) / 100;
+            const distance = parseFloat(document.getElementById('distance').value) || 0;
+            const speed = parseFloat(document.getElementById('speed').value) || 1;
+            const mpg = parseFloat(document.getElementById('mpg').value) || 1;
+            const gasPrice = parseFloat(document.getElementById('gasPrice').value) || 0;
+            const hotel = parseFloat(document.getElementById('hotel').value) || 0;
+            const nights = parseInt(document.getElementById('nights').value) || 0;
+            const food = parseFloat(document.getElementById('food').value) || 0;
+            const other = parseFloat(document.getElementById('other').value) || 0;
 
-            const residualVal = msrp * residualPct;
-            const capCost = price - down - trade;
-            const depreciation = (capCost - residualVal) / term;
-            const financeCharge = (capCost + residualVal) * mf;
-            const preTax = depreciation + financeCharge;
-            const taxAmount = preTax * taxRate;
-            const monthly = preTax + taxAmount;
-            const totalLease = (monthly * term) + down;
-            const apr = mf * 2400;
+            const gallons = distance / mpg;
+            const gasCost = gallons * gasPrice;
+            const driveHours = distance / speed;
+            const days = Math.ceil(driveHours / 8) + 1;
+            
+            const lodging = hotel * nights;
+            const foodCost = food * days;
+            const totalCost = gasCost + lodging + foodCost + other;
+            const perMile = distance > 0 ? totalCost / distance : 0;
 
-            document.getElementById('monthly').textContent = '$' + Math.round(monthly).toLocaleString();
-            document.getElementById('totalLease').textContent = '$' + Math.round(totalLease).toLocaleString();
-            document.getElementById('residualVal').textContent = '$' + Math.round(residualVal).toLocaleString();
-            document.getElementById('apr').textContent = apr.toFixed(1) + '%';
+            const hours = Math.floor(driveHours);
+            const mins = Math.round((driveHours - hours) * 60);
 
-            document.getElementById('depreciation').textContent = '$' + Math.round(depreciation).toLocaleString() + '/mo';
-            document.getElementById('financeCharge').textContent = '$' + Math.round(financeCharge).toLocaleString() + '/mo';
-            document.getElementById('taxAmount').textContent = '$' + Math.round(taxAmount).toLocaleString() + '/mo';
-            document.getElementById('dueAtSign').textContent = '$' + Math.round(down + monthly).toLocaleString();
+            document.getElementById('totalCost').textContent = '$' + Math.round(totalCost).toLocaleString();
+            document.getElementById('gasCost').textContent = '$' + Math.round(gasCost).toLocaleString();
+            document.getElementById('driveTime').textContent = hours + 'h ' + mins + 'm';
+            document.getElementById('gallons').textContent = Math.round(gallons) + ' gal';
+
+            document.getElementById('fuelBreak').textContent = '$' + Math.round(gasCost).toLocaleString();
+            document.getElementById('lodgingBreak').textContent = '$' + Math.round(lodging).toLocaleString();
+            document.getElementById('foodBreak').textContent = '$' + Math.round(foodCost).toLocaleString();
+            document.getElementById('otherBreak').textContent = '$' + Math.round(other).toLocaleString();
+            document.getElementById('perMile').textContent = '$' + perMile.toFixed(2);
         }
         calculate();
     </script>

@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Depreciation Calculator - Vehicle Value Over Time</title>
-    <meta name="description" content="Free car depreciation calculator. Calculate how much your vehicle will be worth over time and track value loss.">
-    <meta name="keywords" content="car depreciation calculator, vehicle value, car worth, auto depreciation">
-    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/car-depreciation-calculator.html">
+    <title>EV Savings Calculator - Electric vs Gas Cost Comparison</title>
+    <meta name="description" content="Free EV savings calculator. Compare electric vehicle costs to gas cars and see your potential savings over time.">
+    <meta name="keywords" content="EV savings calculator, electric car savings, EV vs gas, electric vehicle cost">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/ev-savings-calculator.html">
     <style>
-        :root { --primary: #dc2626; --primary-dark: #b91c1c; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #059669; --primary-dark: #047857; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -23,8 +23,8 @@
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
-        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
-        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        input { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus { outline: none; border-color: var(--primary); }
         .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
         .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
         .result-hero-label { color: rgba(255,255,255,0.8); }
@@ -54,62 +54,79 @@
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
 
     <header class="header">
-        <h1>📉 Car Depreciation Calculator</h1>
+        <h1>⚡ EV Savings Calculator</h1>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>🚗 Vehicle Information</h2>
+                <h2>🚗 Your Driving Details</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Purchase Price ($)</label>
-                        <input type="number" id="price" value="35000" step="1000" oninput="calculate()">
+                        <label>Annual Miles Driven</label>
+                        <input type="number" id="miles" value="12000" step="1000" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Vehicle Age (years)</label>
-                        <input type="number" id="age" value="3" min="0" max="20" oninput="calculate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Annual Mileage</label>
-                        <input type="number" id="mileage" value="12000" step="1000" oninput="calculate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Vehicle Type</label>
-                        <select id="type" onchange="calculate()">
-                            <option value="economy">Economy Car</option>
-                            <option value="sedan" selected>Sedan/SUV</option>
-                            <option value="luxury">Luxury</option>
-                            <option value="truck">Truck</option>
-                            <option value="electric">Electric</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="result-hero">
-                    <div class="result-hero-label">Current Value</div>
-                    <div class="result-hero-value" id="currentValue">$0</div>
-                </div>
-
-                <div class="results-grid">
-                    <div class="result-card">
-                        <div class="result-value" id="valueLost">$0</div>
-                        <div class="result-label">Value Lost</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="percentLost">0%</div>
-                        <div class="result-label">% Depreciated</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="annualLoss">$0</div>
-                        <div class="result-label">Annual Loss</div>
+                        <label>Years of Ownership</label>
+                        <input type="number" id="years" value="5" min="1" max="10" oninput="calculate()">
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>📊 Value Over Time</h2>
-                <div id="timeline"></div>
+                <h2>⛽ Gas Vehicle</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Gas Price ($/gallon)</label>
+                        <input type="number" id="gasPrice" value="3.50" step="0.10" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>MPG (Miles Per Gallon)</label>
+                        <input type="number" id="mpg" value="28" step="1" oninput="calculate()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>⚡ Electric Vehicle</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Electricity Rate ($/kWh)</label>
+                        <input type="number" id="elecRate" value="0.13" step="0.01" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>EV Efficiency (mi/kWh)</label>
+                        <input type="number" id="efficiency" value="3.5" step="0.1" oninput="calculate()">
+                    </div>
+                </div>
+
+                <div class="result-hero">
+                    <div class="result-hero-label">Fuel Savings Over Time</div>
+                    <div class="result-hero-value" id="totalSavings">$0</div>
+                </div>
+
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-value" id="annualSavings">$0</div>
+                        <div class="result-label">Annual Savings</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="monthlySavings">$0</div>
+                        <div class="result-label">Monthly Savings</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="co2Saved">0 lbs</div>
+                        <div class="result-label">CO2 Avoided</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📊 Cost Comparison</h2>
+                <div class="breakdown-row"><span>Annual Gas Cost</span><span id="gasCost">$0</span></div>
+                <div class="breakdown-row"><span>Annual EV Cost</span><span id="evCost">$0</span></div>
+                <div class="breakdown-row"><span>Total Gas Cost (5 years)</span><span id="totalGas">$0</span></div>
+                <div class="breakdown-row"><span>Total EV Cost (5 years)</span><span id="totalEv">$0</span></div>
             </div>
 
             <div class="ad-container">
@@ -121,10 +138,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
+                    <a href="gas-mileage-calculator.html" class="related-link">⛽ Gas Mileage</a>
                     <a href="auto-loan-calculator.html" class="related-link">💵 Auto Loan</a>
                     <a href="car-lease-calculator.html" class="related-link">🚗 Car Lease</a>
-                    <a href="gas-mileage-calculator.html" class="related-link">⛽ Gas Mileage</a>
-                    <a href="insurance-calculator.html" class="related-link">🛡️ Insurance</a>
+                    <a href="solar-calculator.html" class="related-link">☀️ Solar Savings</a>
                 </div>
             </div>
         </div>
@@ -139,45 +156,36 @@
     </div>
 
     <script>
-        const depRates = {
-            economy: [0.10, 0.15, 0.12, 0.10, 0.08, 0.07, 0.06, 0.05, 0.04, 0.04],
-            sedan: [0.15, 0.15, 0.12, 0.10, 0.08, 0.07, 0.06, 0.05, 0.04, 0.04],
-            luxury: [0.20, 0.18, 0.15, 0.12, 0.10, 0.08, 0.07, 0.06, 0.05, 0.05],
-            truck: [0.12, 0.12, 0.10, 0.08, 0.07, 0.06, 0.05, 0.05, 0.04, 0.04],
-            electric: [0.15, 0.15, 0.12, 0.10, 0.08, 0.07, 0.06, 0.05, 0.04, 0.04]
-        };
-
         function calculate() {
-            const price = parseFloat(document.getElementById('price').value) || 0;
-            const age = parseInt(document.getElementById('age').value) || 0;
-            const type = document.getElementById('type').value;
-            const rates = depRates[type];
+            const miles = parseFloat(document.getElementById('miles').value) || 0;
+            const years = parseInt(document.getElementById('years').value) || 1;
+            const gasPrice = parseFloat(document.getElementById('gasPrice').value) || 0;
+            const mpg = parseFloat(document.getElementById('mpg').value) || 1;
+            const elecRate = parseFloat(document.getElementById('elecRate').value) || 0;
+            const efficiency = parseFloat(document.getElementById('efficiency').value) || 1;
 
-            let values = [price];
-            let value = price;
-            for (let y = 0; y < 10; y++) {
-                value *= (1 - rates[y]);
-                values.push(value);
-            }
+            const gallonsPerYear = miles / mpg;
+            const gasCostAnnual = gallonsPerYear * gasPrice;
+            
+            const kwhPerYear = miles / efficiency;
+            const evCostAnnual = kwhPerYear * elecRate;
+            
+            const annualSavings = gasCostAnnual - evCostAnnual;
+            const totalSavings = annualSavings * years;
+            const monthlySavings = annualSavings / 12;
+            
+            // CO2: ~19.6 lbs per gallon of gas
+            const co2Saved = gallonsPerYear * 19.6 * years;
 
-            const currentValue = values[Math.min(age, 10)];
-            const valueLost = price - currentValue;
-            const percentLost = price > 0 ? (valueLost / price * 100) : 0;
-            const annualLoss = age > 0 ? valueLost / age : 0;
+            document.getElementById('totalSavings').textContent = '$' + Math.round(totalSavings).toLocaleString();
+            document.getElementById('annualSavings').textContent = '$' + Math.round(annualSavings).toLocaleString();
+            document.getElementById('monthlySavings').textContent = '$' + Math.round(monthlySavings).toLocaleString();
+            document.getElementById('co2Saved').textContent = Math.round(co2Saved).toLocaleString() + ' lbs';
 
-            document.getElementById('currentValue').textContent = '$' + Math.round(currentValue).toLocaleString();
-            document.getElementById('valueLost').textContent = '$' + Math.round(valueLost).toLocaleString();
-            document.getElementById('percentLost').textContent = Math.round(percentLost) + '%';
-            document.getElementById('annualLoss').textContent = '$' + Math.round(annualLoss).toLocaleString();
-
-            let html = '';
-            for (let y = 0; y <= 5; y++) {
-                const val = values[y];
-                const pct = price > 0 ? (val / price * 100) : 0;
-                const highlight = y === age ? 'border: 2px solid var(--primary);' : '';
-                html += '<div class="breakdown-row" style="' + highlight + '"><span>Year ' + y + '</span><span>$' + Math.round(val).toLocaleString() + ' (' + Math.round(pct) + '%)</span></div>';
-            }
-            document.getElementById('timeline').innerHTML = html;
+            document.getElementById('gasCost').textContent = '$' + Math.round(gasCostAnnual).toLocaleString();
+            document.getElementById('evCost').textContent = '$' + Math.round(evCostAnnual).toLocaleString();
+            document.getElementById('totalGas').textContent = '$' + Math.round(gasCostAnnual * years).toLocaleString();
+            document.getElementById('totalEv').textContent = '$' + Math.round(evCostAnnual * years).toLocaleString();
         }
         calculate();
     </script>
