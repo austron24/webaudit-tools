@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROI Calculator - Calculate Return on Investment</title>
-    <meta name="description" content="Free ROI calculator. Calculate return on investment percentage and profit. Compare investments and analyze performance.">
-    <meta name="keywords" content="ROI calculator, return on investment, investment calculator, profit calculator, investment returns">
-    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/roi-calculator.html">
-    <meta property="og:title" content="ROI Calculator">
-    <meta property="og:description" content="Calculate your return on investment instantly. Analyze investment performance and compare opportunities.">
+    <title>Savings Goal Calculator - Plan Your Financial Goals</title>
+    <meta name="description" content="Free savings goal calculator. Plan how to reach your savings target. Calculate monthly deposits needed and track your progress.">
+    <meta name="keywords" content="savings goal calculator, savings calculator, financial goal, monthly savings, savings plan">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/savings-goal-calculator.html">
+    <meta property="og:title" content="Savings Goal Calculator">
+    <meta property="og:description" content="Plan your savings journey. Calculate how much to save monthly to reach your financial goals.">
     <meta property="og:type" content="website">
     <style>
         :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --error: #ef4444; }
@@ -34,26 +34,29 @@
         .btn-primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
         .results { display: none; margin-top: 20px; }
-        .roi-display { text-align: center; padding: 30px; background: var(--bg-input); border-radius: 16px; margin-bottom: 20px; }
-        .roi-value { font-size: 4rem; font-weight: 800; }
-        .roi-value.positive { color: var(--success); }
-        .roi-value.negative { color: var(--error); }
-        .roi-label { color: var(--text-secondary); font-size: 1.2rem; margin-top: 10px; }
+        .goal-progress { background: var(--bg-input); border-radius: 16px; padding: 25px; margin-bottom: 20px; }
+        .progress-header { display: flex; justify-content: space-between; margin-bottom: 15px; }
+        .progress-label { color: var(--text-secondary); }
+        .progress-value { color: var(--success); font-weight: 700; font-size: 1.2rem; }
+        .progress-bar { height: 20px; background: var(--bg-dark); border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 10px; transition: width 0.5s ease; }
         .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         .metric-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
         .metric-value { font-size: 1.5rem; font-weight: 700; color: var(--text-primary); }
-        .metric-value.profit { color: var(--success); }
-        .metric-value.loss { color: var(--error); }
+        .metric-value.highlight { color: var(--secondary); }
         .metric-label { color: var(--text-secondary); font-size: 0.9rem; margin-top: 5px; }
-        .comparison-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .comparison-table th, .comparison-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
-        .comparison-table th { color: var(--secondary); font-weight: 600; }
-        .comparison-table tr:hover { background: var(--bg-input); }
+        .timeline { margin-top: 20px; padding: 20px; background: var(--bg-input); border-radius: 12px; }
+        .timeline-item { display: flex; align-items: center; gap: 15px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .timeline-item:last-child { border-bottom: none; }
+        .timeline-month { color: var(--text-secondary); min-width: 80px; }
+        .timeline-bar { flex: 1; height: 8px; background: var(--bg-dark); border-radius: 4px; overflow: hidden; }
+        .timeline-fill { height: 100%; background: var(--success); border-radius: 4px; }
+        .timeline-amount { color: var(--text-primary); font-weight: 600; min-width: 100px; text-align: right; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; transition: all 0.3s ease; }
         .related-link:hover { background: var(--primary); transform: translateX(5px); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .header h1 { font-size: 1.8rem; } .metrics-grid { grid-template-columns: 1fr; } .roi-value { font-size: 3rem; } }
+        @media (max-width: 640px) { .header h1 { font-size: 1.8rem; } .metrics-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -70,59 +73,76 @@
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
     
     <header class="header">
-        <h1>💹 ROI Calculator</h1>
-        <p>Calculate your return on investment. Analyze performance and compare investment opportunities.</p>
+        <h1>🎯 Savings Goal Calculator</h1>
+        <p>Plan your path to financial success. Calculate how much to save monthly to reach your goals.</p>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>📈 Calculate ROI</h2>
+                <h2>💰 Set Your Savings Goal</h2>
                 <div class="form-group">
-                    <label>Initial Investment</label>
+                    <label>Savings Goal Amount</label>
                     <div class="input-with-icon">
                         <span>$</span>
-                        <input type="number" id="investment" placeholder="10000" step="0.01">
+                        <input type="number" id="goalAmount" placeholder="10000" step="100">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Final Value (or Current Value)</label>
+                    <label>Current Savings</label>
                     <div class="input-with-icon">
                         <span>$</span>
-                        <input type="number" id="finalValue" placeholder="12500" step="0.01">
+                        <input type="number" id="currentSavings" placeholder="1000" step="100" value="0">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Investment Period (optional, for annualized ROI)</label>
+                    <label>Time to Reach Goal (months)</label>
                     <div class="input-with-icon">
                         <span>📅</span>
-                        <input type="number" id="years" placeholder="Years (e.g., 2)" step="0.1">
+                        <input type="number" id="months" placeholder="24" min="1" max="360">
                     </div>
                 </div>
-                <button class="btn btn-primary" onclick="calculate()">Calculate ROI</button>
+                <div class="form-group">
+                    <label>Expected Annual Interest Rate (optional)</label>
+                    <div class="input-with-icon">
+                        <span>%</span>
+                        <input type="number" id="interestRate" placeholder="4" step="0.1" value="0">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="calculate()">Calculate Plan</button>
                 
                 <div class="results" id="results">
-                    <div class="roi-display">
-                        <div class="roi-value" id="roiValue">0%</div>
-                        <div class="roi-label">Return on Investment</div>
+                    <div class="goal-progress">
+                        <div class="progress-header">
+                            <span class="progress-label">Current Progress</span>
+                            <span class="progress-value" id="progressPct">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                        </div>
                     </div>
+                    
                     <div class="metrics-grid">
                         <div class="metric-card">
-                            <div class="metric-value" id="profit">$0</div>
-                            <div class="metric-label">Total Profit/Loss</div>
+                            <div class="metric-value highlight" id="monthlyDeposit">$0</div>
+                            <div class="metric-label">Monthly Deposit Needed</div>
                         </div>
                         <div class="metric-card">
-                            <div class="metric-value" id="annualized">0%</div>
-                            <div class="metric-label">Annualized ROI</div>
+                            <div class="metric-value" id="weeklyDeposit">$0</div>
+                            <div class="metric-label">Weekly Deposit</div>
                         </div>
                         <div class="metric-card">
-                            <div class="metric-value" id="multiplier">1.0x</div>
-                            <div class="metric-label">Investment Multiplier</div>
+                            <div class="metric-value" id="amountNeeded">$0</div>
+                            <div class="metric-label">Amount Needed</div>
                         </div>
                         <div class="metric-card">
-                            <div class="metric-value" id="doubled">-</div>
-                            <div class="metric-label">Years to Double</div>
+                            <div class="metric-value" id="interestEarned">$0</div>
+                            <div class="metric-label">Interest Earned</div>
                         </div>
+                    </div>
+                    
+                    <div class="timeline" id="timeline">
+                        <h3 style="color: var(--secondary); margin-bottom: 15px;">📈 Savings Timeline</h3>
                     </div>
                 </div>
             </div>
@@ -134,37 +154,14 @@
             </div>
 
             <div class="card">
-                <h2>📊 ROI Comparison</h2>
-                <p style="color: var(--text-secondary); margin-bottom: 15px;">Compare common investment benchmarks</p>
-                <table class="comparison-table">
-                    <thead>
-                        <tr>
-                            <th>Investment Type</th>
-                            <th>Typical Annual Return</th>
-                            <th>Risk Level</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>High-Yield Savings</td><td>4-5%</td><td style="color: var(--success);">Very Low</td></tr>
-                        <tr><td>Treasury Bonds</td><td>4-5%</td><td style="color: var(--success);">Low</td></tr>
-                        <tr><td>Corporate Bonds</td><td>5-7%</td><td style="color: var(--accent);">Low-Medium</td></tr>
-                        <tr><td>S&P 500 Index</td><td>10-12%</td><td style="color: var(--accent);">Medium</td></tr>
-                        <tr><td>Real Estate</td><td>8-12%</td><td style="color: var(--accent);">Medium</td></tr>
-                        <tr><td>Growth Stocks</td><td>15-20%</td><td style="color: var(--error);">High</td></tr>
-                        <tr><td>Crypto</td><td>Variable</td><td style="color: var(--error);">Very High</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
                     <a href="compound-interest-calculator.html" class="related-link">📈 Compound Interest</a>
-                    <a href="investment-calculator.html" class="related-link">💰 Investment Calculator</a>
-                    <a href="savings-goal-calculator.html" class="related-link">🎯 Savings Goal</a>
-                    <a href="401k-calculator.html" class="related-link">🏦 401k Calculator</a>
+                    <a href="roi-calculator.html" class="related-link">💹 ROI Calculator</a>
                     <a href="retirement-calculator.html" class="related-link">🌴 Retirement Calculator</a>
-                    <a href="inflation-calculator.html" class="related-link">📉 Inflation Calculator</a>
+                    <a href="emergency-fund-calculator.html" class="related-link">🆘 Emergency Fund</a>
+                    <a href="budget-calculator.html" class="related-link">📋 Budget Calculator</a>
+                    <a href="investment-calculator.html" class="related-link">💰 Investment Calculator</a>
                 </div>
             </div>
 
@@ -191,44 +188,67 @@
 
     <script>
         function calculate() {
-            const investment = parseFloat(document.getElementById('investment').value) || 0;
-            const finalValue = parseFloat(document.getElementById('finalValue').value) || 0;
-            const years = parseFloat(document.getElementById('years').value) || 0;
+            const goal = parseFloat(document.getElementById('goalAmount').value) || 0;
+            const current = parseFloat(document.getElementById('currentSavings').value) || 0;
+            const months = parseInt(document.getElementById('months').value) || 0;
+            const annualRate = parseFloat(document.getElementById('interestRate').value) || 0;
 
-            if (investment <= 0) return;
+            if (goal <= 0 || months <= 0) return;
 
-            const profit = finalValue - investment;
-            const roi = (profit / investment) * 100;
-            const multiplier = finalValue / investment;
+            const amountNeeded = goal - current;
+            const monthlyRate = annualRate / 100 / 12;
             
-            // Annualized ROI
-            let annualized = 0;
-            if (years > 0) {
-                annualized = (Math.pow(multiplier, 1/years) - 1) * 100;
+            let monthlyDeposit;
+            let interestEarned = 0;
+            
+            if (monthlyRate > 0) {
+                // PMT formula with interest
+                monthlyDeposit = (amountNeeded * monthlyRate) / (Math.pow(1 + monthlyRate, months) - 1);
+                const totalDeposits = monthlyDeposit * months;
+                interestEarned = amountNeeded - totalDeposits;
+                if (interestEarned < 0) interestEarned = 0;
+            } else {
+                monthlyDeposit = amountNeeded / months;
             }
-
-            // Years to double (Rule of 72)
-            let yearsToDouble = '-';
-            if (annualized > 0) {
-                yearsToDouble = (72 / annualized).toFixed(1) + ' years';
-            } else if (roi > 0 && years > 0) {
-                const impliedRate = roi / years;
-                yearsToDouble = (72 / impliedRate).toFixed(1) + ' years';
-            }
+            
+            const weeklyDeposit = monthlyDeposit / 4.33;
+            const progressPct = Math.min((current / goal) * 100, 100);
 
             document.getElementById('results').style.display = 'block';
+            document.getElementById('progressPct').textContent = progressPct.toFixed(1) + '%';
+            document.getElementById('progressFill').style.width = progressPct + '%';
+            document.getElementById('monthlyDeposit').textContent = '$' + monthlyDeposit.toFixed(2);
+            document.getElementById('weeklyDeposit').textContent = '$' + weeklyDeposit.toFixed(2);
+            document.getElementById('amountNeeded').textContent = '$' + amountNeeded.toLocaleString();
+            document.getElementById('interestEarned').textContent = '$' + interestEarned.toFixed(2);
+
+            // Timeline
+            const timeline = document.getElementById('timeline');
+            let timelineHTML = '<h3 style="color: var(--secondary); margin-bottom: 15px;">📈 Savings Timeline</h3>';
             
-            const roiElement = document.getElementById('roiValue');
-            roiElement.textContent = (roi >= 0 ? '+' : '') + roi.toFixed(2) + '%';
-            roiElement.className = 'roi-value ' + (roi >= 0 ? 'positive' : 'negative');
+            const milestones = [3, 6, 12, 18, 24, 36, 48, 60].filter(m => m <= months);
+            if (!milestones.includes(months)) milestones.push(months);
             
-            const profitElement = document.getElementById('profit');
-            profitElement.textContent = (profit >= 0 ? '+$' : '-$') + Math.abs(profit).toLocaleString(undefined, {maximumFractionDigits: 2});
-            profitElement.className = 'metric-value ' + (profit >= 0 ? 'profit' : 'loss');
+            milestones.forEach(m => {
+                let saved;
+                if (monthlyRate > 0) {
+                    saved = current + monthlyDeposit * ((Math.pow(1 + monthlyRate, m) - 1) / monthlyRate);
+                } else {
+                    saved = current + (monthlyDeposit * m);
+                }
+                saved = Math.min(saved, goal);
+                const pct = (saved / goal) * 100;
+                
+                timelineHTML += `
+                    <div class="timeline-item">
+                        <span class="timeline-month">Month ${m}</span>
+                        <div class="timeline-bar"><div class="timeline-fill" style="width: ${pct}%"></div></div>
+                        <span class="timeline-amount">$${saved.toLocaleString(undefined, {maximumFractionDigits: 0})}</span>
+                    </div>
+                `;
+            });
             
-            document.getElementById('annualized').textContent = years > 0 ? (annualized >= 0 ? '+' : '') + annualized.toFixed(2) + '%' : 'Enter years';
-            document.getElementById('multiplier').textContent = multiplier.toFixed(2) + 'x';
-            document.getElementById('doubled').textContent = yearsToDouble;
+            timeline.innerHTML = timelineHTML;
         }
 
         document.querySelectorAll('input').forEach(input => {
