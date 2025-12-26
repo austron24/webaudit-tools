@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free RV Loan Calculator - Motorhome & Camper Financing</title>
-    <meta name="description" content="Calculate RV loan payments for motorhomes, travel trailers, and campers. Compare financing terms. Free RV loan calculator.">
+    <title>Free RV Loan Calculator - Motorhome Financing Estimator</title>
+    <meta name="description" content="Calculate RV loan payments. Estimate monthly costs for motorhomes, travel trailers, and campers. Free RV financing calculator.">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #059669 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #7c2d12 100%);
             min-height: 100vh;
             color: #f8fafc;
         }
@@ -41,7 +41,7 @@
         }
         .input-group input:focus, .input-group select:focus {
             outline: none;
-            border-color: #059669;
+            border-color: #7c2d12;
         }
         .input-row {
             display: grid;
@@ -56,23 +56,24 @@
             font-size: 18px;
             font-weight: 600;
             cursor: pointer;
-            background: #059669;
+            background: #7c2d12;
             color: white;
             transition: all 0.2s;
             margin-top: 10px;
         }
-        .btn:hover { background: #047857; }
+        .btn:hover { background: #9a3412; }
         .results { margin-top: 30px; display: none; }
         .result-box-main {
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            background: linear-gradient(135deg, #7c2d12 0%, #9a3412 100%);
             color: white;
             padding: 40px;
             border-radius: 20px;
             text-align: center;
             margin-bottom: 25px;
         }
-        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-value-main { font-size: 48px; font-weight: bold; }
         .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .result-range { font-size: 16px; opacity: 0.8; margin-top: 10px; }
         .summary-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -80,20 +81,19 @@
             margin-bottom: 20px;
         }
         .summary-box {
-            background: #d1fae5;
+            background: #ffedd5;
             padding: 20px;
             border-radius: 12px;
             text-align: center;
         }
-        .summary-value { font-size: 24px; font-weight: bold; color: #059669; }
+        .summary-value { font-size: 24px; font-weight: bold; color: #7c2d12; }
         .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
         .breakdown {
             background: #f8fafc;
             border-radius: 12px;
             padding: 20px;
-            margin-bottom: 20px;
         }
-        .breakdown h4 { color: #059669; margin-bottom: 15px; }
+        .breakdown h4 { color: #7c2d12; margin-bottom: 15px; }
         .breakdown-row {
             display: flex;
             justify-content: space-between;
@@ -103,14 +103,6 @@
         .breakdown-row:last-child { border: none; }
         .breakdown-label { color: #64748b; }
         .breakdown-value { font-weight: 600; color: #1e293b; }
-        .tips {
-            background: #d1fae5;
-            border-radius: 12px;
-            padding: 20px;
-        }
-        .tips h4 { color: #047857; margin-bottom: 15px; }
-        .tip { font-size: 14px; padding: 8px 0; border-bottom: 1px solid #6ee7b7; }
-        .tip:last-child { border: none; }
         .ad-container { text-align: center; margin: 25px 0; }
         .tools-promo {
             background: white;
@@ -119,78 +111,83 @@
             color: #1e293b;
             margin-top: 25px;
         }
-        .tools-promo h4 { color: #059669; margin-bottom: 10px; }
+        .tools-promo h4 { color: #7c2d12; margin-bottom: 10px; }
         .tools-promo a {
             display: inline-block;
             margin: 5px 10px 5px 0;
-            color: #047857;
+            color: #9a3412;
             text-decoration: none;
         }
         .tools-promo a:hover { text-decoration: underline; }
         footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
-        footer a { color: #6ee7b7; }
+        footer a { color: #fdba74; }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>🚐 RV Loan Calculator</h1>
-            <p class="subtitle">Calculate motorhome & camper payments</p>
+            <p class="subtitle">Estimate your RV financing costs</p>
         </header>
 
         <div class="calc-card">
-            <div class="input-group">
-                <label>RV Type</label>
-                <select id="rvType">
-                    <option value="classA">Class A Motorhome</option>
-                    <option value="classB">Class B (Camper Van)</option>
-                    <option value="classC" selected>Class C Motorhome</option>
-                    <option value="travel">Travel Trailer</option>
-                    <option value="fifth">Fifth Wheel</option>
-                    <option value="popup">Pop-up Camper</option>
-                </select>
-            </div>
-
-            <div class="input-group">
-                <label>RV Price ($)</label>
-                <input type="number" id="rvPrice" value="75000" min="5000" step="1000">
-            </div>
-
             <div class="input-row">
+                <div class="input-group">
+                    <label>RV Price ($)</label>
+                    <input type="number" id="rvPrice" value="75000" min="5000" max="1000000" step="1000">
+                </div>
                 <div class="input-group">
                     <label>Down Payment ($)</label>
-                    <input type="number" id="downPayment" value="15000" min="0" step="500">
-                </div>
-                <div class="input-group">
-                    <label>Trade-In Value ($)</label>
-                    <input type="number" id="tradeIn" value="0" min="0" step="500">
+                    <input type="number" id="downPayment" value="15000" min="0" max="500000" step="1000">
                 </div>
             </div>
 
             <div class="input-row">
                 <div class="input-group">
-                    <label>Interest Rate (%)</label>
-                    <input type="number" id="rate" value="6.99" min="1" max="25" step="0.25">
+                    <label>Loan Term</label>
+                    <select id="term">
+                        <option value="60">5 Years (60 mo)</option>
+                        <option value="84">7 Years (84 mo)</option>
+                        <option value="120" selected>10 Years (120 mo)</option>
+                        <option value="144">12 Years (144 mo)</option>
+                        <option value="180">15 Years (180 mo)</option>
+                        <option value="240">20 Years (240 mo)</option>
+                    </select>
                 </div>
                 <div class="input-group">
-                    <label>Loan Term (years)</label>
-                    <select id="term">
-                        <option value="5">5 years</option>
-                        <option value="7">7 years</option>
-                        <option value="10" selected>10 years</option>
-                        <option value="12">12 years</option>
-                        <option value="15">15 years</option>
-                        <option value="20">20 years</option>
+                    <label>Interest Rate (%)</label>
+                    <input type="number" id="rate" value="6.99" min="2" max="20" step="0.25">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>RV Type</label>
+                    <select id="rvType">
+                        <option value="popup">Pop-Up Camper</option>
+                        <option value="trailer">Travel Trailer</option>
+                        <option value="fifth">Fifth Wheel</option>
+                        <option value="classC" selected>Class C Motorhome</option>
+                        <option value="classA">Class A Motorhome</option>
+                        <option value="diesel">Diesel Pusher</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>New or Used</label>
+                    <select id="condition">
+                        <option value="new" selected>New</option>
+                        <option value="used">Used</option>
                     </select>
                 </div>
             </div>
 
-            <button class="btn" onclick="calculate()">Calculate RV Payment</button>
+            <button class="btn" onclick="calculate()">Calculate Payment</button>
 
             <div class="results" id="results">
                 <div class="result-box-main">
                     <div class="result-value-main" id="monthlyPayment">$0</div>
                     <div class="result-label-main">Monthly Payment</div>
+                    <div class="result-range" id="totalCost">Total Cost: $0</div>
                 </div>
 
                 <div class="summary-grid">
@@ -203,46 +200,37 @@
                         <div class="summary-label">Total Interest</div>
                     </div>
                     <div class="summary-box">
-                        <div class="summary-value" id="totalCost">$0</div>
-                        <div class="summary-label">Total Cost</div>
+                        <div class="summary-value" id="annualCost">$0</div>
+                        <div class="summary-label">Annual Ownership</div>
                     </div>
                     <div class="summary-box">
-                        <div class="summary-value" id="downPercent">0%</div>
-                        <div class="summary-label">Down Payment %</div>
+                        <div class="summary-value" id="insuranceEst">$0</div>
+                        <div class="summary-label">Est. Insurance/yr</div>
                     </div>
                 </div>
 
                 <div class="breakdown">
-                    <h4>📊 Financing Details</h4>
+                    <h4>📊 Ownership Costs</h4>
                     <div class="breakdown-row">
-                        <span class="breakdown-label">RV Price</span>
-                        <span class="breakdown-value" id="displayPrice">$0</span>
+                        <span class="breakdown-label">Monthly Loan Payment</span>
+                        <span class="breakdown-value" id="displayPayment">$0</span>
                     </div>
                     <div class="breakdown-row">
-                        <span class="breakdown-label">Down Payment</span>
-                        <span class="breakdown-value" id="displayDown">$0</span>
-                    </div>
-                    <div class="breakdown-row">
-                        <span class="breakdown-label">Trade-In Credit</span>
-                        <span class="breakdown-value" id="displayTrade">$0</span>
-                    </div>
-                    <div class="breakdown-row">
-                        <span class="breakdown-label">Amount Financed</span>
-                        <span class="breakdown-value" id="displayFinanced">$0</span>
-                    </div>
-                    <div class="breakdown-row">
-                        <span class="breakdown-label">Est. Annual Insurance</span>
+                        <span class="breakdown-label">Est. Monthly Insurance</span>
                         <span class="breakdown-value" id="displayInsurance">$0</span>
                     </div>
-                </div>
-
-                <div class="tips">
-                    <h4>💡 RV Buying Tips</h4>
-                    <div class="tip">🏕️ 10-20% down payment for best rates</div>
-                    <div class="tip">📅 RVs over $50k may qualify for 20-year terms</div>
-                    <div class="tip">🔧 Budget 1-2% of price annually for maintenance</div>
-                    <div class="tip">⛽ Factor in fuel costs (6-10 mpg typical)</div>
-                    <div class="tip">🏠 Storage costs: $50-400/month</div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Est. Annual Maintenance</span>
+                        <span class="breakdown-value" id="displayMaintenance">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Est. Annual Storage</span>
+                        <span class="breakdown-value" id="displayStorage">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Est. Annual Fuel (5k mi)</span>
+                        <span class="breakdown-value" id="displayFuel">$0</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -261,10 +249,10 @@
         </div>
 
         <div class="tools-promo">
-            <h4>More Vehicle Calculators</h4>
+            <h4>More Loan Calculators</h4>
+            <a href="auto-loan-calculator.html">Auto Loan</a>
             <a href="boat-loan-calculator.html">Boat Loan</a>
-            <a href="auto-loan-payment-calculator.html">Auto Loan</a>
-            <a href="fuel-calculator.html">Fuel Cost</a>
+            <a href="mortgage-calculator.html">Mortgage</a>
             <a href="index.html">View All Tools</a>
         </div>
     </div>
@@ -280,36 +268,68 @@
         }
 
         function calculate() {
-            const price = parseFloat(document.getElementById('rvPrice').value);
-            const down = parseFloat(document.getElementById('downPayment').value);
-            const tradeIn = parseFloat(document.getElementById('tradeIn').value);
+            const rvPrice = parseFloat(document.getElementById('rvPrice').value);
+            const downPayment = parseFloat(document.getElementById('downPayment').value);
+            const term = parseInt(document.getElementById('term').value);
             const rate = parseFloat(document.getElementById('rate').value) / 100 / 12;
-            const years = parseInt(document.getElementById('term').value);
-            const months = years * 12;
+            const rvType = document.getElementById('rvType').value;
+            const condition = document.getElementById('condition').value;
 
-            const loanAmount = price - down - tradeIn;
-            const downPercent = ((down + tradeIn) / price * 100).toFixed(1);
+            const loanAmount = rvPrice - downPayment;
 
-            // Monthly payment formula
-            const payment = loanAmount * (rate * Math.pow(1 + rate, months)) / (Math.pow(1 + rate, months) - 1);
-            const totalPayments = payment * months;
-            const totalInterest = totalPayments - loanAmount;
+            // Monthly payment calculation
+            const monthlyPayment = loanAmount * (rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1);
 
-            // Estimate insurance (~1% of value annually)
-            const annualInsurance = price * 0.01;
+            const totalPaid = monthlyPayment * term;
+            const totalInterest = totalPaid - loanAmount;
+            const totalCost = totalPaid + downPayment;
+
+            // Insurance estimate (1-2% of RV value annually)
+            const insuranceRate = condition === 'new' ? 0.012 : 0.018;
+            const annualInsurance = rvPrice * insuranceRate;
+
+            // Maintenance (5-8% of value per year)
+            const maintRate = rvType === 'classA' || rvType === 'diesel' ? 0.08 : 0.05;
+            const annualMaintenance = rvPrice * maintRate;
+
+            // Storage estimate
+            const storageCosts = {
+                popup: 600,
+                trailer: 1200,
+                fifth: 1800,
+                classC: 2400,
+                classA: 3600,
+                diesel: 4200
+            };
+            const annualStorage = storageCosts[rvType];
+
+            // Fuel estimate (5000 miles/year)
+            const mpg = {
+                popup: 15,
+                trailer: 12,
+                fifth: 10,
+                classC: 10,
+                classA: 7,
+                diesel: 9
+            };
+            const annualFuel = (5000 / mpg[rvType]) * 4; // $4/gallon avg
+
+            // Total annual ownership
+            const annualCost = (monthlyPayment * 12) + annualInsurance + annualMaintenance + annualStorage + annualFuel;
 
             document.getElementById('results').style.display = 'block';
-            document.getElementById('monthlyPayment').textContent = formatMoney(payment);
+            document.getElementById('monthlyPayment').textContent = formatMoney(monthlyPayment);
+            document.getElementById('totalCost').textContent = 'Total Cost: ' + formatMoney(totalCost);
             document.getElementById('loanAmount').textContent = formatMoney(loanAmount);
             document.getElementById('totalInterest').textContent = formatMoney(totalInterest);
-            document.getElementById('totalCost').textContent = formatMoney(totalPayments + down + tradeIn);
-            document.getElementById('downPercent').textContent = downPercent + '%';
+            document.getElementById('annualCost').textContent = formatMoney(annualCost);
+            document.getElementById('insuranceEst').textContent = formatMoney(annualInsurance);
 
-            document.getElementById('displayPrice').textContent = formatMoney(price);
-            document.getElementById('displayDown').textContent = formatMoney(down);
-            document.getElementById('displayTrade').textContent = formatMoney(tradeIn);
-            document.getElementById('displayFinanced').textContent = formatMoney(loanAmount);
-            document.getElementById('displayInsurance').textContent = formatMoney(annualInsurance);
+            document.getElementById('displayPayment').textContent = formatMoney(monthlyPayment);
+            document.getElementById('displayInsurance').textContent = formatMoney(annualInsurance / 12);
+            document.getElementById('displayMaintenance').textContent = formatMoney(annualMaintenance);
+            document.getElementById('displayStorage').textContent = formatMoney(annualStorage);
+            document.getElementById('displayFuel').textContent = formatMoney(annualFuel);
         }
 
         calculate();
