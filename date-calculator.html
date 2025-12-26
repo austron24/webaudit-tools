@@ -3,49 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Date Calculator - Days Between Dates</title>
-    <meta name="description" content="Free date calculator. Find days between dates, add or subtract days from a date. Calculate exact time differences.">
-    <meta name="keywords" content="date calculator, days between dates, date difference, add days, subtract days">
+    <title>Date Calculator - Days Between Dates & Add/Subtract Days</title>
+    <meta name="description" content="Free date calculator. Calculate days between two dates, add or subtract days from a date, and find day of the week.">
+    <meta name="keywords" content="date calculator, days between dates, add days to date, date difference calculator">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/date-calculator.html">
-    <meta property="og:title" content="Date Calculator">
-    <meta property="og:description" content="Calculate days between dates or add/subtract days. Free and easy to use.">
-    <meta property="og:type" content="website">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --error: #ef4444; }
+        :root { --primary: #7c3aed; --primary-dark: #6d28d9; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
         .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
         .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
-        .header h1 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
-        .header p { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
         .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
         .content-area { display: flex; flex-direction: column; gap: 20px; }
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); }
-        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab { flex: 1; padding: 12px; border: 2px solid var(--border); border-radius: 8px; background: var(--bg-input); color: var(--text-primary); cursor: pointer; text-align: center; transition: all 0.3s ease; }
-        .tab.active { border-color: var(--primary); background: var(--primary); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); font-weight: 500; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
         input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
         input:focus, select:focus { outline: none; border-color: var(--primary); }
-        .result-display { text-align: center; padding: 30px; background: var(--bg-input); border-radius: 16px; margin-top: 20px; }
-        .result-value { font-size: 3rem; font-weight: 800; color: var(--secondary); }
-        .result-label { color: var(--text-secondary); margin-top: 10px; }
-        .result-details { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
-        .detail-item { background: var(--bg-dark); padding: 15px; border-radius: 10px; text-align: center; }
-        .detail-value { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
-        .detail-label { color: var(--text-secondary); font-size: 0.85rem; }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.8); }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
-        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; transition: all 0.3s ease; }
-        .related-link:hover { background: var(--primary); transform: translateX(5px); }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .header h1 { font-size: 1.8rem; } .form-row { grid-template-columns: 1fr; } .result-details { grid-template-columns: repeat(2, 1fr); } .result-value { font-size: 2rem; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -60,78 +51,63 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
-    
+
     <header class="header">
         <h1>📅 Date Calculator</h1>
-        <p>Calculate days between dates or add/subtract days from any date.</p>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>🗓️ Calculate Dates</h2>
-                <div class="tabs">
-                    <div class="tab active" onclick="setTab('difference')">Days Between</div>
-                    <div class="tab" onclick="setTab('addsubtract')">Add/Subtract</div>
-                </div>
-                
-                <div id="differenceTab" class="tab-content active">
-                    <div class="form-row">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label>Start Date</label>
-                            <input type="date" id="startDate" onchange="calculateDifference()">
-                        </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label>End Date</label>
-                            <input type="date" id="endDate" onchange="calculateDifference()">
-                        </div>
-                    </div>
-                    <div class="result-display" id="diffResult">
-                        <div class="result-value" id="daysDiff">0</div>
-                        <div class="result-label">days between dates</div>
-                        <div class="result-details">
-                            <div class="detail-item">
-                                <div class="detail-value" id="weeksDiff">0</div>
-                                <div class="detail-label">Weeks</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-value" id="monthsDiff">0</div>
-                                <div class="detail-label">Months</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-value" id="yearsDiff">0</div>
-                                <div class="detail-label">Years</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-value" id="hoursDiff">0</div>
-                                <div class="detail-label">Hours</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="addsubtractTab" class="tab-content">
+                <h2>📆 Days Between Dates</h2>
+                <div class="form-grid">
                     <div class="form-group">
-                        <label>Starting Date</label>
-                        <input type="date" id="baseDate" onchange="calculateAddSub()">
+                        <label>Start Date</label>
+                        <input type="date" id="startDate" oninput="calculateDiff()">
                     </div>
-                    <div class="form-row">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label>Number of Days</label>
-                            <input type="number" id="daysToAdd" value="30" onchange="calculateAddSub()">
-                        </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label>Operation</label>
-                            <select id="operation" onchange="calculateAddSub()">
-                                <option value="add">Add Days</option>
-                                <option value="subtract">Subtract Days</option>
-                            </select>
-                        </div>
+                    <div class="form-group">
+                        <label>End Date</label>
+                        <input type="date" id="endDate" oninput="calculateDiff()">
                     </div>
-                    <div class="result-display">
-                        <div class="result-value" id="resultDate">-</div>
-                        <div class="result-label" id="resultDateLabel">resulting date</div>
+                </div>
+
+                <div class="result-hero">
+                    <div class="result-hero-label">Days Between</div>
+                    <div class="result-hero-value" id="daysDiff">0 days</div>
+                </div>
+
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-value" id="weeks">0</div>
+                        <div class="result-label">Weeks</div>
                     </div>
+                    <div class="result-card">
+                        <div class="result-value" id="months">0</div>
+                        <div class="result-label">Months</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="years">0</div>
+                        <div class="result-label">Years</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>➕ Add/Subtract Days</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>From Date</label>
+                        <input type="date" id="fromDate" oninput="calculateAdd()">
+                    </div>
+                    <div class="form-group">
+                        <label>Days to Add/Subtract</label>
+                        <input type="number" id="daysToAdd" value="30" oninput="calculateAdd()">
+                    </div>
+                </div>
+
+                <div class="result-hero" style="background: linear-gradient(135deg, #059669, #047857);">
+                    <div class="result-hero-label">Result Date</div>
+                    <div class="result-hero-value" id="resultDate">-</div>
                 </div>
             </div>
 
@@ -144,19 +120,11 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="age-calculator.html" class="related-link">🎂 Age Calculator</a>
-                    <a href="time-zone-converter.html" class="related-link">🌍 Time Zone Converter</a>
-                    <a href="pregnancy-calculator.html" class="related-link">👶 Pregnancy Calculator</a>
-                    <a href="countdown-timer.html" class="related-link">⏱️ Countdown Timer</a>
-                    <a href="unix-timestamp-converter.html" class="related-link">🕐 Unix Timestamp</a>
-                    <a href="workday-calculator.html" class="related-link">📊 Workday Calculator</a>
+                    <a href="age-calculator.html" class="related-link">📅 Age Calculator</a>
+                    <a href="time-calculator.html" class="related-link">⏰ Time Calculator</a>
+                    <a href="pregnancy-calculator.html" class="related-link">🤰 Pregnancy</a>
+                    <a href="countdown-calculator.html" class="related-link">⏳ Countdown</a>
                 </div>
-            </div>
-
-            <div class="ad-container">
-                <div class="ad-label">Advertisement</div>
-                <script type="text/javascript">atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };</script>
-                <script type="text/javascript" src="//www.highperformanceformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
             </div>
         </div>
 
@@ -166,68 +134,56 @@
                 <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
                 <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
             </div>
-            <div class="ad-container">
-                <div class="ad-label">Advertisement</div>
-                <script type="text/javascript">atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };</script>
-                <script type="text/javascript" src="//www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
-            </div>
         </div>
     </div>
 
     <script>
         // Set default dates
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('startDate').value = today;
-        document.getElementById('endDate').value = today;
-        document.getElementById('baseDate').value = today;
+        const today = new Date();
+        const future = new Date();
+        future.setDate(today.getDate() + 30);
+        
+        document.getElementById('startDate').valueAsDate = today;
+        document.getElementById('endDate').valueAsDate = future;
+        document.getElementById('fromDate').valueAsDate = today;
 
-        function setTab(tab) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            event.target.classList.add('active');
-            document.getElementById(tab + 'Tab').classList.add('active');
-        }
-
-        function calculateDifference() {
+        function calculateDiff() {
             const start = new Date(document.getElementById('startDate').value);
             const end = new Date(document.getElementById('endDate').value);
             
-            if (isNaN(start) || isNaN(end)) return;
-            
+            if (isNaN(start.getTime()) || isNaN(end.getTime())) return;
+
             const diffTime = Math.abs(end - start);
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            const diffWeeks = Math.floor(diffDays / 7);
-            const diffMonths = Math.floor(diffDays / 30.44);
-            const diffYears = Math.floor(diffDays / 365.25);
-            const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
-            
-            document.getElementById('daysDiff').textContent = diffDays.toLocaleString();
-            document.getElementById('weeksDiff').textContent = diffWeeks.toLocaleString();
-            document.getElementById('monthsDiff').textContent = diffMonths.toLocaleString();
-            document.getElementById('yearsDiff').textContent = diffYears.toLocaleString();
-            document.getElementById('hoursDiff').textContent = diffHours.toLocaleString();
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            const weeks = Math.floor(diffDays / 7);
+            const months = Math.floor(diffDays / 30.44);
+            const years = (diffDays / 365.25).toFixed(1);
+
+            document.getElementById('daysDiff').textContent = diffDays.toLocaleString() + ' days';
+            document.getElementById('weeks').textContent = weeks.toLocaleString();
+            document.getElementById('months').textContent = months;
+            document.getElementById('years').textContent = years;
         }
 
-        function calculateAddSub() {
-            const base = new Date(document.getElementById('baseDate').value);
-            const days = parseInt(document.getElementById('daysToAdd').value) || 0;
-            const op = document.getElementById('operation').value;
-            
-            if (isNaN(base)) return;
-            
-            const result = new Date(base);
-            if (op === 'add') {
-                result.setDate(result.getDate() + days);
-            } else {
-                result.setDate(result.getDate() - days);
-            }
-            
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('resultDate').textContent = result.toLocaleDateString('en-US', options);
+        function calculateAdd() {
+            const fromDate = new Date(document.getElementById('fromDate').value);
+            const daysToAdd = parseInt(document.getElementById('daysToAdd').value) || 0;
+
+            if (isNaN(fromDate.getTime())) return;
+
+            const resultDate = new Date(fromDate);
+            resultDate.setDate(fromDate.getDate() + daysToAdd);
+
+            document.getElementById('resultDate').textContent = resultDate.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
         }
 
-        calculateDifference();
-        calculateAddSub();
+        calculateDiff();
+        calculateAdd();
     </script>
 </body>
 </html>
