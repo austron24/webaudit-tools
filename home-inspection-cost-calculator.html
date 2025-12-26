@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Inspection Cost Calculator - Buyer & Seller Estimates</title>
+    <meta name="description" content="Calculate home inspection costs. Estimate prices for pre-purchase, pre-sale, and specialty inspections by home size.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #7c3aed 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #7c3aed;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #f3e8ff;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .compare-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #6d28d9;
+        }
+        .compare-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #6d28d9;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #6d28d9; }
+        .pricing {
+            background: #f3e8ff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 {
+            color: #6d28d9;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .pricing table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e9d5ff;
+        }
+        .pricing th { color: #6d28d9; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #6d28d9;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #6d28d9; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #7c3aed;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #c4b5fd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏠 Home Inspection Cost</h1>
+            <p class="subtitle">Buyer & seller inspection estimates</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Home Size (sq ft)</label>
+                    <input type="number" id="sqft" value="2000" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Home Age</label>
+                    <select id="age" onchange="calculate()">
+                        <option value="new">New (0-10 yrs)</option>
+                        <option value="moderate" selected>Moderate (10-30 yrs)</option>
+                        <option value="older">Older (30-50 yrs)</option>
+                        <option value="vintage">Vintage (50+ yrs)</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Inspection Type</label>
+                    <select id="inspectionType" onchange="calculate()">
+                        <option value="standard" selected>Standard Home Inspection</option>
+                        <option value="presale">Pre-Sale Inspection</option>
+                        <option value="newconst">New Construction</option>
+                        <option value="condo">Condo/Townhouse</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Additional Inspections</label>
+                    <select id="extras" onchange="calculate()">
+                        <option value="none" selected>None</option>
+                        <option value="radon">+ Radon Testing</option>
+                        <option value="mold">+ Mold Testing</option>
+                        <option value="pest">+ Pest/Termite</option>
+                        <option value="sewer">+ Sewer Scope</option>
+                        <option value="all">All Specialty Tests</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Total Cost</div>
+                <div class="value" id="totalCost">$400-550</div>
+                <div class="sub" id="costNote">Complete inspection package</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Base Inspection</div>
+                    <div class="value" id="baseCost">$400</div>
+                    <div class="note">2-4 hours</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Add-ons</div>
+                    <div class="value" id="addonCost">$0</div>
+                    <div class="note">Specialty tests</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Report Time</div>
+                    <div class="value" id="reportTime">24-48 hrs</div>
+                    <div class="note">Digital report</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Duration</div>
+                    <div class="value" id="duration">2-3 hrs</div>
+                    <div class="note">On-site time</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Inspection Costs</h4>
+                <div class="break-row">
+                    <span>General Home Inspection</span>
+                    <span class="value" id="genCost">$400</span>
+                </div>
+                <div class="break-row">
+                    <span>Radon Testing</span>
+                    <span class="value" id="radonCost">Not included</span>
+                </div>
+                <div class="break-row">
+                    <span>Mold Testing</span>
+                    <span class="value" id="moldCost">Not included</span>
+                </div>
+                <div class="break-row">
+                    <span>Pest/Termite</span>
+                    <span class="value" id="pestCost">Not included</span>
+                </div>
+                <div class="break-row">
+                    <span>Sewer Scope</span>
+                    <span class="value" id="sewerCost">Not included</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Inspection Cost Breakdown</h4>
+                <table>
+                    <tr>
+                        <th>Inspection Type</th>
+                        <th>Cost Range</th>
+                    </tr>
+                    <tr><td>Standard (under 2000 sf)</td><td>$300-400</td></tr>
+                    <tr><td>Standard (2000-3000 sf)</td><td>$400-500</td></tr>
+                    <tr><td>Large Home (3000+ sf)</td><td>$500-700</td></tr>
+                    <tr><td>Radon Test</td><td>+$100-175</td></tr>
+                    <tr><td>Mold Testing</td><td>+$200-400</td></tr>
+                    <tr><td>Pest/Termite</td><td>+$75-150</td></tr>
+                    <tr><td>Sewer Scope</td><td>+$150-300</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Home Inspection Tips</h4>
+                <div class="tip-item">✓ Attend the inspection in person</div>
+                <div class="tip-item">✓ Ask questions during the walkthrough</div>
+                <div class="tip-item">✓ Review the report thoroughly</div>
+                <div class="tip-item">✓ Use findings for negotiation</div>
+                <div class="tip-item">✓ Worth every penny for peace of mind</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Tools</h4>
+            <a href="home-affordability-calculator.html">Home Affordability</a>
+            <a href="mortgage-calculator.html">Mortgage Calculator</a>
+            <a href="home-addition-cost-calculator.html">Home Addition Cost</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Home Inspection Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const sqft = parseFloat(document.getElementById('sqft').value) || 2000;
+            const age = document.getElementById('age').value;
+            const inspectionType = document.getElementById('inspectionType').value;
+            const extras = document.getElementById('extras').value;
+
+            // Base cost by size
+            let baseCost;
+            if (sqft < 1500) baseCost = 325;
+            else if (sqft < 2000) baseCost = 375;
+            else if (sqft < 2500) baseCost = 425;
+            else if (sqft < 3000) baseCost = 475;
+            else if (sqft < 4000) baseCost = 550;
+            else baseCost = 650;
+
+            // Age adjustment
+            const ageMult = { new: 0.95, moderate: 1.0, older: 1.1, vintage: 1.2 };
+            baseCost *= ageMult[age];
+
+            // Inspection type
+            const typeMult = { standard: 1.0, presale: 0.95, newconst: 1.1, condo: 0.85 };
+            baseCost *= typeMult[inspectionType];
+
+            baseCost = Math.round(baseCost);
+
+            // Extra inspections
+            const radonCost = (extras === 'radon' || extras === 'all') ? 150 : 0;
+            const moldCost = (extras === 'mold' || extras === 'all') ? 300 : 0;
+            const pestCost = (extras === 'pest' || extras === 'all') ? 100 : 0;
+            const sewerCost = (extras === 'sewer' || extras === 'all') ? 225 : 0;
+
+            const addonCost = radonCost + moldCost + pestCost + sewerCost;
+            const totalMid = baseCost + addonCost;
+            const totalLow = Math.round(totalMid * 0.9);
+            const totalHigh = Math.round(totalMid * 1.15);
+
+            // Duration
+            const hours = sqft < 2000 ? '2-3' : (sqft < 3000 ? '3-4' : '4-5');
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + totalLow.toLocaleString() + '-' + totalHigh.toLocaleString();
+            document.getElementById('baseCost').textContent = '$' + baseCost;
+            document.getElementById('addonCost').textContent = addonCost > 0 ? '$' + addonCost : '$0';
+            document.getElementById('duration').textContent = hours + ' hrs';
+
+            document.getElementById('genCost').textContent = '$' + baseCost;
+            document.getElementById('radonCost').textContent = radonCost > 0 ? '$' + radonCost : 'Not included';
+            document.getElementById('moldCost').textContent = moldCost > 0 ? '$' + moldCost : 'Not included';
+            document.getElementById('pestCost').textContent = pestCost > 0 ? '$' + pestCost : 'Not included';
+            document.getElementById('sewerCost').textContent = sewerCost > 0 ? '$' + sewerCost : 'Not included';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

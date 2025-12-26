@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electrician Cost Calculator - Electrical Work Estimates</title>
+    <meta name="description" content="Calculate electrician costs. Estimate prices for electrical repairs, panel upgrades, outlet installation and rewiring.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #eab308 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #eab308;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #fef9c3;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .compare-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #a16207;
+        }
+        .compare-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #a16207;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #a16207; }
+        .pricing {
+            background: #fef9c3;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 {
+            color: #a16207;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .pricing table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #fde047;
+        }
+        .pricing th { color: #a16207; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #a16207;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #a16207; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #eab308;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fde047; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚡ Electrician Cost</h1>
+            <p class="subtitle">Electrical work & repair estimates</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group full">
+                    <label>Service Type</label>
+                    <select id="serviceType" onchange="calculate()">
+                        <option value="outlet">Outlet Installation</option>
+                        <option value="switch">Switch/Dimmer Install</option>
+                        <option value="fixture">Light Fixture Install</option>
+                        <option value="fan">Ceiling Fan Install</option>
+                        <option value="panel" selected>Panel Upgrade (100-200A)</option>
+                        <option value="circuit">New Circuit</option>
+                        <option value="rewire">Whole House Rewire</option>
+                        <option value="ev">EV Charger Install</option>
+                        <option value="generator">Generator Install</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Home Size (if applicable)</label>
+                    <select id="homeSize" onchange="calculate()">
+                        <option value="small">Small (1000 sq ft)</option>
+                        <option value="medium" selected>Medium (2000 sq ft)</option>
+                        <option value="large">Large (3000 sq ft)</option>
+                        <option value="xlarge">XL (4000+ sq ft)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Quantity</label>
+                    <input type="number" id="quantity" value="1" min="1" oninput="calculate()">
+                </div>
+                <div class="input-group full">
+                    <label>Wiring Condition</label>
+                    <select id="condition" onchange="calculate()">
+                        <option value="easy" selected>Easy Access</option>
+                        <option value="moderate">Some Wall Fishing</option>
+                        <option value="difficult">Difficult/Old Home</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Total Cost</div>
+                <div class="value" id="totalCost">$1,500-2,500</div>
+                <div class="sub" id="costNote">Labor + materials</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Labor</div>
+                    <div class="value" id="laborCost">$1,200</div>
+                    <div class="note">$50-100/hr typical</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Materials</div>
+                    <div class="value" id="matCost">$600</div>
+                    <div class="note">Parts & supplies</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Hourly Rate</div>
+                    <div class="value" id="hourlyRate">$50-100</div>
+                    <div class="note">Per electrician</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Time Estimate</div>
+                    <div class="value" id="timeEst">4-8 hrs</div>
+                    <div class="note">For this job</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Cost Factors</h4>
+                <div class="break-row">
+                    <span>Base Service Cost</span>
+                    <span class="value" id="baseCost">$1,500</span>
+                </div>
+                <div class="break-row">
+                    <span>Materials</span>
+                    <span class="value" id="matBreak">$500</span>
+                </div>
+                <div class="break-row">
+                    <span>Difficulty Adjustment</span>
+                    <span class="value" id="diffCost">$0</span>
+                </div>
+                <div class="break-row">
+                    <span>Permit (if required)</span>
+                    <span class="value" id="permitCost">$100-300</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Common Electrical Costs</h4>
+                <table>
+                    <tr>
+                        <th>Service</th>
+                        <th>Cost Range</th>
+                    </tr>
+                    <tr><td>Outlet Installation</td><td>$150-300 each</td></tr>
+                    <tr><td>Light Fixture</td><td>$150-400 each</td></tr>
+                    <tr><td>Ceiling Fan</td><td>$200-500</td></tr>
+                    <tr><td>Panel Upgrade</td><td>$1,500-3,000</td></tr>
+                    <tr><td>New Circuit</td><td>$200-500</td></tr>
+                    <tr><td>Whole House Rewire</td><td>$8,000-20,000</td></tr>
+                    <tr><td>EV Charger Install</td><td>$500-2,500</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Electrical Tips</h4>
+                <div class="tip-item">✓ Always hire licensed electricians</div>
+                <div class="tip-item">✓ Permits often required for panel work</div>
+                <div class="tip-item">✓ Get 3+ quotes for major jobs</div>
+                <div class="tip-item">✓ Bundle multiple jobs for savings</div>
+                <div class="tip-item">✓ Ask about warranty on work</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Tools</h4>
+            <a href="hvac-replacement-calculator.html">HVAC Cost</a>
+            <a href="generator-size-calculator.html">Generator Sizing</a>
+            <a href="electricity-cost-calculator.html">Electric Cost</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Electrician Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const serviceType = document.getElementById('serviceType').value;
+            const homeSize = document.getElementById('homeSize').value;
+            const quantity = parseInt(document.getElementById('quantity').value) || 1;
+            const condition = document.getElementById('condition').value;
+
+            // Base costs by service
+            const serviceCosts = {
+                outlet: { labor: 150, mat: 30, time: 1 },
+                switch: { labor: 120, mat: 25, time: 0.75 },
+                fixture: { labor: 180, mat: 50, time: 1.5 },
+                fan: { labor: 250, mat: 100, time: 2 },
+                panel: { labor: 1500, mat: 600, time: 8 },
+                circuit: { labor: 250, mat: 75, time: 2 },
+                rewire: { labor: 8000, mat: 4000, time: 40 },
+                ev: { labor: 800, mat: 400, time: 4 },
+                generator: { labor: 1500, mat: 3000, time: 8 }
+            };
+
+            let { labor, mat, time } = serviceCosts[serviceType];
+
+            // Home size multiplier for rewiring
+            if (serviceType === 'rewire') {
+                const sizeMult = { small: 0.7, medium: 1.0, large: 1.4, xlarge: 1.8 };
+                labor *= sizeMult[homeSize];
+                mat *= sizeMult[homeSize];
+                time *= sizeMult[homeSize];
+            }
+
+            // Quantity
+            labor *= quantity;
+            mat *= quantity;
+            time *= quantity;
+
+            // Difficulty adjustment
+            const conditionMult = { easy: 1.0, moderate: 1.25, difficult: 1.5 };
+            const diffCost = Math.round(labor * (conditionMult[condition] - 1));
+            labor *= conditionMult[condition];
+
+            labor = Math.round(labor);
+            mat = Math.round(mat);
+            time = Math.round(time * 10) / 10;
+
+            const totalMid = labor + mat;
+            const totalLow = Math.round(totalMid * 0.85);
+            const totalHigh = Math.round(totalMid * 1.25);
+
+            const timeText = time < 1 ? '30-60 min' : (time < 3 ? time + '-' + (time + 1) + ' hrs' : (time < 24 ? Math.floor(time) + '-' + Math.ceil(time * 1.3) + ' hrs' : Math.ceil(time / 8) + '-' + Math.ceil(time * 1.3 / 8) + ' days'));
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + totalLow.toLocaleString() + '-' + totalHigh.toLocaleString();
+            document.getElementById('laborCost').textContent = '$' + labor.toLocaleString();
+            document.getElementById('matCost').textContent = '$' + mat.toLocaleString();
+            document.getElementById('timeEst').textContent = timeText;
+
+            document.getElementById('baseCost').textContent = '$' + Math.round(labor / conditionMult[condition]).toLocaleString();
+            document.getElementById('matBreak').textContent = '$' + mat.toLocaleString();
+            document.getElementById('diffCost').textContent = diffCost > 0 ? '+$' + diffCost.toLocaleString() : '$0';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
