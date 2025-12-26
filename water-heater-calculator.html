@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Heater Size Calculator - What Size Do I Need?</title>
+    <meta name="description" content="Calculate what size water heater you need. Free water heater sizing calculator for tank and tankless systems.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0891b2 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #0891b2;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #ecfeff;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .compare-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #0e7490;
+        }
+        .compare-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #0e7490;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #0e7490; }
+        .size-guide {
+            background: #ecfeff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .size-guide h4 {
+            color: #0e7490;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .size-guide table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .size-guide th, .size-guide td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #a5f3fc;
+        }
+        .size-guide th { color: #0e7490; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #0e7490;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0e7490; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0891b2;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #67e8f9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚿 Water Heater Calculator</h1>
+            <p class="subtitle">What size water heater do you need?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Number of People</label>
+                    <select id="people" onchange="calculate()">
+                        <option value="1">1 person</option>
+                        <option value="2">2 people</option>
+                        <option value="3" selected>3 people</option>
+                        <option value="4">4 people</option>
+                        <option value="5">5 people</option>
+                        <option value="6">6+ people</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Number of Bathrooms</label>
+                    <select id="bathrooms" onchange="calculate()">
+                        <option value="1">1 bathroom</option>
+                        <option value="1.5">1.5 bathrooms</option>
+                        <option value="2" selected>2 bathrooms</option>
+                        <option value="2.5">2.5 bathrooms</option>
+                        <option value="3">3+ bathrooms</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Peak Usage Pattern</label>
+                    <select id="usage" onchange="calculate()">
+                        <option value="low">Low (1-2 showers at same time)</option>
+                        <option value="medium" selected>Medium (typical family)</option>
+                        <option value="high">High (multiple simultaneous uses)</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Water Heater Type</label>
+                    <select id="type" onchange="calculate()">
+                        <option value="tank" selected>Tank (Traditional)</option>
+                        <option value="tankless">Tankless (On-Demand)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Recommended Size</div>
+                <div class="value" id="size">50 gal</div>
+                <div class="sub" id="sizeNote">Standard tank water heater</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Peak Demand</div>
+                    <div class="value" id="peakDemand">42 gal</div>
+                    <div class="note">First hour rating</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Daily Usage</div>
+                    <div class="value" id="dailyUsage">64 gal</div>
+                    <div class="note">Estimated per day</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Est. Cost</div>
+                    <div class="value" id="cost">$800-1,200</div>
+                    <div class="note">Before install</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Annual Energy</div>
+                    <div class="value" id="energy">$400-500</div>
+                    <div class="note">Operating cost</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>🚿 Usage Breakdown</h4>
+                <div class="break-row">
+                    <span>Shower (10 min)</span>
+                    <span class="value">20-25 gallons</span>
+                </div>
+                <div class="break-row">
+                    <span>Bath</span>
+                    <span class="value">30-40 gallons</span>
+                </div>
+                <div class="break-row">
+                    <span>Dishwasher</span>
+                    <span class="value">6-10 gallons</span>
+                </div>
+                <div class="break-row">
+                    <span>Washing Machine (hot)</span>
+                    <span class="value">20-30 gallons</span>
+                </div>
+                <div class="break-row">
+                    <span>Hand washing</span>
+                    <span class="value">2-4 gallons</span>
+                </div>
+            </div>
+
+            <div class="size-guide">
+                <h4>📊 Tank Size Guide</h4>
+                <table>
+                    <tr>
+                        <th>Household</th>
+                        <th>Tank Size</th>
+                        <th>First Hour</th>
+                    </tr>
+                    <tr><td>1-2 people</td><td>30-40 gal</td><td>40-50 gal</td></tr>
+                    <tr><td>2-3 people</td><td>40-50 gal</td><td>50-60 gal</td></tr>
+                    <tr><td>3-4 people</td><td>50-60 gal</td><td>60-80 gal</td></tr>
+                    <tr><td>5+ people</td><td>60-80 gal</td><td>80+ gal</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Water Heater Tips</h4>
+                <div class="tip-item">✓ First Hour Rating (FHR) matters more than tank size</div>
+                <div class="tip-item">✓ Tankless saves 20-30% energy but costs more upfront</div>
+                <div class="tip-item">✓ Set temperature to 120°F for safety and savings</div>
+                <div class="tip-item">✓ Consider recovery rate for back-to-back showers</div>
+                <div class="tip-item">✓ Tank water heaters last 10-15 years on average</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Tools</h4>
+            <a href="electricity-cost-calculator.html">Electricity Cost</a>
+            <a href="ac-btu-calculator.html">AC BTU Calculator</a>
+            <a href="generator-size-calculator.html">Generator Size</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Water Heater Size Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const people = parseInt(document.getElementById('people').value) || 3;
+            const bathrooms = parseFloat(document.getElementById('bathrooms').value) || 2;
+            const usage = document.getElementById('usage').value;
+            const type = document.getElementById('type').value;
+
+            // Base gallon per person
+            let gallonPerPerson = 12;
+            if (usage === 'low') gallonPerPerson = 10;
+            else if (usage === 'high') gallonPerPerson = 15;
+
+            // Peak hour demand (first hour rating needed)
+            const peakDemand = Math.round(people * gallonPerPerson + bathrooms * 8);
+
+            // Daily usage estimate
+            const dailyUsage = Math.round(people * 20 + bathrooms * 10);
+
+            // Recommended tank size
+            let tankSize;
+            if (peakDemand <= 40) tankSize = 40;
+            else if (peakDemand <= 55) tankSize = 50;
+            else if (peakDemand <= 70) tankSize = 60;
+            else if (peakDemand <= 85) tankSize = 75;
+            else tankSize = 80;
+
+            // Tankless sizing (GPM)
+            let tanklessGPM;
+            if (people <= 2) tanklessGPM = 5;
+            else if (people <= 4) tanklessGPM = 7;
+            else tanklessGPM = 9;
+
+            // Cost estimates
+            let costLow, costHigh, energyLow, energyHigh;
+            if (type === 'tank') {
+                if (tankSize <= 40) { costLow = 400; costHigh = 700; }
+                else if (tankSize <= 50) { costLow = 600; costHigh = 1000; }
+                else if (tankSize <= 60) { costLow = 800; costHigh = 1200; }
+                else { costLow = 1000; costHigh = 1500; }
+                energyLow = 350; energyHigh = 500;
+            } else {
+                if (tanklessGPM <= 5) { costLow = 800; costHigh = 1500; }
+                else if (tanklessGPM <= 7) { costLow = 1200; costHigh = 2000; }
+                else { costLow = 1500; costHigh = 2500; }
+                energyLow = 250; energyHigh = 350;
+            }
+
+            // Update display
+            if (type === 'tank') {
+                document.getElementById('size').textContent = tankSize + ' gal';
+                document.getElementById('sizeNote').textContent = 'Standard tank water heater';
+            } else {
+                document.getElementById('size').textContent = tanklessGPM + ' GPM';
+                document.getElementById('sizeNote').textContent = 'Tankless on-demand heater';
+            }
+
+            document.getElementById('peakDemand').textContent = peakDemand + ' gal';
+            document.getElementById('dailyUsage').textContent = dailyUsage + ' gal';
+            document.getElementById('cost').textContent = '$' + costLow.toLocaleString() + '-' + costHigh.toLocaleString();
+            document.getElementById('energy').textContent = '$' + energyLow + '-' + energyHigh;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
