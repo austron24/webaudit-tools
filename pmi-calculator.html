@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PMI Calculator - Private Mortgage Insurance Calculator</title>
-    <meta name="description" content="Free PMI calculator. Calculate private mortgage insurance costs and when you can remove PMI from your mortgage.">
-    <meta name="keywords" content="pmi calculator, private mortgage insurance, mortgage insurance, pmi removal, pmi cost">
+    <title>PMI Calculator - Private Mortgage Insurance Cost</title>
+    <meta name="description" content="Free PMI calculator. Calculate your private mortgage insurance costs and see when you can remove PMI from your mortgage.">
+    <meta name="keywords" content="PMI calculator, private mortgage insurance, mortgage insurance cost, PMI removal">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/pmi-calculator.html">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --error: #ef4444; }
+        :root { --primary: #be185d; --primary-dark: #9d174d; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
         .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
-        .header { background: linear-gradient(135deg, var(--error) 0%, #dc2626 100%); padding: 40px 20px; text-align: center; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
         .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
         .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
         .content-area { display: flex; flex-direction: column; gap: 20px; }
@@ -21,29 +21,27 @@
         .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
         .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
         input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
         input:focus, select:focus { outline: none; border-color: var(--primary); }
-        .result-hero { background: linear-gradient(135deg, var(--accent), #d97706); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
         .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
         .result-hero-label { color: rgba(255,255,255,0.8); }
-        .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
         .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
         .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
-        .ltv-tracker { margin-top: 20px; padding: 20px; background: var(--bg-input); border-radius: 12px; }
-        .ltv-bar { height: 40px; background: var(--border); border-radius: 10px; position: relative; margin: 20px 0; overflow: hidden; }
-        .ltv-fill { height: 100%; background: linear-gradient(90deg, var(--error), var(--accent), var(--success)); border-radius: 10px; transition: width 0.5s; }
-        .ltv-marker { position: absolute; top: -25px; transform: translateX(-50%); text-align: center; }
-        .ltv-marker.threshold { left: 80%; }
-        .removal-section { margin-top: 20px; padding: 20px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1)); border-radius: 12px; border: 1px solid var(--success); }
-        .removal-title { color: var(--success); font-weight: 700; margin-bottom: 10px; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
+        .ltv-bar { height: 30px; border-radius: 15px; background: var(--bg-input); position: relative; margin: 20px 0; overflow: hidden; }
+        .ltv-fill { height: 100%; border-radius: 15px; transition: width 0.3s; }
+        .ltv-target { position: absolute; left: 80%; top: 0; bottom: 0; width: 3px; background: var(--success); }
+        .info-box { background: var(--bg-input); padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 4px solid var(--success); }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -58,107 +56,90 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
-    
+
     <header class="header">
-        <h1>🛡️ PMI Calculator</h1>
+        <h1>🏠 PMI Calculator</h1>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>🏠 Mortgage Details</h2>
+                <h2>📋 Mortgage Details</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Home Value ($)</label>
-                        <input type="number" id="homeValue" value="400000" oninput="calculate()">
+                        <label>Home Price ($)</label>
+                        <input type="number" id="homePrice" value="400000" step="5000" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Down Payment (%)</label>
-                        <input type="number" id="downPayment" value="10" oninput="calculate()">
+                        <label>Down Payment ($)</label>
+                        <input type="number" id="downPayment" value="40000" step="1000" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Mortgage Rate (%)</label>
-                        <input type="number" id="mortgageRate" value="6.5" step="0.125" oninput="calculate()">
+                        <label>Interest Rate (%)</label>
+                        <input type="number" id="rate" value="6.5" step="0.125" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Loan Term (years)</label>
-                        <select id="loanTerm" onchange="calculate()">
-                            <option value="30" selected>30 Years</option>
-                            <option value="15">15 Years</option>
-                            <option value="20">20 Years</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Credit Score</label>
-                        <select id="creditScore" onchange="calculate()">
-                            <option value="excellent">760+ (Excellent)</option>
-                            <option value="good" selected>700-759 (Good)</option>
-                            <option value="fair">640-699 (Fair)</option>
-                            <option value="poor">620-639 (Poor)</option>
+                        <select id="term" onchange="calculate()">
+                            <option value="15">15 years</option>
+                            <option value="20">20 years</option>
+                            <option value="30" selected>30 years</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>PMI Rate (%)</label>
                         <input type="number" id="pmiRate" value="0.5" step="0.1" oninput="calculate()">
                     </div>
+                    <div class="form-group">
+                        <label>Credit Score</label>
+                        <select id="credit" onchange="updatePMIRate()">
+                            <option value="0.3">760+ (Excellent)</option>
+                            <option value="0.5" selected>700-759 (Good)</option>
+                            <option value="0.8">680-699 (Fair)</option>
+                            <option value="1.2">620-679 (Low)</option>
+                        </select>
+                    </div>
                 </div>
-                
+
                 <div class="result-hero">
                     <div class="result-hero-label">Monthly PMI Cost</div>
-                    <div class="result-hero-value" id="monthlyPmi">$0</div>
+                    <div class="result-hero-value" id="monthlyPMI">$0</div>
                 </div>
-                
+
                 <div class="results-grid">
                     <div class="result-card">
-                        <div class="result-value" id="annualPmi">$0</div>
+                        <div class="result-value" id="ltv">0%</div>
+                        <div class="result-label">Loan-to-Value (LTV)</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="annualPMI">$0</div>
                         <div class="result-label">Annual PMI</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="currentLtv">0%</div>
-                        <div class="result-label">Current LTV</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="totalPmi">$0</div>
+                        <div class="result-value" id="totalPMI">$0</div>
                         <div class="result-label">Total PMI Paid</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="monthsToRemove">0</div>
-                        <div class="result-label">Months Until 80% LTV</div>
-                    </div>
-                </div>
-                
-                <div class="ltv-tracker">
-                    <h3 style="color: var(--secondary); margin-bottom: 10px;">LTV Progress to PMI Removal</h3>
-                    <div class="ltv-bar">
-                        <div class="ltv-fill" id="ltvFill" style="width: 0%;"></div>
-                        <div class="ltv-marker threshold">
-                            <div style="font-size: 0.8rem; color: var(--success);">80% LTV</div>
-                            <div style="font-size: 0.7rem; color: var(--text-secondary);">PMI Drops Off</div>
-                        </div>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; color: var(--text-secondary); font-size: 0.85rem;">
-                        <span>100% LTV</span>
-                        <span id="currentLtvLabel">Your LTV: 90%</span>
-                        <span>0% LTV</span>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>💡 PMI Removal Options</h2>
-                <div class="removal-section">
-                    <div class="removal-title">✅ Ways to Remove PMI</div>
-                    <ul style="color: var(--text-secondary); margin-left: 20px;">
-                        <li>Wait until LTV reaches 80% through regular payments</li>
-                        <li>Make extra principal payments to reach 80% faster</li>
-                        <li>Request appraisal if home value has increased</li>
-                        <li>Refinance once you have 20%+ equity</li>
-                    </ul>
+                <h2>📊 LTV Progress to 80%</h2>
+                <div class="ltv-bar">
+                    <div class="ltv-fill" id="ltvFill" style="background: var(--primary);"></div>
+                    <div class="ltv-target"></div>
                 </div>
-                <div style="margin-top: 20px; padding: 20px; background: var(--bg-input); border-radius: 12px;">
-                    <p style="color: var(--text-secondary); margin-bottom: 10px;"><strong style="color: var(--accent);">Balance needed for 80% LTV:</strong></p>
-                    <p style="font-size: 1.5rem; font-weight: 700; color: var(--secondary);" id="targetBalance">$0</p>
-                    <p style="color: var(--text-secondary); margin-top: 10px;">Extra payment to remove PMI today: <span style="font-weight: 700; color: var(--accent);" id="extraPayment">$0</span></p>
+                <div style="display: flex; justify-content: space-between; color: var(--text-secondary); font-size: 0.85rem;">
+                    <span>Current: <span id="currentLTV">0%</span></span>
+                    <span style="color: var(--success);">Target: 80% (PMI removal)</span>
+                </div>
+
+                <div class="breakdown-row" style="margin-top: 20px;"><span>Loan Amount</span><span id="loanAmount">$0</span></div>
+                <div class="breakdown-row"><span>Equity Needed for 80% LTV</span><span id="equityNeeded">$0</span></div>
+                <div class="breakdown-row"><span>Payments Until PMI Removed</span><span id="paymentsUntil">0</span></div>
+                <div class="breakdown-row"><span>Years Until PMI Removed</span><span id="yearsUntil">0</span></div>
+
+                <div class="info-box">
+                    <strong>How to Remove PMI Faster:</strong> Make extra principal payments, refinance with more equity, or request removal once you reach 80% LTV. By law, PMI is automatically removed at 78% LTV.
                 </div>
             </div>
 
@@ -171,10 +152,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="mortgage-calculator.html" class="related-link">🏠 Mortgage Calculator</a>
-                    <a href="refinance-calculator.html" class="related-link">🔄 Refinance Calculator</a>
-                    <a href="down-payment-calculator.html" class="related-link">💵 Down Payment</a>
-                    <a href="home-value-calculator.html" class="related-link">🏡 Home Value</a>
+                    <a href="mortgage-calculator.html" class="related-link">🏡 Mortgage Calculator</a>
+                    <a href="down-payment-calculator.html" class="related-link">💰 Down Payment</a>
+                    <a href="home-affordability-calculator.html" class="related-link">🏠 Affordability</a>
+                    <a href="mortgage-refinance-calculator.html" class="related-link">🔄 Refinance</a>
                 </div>
             </div>
         </div>
@@ -189,69 +170,66 @@
     </div>
 
     <script>
+        function updatePMIRate() {
+            const rate = document.getElementById('credit').value;
+            document.getElementById('pmiRate').value = rate;
+            calculate();
+        }
+
         function calculate() {
-            const homeValue = parseFloat(document.getElementById('homeValue').value) || 0;
-            const downPaymentPct = parseFloat(document.getElementById('downPayment').value) / 100 || 0.10;
-            const mortgageRate = parseFloat(document.getElementById('mortgageRate').value) / 100 || 0.065;
-            const loanTerm = parseInt(document.getElementById('loanTerm').value) || 30;
-            const creditScore = document.getElementById('creditScore').value;
-            let pmiRate = parseFloat(document.getElementById('pmiRate').value) / 100 || 0.005;
+            const homePrice = parseFloat(document.getElementById('homePrice').value) || 0;
+            const downPayment = parseFloat(document.getElementById('downPayment').value) || 0;
+            const rate = parseFloat(document.getElementById('rate').value) || 0;
+            const term = parseInt(document.getElementById('term').value) * 12;
+            const pmiRate = parseFloat(document.getElementById('pmiRate').value) || 0;
+
+            const loanAmount = homePrice - downPayment;
+            const ltv = homePrice > 0 ? (loanAmount / homePrice) * 100 : 0;
             
-            // Adjust PMI rate based on credit score
-            if (creditScore === 'excellent') pmiRate *= 0.8;
-            if (creditScore === 'fair') pmiRate *= 1.3;
-            if (creditScore === 'poor') pmiRate *= 1.6;
-            
-            const downPaymentAmt = homeValue * downPaymentPct;
-            const loanAmount = homeValue - downPaymentAmt;
-            const currentLtv = homeValue > 0 ? (loanAmount / homeValue) * 100 : 0;
-            
-            // PMI only applies if LTV > 80%
-            let monthlyPmi = 0;
-            let annualPmi = 0;
-            
-            if (currentLtv > 80) {
-                annualPmi = loanAmount * pmiRate;
-                monthlyPmi = annualPmi / 12;
+            // PMI calculations
+            const annualPMI = (loanAmount * pmiRate) / 100;
+            const monthlyPMI = annualPMI / 12;
+
+            // Calculate when PMI is removed (at 80% LTV)
+            const targetLoan = homePrice * 0.80;
+            const equityNeeded = loanAmount - targetLoan;
+
+            // Calculate mortgage payment
+            const monthlyRate = rate / 100 / 12;
+            let payment;
+            if (monthlyRate === 0) {
+                payment = loanAmount / term;
+            } else {
+                payment = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, term)) / (Math.pow(1 + monthlyRate, term) - 1);
             }
-            
-            // Calculate monthly mortgage payment
-            const monthlyRate = mortgageRate / 12;
-            const numPayments = loanTerm * 12;
-            const monthlyPayment = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / (Math.pow(1 + monthlyRate, numPayments) - 1);
-            
+
             // Calculate months until 80% LTV
-            const targetBalance = homeValue * 0.80;
             let balance = loanAmount;
             let months = 0;
-            let totalPmi = 0;
-            
-            while (balance > targetBalance && months < numPayments) {
+            let totalPMI = 0;
+            while (balance > targetLoan && months < term) {
                 const interest = balance * monthlyRate;
-                const principal = monthlyPayment - interest;
+                const principal = payment - interest;
                 balance -= principal;
-                if ((balance / homeValue) > 0.80) {
-                    totalPmi += monthlyPmi;
-                }
+                totalPMI += monthlyPMI;
                 months++;
             }
-            
-            const extraPayment = Math.max(0, loanAmount - targetBalance);
-            
-            document.getElementById('monthlyPmi').textContent = '$' + Math.round(monthlyPmi).toLocaleString();
-            document.getElementById('annualPmi').textContent = '$' + Math.round(annualPmi).toLocaleString();
-            document.getElementById('currentLtv').textContent = currentLtv.toFixed(1) + '%';
-            document.getElementById('totalPmi').textContent = '$' + Math.round(totalPmi).toLocaleString();
-            document.getElementById('monthsToRemove').textContent = currentLtv > 80 ? months : '0';
-            document.getElementById('targetBalance').textContent = '$' + Math.round(targetBalance).toLocaleString();
-            document.getElementById('extraPayment').textContent = '$' + Math.round(extraPayment).toLocaleString();
-            
-            // LTV progress bar (inverted - 100% LTV = 0% progress, 80% LTV = 100% progress)
-            const progress = currentLtv <= 80 ? 100 : ((100 - currentLtv) / 20) * 100;
-            document.getElementById('ltvFill').style.width = Math.max(0, progress) + '%';
-            document.getElementById('currentLtvLabel').textContent = 'Your LTV: ' + currentLtv.toFixed(1) + '%';
+
+            document.getElementById('monthlyPMI').textContent = '$' + Math.round(monthlyPMI).toLocaleString();
+            document.getElementById('ltv').textContent = ltv.toFixed(1) + '%';
+            document.getElementById('annualPMI').textContent = '$' + Math.round(annualPMI).toLocaleString();
+            document.getElementById('totalPMI').textContent = '$' + Math.round(totalPMI).toLocaleString();
+
+            document.getElementById('loanAmount').textContent = '$' + Math.round(loanAmount).toLocaleString();
+            document.getElementById('equityNeeded').textContent = ltv > 80 ? '$' + Math.round(equityNeeded).toLocaleString() : '$0 (Not Required)';
+            document.getElementById('paymentsUntil').textContent = ltv > 80 ? months + ' payments' : 'N/A';
+            document.getElementById('yearsUntil').textContent = ltv > 80 ? (months / 12).toFixed(1) + ' years' : 'N/A';
+
+            // Update LTV bar
+            document.getElementById('ltvFill').style.width = Math.min(100, ltv) + '%';
+            document.getElementById('ltvFill').style.background = ltv <= 80 ? 'var(--success)' : 'var(--primary)';
+            document.getElementById('currentLTV').textContent = ltv.toFixed(1) + '%';
         }
-        
         calculate();
     </script>
 </body>

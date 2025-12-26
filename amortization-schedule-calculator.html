@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>APR Calculator - Calculate Annual Percentage Rate</title>
-    <meta name="description" content="Free APR calculator. Calculate the true annual percentage rate including fees and points to compare loan offers.">
-    <meta name="keywords" content="APR calculator, annual percentage rate, loan APR, mortgage APR, true cost of loan">
-    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/apr-calculator.html">
+    <title>Amortization Schedule Calculator - Loan Payment Breakdown</title>
+    <meta name="description" content="Free amortization schedule calculator. See detailed loan payment breakdown with principal, interest, and remaining balance for each payment.">
+    <meta name="keywords" content="amortization schedule, loan calculator, mortgage amortization, payment breakdown">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/amortization-schedule-calculator.html">
     <style>
-        :root { --primary: #0891b2; --primary-dark: #0e7490; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #7c3aed; --primary-dark: #6d28d9; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -23,8 +23,8 @@
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
-        input { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
-        input:focus { outline: none; border-color: var(--primary); }
+        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
         .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
         .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
         .result-hero-label { color: rgba(255,255,255,0.8); }
@@ -32,8 +32,13 @@
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
         .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
         .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
-        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
-        .info-box { background: var(--bg-input); padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 4px solid var(--secondary); }
+        .schedule-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .schedule-table th, .schedule-table td { padding: 12px; text-align: right; border-bottom: 1px solid var(--border); }
+        .schedule-table th { background: var(--bg-input); color: var(--secondary); text-align: center; }
+        .schedule-table td:first-child, .schedule-table th:first-child { text-align: center; }
+        .table-container { max-height: 400px; overflow-y: auto; }
+        .year-header { background: var(--primary); color: white; font-weight: bold; }
+        .year-header td { text-align: left !important; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
@@ -55,13 +60,13 @@
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
 
     <header class="header">
-        <h1>📊 APR Calculator</h1>
+        <h1>📅 Amortization Schedule</h1>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>📋 Loan Information</h2>
+                <h2>📋 Loan Details</h2>
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Loan Amount ($)</label>
@@ -73,54 +78,56 @@
                     </div>
                     <div class="form-group">
                         <label>Loan Term (years)</label>
-                        <input type="number" id="term" value="30" step="5" oninput="calculate()">
+                        <select id="term" onchange="calculate()">
+                            <option value="10">10 years</option>
+                            <option value="15">15 years</option>
+                            <option value="20">20 years</option>
+                            <option value="30" selected>30 years</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label>Closing Costs ($)</label>
-                        <input type="number" id="closing" value="6000" step="500" oninput="calculate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Points Paid ($)</label>
-                        <input type="number" id="points" value="3000" step="500" oninput="calculate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Other Fees ($)</label>
-                        <input type="number" id="fees" value="1500" step="100" oninput="calculate()">
+                        <label>Start Date</label>
+                        <input type="month" id="startDate" oninput="calculate()">
                     </div>
                 </div>
 
                 <div class="result-hero">
-                    <div class="result-hero-label">Annual Percentage Rate (APR)</div>
-                    <div class="result-hero-value" id="apr">0%</div>
+                    <div class="result-hero-label">Monthly Payment</div>
+                    <div class="result-hero-value" id="payment">$0</div>
                 </div>
 
                 <div class="results-grid">
                     <div class="result-card">
-                        <div class="result-value" id="payment">$0</div>
-                        <div class="result-label">Monthly Payment</div>
+                        <div class="result-value" id="totalPayment">$0</div>
+                        <div class="result-label">Total of Payments</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="totalFees">$0</div>
-                        <div class="result-label">Total Fees</div>
+                        <div class="result-value" id="totalInterest">$0</div>
+                        <div class="result-label">Total Interest</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="aprDiff">0%</div>
-                        <div class="result-label">APR vs Rate Diff</div>
+                        <div class="result-value" id="payoffDate">-</div>
+                        <div class="result-label">Payoff Date</div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>💰 Cost Breakdown</h2>
-                <div class="breakdown-row"><span>Loan Principal</span><span id="principal">$0</span></div>
-                <div class="breakdown-row"><span>Closing Costs</span><span id="closingDisplay">$0</span></div>
-                <div class="breakdown-row"><span>Points</span><span id="pointsDisplay">$0</span></div>
-                <div class="breakdown-row"><span>Other Fees</span><span id="feesDisplay">$0</span></div>
-                <div class="breakdown-row"><span>Total Interest Over Life</span><span id="totalInterest">$0</span></div>
-                <div class="breakdown-row" style="font-weight: bold;"><span>True Total Cost</span><span id="trueCost">$0</span></div>
-                
-                <div class="info-box">
-                    <strong>Why APR Matters:</strong> APR includes fees and points, giving you the true cost of borrowing. A loan with a lower interest rate but higher fees might have a higher APR than one with a slightly higher rate and lower fees.
+                <h2>📊 Amortization Schedule</h2>
+                <div class="table-container">
+                    <table class="schedule-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Date</th>
+                                <th>Payment</th>
+                                <th>Principal</th>
+                                <th>Interest</th>
+                                <th>Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody id="schedule"></tbody>
+                    </table>
                 </div>
             </div>
 
@@ -134,9 +141,9 @@
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
                     <a href="mortgage-calculator.html" class="related-link">🏡 Mortgage Calculator</a>
-                    <a href="mortgage-refinance-calculator.html" class="related-link">🔄 Refinance</a>
-                    <a href="amortization-schedule-calculator.html" class="related-link">📅 Amortization</a>
-                    <a href="closing-cost-calculator.html" class="related-link">📋 Closing Costs</a>
+                    <a href="mortgage-refinance-calculator.html" class="related-link">🔄 Refinance Calculator</a>
+                    <a href="home-affordability-calculator.html" class="related-link">🏠 Affordability</a>
+                    <a href="auto-loan-calculator.html" class="related-link">🚗 Auto Loan</a>
                 </div>
             </div>
         </div>
@@ -151,60 +158,68 @@
     </div>
 
     <script>
-        function calcPayment(principal, rate, months) {
-            const monthlyRate = rate / 100 / 12;
-            if (monthlyRate === 0) return principal / months;
-            return principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
-        }
-
-        function calcAPR(principal, payment, months, fees) {
-            // Newton-Raphson method to find APR
-            const totalPaid = payment * months;
-            const effectivePrincipal = principal - fees;
-            
-            let apr = 0.05; // Initial guess
-            for (let i = 0; i < 100; i++) {
-                const monthlyRate = apr / 12;
-                let presentValue = 0;
-                for (let m = 1; m <= months; m++) {
-                    presentValue += payment / Math.pow(1 + monthlyRate, m);
-                }
-                
-                const diff = presentValue - effectivePrincipal;
-                if (Math.abs(diff) < 0.01) break;
-                
-                // Adjust APR
-                if (diff > 0) apr += 0.0001;
-                else apr -= 0.0001;
-            }
-            return apr;
-        }
+        // Set default start date to current month
+        document.getElementById('startDate').value = new Date().toISOString().slice(0, 7);
 
         function calculate() {
             const amount = parseFloat(document.getElementById('amount').value) || 0;
             const rate = parseFloat(document.getElementById('rate').value) || 0;
             const term = parseInt(document.getElementById('term').value) * 12;
-            const closing = parseFloat(document.getElementById('closing').value) || 0;
-            const points = parseFloat(document.getElementById('points').value) || 0;
-            const fees = parseFloat(document.getElementById('fees').value) || 0;
+            const startDate = document.getElementById('startDate').value;
 
-            const totalFees = closing + points + fees;
-            const payment = calcPayment(amount, rate, term);
-            const apr = calcAPR(amount, payment, term, totalFees) * 100;
-            const totalInterest = (payment * term) - amount;
-            const trueCost = amount + totalInterest + totalFees;
+            const monthlyRate = rate / 100 / 12;
+            let payment;
+            if (monthlyRate === 0) {
+                payment = amount / term;
+            } else {
+                payment = amount * (monthlyRate * Math.pow(1 + monthlyRate, term)) / (Math.pow(1 + monthlyRate, term) - 1);
+            }
 
-            document.getElementById('apr').textContent = apr.toFixed(3) + '%';
+            const totalPayment = payment * term;
+            const totalInterest = totalPayment - amount;
+
             document.getElementById('payment').textContent = '$' + Math.round(payment).toLocaleString();
-            document.getElementById('totalFees').textContent = '$' + totalFees.toLocaleString();
-            document.getElementById('aprDiff').textContent = '+' + (apr - rate).toFixed(3) + '%';
-
-            document.getElementById('principal').textContent = '$' + amount.toLocaleString();
-            document.getElementById('closingDisplay').textContent = '$' + closing.toLocaleString();
-            document.getElementById('pointsDisplay').textContent = '$' + points.toLocaleString();
-            document.getElementById('feesDisplay').textContent = '$' + fees.toLocaleString();
+            document.getElementById('totalPayment').textContent = '$' + Math.round(totalPayment).toLocaleString();
             document.getElementById('totalInterest').textContent = '$' + Math.round(totalInterest).toLocaleString();
-            document.getElementById('trueCost').textContent = '$' + Math.round(trueCost).toLocaleString();
+
+            // Generate schedule
+            let balance = amount;
+            let html = '';
+            let currentYear = 0;
+            const start = startDate ? new Date(startDate + '-01') : new Date();
+
+            for (let i = 1; i <= term && balance > 0; i++) {
+                const interestPayment = balance * monthlyRate;
+                const principalPayment = Math.min(payment - interestPayment, balance);
+                balance = Math.max(0, balance - principalPayment);
+
+                const paymentDate = new Date(start);
+                paymentDate.setMonth(paymentDate.getMonth() + i - 1);
+                const year = paymentDate.getFullYear();
+
+                if (year !== currentYear) {
+                    currentYear = year;
+                    html += '<tr class="year-header"><td colspan="6">Year ' + year + '</td></tr>';
+                }
+
+                const dateStr = paymentDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+
+                html += '<tr>';
+                html += '<td>' + i + '</td>';
+                html += '<td>' + dateStr + '</td>';
+                html += '<td>$' + payment.toFixed(2) + '</td>';
+                html += '<td>$' + principalPayment.toFixed(2) + '</td>';
+                html += '<td>$' + interestPayment.toFixed(2) + '</td>';
+                html += '<td>$' + balance.toFixed(2) + '</td>';
+                html += '</tr>';
+            }
+
+            document.getElementById('schedule').innerHTML = html;
+
+            // Payoff date
+            const endDate = new Date(start);
+            endDate.setMonth(endDate.getMonth() + term);
+            document.getElementById('payoffDate').textContent = endDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
         }
         calculate();
     </script>
