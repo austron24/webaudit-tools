@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FIRE Calculator - Financial Independence Retire Early</title>
-    <meta name="description" content="Free FIRE calculator. Calculate when you can achieve financial independence and retire early based on your savings rate.">
-    <meta name="keywords" content="fire calculator, financial independence, retire early, fi calculator, early retirement calculator">
+    <meta name="description" content="Free FIRE calculator. Calculate your path to financial independence and early retirement. Find your FIRE number and time to FIRE.">
+    <meta name="keywords" content="FIRE calculator, financial independence, retire early, FIRE number, early retirement calculator">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/fire-calculator.html">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --fire: #f97316; }
+        :root { --primary: #ea580c; --primary-dark: #c2410c; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
         .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
-        .header { background: linear-gradient(135deg, var(--fire) 0%, #ea580c 100%); padding: 40px 20px; text-align: center; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
         .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
         .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
         .content-area { display: flex; flex-direction: column; gap: 20px; }
@@ -21,40 +21,28 @@
         .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
         .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
         input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
         input:focus, select:focus { outline: none; border-color: var(--primary); }
-        .result-hero { background: linear-gradient(135deg, var(--fire), #ea580c); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
         .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
         .result-hero-label { color: rgba(255,255,255,0.8); }
-        .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
-        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
-        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
-        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
-        .fire-types { margin-top: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .fire-type { padding: 20px; border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; }
-        .fire-type:hover { transform: translateY(-2px); }
-        .fire-type.selected { border-color: var(--fire); }
-        .fire-type.lean { background: linear-gradient(135deg, rgba(34, 211, 238, 0.2), rgba(34, 211, 238, 0.1)); }
-        .fire-type.regular { background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(249, 115, 22, 0.1)); }
-        .fire-type.fat { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1)); }
-        .fire-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 5px; }
-        .fire-type.lean .fire-name { color: var(--secondary); }
-        .fire-type.regular .fire-name { color: var(--fire); }
-        .fire-type.fat .fire-name { color: var(--success); }
-        .fire-multiplier { font-size: 2rem; font-weight: 800; margin: 10px 0; }
-        .fire-target { color: var(--text-secondary); font-size: 0.9rem; }
-        .savings-rate { margin-top: 20px; padding: 20px; background: var(--bg-input); border-radius: 12px; }
-        .rate-bar { height: 30px; background: var(--border); border-radius: 8px; overflow: hidden; margin: 15px 0; position: relative; }
-        .rate-fill { height: 100%; background: linear-gradient(90deg, var(--fire), var(--success)); border-radius: 8px; transition: width 0.5s; }
-        .milestone { margin-top: 20px; }
-        .milestone-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .fire-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .fire-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .fire-card h3 { color: var(--accent); font-size: 0.9rem; margin-bottom: 10px; }
+        .fire-value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
+        .fire-sublabel { color: var(--text-secondary); font-size: 0.8rem; margin-top: 5px; }
+        .progress-container { margin: 30px 0; }
+        .progress-bar { height: 30px; background: var(--border); border-radius: 15px; overflow: hidden; position: relative; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 15px; transition: width 0.3s; }
+        .progress-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: bold; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .results-grid, .fire-types { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) { .form-grid, .fire-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -69,7 +57,7 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
-    
+
     <header class="header">
         <h1>🔥 FIRE Calculator</h1>
     </header>
@@ -77,94 +65,97 @@
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>💰 Your Financial Details</h2>
+                <h2>📋 Your Financial Situation</h2>
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Current Age</label>
-                        <input type="number" id="currentAge" value="30" oninput="calculate()">
+                        <input type="number" id="age" value="30" step="1" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Current Savings ($)</label>
+                        <input type="number" id="savings" value="100000" step="10000" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Annual Income ($)</label>
-                        <input type="number" id="income" value="80000" oninput="calculate()">
+                        <input type="number" id="income" value="80000" step="5000" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Annual Expenses ($)</label>
-                        <input type="number" id="expenses" value="50000" oninput="calculate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Current Net Worth ($)</label>
-                        <input type="number" id="netWorth" value="100000" oninput="calculate()">
+                        <input type="number" id="expenses" value="50000" step="5000" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Expected Return (%)</label>
-                        <input type="number" id="returnRate" value="7" step="0.5" oninput="calculate()">
+                        <input type="number" id="return" value="7" step="0.5" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Safe Withdrawal Rate (%)</label>
-                        <input type="number" id="withdrawalRate" value="4" step="0.5" oninput="calculate()">
+                        <input type="number" id="swr" value="4" step="0.25" oninput="calculate()">
                     </div>
                 </div>
-                
+
                 <div class="result-hero">
-                    <div class="result-hero-label">Years to Financial Independence</div>
+                    <div class="result-hero-label">Years to FIRE</div>
                     <div class="result-hero-value" id="yearsToFire">0</div>
                 </div>
-                
-                <div class="results-grid">
-                    <div class="result-card">
-                        <div class="result-value" id="fireNumber">$0</div>
-                        <div class="result-label">FIRE Number</div>
+
+                <div class="progress-container">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Current: $<span id="currentSavings">0</span></span>
+                        <span>FIRE Number: $<span id="fireNumberTop">0</span></span>
                     </div>
-                    <div class="result-card">
-                        <div class="result-value" id="fireAge">0</div>
-                        <div class="result-label">FIRE Age</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="savingsRate">0%</div>
-                        <div class="result-label">Savings Rate</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="annualSavings">$0</div>
-                        <div class="result-label">Annual Savings</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                        <span class="progress-text" id="progressText">0%</span>
                     </div>
                 </div>
-                
-                <div class="savings-rate">
-                    <h3 style="color: var(--secondary); margin-bottom: 10px;">Savings Rate Progress</h3>
-                    <div class="rate-bar">
-                        <div class="rate-fill" id="rateFill" style="width: 0%;"></div>
+
+                <div class="fire-grid">
+                    <div class="fire-card">
+                        <h3>🔥 FIRE Number</h3>
+                        <div class="fire-value" id="fireNumber">$0</div>
+                        <div class="fire-sublabel">25x Annual Expenses</div>
                     </div>
-                    <p style="text-align: center; color: var(--text-secondary);" id="rateMessage"></p>
+                    <div class="fire-card">
+                        <h3>📅 FIRE Date</h3>
+                        <div class="fire-value" id="fireDate">-</div>
+                        <div class="fire-sublabel">Target retirement date</div>
+                    </div>
+                    <div class="fire-card">
+                        <h3>🎂 FIRE Age</h3>
+                        <div class="fire-value" id="fireAge">-</div>
+                        <div class="fire-sublabel">Age at FIRE</div>
+                    </div>
                 </div>
+            </div>
+
+            <div class="card">
+                <h2>📊 FIRE Breakdown</h2>
+                <div class="breakdown-row"><span>Monthly Savings</span><span id="monthlySavings">$0</span></div>
+                <div class="breakdown-row"><span>Savings Rate</span><span id="savingsRate">0%</span></div>
+                <div class="breakdown-row"><span>Annual Investment Growth</span><span id="annualGrowth">$0</span></div>
+                <div class="breakdown-row"><span>Safe Annual Withdrawal</span><span id="safeWithdrawal">$0</span></div>
+                <div class="breakdown-row" style="font-weight: bold; background: var(--primary);"><span>Monthly FIRE Income</span><span id="fireIncome">$0</span></div>
             </div>
 
             <div class="card">
                 <h2>🎯 FIRE Types</h2>
-                <div class="fire-types">
-                    <div class="fire-type lean" onclick="setFireType('lean')">
-                        <div class="fire-name">Lean FIRE</div>
-                        <div class="fire-multiplier">20x</div>
-                        <div class="fire-target" id="leanTarget">$0</div>
-                        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;">Minimal lifestyle</div>
+                <div class="fire-grid">
+                    <div class="fire-card">
+                        <h3>Lean FIRE</h3>
+                        <div class="fire-value" id="leanFire">$0</div>
+                        <div class="fire-sublabel">$40k/year expenses</div>
                     </div>
-                    <div class="fire-type regular selected" onclick="setFireType('regular')">
-                        <div class="fire-name">Regular FIRE</div>
-                        <div class="fire-multiplier">25x</div>
-                        <div class="fire-target" id="regularTarget">$0</div>
-                        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;">Standard 4% rule</div>
+                    <div class="fire-card">
+                        <h3>Regular FIRE</h3>
+                        <div class="fire-value" id="regularFire">$0</div>
+                        <div class="fire-sublabel">Your expenses</div>
                     </div>
-                    <div class="fire-type fat" onclick="setFireType('fat')">
-                        <div class="fire-name">Fat FIRE</div>
-                        <div class="fire-multiplier">33x</div>
-                        <div class="fire-target" id="fatTarget">$0</div>
-                        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;">Comfortable lifestyle</div>
+                    <div class="fire-card">
+                        <h3>Fat FIRE</h3>
+                        <div class="fire-value" id="fatFire">$0</div>
+                        <div class="fire-sublabel">$100k/year expenses</div>
                     </div>
                 </div>
-            </div>
-
-            <div class="card">
-                <h2>📈 Milestones</h2>
-                <div class="milestone" id="milestones"></div>
             </div>
 
             <div class="ad-container">
@@ -176,10 +167,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="retirement-calculator.html" class="related-link">🏖️ Retirement Calculator</a>
-                    <a href="net-worth-calculator.html" class="related-link">💎 Net Worth</a>
-                    <a href="investment-calculator.html" class="related-link">📈 Investment Calculator</a>
-                    <a href="compound-interest-calculator.html" class="related-link">💵 Compound Interest</a>
+                    <a href="retirement-calculator.html" class="related-link">🏖️ Retirement</a>
+                    <a href="compound-interest-calculator.html" class="related-link">💹 Compound Interest</a>
+                    <a href="investment-calculator.html" class="related-link">📈 Investment</a>
+                    <a href="net-worth-calculator.html" class="related-link">💰 Net Worth</a>
                 </div>
             </div>
         </div>
@@ -194,92 +185,65 @@
     </div>
 
     <script>
-        let fireType = 'regular';
-        
-        function setFireType(type) {
-            fireType = type;
-            document.querySelectorAll('.fire-type').forEach(t => t.classList.remove('selected'));
-            event.currentTarget.classList.add('selected');
-            calculate();
-        }
-        
         function calculate() {
-            const currentAge = parseInt(document.getElementById('currentAge').value) || 30;
+            const age = parseInt(document.getElementById('age').value) || 30;
+            const savings = parseFloat(document.getElementById('savings').value) || 0;
             const income = parseFloat(document.getElementById('income').value) || 0;
             const expenses = parseFloat(document.getElementById('expenses').value) || 0;
-            const netWorth = parseFloat(document.getElementById('netWorth').value) || 0;
-            const returnRate = parseFloat(document.getElementById('returnRate').value) / 100 || 0.07;
-            const withdrawalRate = parseFloat(document.getElementById('withdrawalRate').value) / 100 || 0.04;
-            
+            const returnRate = parseFloat(document.getElementById('return').value) || 7;
+            const swr = parseFloat(document.getElementById('swr').value) || 4;
+
             const annualSavings = income - expenses;
+            const monthlySavings = annualSavings / 12;
             const savingsRate = income > 0 ? (annualSavings / income) * 100 : 0;
+            const fireNumber = expenses * (100 / swr);
+
+            // Calculate years to FIRE
+            let yearsToFire = 0;
+            let currentBalance = savings;
+            const monthlyReturn = returnRate / 100 / 12;
             
-            // FIRE numbers
-            const leanTarget = expenses * 0.8 * 25;
-            const regularTarget = expenses * 25;
-            const fatTarget = expenses * 33;
-            
-            let fireNumber = regularTarget;
-            if (fireType === 'lean') fireNumber = leanTarget;
-            if (fireType === 'fat') fireNumber = fatTarget;
-            
-            // Years to FIRE
-            let years = 0;
-            let balance = netWorth;
-            while (balance < fireNumber && years < 100) {
-                balance = balance * (1 + returnRate) + annualSavings;
-                years++;
-            }
-            
-            const fireAge = currentAge + years;
-            
-            document.getElementById('yearsToFire').textContent = years < 100 ? years + ' years' : '100+';
-            document.getElementById('fireNumber').textContent = '$' + Math.round(fireNumber).toLocaleString();
-            document.getElementById('fireAge').textContent = years < 100 ? fireAge : 'N/A';
-            document.getElementById('savingsRate').textContent = savingsRate.toFixed(0) + '%';
-            document.getElementById('annualSavings').textContent = '$' + Math.round(annualSavings).toLocaleString();
-            
-            document.getElementById('leanTarget').textContent = '$' + Math.round(leanTarget).toLocaleString();
-            document.getElementById('regularTarget').textContent = '$' + Math.round(regularTarget).toLocaleString();
-            document.getElementById('fatTarget').textContent = '$' + Math.round(fatTarget).toLocaleString();
-            
-            // Savings rate bar
-            document.getElementById('rateFill').style.width = Math.min(100, savingsRate) + '%';
-            let rateMessage = '';
-            if (savingsRate < 20) rateMessage = 'Consider increasing your savings rate for faster FIRE';
-            else if (savingsRate < 50) rateMessage = 'Good savings rate! You\'re on track.';
-            else rateMessage = '🔥 Excellent! You\'re a FIRE superstar!';
-            document.getElementById('rateMessage').textContent = rateMessage;
-            
-            // Milestones
-            const milestones = [
-                { name: '25% to FIRE', target: fireNumber * 0.25 },
-                { name: '50% to FIRE', target: fireNumber * 0.50 },
-                { name: '75% to FIRE', target: fireNumber * 0.75 },
-                { name: 'Coast FIRE', target: fireNumber * 0.5 },
-                { name: 'Full FIRE', target: fireNumber }
-            ];
-            
-            let milestonesHtml = '';
-            for (const milestone of milestones) {
-                let yrs = 0;
-                let bal = netWorth;
-                while (bal < milestone.target && yrs < 100) {
-                    bal = bal * (1 + returnRate) + annualSavings;
-                    yrs++;
+            if (currentBalance < fireNumber && annualSavings > 0) {
+                while (currentBalance < fireNumber && yearsToFire < 100) {
+                    currentBalance = currentBalance * (1 + monthlyReturn) + (monthlySavings);
+                    yearsToFire += 1/12;
                 }
-                const reached = netWorth >= milestone.target;
-                const status = reached ? '✅ Achieved!' : `${yrs} years (Age ${currentAge + yrs})`;
-                
-                milestonesHtml += `<div class="milestone-row">
-                    <span>${milestone.name}</span>
-                    <span style="color: var(--secondary);">$${Math.round(milestone.target).toLocaleString()}</span>
-                    <span style="color: ${reached ? 'var(--success)' : 'var(--text-secondary)'};">${status}</span>
-                </div>`;
+            } else if (currentBalance >= fireNumber) {
+                yearsToFire = 0;
+            } else {
+                yearsToFire = Infinity;
             }
-            document.getElementById('milestones').innerHTML = milestonesHtml;
+
+            const fireAge = age + Math.ceil(yearsToFire);
+            const fireDate = new Date();
+            fireDate.setFullYear(fireDate.getFullYear() + Math.ceil(yearsToFire));
+
+            const progressPercent = Math.min(100, (savings / fireNumber) * 100);
+            const safeWithdrawal = fireNumber * (swr / 100);
+            const annualGrowth = savings * (returnRate / 100);
+
+            // Update displays
+            document.getElementById('yearsToFire').textContent = yearsToFire === Infinity ? '∞' : Math.ceil(yearsToFire) + ' years';
+            document.getElementById('fireNumber').textContent = '$' + Math.round(fireNumber).toLocaleString();
+            document.getElementById('fireNumberTop').textContent = Math.round(fireNumber).toLocaleString();
+            document.getElementById('currentSavings').textContent = Math.round(savings).toLocaleString();
+            document.getElementById('fireDate').textContent = yearsToFire === Infinity ? 'N/A' : fireDate.getFullYear();
+            document.getElementById('fireAge').textContent = yearsToFire === Infinity ? 'N/A' : fireAge;
+
+            document.getElementById('progressFill').style.width = progressPercent + '%';
+            document.getElementById('progressText').textContent = progressPercent.toFixed(1) + '%';
+
+            document.getElementById('monthlySavings').textContent = '$' + Math.round(monthlySavings).toLocaleString();
+            document.getElementById('savingsRate').textContent = savingsRate.toFixed(1) + '%';
+            document.getElementById('annualGrowth').textContent = '$' + Math.round(annualGrowth).toLocaleString();
+            document.getElementById('safeWithdrawal').textContent = '$' + Math.round(safeWithdrawal).toLocaleString();
+            document.getElementById('fireIncome').textContent = '$' + Math.round(safeWithdrawal / 12).toLocaleString();
+
+            // FIRE types
+            document.getElementById('leanFire').textContent = '$' + Math.round(40000 * (100 / swr)).toLocaleString();
+            document.getElementById('regularFire').textContent = '$' + Math.round(fireNumber).toLocaleString();
+            document.getElementById('fatFire').textContent = '$' + Math.round(100000 * (100 / swr)).toLocaleString();
         }
-        
         calculate();
     </script>
 </body>
