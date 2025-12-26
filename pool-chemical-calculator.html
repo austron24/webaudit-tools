@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pool Chemical Calculator - Chlorine & pH Calculator</title>
+    <meta name="description" content="Calculate pool chemical doses for chlorine, pH, alkalinity and more. Free pool chemistry calculator for proper water balance.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #06b6d4 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #06b6d4;
+        }
+        .section-title {
+            font-size: 14px;
+            color: #0891b2;
+            font-weight: 600;
+            margin: 20px 0 10px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            border-radius: 16px;
+            padding: 25px;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box h4 {
+            opacity: 0.9;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .chem-result {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .chem-result:last-child { border: none; }
+        .chem-result .name { font-size: 14px; }
+        .chem-result .dose {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .levels-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .level-item {
+            background: #ecfeff;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .level-item .label {
+            font-size: 11px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .level-item .value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0891b2;
+        }
+        .level-item .ideal {
+            font-size: 10px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .level-item.warning { background: #fef3c7; }
+        .level-item.warning .value { color: #d97706; }
+        .level-item.danger { background: #fee2e2; }
+        .level-item.danger .value { color: #dc2626; }
+        .level-item.good { background: #dcfce7; }
+        .level-item.good .value { color: #16a34a; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #0891b2;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #0891b2; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #0891b2;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0891b2; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #06b6d4;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #67e8f9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Pool Chemical Calculator</h1>
+            <p class="subtitle">Get perfect pool water balance</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group full">
+                    <label>Pool Volume (gallons)</label>
+                    <input type="number" id="poolVolume" value="15000" min="1000" max="100000" step="500" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="section-title">🧪 Current Readings</div>
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Free Chlorine (ppm)</label>
+                    <input type="number" id="currentCl" value="1.0" min="0" max="10" step="0.1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Target Chlorine (ppm)</label>
+                    <input type="number" id="targetCl" value="3.0" min="1" max="5" step="0.5" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Current pH</label>
+                    <input type="number" id="currentPh" value="7.2" min="6.0" max="8.5" step="0.1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Target pH</label>
+                    <input type="number" id="targetPh" value="7.4" min="7.2" max="7.6" step="0.1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Current Alkalinity (ppm)</label>
+                    <input type="number" id="currentAlk" value="80" min="0" max="200" step="10" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Target Alkalinity (ppm)</label>
+                    <input type="number" id="targetAlk" value="100" min="80" max="120" step="10" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <h4>💊 Chemical Doses Needed</h4>
+                <div class="chem-result">
+                    <span class="name">Liquid Chlorine (12.5%)</span>
+                    <span class="dose" id="liquidCl">24 oz</span>
+                </div>
+                <div class="chem-result">
+                    <span class="name">OR Chlorine Tablets (3")</span>
+                    <span class="dose" id="tabletCl">2 tabs</span>
+                </div>
+                <div class="chem-result">
+                    <span class="name" id="phChemName">pH Increaser</span>
+                    <span class="dose" id="phDose">8 oz</span>
+                </div>
+                <div class="chem-result">
+                    <span class="name" id="alkChemName">Alkalinity Increaser</span>
+                    <span class="dose" id="alkDose">1.5 lbs</span>
+                </div>
+            </div>
+
+            <div class="levels-grid">
+                <div class="level-item" id="clStatus">
+                    <div class="label">Chlorine</div>
+                    <div class="value" id="clLevel">1.0 ppm</div>
+                    <div class="ideal">Ideal: 2-4 ppm</div>
+                </div>
+                <div class="level-item" id="phStatus">
+                    <div class="label">pH Level</div>
+                    <div class="value" id="phLevel">7.2</div>
+                    <div class="ideal">Ideal: 7.2-7.6</div>
+                </div>
+                <div class="level-item" id="alkStatus">
+                    <div class="label">Alkalinity</div>
+                    <div class="value" id="alkLevel">80 ppm</div>
+                    <div class="ideal">Ideal: 80-120 ppm</div>
+                </div>
+                <div class="level-item" id="balanceStatus">
+                    <div class="label">Overall</div>
+                    <div class="value" id="balance">⚠️</div>
+                    <div class="ideal">Needs attention</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>📊 Pool Details</h4>
+                <div class="break-row">
+                    <span>Pool Volume</span>
+                    <span class="value" id="displayVolume">15,000 gal</span>
+                </div>
+                <div class="break-row">
+                    <span>Chlorine to Add</span>
+                    <span class="value" id="clToAdd">+2.0 ppm</span>
+                </div>
+                <div class="break-row">
+                    <span>pH Adjustment</span>
+                    <span class="value" id="phToAdd">+0.2</span>
+                </div>
+                <div class="break-row">
+                    <span>Alkalinity Adjustment</span>
+                    <span class="value" id="alkToAdd">+20 ppm</span>
+                </div>
+            </div>
+
+            <div class="tips">
+                <h4>🏊 Pool Care Tips</h4>
+                <div class="tip-item">✓ Test water 2-3 times per week</div>
+                <div class="tip-item">✓ Add chemicals with pump running</div>
+                <div class="tip-item">✓ Balance alkalinity before pH</div>
+                <div class="tip-item">✓ Shock weekly during heavy use</div>
+                <div class="tip-item">✓ Wait 15 min between chemical additions</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home & Yard Tools</h4>
+            <a href="pool-calculator.html">Pool Volume Calculator</a>
+            <a href="fertilizer-calculator.html">Fertilizer Calculator</a>
+            <a href="water-intake-calculator.html">Water Intake</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Pool Chemical Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const volume = parseFloat(document.getElementById('poolVolume').value) || 15000;
+            const currentCl = parseFloat(document.getElementById('currentCl').value) || 0;
+            const targetCl = parseFloat(document.getElementById('targetCl').value) || 3;
+            const currentPh = parseFloat(document.getElementById('currentPh').value) || 7.2;
+            const targetPh = parseFloat(document.getElementById('targetPh').value) || 7.4;
+            const currentAlk = parseFloat(document.getElementById('currentAlk').value) || 80;
+            const targetAlk = parseFloat(document.getElementById('targetAlk').value) || 100;
+
+            // Chlorine calculations
+            const clDiff = targetCl - currentCl;
+            // 1 oz of 12.5% liquid chlorine raises 10,000 gallons by 0.8 ppm
+            const liquidClOz = Math.max(0, (clDiff / 0.8) * (volume / 10000));
+            // 1 3" tablet = about 8 oz of chlorine
+            const tablets = Math.ceil(liquidClOz / 12);
+
+            // pH calculations
+            const phDiff = targetPh - currentPh;
+            let phDose = 0;
+            let phChemName = '';
+            if (phDiff > 0) {
+                // Soda ash: 6 oz per 10,000 gal raises pH by 0.2
+                phDose = (phDiff / 0.2) * 6 * (volume / 10000);
+                phChemName = 'pH Increaser (Soda Ash)';
+            } else if (phDiff < 0) {
+                // Muriatic acid: 1 cup per 10,000 gal lowers pH by 0.2
+                phDose = Math.abs(phDiff / 0.2) * 8 * (volume / 10000);
+                phChemName = 'pH Decreaser (Muriatic Acid)';
+            } else {
+                phChemName = 'pH Adjustment';
+            }
+
+            // Alkalinity calculations
+            const alkDiff = targetAlk - currentAlk;
+            let alkDose = 0;
+            let alkChemName = '';
+            if (alkDiff > 0) {
+                // Baking soda: 1.5 lbs per 10,000 gal raises TA by 10 ppm
+                alkDose = (alkDiff / 10) * 1.5 * (volume / 10000);
+                alkChemName = 'Alkalinity Increaser';
+            } else if (alkDiff < 0) {
+                // Muriatic acid also lowers TA
+                alkDose = Math.abs(alkDiff / 10) * 0.5 * (volume / 10000);
+                alkChemName = 'Muriatic Acid';
+            } else {
+                alkChemName = 'Alkalinity Adjustment';
+            }
+
+            // Update displays
+            document.getElementById('liquidCl').textContent = clDiff <= 0 ? 'None' : Math.round(liquidClOz) + ' oz';
+            document.getElementById('tabletCl').textContent = clDiff <= 0 ? 'None' : tablets + ' tabs';
+            document.getElementById('phChemName').textContent = phChemName;
+            document.getElementById('phDose').textContent = phDiff === 0 ? 'None' : Math.round(phDose) + ' oz';
+            document.getElementById('alkChemName').textContent = alkChemName;
+            document.getElementById('alkDose').textContent = alkDiff === 0 ? 'None' : alkDose.toFixed(1) + ' lbs';
+
+            // Update status indicators
+            document.getElementById('clLevel').textContent = currentCl + ' ppm';
+            document.getElementById('phLevel').textContent = currentPh;
+            document.getElementById('alkLevel').textContent = currentAlk + ' ppm';
+
+            // Chlorine status
+            const clStatus = document.getElementById('clStatus');
+            clStatus.className = 'level-item';
+            if (currentCl < 1) clStatus.classList.add('danger');
+            else if (currentCl < 2) clStatus.classList.add('warning');
+            else if (currentCl <= 4) clStatus.classList.add('good');
+            else clStatus.classList.add('warning');
+
+            // pH status
+            const phStatus = document.getElementById('phStatus');
+            phStatus.className = 'level-item';
+            if (currentPh < 7.0 || currentPh > 7.8) phStatus.classList.add('danger');
+            else if (currentPh < 7.2 || currentPh > 7.6) phStatus.classList.add('warning');
+            else phStatus.classList.add('good');
+
+            // Alkalinity status
+            const alkStatus = document.getElementById('alkStatus');
+            alkStatus.className = 'level-item';
+            if (currentAlk < 60 || currentAlk > 140) alkStatus.classList.add('danger');
+            else if (currentAlk < 80 || currentAlk > 120) alkStatus.classList.add('warning');
+            else alkStatus.classList.add('good');
+
+            // Overall balance
+            const balanceStatus = document.getElementById('balanceStatus');
+            balanceStatus.className = 'level-item';
+            const issues = (currentCl < 2 || currentCl > 4) + (currentPh < 7.2 || currentPh > 7.6) + (currentAlk < 80 || currentAlk > 120);
+            if (issues === 0) {
+                document.getElementById('balance').textContent = '✓';
+                balanceStatus.classList.add('good');
+            } else if (issues === 1) {
+                document.getElementById('balance').textContent = '⚠️';
+                balanceStatus.classList.add('warning');
+            } else {
+                document.getElementById('balance').textContent = '⚠️⚠️';
+                balanceStatus.classList.add('danger');
+            }
+
+            // Breakdown
+            document.getElementById('displayVolume').textContent = volume.toLocaleString() + ' gal';
+            document.getElementById('clToAdd').textContent = (clDiff > 0 ? '+' : '') + clDiff.toFixed(1) + ' ppm';
+            document.getElementById('phToAdd').textContent = (phDiff > 0 ? '+' : '') + phDiff.toFixed(1);
+            document.getElementById('alkToAdd').textContent = (alkDiff > 0 ? '+' : '') + alkDiff + ' ppm';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

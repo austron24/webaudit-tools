@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baby Formula Calculator - How Much Formula Does Baby Need</title>
+    <meta name="description" content="Calculate how much formula your baby needs by age and weight. Free baby feeding calculator with daily ounces and monthly formula cost.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #f472b6 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #f472b6;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .stat-item {
+            background: #fdf2f8;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .stat-item .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #db2777;
+        }
+        .stat-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .schedule {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .schedule h4 {
+            color: #db2777;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .schedule-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .schedule-row:last-child { border: none; }
+        .schedule-row .value { font-weight: 600; color: #db2777; }
+        .cost-section {
+            background: #fdf2f8;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .cost-section h4 {
+            color: #db2777;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .cost-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #fbcfe8;
+            font-size: 14px;
+        }
+        .cost-row:last-child { border: none; }
+        .cost-row .value { font-weight: 600; color: #db2777; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #db2777;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #db2777; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #ec4899;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #f9a8d4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Baby Formula Calculator</h1>
+            <p class="subtitle">How much formula does your baby need?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Baby's Age</label>
+                    <select id="age" onchange="calculate()">
+                        <option value="0">0-1 weeks</option>
+                        <option value="1">1-2 weeks</option>
+                        <option value="2">2-4 weeks</option>
+                        <option value="1m" selected>1-2 months</option>
+                        <option value="2m">2-3 months</option>
+                        <option value="3m">3-4 months</option>
+                        <option value="4m">4-6 months</option>
+                        <option value="6m">6-9 months</option>
+                        <option value="9m">9-12 months</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Baby's Weight (lbs)</label>
+                    <input type="number" id="weight" value="10" min="5" max="30" step="0.5" oninput="calculate()">
+                </div>
+                <div class="input-group full">
+                    <label>Formula Cost ($ per can)</label>
+                    <input type="number" id="formulaCost" value="25" min="10" max="60" step="1" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Daily Formula Needed</div>
+                <div class="value" id="dailyOz">25 oz</div>
+                <div class="sub" id="feedingsPerDay">5-6 feedings per day</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="type">Per Feeding</div>
+                    <div class="value" id="perFeeding">4-5 oz</div>
+                    <div class="note">Typical amount</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Weekly Need</div>
+                    <div class="value" id="weeklyOz">175 oz</div>
+                    <div class="note">7 days supply</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Monthly Need</div>
+                    <div class="value" id="monthlyOz">750 oz</div>
+                    <div class="note">30 days supply</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Cans/Month</div>
+                    <div class="value" id="cansMonth">6</div>
+                    <div class="note">~125 oz/can</div>
+                </div>
+            </div>
+
+            <div class="schedule">
+                <h4>🍼 Feeding Schedule</h4>
+                <div class="schedule-row">
+                    <span>First Feeding</span>
+                    <span class="value">6:00 AM</span>
+                </div>
+                <div class="schedule-row">
+                    <span>Second Feeding</span>
+                    <span class="value">9:30 AM</span>
+                </div>
+                <div class="schedule-row">
+                    <span>Third Feeding</span>
+                    <span class="value">1:00 PM</span>
+                </div>
+                <div class="schedule-row">
+                    <span>Fourth Feeding</span>
+                    <span class="value">4:30 PM</span>
+                </div>
+                <div class="schedule-row">
+                    <span>Fifth Feeding</span>
+                    <span class="value">8:00 PM</span>
+                </div>
+                <div class="schedule-row" id="nightFeedingRow">
+                    <span>Night Feeding</span>
+                    <span class="value">12:00 AM</span>
+                </div>
+            </div>
+
+            <div class="cost-section">
+                <h4>💰 Formula Costs</h4>
+                <div class="cost-row">
+                    <span>Weekly Cost</span>
+                    <span class="value" id="weeklyCost">$38</span>
+                </div>
+                <div class="cost-row">
+                    <span>Monthly Cost</span>
+                    <span class="value" id="monthlyCost">$150</span>
+                </div>
+                <div class="cost-row">
+                    <span>Yearly Cost</span>
+                    <span class="value" id="yearlyCost">$1,800</span>
+                </div>
+            </div>
+
+            <div class="tips">
+                <h4>👶 Feeding Tips</h4>
+                <div class="tip-item">✓ Feed on demand - every 2-4 hours for newborns</div>
+                <div class="tip-item">✓ Watch for hunger cues: rooting, sucking fist</div>
+                <div class="tip-item">✓ Discard formula left in bottle after 1 hour</div>
+                <div class="tip-item">✓ Prepared formula lasts 24 hours refrigerated</div>
+                <div class="tip-item">✓ Always test temperature on wrist before feeding</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Baby & Parenting Tools</h4>
+            <a href="due-date-calculator.html">Due Date Calculator</a>
+            <a href="ovulation-calculator.html">Ovulation Calculator</a>
+            <a href="dog-food-calculator.html">Dog Food Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Baby Formula Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        // Formula needs by age (oz per day range based on weight)
+        const ageData = {
+            '0': { ozPerLb: 2.5, feedingsPerDay: '8-12', perFeeding: '1-2 oz', minOz: 14, maxOz: 20 },
+            '1': { ozPerLb: 2.5, feedingsPerDay: '8-10', perFeeding: '2-3 oz', minOz: 18, maxOz: 24 },
+            '2': { ozPerLb: 2.5, feedingsPerDay: '6-8', perFeeding: '3-4 oz', minOz: 22, maxOz: 28 },
+            '1m': { ozPerLb: 2.5, feedingsPerDay: '5-6', perFeeding: '4-5 oz', minOz: 24, maxOz: 32 },
+            '2m': { ozPerLb: 2.5, feedingsPerDay: '5-6', perFeeding: '5-6 oz', minOz: 28, maxOz: 36 },
+            '3m': { ozPerLb: 2.5, feedingsPerDay: '5-6', perFeeding: '5-6 oz', minOz: 30, maxOz: 36 },
+            '4m': { ozPerLb: 2.5, feedingsPerDay: '4-6', perFeeding: '6-7 oz', minOz: 30, maxOz: 36 },
+            '6m': { ozPerLb: 2.5, feedingsPerDay: '4-5', perFeeding: '6-8 oz', minOz: 24, maxOz: 32 },
+            '9m': { ozPerLb: 2.0, feedingsPerDay: '3-4', perFeeding: '7-8 oz', minOz: 20, maxOz: 28 }
+        };
+
+        function calculate() {
+            const age = document.getElementById('age').value;
+            const weight = parseFloat(document.getElementById('weight').value) || 10;
+            const formulaCost = parseFloat(document.getElementById('formulaCost').value) || 25;
+
+            const data = ageData[age];
+
+            // Calculate daily ounces (2.5 oz per lb, capped by age range)
+            let dailyOz = Math.round(weight * data.ozPerLb);
+            dailyOz = Math.max(data.minOz, Math.min(data.maxOz, dailyOz));
+
+            const weeklyOz = dailyOz * 7;
+            const monthlyOz = dailyOz * 30;
+
+            // Standard formula can makes ~125 oz when prepared
+            const ozPerCan = 125;
+            const cansPerMonth = Math.ceil(monthlyOz / ozPerCan);
+
+            // Costs
+            const monthlyCost = cansPerMonth * formulaCost;
+            const weeklyCost = Math.round(monthlyCost / 4.3);
+            const yearlyCost = monthlyCost * 12;
+
+            // Update display
+            document.getElementById('dailyOz').textContent = dailyOz + ' oz';
+            document.getElementById('feedingsPerDay').textContent = data.feedingsPerDay + ' feedings per day';
+            document.getElementById('perFeeding').textContent = data.perFeeding;
+            document.getElementById('weeklyOz').textContent = weeklyOz + ' oz';
+            document.getElementById('monthlyOz').textContent = monthlyOz + ' oz';
+            document.getElementById('cansMonth').textContent = cansPerMonth;
+
+            document.getElementById('weeklyCost').textContent = '$' + weeklyCost;
+            document.getElementById('monthlyCost').textContent = '$' + monthlyCost;
+            document.getElementById('yearlyCost').textContent = '$' + yearlyCost.toLocaleString();
+
+            // Show/hide night feeding based on age
+            const nightRow = document.getElementById('nightFeedingRow');
+            if (age === '6m' || age === '9m') {
+                nightRow.style.display = 'none';
+            } else {
+                nightRow.style.display = 'flex';
+            }
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

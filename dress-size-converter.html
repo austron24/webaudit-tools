@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dress Size Converter - US UK EU Size Chart</title>
+    <meta name="description" content="Convert dress sizes between US, UK, EU, and AU. Women's clothing size chart and converter. Free dress size calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #ec4899 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group select:focus {
+            outline: none;
+            border-color: #ec4899;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+            border-radius: 16px;
+            padding: 25px;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .result-item {
+            text-align: center;
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            padding: 15px;
+        }
+        .result-item .region {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        .result-item .size {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .size-chart {
+            background: #fdf2f8;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        .size-chart h4 {
+            color: #db2777;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .size-chart table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .size-chart th, .size-chart td {
+            padding: 10px 8px;
+            text-align: center;
+            border-bottom: 1px solid #fbcfe8;
+        }
+        .size-chart th {
+            background: #fce7f3;
+            color: #be185d;
+            font-weight: 600;
+        }
+        .size-chart tr.highlight {
+            background: #fce7f3;
+        }
+        .measurements {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .measurements h4 {
+            color: #db2777;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .measure-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .measure-row:last-child { border: none; }
+        .measure-row .value { font-weight: 600; color: #db2777; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #db2777; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #ec4899;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #f9a8d4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Dress Size Converter</h1>
+            <p class="subtitle">Convert women's dress sizes globally</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Select Your Region</label>
+                <select id="region" onchange="calculate()">
+                    <option value="us" selected>US Size</option>
+                    <option value="uk">UK Size</option>
+                    <option value="eu">EU Size</option>
+                    <option value="au">AU Size</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Select Your Size</label>
+                <select id="size" onchange="calculate()">
+                    <option value="0">0 (XXS)</option>
+                    <option value="2">2 (XS)</option>
+                    <option value="4" selected>4 (S)</option>
+                    <option value="6">6 (S)</option>
+                    <option value="8">8 (M)</option>
+                    <option value="10">10 (M)</option>
+                    <option value="12">12 (L)</option>
+                    <option value="14">14 (L)</option>
+                    <option value="16">16 (XL)</option>
+                    <option value="18">18 (XXL)</option>
+                    <option value="20">20 (XXXL)</option>
+                </select>
+            </div>
+
+            <div class="result-box">
+                <div class="result-grid">
+                    <div class="result-item">
+                        <div class="region">🇺🇸 US</div>
+                        <div class="size" id="usSize">4</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="region">🇬🇧 UK</div>
+                        <div class="size" id="ukSize">8</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="region">🇪🇺 EU</div>
+                        <div class="size" id="euSize">36</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="region">🇦🇺 AU</div>
+                        <div class="size" id="auSize">8</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="measurements" id="measurements">
+                <h4>📏 Typical Measurements</h4>
+                <div class="measure-row">
+                    <span>Bust</span>
+                    <span class="value" id="bust">33-34"</span>
+                </div>
+                <div class="measure-row">
+                    <span>Waist</span>
+                    <span class="value" id="waist">25-26"</span>
+                </div>
+                <div class="measure-row">
+                    <span>Hips</span>
+                    <span class="value" id="hips">35-36"</span>
+                </div>
+            </div>
+
+            <div class="size-chart">
+                <h4>👗 Complete Size Chart</h4>
+                <table>
+                    <tr>
+                        <th>US</th>
+                        <th>UK</th>
+                        <th>EU</th>
+                        <th>AU</th>
+                        <th>Label</th>
+                    </tr>
+                    <tr><td>0</td><td>4</td><td>32</td><td>4</td><td>XXS</td></tr>
+                    <tr><td>2</td><td>6</td><td>34</td><td>6</td><td>XS</td></tr>
+                    <tr id="row4"><td>4</td><td>8</td><td>36</td><td>8</td><td>S</td></tr>
+                    <tr><td>6</td><td>10</td><td>38</td><td>10</td><td>S</td></tr>
+                    <tr><td>8</td><td>12</td><td>40</td><td>12</td><td>M</td></tr>
+                    <tr><td>10</td><td>14</td><td>42</td><td>14</td><td>M</td></tr>
+                    <tr><td>12</td><td>16</td><td>44</td><td>16</td><td>L</td></tr>
+                    <tr><td>14</td><td>18</td><td>46</td><td>18</td><td>L</td></tr>
+                    <tr><td>16</td><td>20</td><td>48</td><td>20</td><td>XL</td></tr>
+                    <tr><td>18</td><td>22</td><td>50</td><td>22</td><td>XXL</td></tr>
+                    <tr><td>20</td><td>24</td><td>52</td><td>24</td><td>XXXL</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Size Converters</h4>
+            <a href="shoe-size-converter.html">Shoe Size Converter</a>
+            <a href="ring-size-calculator.html">Ring Size Calculator</a>
+            <a href="bra-size-calculator.html">Bra Size Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Dress Size Converter by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        const sizeData = {
+            0: { uk: 4, eu: 32, au: 4, bust: '31-32"', waist: '23-24"', hips: '33-34"' },
+            2: { uk: 6, eu: 34, au: 6, bust: '32-33"', waist: '24-25"', hips: '34-35"' },
+            4: { uk: 8, eu: 36, au: 8, bust: '33-34"', waist: '25-26"', hips: '35-36"' },
+            6: { uk: 10, eu: 38, au: 10, bust: '34-35"', waist: '26-27"', hips: '36-37"' },
+            8: { uk: 12, eu: 40, au: 12, bust: '35-36"', waist: '27-28"', hips: '37-38"' },
+            10: { uk: 14, eu: 42, au: 14, bust: '36-37"', waist: '28-29"', hips: '38-39"' },
+            12: { uk: 16, eu: 44, au: 16, bust: '38-39"', waist: '30-31"', hips: '40-41"' },
+            14: { uk: 18, eu: 46, au: 18, bust: '40-41"', waist: '32-33"', hips: '42-43"' },
+            16: { uk: 20, eu: 48, au: 20, bust: '42-43"', waist: '34-35"', hips: '44-45"' },
+            18: { uk: 22, eu: 50, au: 22, bust: '44-45"', waist: '36-37"', hips: '46-47"' },
+            20: { uk: 24, eu: 52, au: 24, bust: '46-47"', waist: '38-39"', hips: '48-49"' }
+        };
+
+        function updateSizeOptions() {
+            const region = document.getElementById('region').value;
+            const sizeSelect = document.getElementById('size');
+            sizeSelect.innerHTML = '';
+
+            const labels = ['XXS', 'XS', 'S', 'S', 'M', 'M', 'L', 'L', 'XL', 'XXL', 'XXXL'];
+            const usBase = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+
+            usBase.forEach((us, i) => {
+                let displaySize;
+                if (region === 'us') displaySize = us;
+                else if (region === 'uk') displaySize = sizeData[us].uk;
+                else if (region === 'eu') displaySize = sizeData[us].eu;
+                else displaySize = sizeData[us].au;
+
+                const option = document.createElement('option');
+                option.value = us;
+                option.textContent = `${displaySize} (${labels[i]})`;
+                if (us === 4) option.selected = true;
+                sizeSelect.appendChild(option);
+            });
+        }
+
+        function calculate() {
+            const usSize = parseInt(document.getElementById('size').value);
+            const data = sizeData[usSize];
+
+            document.getElementById('usSize').textContent = usSize;
+            document.getElementById('ukSize').textContent = data.uk;
+            document.getElementById('euSize').textContent = data.eu;
+            document.getElementById('auSize').textContent = data.au;
+
+            document.getElementById('bust').textContent = data.bust;
+            document.getElementById('waist').textContent = data.waist;
+            document.getElementById('hips').textContent = data.hips;
+
+            // Highlight row in table
+            document.querySelectorAll('.size-chart tr').forEach(tr => tr.classList.remove('highlight'));
+            const rows = document.querySelectorAll('.size-chart tr');
+            const rowIndex = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20].indexOf(usSize) + 1;
+            if (rows[rowIndex]) rows[rowIndex].classList.add('highlight');
+        }
+
+        document.getElementById('region').addEventListener('change', function() {
+            updateSizeOptions();
+            calculate();
+        });
+
+        calculate();
+    </script>
+</body>
+</html>

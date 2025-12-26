@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lease vs Buy Calculator - Car Cost Comparison</title>
+    <meta name="description" content="Should you lease or buy a car? Compare total costs of leasing vs buying over time. Free auto lease vs purchase calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #7c3aed 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #7c3aed;
+        }
+        .section-title {
+            font-size: 14px;
+            color: #7c3aed;
+            font-weight: 600;
+            margin: 20px 0 10px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .winner { font-size: 32px; font-weight: bold; margin: 10px 0; }
+        .result-box .savings { font-size: 18px; opacity: 0.9; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .compare-box {
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-box.lease {
+            background: #f3e8ff;
+            border: 2px solid #a78bfa;
+        }
+        .compare-box.buy {
+            background: #ecfdf5;
+            border: 2px solid #6ee7b7;
+        }
+        .compare-box .type {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .compare-box.lease .type { color: #7c3aed; }
+        .compare-box.buy .type { color: #059669; }
+        .compare-box .cost {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .compare-box.lease .cost { color: #7c3aed; }
+        .compare-box.buy .cost { color: #059669; }
+        .compare-box .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #7c3aed;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 13px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; }
+        .break-row .value.lease { color: #7c3aed; }
+        .break-row .value.buy { color: #059669; }
+        .pros-cons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .pros-cons-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 15px;
+        }
+        .pros-cons-box h5 {
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+        .pros-cons-box.lease h5 { color: #7c3aed; }
+        .pros-cons-box.buy h5 { color: #059669; }
+        .pros-cons-box ul {
+            list-style: none;
+            font-size: 12px;
+        }
+        .pros-cons-box li {
+            padding: 4px 0;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #7c3aed; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #7c3aed;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #c4b5fd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Lease vs Buy Calculator</h1>
+            <p class="subtitle">Compare the true cost of leasing vs buying</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group full">
+                    <label>Vehicle Price ($)</label>
+                    <input type="number" id="price" value="35000" min="5000" max="200000" step="500" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Down Payment ($)</label>
+                    <input type="number" id="downPayment" value="3000" min="0" max="50000" step="500" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Term (Years)</label>
+                    <select id="term" onchange="calculate()">
+                        <option value="3" selected>3 Years</option>
+                        <option value="4">4 Years</option>
+                        <option value="5">5 Years</option>
+                        <option value="6">6 Years</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section-title">📋 Lease Details</div>
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Monthly Lease Payment ($)</label>
+                    <input type="number" id="leasePayment" value="399" min="100" max="2000" step="10" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Lease Fees at Signing ($)</label>
+                    <input type="number" id="leaseFees" value="1500" min="0" max="5000" step="100" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="section-title">🏦 Buy Details</div>
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Loan APR (%)</label>
+                    <input type="number" id="apr" value="6.5" min="0" max="25" step="0.1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Resale Value (%)</label>
+                    <input type="number" id="resale" value="55" min="20" max="80" step="5" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Our Recommendation</div>
+                <div class="winner" id="winner">🏆 BUY</div>
+                <div class="savings" id="savings">You save $4,250 over 3 years</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-box lease">
+                    <div class="type">🔑 Total Lease Cost</div>
+                    <div class="cost" id="leaseTotalCost">$18,864</div>
+                    <div class="note">No equity at end</div>
+                </div>
+                <div class="compare-box buy">
+                    <div class="type">🚗 Total Buy Cost</div>
+                    <div class="cost" id="buyTotalCost">$14,614</div>
+                    <div class="note">After resale value</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>📊 Cost Breakdown</h4>
+                <div class="break-row">
+                    <span>Monthly Payment</span>
+                    <span><span class="value lease" id="leaseMonthly">$399</span> vs <span class="value buy" id="buyMonthly">$645</span></span>
+                </div>
+                <div class="break-row">
+                    <span>Upfront Costs</span>
+                    <span><span class="value lease" id="leaseUpfront">$4,500</span> vs <span class="value buy" id="buyUpfront">$3,000</span></span>
+                </div>
+                <div class="break-row">
+                    <span>Total Payments</span>
+                    <span><span class="value lease" id="leasePayments">$18,864</span> vs <span class="value buy" id="buyPayments">$26,220</span></span>
+                </div>
+                <div class="break-row">
+                    <span>End Value</span>
+                    <span><span class="value lease">$0</span> vs <span class="value buy" id="buyEndValue">$19,250</span></span>
+                </div>
+                <div class="break-row" style="font-weight: bold; border-top: 2px solid #e2e8f0; padding-top: 12px;">
+                    <span>True Cost</span>
+                    <span><span class="value lease" id="leaseTrueCost">$18,864</span> vs <span class="value buy" id="buyTrueCost">$14,614</span></span>
+                </div>
+            </div>
+
+            <div class="pros-cons">
+                <div class="pros-cons-box lease">
+                    <h5>🔑 Lease Pros</h5>
+                    <ul>
+                        <li>✓ Lower monthly payment</li>
+                        <li>✓ Always drive new car</li>
+                        <li>✓ Warranty coverage</li>
+                        <li>✓ No resale hassle</li>
+                    </ul>
+                </div>
+                <div class="pros-cons-box buy">
+                    <h5>🚗 Buy Pros</h5>
+                    <ul>
+                        <li>✓ Build equity/ownership</li>
+                        <li>✓ No mileage limits</li>
+                        <li>✓ Customize freely</li>
+                        <li>✓ Cheaper long-term</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Auto Tools</h4>
+            <a href="gas-mileage-calculator.html">Gas Mileage Calculator</a>
+            <a href="auto-loan-calculator.html">Auto Loan Calculator</a>
+            <a href="savings-calculator.html">Savings Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Lease vs Buy Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const price = parseFloat(document.getElementById('price').value) || 35000;
+            const downPayment = parseFloat(document.getElementById('downPayment').value) || 0;
+            const term = parseInt(document.getElementById('term').value) || 3;
+            const leasePayment = parseFloat(document.getElementById('leasePayment').value) || 399;
+            const leaseFees = parseFloat(document.getElementById('leaseFees').value) || 0;
+            const apr = parseFloat(document.getElementById('apr').value) || 6.5;
+            const resalePercent = parseFloat(document.getElementById('resale').value) || 55;
+
+            const months = term * 12;
+
+            // LEASE CALCULATIONS
+            const leaseUpfront = downPayment + leaseFees;
+            const leaseMonthlyTotal = leasePayment * months;
+            const leaseTotalCost = leaseUpfront + leaseMonthlyTotal;
+
+            // BUY CALCULATIONS
+            const loanAmount = price - downPayment;
+            const monthlyRate = apr / 100 / 12;
+            let buyMonthlyPayment;
+
+            if (monthlyRate > 0) {
+                buyMonthlyPayment = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, months)) /
+                                   (Math.pow(1 + monthlyRate, months) - 1);
+            } else {
+                buyMonthlyPayment = loanAmount / months;
+            }
+
+            const buyTotalPayments = downPayment + (buyMonthlyPayment * months);
+            const resaleValue = price * (resalePercent / 100);
+            const buyTrueCost = buyTotalPayments - resaleValue;
+
+            // COMPARISON
+            const savings = Math.abs(leaseTotalCost - buyTrueCost);
+            const buyIsBetter = buyTrueCost < leaseTotalCost;
+
+            // Update display
+            document.getElementById('leaseTotalCost').textContent = '$' + Math.round(leaseTotalCost).toLocaleString();
+            document.getElementById('buyTotalCost').textContent = '$' + Math.round(buyTrueCost).toLocaleString();
+
+            document.getElementById('winner').textContent = buyIsBetter ? '🏆 BUY' : '🔑 LEASE';
+            document.getElementById('savings').textContent = 'You save $' + Math.round(savings).toLocaleString() + ' over ' + term + ' years';
+
+            document.getElementById('leaseMonthly').textContent = '$' + Math.round(leasePayment);
+            document.getElementById('buyMonthly').textContent = '$' + Math.round(buyMonthlyPayment);
+
+            document.getElementById('leaseUpfront').textContent = '$' + Math.round(leaseUpfront).toLocaleString();
+            document.getElementById('buyUpfront').textContent = '$' + Math.round(downPayment).toLocaleString();
+
+            document.getElementById('leasePayments').textContent = '$' + Math.round(leaseTotalCost).toLocaleString();
+            document.getElementById('buyPayments').textContent = '$' + Math.round(buyTotalPayments).toLocaleString();
+
+            document.getElementById('buyEndValue').textContent = '$' + Math.round(resaleValue).toLocaleString();
+
+            document.getElementById('leaseTrueCost').textContent = '$' + Math.round(leaseTotalCost).toLocaleString();
+            document.getElementById('buyTrueCost').textContent = '$' + Math.round(buyTrueCost).toLocaleString();
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
