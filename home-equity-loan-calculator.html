@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Equity Loan Calculator - Second Mortgage Payment</title>
+    <meta name="description" content="Calculate home equity loan payments, interest costs, and borrowing power. Compare fixed-rate home equity loans vs HELOCs.">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/home-equity-loan-calculator.html">
+    <meta property="og:title" content="Home Equity Loan Calculator - Second Mortgage Payment">
+    <meta property="og:description" content="Calculate home equity loan payments and compare to HELOC options.">
+    <meta property="og:type" content="website">
+    <style>
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --warning: #f59e0b; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; min-height: 100vh; }
+        .header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; }
+        .nav-links a:hover { color: var(--primary); }
+        .ad-top { background: var(--bg-card); padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); }
+        .ad-mobile { display: none; background: var(--bg-card); padding: 0.5rem; text-align: center; }
+        .main-layout { display: flex; max-width: 1400px; margin: 0 auto; gap: 2rem; padding: 2rem; }
+        .content { flex: 1; min-width: 0; }
+        .sidebar { width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 1rem; }
+        .hero { text-align: center; margin-bottom: 2rem; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary), #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { color: var(--text-secondary); font-size: 1.1rem; }
+        .calculator-card { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .section-title { font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--primary); }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.75rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 0.5rem; color: var(--text-primary); font-size: 1rem; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+        .input-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .calculate-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; border-radius: 0.5rem; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; }
+        .calculate-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
+        .results { display: none; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+        .results.show { display: block; }
+        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .result-box { background: var(--bg-input); padding: 1.25rem; border-radius: 0.75rem; text-align: center; }
+        .result-box.highlight { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid var(--primary); }
+        .result-label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .result-value { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
+        .comparison-table { width: 100%; margin-top: 1.5rem; border-collapse: collapse; }
+        .comparison-table th, .comparison-table td { padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); }
+        .comparison-table th { color: var(--text-secondary); font-weight: 500; background: var(--bg-input); }
+        .comparison-table td { color: var(--text-primary); }
+        .comparison-table tr:nth-child(even) { background: rgba(99, 102, 241, 0.05); }
+        .ltv-meter { margin-top: 1.5rem; }
+        .ltv-bar { height: 24px; background: var(--bg-input); border-radius: 12px; overflow: hidden; position: relative; }
+        .ltv-fill { height: 100%; transition: width 0.3s; }
+        .ltv-fill.safe { background: linear-gradient(90deg, var(--success), #34d399); }
+        .ltv-fill.moderate { background: linear-gradient(90deg, var(--warning), #fbbf24); }
+        .ltv-fill.high { background: linear-gradient(90deg, #ef4444, #f87171); }
+        .ltv-labels { display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary); }
+        .ad-inline { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin: 2rem 0; }
+        .info-section { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .info-section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary); }
+        .info-section p, .info-section li { color: var(--text-secondary); margin-bottom: 0.75rem; }
+        .info-section ul { padding-left: 1.5rem; }
+        .related-tools { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); }
+        .related-tools h3 { margin-bottom: 1rem; color: var(--text-primary); }
+        .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+        .tool-link { display: block; padding: 1rem; background: var(--bg-input); border-radius: 0.5rem; text-decoration: none; color: var(--text-primary); }
+        .tool-link:hover { background: var(--border); transform: translateY(-2px); }
+        .ad-bottom { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin-top: 2rem; }
+        .footer { background: var(--bg-card); border-top: 1px solid var(--border); padding: 2rem; text-align: center; margin-top: 3rem; }
+        .footer p { color: var(--text-secondary); font-size: 0.9rem; }
+        @media (max-width: 968px) { .sidebar { display: none; } .main-layout { padding: 1rem; } }
+        @media (max-width: 640px) { .ad-top { display: none; } .ad-mobile { display: block; } .hero h1 { font-size: 1.75rem; } .input-row { grid-template-columns: 1fr; } .nav-links { display: none; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">CalcTools</a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="finance-calculators.html">Finance</a>
+                <a href="health-calculators.html">Health</a>
+                <a href="home-calculators.html">Home</a>
+            </nav>
+        </div>
+    </header>
+    <div class="ad-top">
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-mobile">
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <div class="main-layout">
+        <main class="content">
+            <div class="hero">
+                <h1>Home Equity Loan Calculator</h1>
+                <p>Calculate your monthly payment and borrowing power</p>
+            </div>
+            <div class="calculator-card">
+                <h3 class="section-title">Your Home Details</h3>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Home Value ($)</label>
+                        <input type="number" id="homeValue" placeholder="500000" value="500000">
+                    </div>
+                    <div class="form-group">
+                        <label>Current Mortgage Balance ($)</label>
+                        <input type="number" id="mortgageBalance" placeholder="300000" value="300000">
+                    </div>
+                </div>
+                <h3 class="section-title" style="margin-top: 1.5rem;">Loan Details</h3>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Amount to Borrow ($)</label>
+                        <input type="number" id="loanAmount" placeholder="50000" value="50000">
+                    </div>
+                    <div class="form-group">
+                        <label>Interest Rate (%)</label>
+                        <input type="number" id="interestRate" step="0.125" placeholder="8.5" value="8.5">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Loan Term (years)</label>
+                        <select id="loanTerm">
+                            <option value="5">5 years</option>
+                            <option value="10" selected>10 years</option>
+                            <option value="15">15 years</option>
+                            <option value="20">20 years</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Max LTV Allowed (%)</label>
+                        <input type="number" id="maxLTV" placeholder="85" value="85">
+                    </div>
+                </div>
+                <button class="calculate-btn" onclick="calculate()">Calculate Payment</button>
+                <div class="results" id="results">
+                    <div class="result-grid">
+                        <div class="result-box highlight">
+                            <div class="result-label">Monthly Payment</div>
+                            <div class="result-value" id="monthlyPayment">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Total Interest</div>
+                            <div class="result-value" id="totalInterest">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Max You Can Borrow</div>
+                            <div class="result-value" id="maxBorrow">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Combined LTV</div>
+                            <div class="result-value" id="combinedLTV">0%</div>
+                        </div>
+                    </div>
+                    <div class="ltv-meter">
+                        <div class="ltv-bar">
+                            <div class="ltv-fill" id="ltvFill"></div>
+                        </div>
+                        <div class="ltv-labels">
+                            <span>0%</span>
+                            <span>Safe (< 80%)</span>
+                            <span>85%</span>
+                            <span>100%</span>
+                        </div>
+                    </div>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Home Equity Loan</th>
+                                <th>HELOC</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Interest Rate</td>
+                                <td>Fixed</td>
+                                <td>Variable</td>
+                            </tr>
+                            <tr>
+                                <td>Payment</td>
+                                <td>Same every month</td>
+                                <td>Varies with balance</td>
+                            </tr>
+                            <tr>
+                                <td>Access to Funds</td>
+                                <td>Lump sum upfront</td>
+                                <td>Draw as needed</td>
+                            </tr>
+                            <tr>
+                                <td>Best For</td>
+                                <td>Large one-time expense</td>
+                                <td>Ongoing expenses</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="ad-inline">
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+            <div class="info-section">
+                <h2>Home Equity Loan vs HELOC</h2>
+                <p>A home equity loan provides a lump sum with fixed monthly payments, while a HELOC works like a credit card with a variable rate and flexible draws.</p>
+                <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">When to Choose a Home Equity Loan</h3>
+                <ul>
+                    <li>Home renovations with known costs</li>
+                    <li>Debt consolidation</li>
+                    <li>Large one-time purchases</li>
+                    <li>When you prefer payment predictability</li>
+                </ul>
+                <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Important Considerations</h3>
+                <p>Your home serves as collateral, so failing to make payments could result in foreclosure. Interest may be tax-deductible if used for home improvements (consult a tax advisor).</p>
+            </div>
+            <div class="ad-bottom">
+                <script type="text/javascript">atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
+            </div>
+            <div class="related-tools">
+                <h3>Related Calculators</h3>
+                <div class="tool-grid">
+                    <a href="heloc-calculator.html" class="tool-link">HELOC Calculator</a>
+                    <a href="mortgage-calculator.html" class="tool-link">Mortgage Calculator</a>
+                    <a href="refinance-calculator.html" class="tool-link">Refinance Calculator</a>
+                    <a href="home-equity-calculator.html" class="tool-link">Home Equity Calculator</a>
+                    <a href="debt-consolidation-calculator.html" class="tool-link">Debt Consolidation</a>
+                    <a href="loan-comparison-calculator.html" class="tool-link">Loan Comparison</a>
+                </div>
+            </div>
+        </main>
+        <aside class="sidebar">
+            <div class="ad-sidebar">
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+            <div class="ad-sidebar">
+                <script type="text/javascript">atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
+            </div>
+        </aside>
+    </div>
+    <footer class="footer">
+        <p>&copy; 2024 CalcTools. Free online calculators for everyone.</p>
+    </footer>
+    <script>
+        function calcPayment(principal, annualRate, years) {
+            const monthlyRate = annualRate / 100 / 12;
+            const numPayments = years * 12;
+            if (monthlyRate === 0) return principal / numPayments;
+            return (principal * monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / (Math.pow(1 + monthlyRate, numPayments) - 1);
+        }
+        function formatCurrency(num) {
+            return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        }
+        function calculate() {
+            const homeValue = parseFloat(document.getElementById('homeValue').value) || 0;
+            const mortgageBalance = parseFloat(document.getElementById('mortgageBalance').value) || 0;
+            const loanAmount = parseFloat(document.getElementById('loanAmount').value) || 0;
+            const interestRate = parseFloat(document.getElementById('interestRate').value) || 0;
+            const loanTerm = parseFloat(document.getElementById('loanTerm').value) || 10;
+            const maxLTV = parseFloat(document.getElementById('maxLTV').value) || 85;
+            const currentEquity = homeValue - mortgageBalance;
+            const maxBorrow = Math.max(0, homeValue * (maxLTV / 100) - mortgageBalance);
+            const combinedLTV = homeValue > 0 ? ((mortgageBalance + loanAmount) / homeValue) * 100 : 0;
+            const monthlyPayment = calcPayment(loanAmount, interestRate, loanTerm);
+            const totalPaid = monthlyPayment * loanTerm * 12;
+            const totalInterest = totalPaid - loanAmount;
+            document.getElementById('monthlyPayment').textContent = formatCurrency(monthlyPayment);
+            document.getElementById('totalInterest').textContent = formatCurrency(totalInterest);
+            document.getElementById('maxBorrow').textContent = formatCurrency(maxBorrow);
+            document.getElementById('combinedLTV').textContent = combinedLTV.toFixed(1) + '%';
+            const ltvFill = document.getElementById('ltvFill');
+            ltvFill.style.width = Math.min(100, combinedLTV) + '%';
+            ltvFill.className = 'ltv-fill';
+            if (combinedLTV < 80) ltvFill.classList.add('safe');
+            else if (combinedLTV < 90) ltvFill.classList.add('moderate');
+            else ltvFill.classList.add('high');
+            document.getElementById('results').classList.add('show');
+        }
+        calculate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bridge Loan Calculator - Short-Term Financing Costs</title>
+    <meta name="description" content="Calculate bridge loan payments, interest costs, and total financing needed between home purchases. Plan your bridge financing strategy.">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/bridge-loan-calculator.html">
+    <meta property="og:title" content="Bridge Loan Calculator - Short-Term Financing Costs">
+    <meta property="og:description" content="Calculate bridge loan payments and costs between home purchases.">
+    <meta property="og:type" content="website">
+    <style>
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --warning: #f59e0b; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; min-height: 100vh; }
+        .header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; }
+        .nav-links a:hover { color: var(--primary); }
+        .ad-top { background: var(--bg-card); padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); }
+        .ad-mobile { display: none; background: var(--bg-card); padding: 0.5rem; text-align: center; }
+        .main-layout { display: flex; max-width: 1400px; margin: 0 auto; gap: 2rem; padding: 2rem; }
+        .content { flex: 1; min-width: 0; }
+        .sidebar { width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 1rem; }
+        .hero { text-align: center; margin-bottom: 2rem; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary), #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { color: var(--text-secondary); font-size: 1.1rem; }
+        .calculator-card { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .section-title { font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--primary); }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.75rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 0.5rem; color: var(--text-primary); font-size: 1rem; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+        .input-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .calculate-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; border-radius: 0.5rem; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; }
+        .calculate-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
+        .results { display: none; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+        .results.show { display: block; }
+        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .result-box { background: var(--bg-input); padding: 1.25rem; border-radius: 0.75rem; text-align: center; }
+        .result-box.highlight { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid var(--primary); }
+        .result-label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .result-value { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
+        .scenario-box { background: var(--bg-input); border-radius: 0.75rem; padding: 1.5rem; margin-top: 1.5rem; }
+        .scenario-box h4 { color: var(--primary); margin-bottom: 1rem; }
+        .scenario-row { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
+        .scenario-row:last-child { border-bottom: none; }
+        .scenario-label { color: var(--text-secondary); }
+        .scenario-value { color: var(--text-primary); font-weight: 500; }
+        .ad-inline { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin: 2rem 0; }
+        .info-section { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .info-section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary); }
+        .info-section p, .info-section li { color: var(--text-secondary); margin-bottom: 0.75rem; }
+        .info-section ul { padding-left: 1.5rem; }
+        .related-tools { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); }
+        .related-tools h3 { margin-bottom: 1rem; color: var(--text-primary); }
+        .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+        .tool-link { display: block; padding: 1rem; background: var(--bg-input); border-radius: 0.5rem; text-decoration: none; color: var(--text-primary); }
+        .tool-link:hover { background: var(--border); transform: translateY(-2px); }
+        .ad-bottom { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin-top: 2rem; }
+        .footer { background: var(--bg-card); border-top: 1px solid var(--border); padding: 2rem; text-align: center; margin-top: 3rem; }
+        .footer p { color: var(--text-secondary); font-size: 0.9rem; }
+        @media (max-width: 968px) { .sidebar { display: none; } .main-layout { padding: 1rem; } }
+        @media (max-width: 640px) { .ad-top { display: none; } .ad-mobile { display: block; } .hero h1 { font-size: 1.75rem; } .input-row { grid-template-columns: 1fr; } .nav-links { display: none; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">CalcTools</a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="finance-calculators.html">Finance</a>
+                <a href="health-calculators.html">Health</a>
+                <a href="home-calculators.html">Home</a>
+            </nav>
+        </div>
+    </header>
+    <div class="ad-top">
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-mobile">
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <div class="main-layout">
+        <main class="content">
+            <div class="hero">
+                <h1>Bridge Loan Calculator</h1>
+                <p>Calculate short-term financing costs between home purchases</p>
+            </div>
+            <div class="calculator-card">
+                <h3 class="section-title">Current Home Details</h3>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Current Home Value ($)</label>
+                        <input type="number" id="currentValue" placeholder="500000" value="500000">
+                    </div>
+                    <div class="form-group">
+                        <label>Current Mortgage Balance ($)</label>
+                        <input type="number" id="currentMortgage" placeholder="250000" value="250000">
+                    </div>
+                </div>
+                <h3 class="section-title" style="margin-top: 1.5rem;">New Home Details</h3>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>New Home Purchase Price ($)</label>
+                        <input type="number" id="newHomePrice" placeholder="650000" value="650000">
+                    </div>
+                    <div class="form-group">
+                        <label>Down Payment Needed (%)</label>
+                        <input type="number" id="downPaymentPercent" placeholder="20" value="20">
+                    </div>
+                </div>
+                <h3 class="section-title" style="margin-top: 1.5rem;">Bridge Loan Terms</h3>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Bridge Loan Rate (%)</label>
+                        <input type="number" id="bridgeRate" step="0.125" placeholder="9.5" value="9.5">
+                    </div>
+                    <div class="form-group">
+                        <label>Expected Bridge Period (months)</label>
+                        <input type="number" id="bridgePeriod" placeholder="6" value="6">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Origination Fee (%)</label>
+                        <input type="number" id="origFee" step="0.25" placeholder="2" value="2">
+                    </div>
+                    <div class="form-group">
+                        <label>Closing Costs ($)</label>
+                        <input type="number" id="closingCosts" placeholder="5000" value="5000">
+                    </div>
+                </div>
+                <button class="calculate-btn" onclick="calculate()">Calculate Bridge Financing</button>
+                <div class="results" id="results">
+                    <div class="result-grid">
+                        <div class="result-box highlight">
+                            <div class="result-label">Bridge Loan Amount</div>
+                            <div class="result-value" id="bridgeAmount">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Monthly Interest</div>
+                            <div class="result-value" id="monthlyInterest">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Total Bridge Cost</div>
+                            <div class="result-value" id="totalCost">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Equity After Sale</div>
+                            <div class="result-value" id="equityAfter">$0</div>
+                        </div>
+                    </div>
+                    <div class="scenario-box">
+                        <h4>Bridge Financing Breakdown</h4>
+                        <div class="scenario-row">
+                            <span class="scenario-label">Current Home Equity</span>
+                            <span class="scenario-value" id="currentEquity">$0</span>
+                        </div>
+                        <div class="scenario-row">
+                            <span class="scenario-label">Down Payment Needed</span>
+                            <span class="scenario-value" id="downPaymentAmount">$0</span>
+                        </div>
+                        <div class="scenario-row">
+                            <span class="scenario-label">Equity Gap (Bridge Amount)</span>
+                            <span class="scenario-value" id="equityGap">$0</span>
+                        </div>
+                        <div class="scenario-row">
+                            <span class="scenario-label">Origination Fee</span>
+                            <span class="scenario-value" id="origFeeAmount">$0</span>
+                        </div>
+                        <div class="scenario-row">
+                            <span class="scenario-label">Interest Over Bridge Period</span>
+                            <span class="scenario-value" id="totalInterest">$0</span>
+                        </div>
+                        <div class="scenario-row">
+                            <span class="scenario-label">Closing Costs</span>
+                            <span class="scenario-value" id="closingAmount">$0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ad-inline">
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+            <div class="info-section">
+                <h2>What is a Bridge Loan?</h2>
+                <p>A bridge loan is short-term financing that helps homeowners buy a new home before selling their current one. It "bridges" the gap between the two transactions by providing funds for a down payment.</p>
+                <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">How Bridge Loans Work</h3>
+                <ul>
+                    <li>Borrow against equity in your current home</li>
+                    <li>Use funds for down payment on new home</li>
+                    <li>Repay when current home sells</li>
+                    <li>Typical terms: 6-12 months</li>
+                </ul>
+                <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Considerations</h3>
+                <p><strong>Pros:</strong> Buy before selling, avoid contingent offers, move on your schedule</p>
+                <p><strong>Cons:</strong> Higher interest rates, fees add up, risk if home doesn't sell quickly</p>
+            </div>
+            <div class="ad-bottom">
+                <script type="text/javascript">atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
+            </div>
+            <div class="related-tools">
+                <h3>Related Calculators</h3>
+                <div class="tool-grid">
+                    <a href="mortgage-calculator.html" class="tool-link">Mortgage Calculator</a>
+                    <a href="home-equity-calculator.html" class="tool-link">Home Equity Calculator</a>
+                    <a href="heloc-calculator.html" class="tool-link">HELOC Calculator</a>
+                    <a href="down-payment-calculator.html" class="tool-link">Down Payment Calculator</a>
+                    <a href="closing-costs-calculator.html" class="tool-link">Closing Costs Calculator</a>
+                    <a href="home-affordability-calculator.html" class="tool-link">Home Affordability</a>
+                </div>
+            </div>
+        </main>
+        <aside class="sidebar">
+            <div class="ad-sidebar">
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+            <div class="ad-sidebar">
+                <script type="text/javascript">atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
+            </div>
+        </aside>
+    </div>
+    <footer class="footer">
+        <p>&copy; 2024 CalcTools. Free online calculators for everyone.</p>
+    </footer>
+    <script>
+        function formatCurrency(num) {
+            return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        }
+        function calculate() {
+            const currentValue = parseFloat(document.getElementById('currentValue').value) || 0;
+            const currentMortgage = parseFloat(document.getElementById('currentMortgage').value) || 0;
+            const newHomePrice = parseFloat(document.getElementById('newHomePrice').value) || 0;
+            const downPaymentPercent = parseFloat(document.getElementById('downPaymentPercent').value) || 20;
+            const bridgeRate = parseFloat(document.getElementById('bridgeRate').value) || 0;
+            const bridgePeriod = parseFloat(document.getElementById('bridgePeriod').value) || 6;
+            const origFee = parseFloat(document.getElementById('origFee').value) || 0;
+            const closingCosts = parseFloat(document.getElementById('closingCosts').value) || 0;
+            const currentEquity = currentValue - currentMortgage;
+            const downPaymentAmount = newHomePrice * (downPaymentPercent / 100);
+            const bridgeAmount = Math.max(0, downPaymentAmount - currentEquity * 0.8);
+            const origFeeAmount = bridgeAmount * (origFee / 100);
+            const monthlyRate = bridgeRate / 100 / 12;
+            const monthlyInterest = bridgeAmount * monthlyRate;
+            const totalInterest = monthlyInterest * bridgePeriod;
+            const totalCost = origFeeAmount + totalInterest + closingCosts;
+            const sellingCosts = currentValue * 0.08;
+            const equityAfterSale = currentEquity - sellingCosts - totalCost;
+            document.getElementById('bridgeAmount').textContent = formatCurrency(bridgeAmount);
+            document.getElementById('monthlyInterest').textContent = formatCurrency(monthlyInterest);
+            document.getElementById('totalCost').textContent = formatCurrency(totalCost);
+            document.getElementById('equityAfter').textContent = formatCurrency(equityAfterSale);
+            document.getElementById('currentEquity').textContent = formatCurrency(currentEquity);
+            document.getElementById('downPaymentAmount').textContent = formatCurrency(downPaymentAmount);
+            document.getElementById('equityGap').textContent = formatCurrency(bridgeAmount);
+            document.getElementById('origFeeAmount').textContent = formatCurrency(origFeeAmount);
+            document.getElementById('totalInterest').textContent = formatCurrency(totalInterest);
+            document.getElementById('closingAmount').textContent = formatCurrency(closingCosts);
+            document.getElementById('results').classList.add('show');
+        }
+        calculate();
+    </script>
+</body>
+</html>

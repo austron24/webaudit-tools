@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balloon Mortgage Calculator - Balloon Payment Loan</title>
+    <meta name="description" content="Calculate balloon mortgage payments and final balloon payment amount. See monthly payments and plan for your balloon payment due date.">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/balloon-mortgage-calculator.html">
+    <meta property="og:title" content="Balloon Mortgage Calculator - Balloon Payment Loan">
+    <meta property="og:description" content="Calculate balloon mortgage payments and final balloon payment amount.">
+    <meta property="og:type" content="website">
+    <style>
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; min-height: 100vh; }
+        .header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; }
+        .nav-links a:hover { color: var(--primary); }
+        .ad-top { background: var(--bg-card); padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); }
+        .ad-mobile { display: none; background: var(--bg-card); padding: 0.5rem; text-align: center; }
+        .main-layout { display: flex; max-width: 1400px; margin: 0 auto; gap: 2rem; padding: 2rem; }
+        .content { flex: 1; min-width: 0; }
+        .sidebar { width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 1rem; }
+        .hero { text-align: center; margin-bottom: 2rem; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary), #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { color: var(--text-secondary); font-size: 1.1rem; }
+        .calculator-card { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .section-title { font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--primary); }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.75rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 0.5rem; color: var(--text-primary); font-size: 1rem; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+        .input-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .calculate-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; border-radius: 0.5rem; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; }
+        .calculate-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
+        .results { display: none; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+        .results.show { display: block; }
+        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .result-box { background: var(--bg-input); padding: 1.25rem; border-radius: 0.75rem; text-align: center; }
+        .result-box.highlight { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid var(--primary); }
+        .result-box.warning { background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); }
+        .result-label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .result-value { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
+        .result-value.danger { color: var(--danger); }
+        .balloon-warning { background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); border-radius: 0.5rem; padding: 1rem; margin-top: 1.5rem; }
+        .balloon-warning h4 { color: var(--danger); margin-bottom: 0.5rem; }
+        .balloon-warning p { color: var(--text-secondary); font-size: 0.9rem; margin: 0; }
+        .timeline { margin-top: 1.5rem; }
+        .timeline-item { display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: var(--bg-input); border-radius: 0.5rem; margin-bottom: 0.5rem; }
+        .timeline-date { color: var(--text-secondary); min-width: 120px; }
+        .timeline-event { color: var(--text-primary); flex: 1; }
+        .timeline-amount { color: var(--primary); font-weight: 600; }
+        .ad-inline { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin: 2rem 0; }
+        .info-section { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .info-section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary); }
+        .info-section p, .info-section li { color: var(--text-secondary); margin-bottom: 0.75rem; }
+        .info-section ul { padding-left: 1.5rem; }
+        .related-tools { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); }
+        .related-tools h3 { margin-bottom: 1rem; color: var(--text-primary); }
+        .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+        .tool-link { display: block; padding: 1rem; background: var(--bg-input); border-radius: 0.5rem; text-decoration: none; color: var(--text-primary); }
+        .tool-link:hover { background: var(--border); transform: translateY(-2px); }
+        .ad-bottom { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin-top: 2rem; }
+        .footer { background: var(--bg-card); border-top: 1px solid var(--border); padding: 2rem; text-align: center; margin-top: 3rem; }
+        .footer p { color: var(--text-secondary); font-size: 0.9rem; }
+        @media (max-width: 968px) { .sidebar { display: none; } .main-layout { padding: 1rem; } }
+        @media (max-width: 640px) { .ad-top { display: none; } .ad-mobile { display: block; } .hero h1 { font-size: 1.75rem; } .input-row { grid-template-columns: 1fr; } .nav-links { display: none; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">CalcTools</a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="finance-calculators.html">Finance</a>
+                <a href="health-calculators.html">Health</a>
+                <a href="home-calculators.html">Home</a>
+            </nav>
+        </div>
+    </header>
+    <div class="ad-top">
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-mobile">
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <div class="main-layout">
+        <main class="content">
+            <div class="hero">
+                <h1>Balloon Mortgage Calculator</h1>
+                <p>Calculate your monthly payments and final balloon payment amount</p>
+            </div>
+            <div class="calculator-card">
+                <h3 class="section-title">Loan Details</h3>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Loan Amount ($)</label>
+                        <input type="number" id="loanAmount" placeholder="300000" value="300000">
+                    </div>
+                    <div class="form-group">
+                        <label>Interest Rate (%)</label>
+                        <input type="number" id="interestRate" step="0.125" placeholder="6.5" value="6.5">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Amortization Period (years)</label>
+                        <input type="number" id="amortPeriod" placeholder="30" value="30">
+                    </div>
+                    <div class="form-group">
+                        <label>Balloon Due (years)</label>
+                        <input type="number" id="balloonTerm" placeholder="7" value="7">
+                    </div>
+                </div>
+                <button class="calculate-btn" onclick="calculate()">Calculate Balloon Payment</button>
+                <div class="results" id="results">
+                    <div class="result-grid">
+                        <div class="result-box highlight">
+                            <div class="result-label">Monthly Payment</div>
+                            <div class="result-value" id="monthlyPayment">$0</div>
+                        </div>
+                        <div class="result-box warning">
+                            <div class="result-label">Balloon Payment</div>
+                            <div class="result-value danger" id="balloonPayment">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Total Paid Before Balloon</div>
+                            <div class="result-value" id="totalPaid">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Principal Paid</div>
+                            <div class="result-value" id="principalPaid">$0</div>
+                        </div>
+                    </div>
+                    <div class="timeline" id="timeline"></div>
+                    <div class="balloon-warning">
+                        <h4>Important: Balloon Payment Risk</h4>
+                        <p>When the balloon payment is due, you must either pay the remaining balance in full, refinance the loan, or sell the property. Make sure you have a plan for this payment before taking out a balloon mortgage.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="ad-inline">
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+            <div class="info-section">
+                <h2>What is a Balloon Mortgage?</h2>
+                <p>A balloon mortgage is a loan where you make regular monthly payments based on a longer amortization schedule, but the entire remaining balance becomes due as a single large "balloon" payment after a shorter term.</p>
+                <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Common Balloon Terms</h3>
+                <ul>
+                    <li><strong>5/25 Balloon:</strong> 5-year term with 25-year amortization</li>
+                    <li><strong>7/23 Balloon:</strong> 7-year term with 23-year amortization</li>
+                    <li><strong>10/20 Balloon:</strong> 10-year term with 20-year amortization</li>
+                </ul>
+                <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Pros and Cons</h3>
+                <p><strong>Advantages:</strong> Lower initial payments, potentially lower interest rates, good for short-term ownership</p>
+                <p><strong>Risks:</strong> Large payment due at end, refinancing risk if rates rise or credit changes, potential for losing the property</p>
+            </div>
+            <div class="ad-bottom">
+                <script type="text/javascript">atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
+            </div>
+            <div class="related-tools">
+                <h3>Related Calculators</h3>
+                <div class="tool-grid">
+                    <a href="mortgage-calculator.html" class="tool-link">Mortgage Calculator</a>
+                    <a href="arm-mortgage-calculator.html" class="tool-link">ARM Mortgage Calculator</a>
+                    <a href="interest-only-calculator.html" class="tool-link">Interest-Only Calculator</a>
+                    <a href="refinance-calculator.html" class="tool-link">Refinance Calculator</a>
+                    <a href="fha-loan-calculator.html" class="tool-link">FHA Loan Calculator</a>
+                    <a href="va-loan-calculator.html" class="tool-link">VA Loan Calculator</a>
+                </div>
+            </div>
+        </main>
+        <aside class="sidebar">
+            <div class="ad-sidebar">
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+            <div class="ad-sidebar">
+                <script type="text/javascript">atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
+            </div>
+        </aside>
+    </div>
+    <footer class="footer">
+        <p>&copy; 2024 CalcTools. Free online calculators for everyone.</p>
+    </footer>
+    <script>
+        function calcPayment(principal, annualRate, years) {
+            const monthlyRate = annualRate / 100 / 12;
+            const numPayments = years * 12;
+            if (monthlyRate === 0) return principal / numPayments;
+            return (principal * monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / (Math.pow(1 + monthlyRate, numPayments) - 1);
+        }
+        function calcRemainingBalance(principal, annualRate, amortYears, paymentsMade) {
+            const monthlyRate = annualRate / 100 / 12;
+            const totalPayments = amortYears * 12;
+            const monthlyPayment = calcPayment(principal, annualRate, amortYears);
+            if (monthlyRate === 0) return principal - (monthlyPayment * paymentsMade);
+            const balance = principal * Math.pow(1 + monthlyRate, paymentsMade) - monthlyPayment * ((Math.pow(1 + monthlyRate, paymentsMade) - 1) / monthlyRate);
+            return Math.max(0, balance);
+        }
+        function formatCurrency(num) {
+            return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        }
+        function calculate() {
+            const loanAmount = parseFloat(document.getElementById('loanAmount').value) || 0;
+            const interestRate = parseFloat(document.getElementById('interestRate').value) || 0;
+            const amortPeriod = parseFloat(document.getElementById('amortPeriod').value) || 30;
+            const balloonTerm = parseFloat(document.getElementById('balloonTerm').value) || 7;
+            const monthlyPayment = calcPayment(loanAmount, interestRate, amortPeriod);
+            const paymentsMade = balloonTerm * 12;
+            const balloonPayment = calcRemainingBalance(loanAmount, interestRate, amortPeriod, paymentsMade);
+            const totalPaid = monthlyPayment * paymentsMade;
+            const principalPaid = loanAmount - balloonPayment;
+            document.getElementById('monthlyPayment').textContent = formatCurrency(monthlyPayment);
+            document.getElementById('balloonPayment').textContent = formatCurrency(balloonPayment);
+            document.getElementById('totalPaid').textContent = formatCurrency(totalPaid);
+            document.getElementById('principalPaid').textContent = formatCurrency(principalPaid);
+            const today = new Date();
+            const balloonDate = new Date(today.getFullYear() + balloonTerm, today.getMonth(), today.getDate());
+            document.getElementById('timeline').innerHTML = `
+                <div class="timeline-item">
+                    <div class="timeline-date">Today</div>
+                    <div class="timeline-event">Loan begins - Monthly payments start</div>
+                    <div class="timeline-amount">${formatCurrency(monthlyPayment)}/mo</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">${balloonDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</div>
+                    <div class="timeline-event">Balloon payment due</div>
+                    <div class="timeline-amount" style="color: var(--danger)">${formatCurrency(balloonPayment)}</div>
+                </div>
+            `;
+            document.getElementById('results').classList.add('show');
+        }
+        calculate();
+    </script>
+</body>
+</html>
