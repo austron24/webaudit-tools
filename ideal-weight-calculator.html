@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ideal Weight Calculator - Find Your Healthy Weight</title>
-    <meta name="description" content="Free ideal weight calculator. Calculate your ideal body weight using multiple formulas based on height and gender.">
-    <meta name="keywords" content="ideal weight calculator, healthy weight, IBW, target weight, weight goal">
+    <title>Ideal Weight Calculator - Multiple Formulas</title>
+    <meta name="description" content="Free ideal weight calculator. Calculate your ideal body weight using multiple scientific formulas including Devine, Robinson, and more.">
+    <meta name="keywords" content="ideal weight calculator, ideal body weight, IBW, healthy weight, target weight">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/ideal-weight-calculator.html">
     <style>
-        :root { --primary: #10b981; --primary-dark: #059669; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #06b6d4; --primary-dark: #0891b2; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -21,23 +21,19 @@
         .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
         .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
         input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
         input:focus, select:focus { outline: none; border-color: var(--primary); }
         .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
         .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
         .result-hero-label { color: rgba(255,255,255,0.8); }
-        .formula-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
-        .formula-card { background: var(--bg-input); padding: 20px; border-radius: 12px; }
-        .formula-name { color: var(--secondary); font-weight: 600; margin-bottom: 10px; }
-        .formula-value { font-size: 1.5rem; font-weight: 700; }
-        .formula-range { color: var(--text-secondary); font-size: 0.85rem; margin-top: 5px; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .formula-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -52,7 +48,7 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
-    
+
     <header class="header">
         <h1>🎯 Ideal Weight Calculator</h1>
     </header>
@@ -65,73 +61,43 @@
                     <div class="form-group">
                         <label>Gender</label>
                         <select id="gender" onchange="calculate()">
-                            <option value="male" selected>Male</option>
+                            <option value="male">Male</option>
                             <option value="female">Female</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Age</label>
-                        <input type="number" id="age" value="30" oninput="calculate()">
+                        <label>Height (feet)</label>
+                        <input type="number" id="feet" value="5" min="3" max="8" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Height</label>
-                        <div style="display: flex; gap: 10px;">
-                            <input type="number" id="feet" value="5" placeholder="ft" style="width: 50%;" oninput="calculate()">
-                            <input type="number" id="inches" value="10" placeholder="in" style="width: 50%;" oninput="calculate()">
-                        </div>
+                        <label>Height (inches)</label>
+                        <input type="number" id="inches" value="10" min="0" max="11" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Current Weight (lbs)</label>
-                        <input type="number" id="currentWeight" value="170" oninput="calculate()">
+                        <input type="number" id="weight" value="180" oninput="calculate()">
                     </div>
                 </div>
-                
+
                 <div class="result-hero">
-                    <div class="result-hero-label">Ideal Weight Range</div>
-                    <div class="result-hero-value" id="idealRange">0 - 0 lbs</div>
-                </div>
-                
-                <div style="text-align: center; margin: 20px 0;">
-                    <div style="font-size: 1.2rem; color: var(--text-secondary);">You are currently</div>
-                    <div style="font-size: 2rem; font-weight: 700;" id="difference">0 lbs</div>
-                    <div style="color: var(--text-secondary);" id="diffText">from your ideal weight</div>
+                    <div class="result-hero-label">Average Ideal Weight</div>
+                    <div class="result-hero-value" id="average">0 lbs</div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>📋 Results by Formula</h2>
-                <div class="formula-grid">
-                    <div class="formula-card">
-                        <div class="formula-name">Robinson Formula</div>
-                        <div class="formula-value" id="robinson">0 lbs</div>
-                        <div class="formula-range">Most commonly used</div>
-                    </div>
-                    <div class="formula-card">
-                        <div class="formula-name">Miller Formula</div>
-                        <div class="formula-value" id="miller">0 lbs</div>
-                        <div class="formula-range">More recent formula</div>
-                    </div>
-                    <div class="formula-card">
-                        <div class="formula-name">Devine Formula</div>
-                        <div class="formula-value" id="devine">0 lbs</div>
-                        <div class="formula-range">Medical standard</div>
-                    </div>
-                    <div class="formula-card">
-                        <div class="formula-name">Hamwi Formula</div>
-                        <div class="formula-value" id="hamwi">0 lbs</div>
-                        <div class="formula-range">Traditional formula</div>
-                    </div>
-                    <div class="formula-card">
-                        <div class="formula-name">BMI Range (18.5-24.9)</div>
-                        <div class="formula-value" id="bmiRange">0 - 0 lbs</div>
-                        <div class="formula-range">Healthy BMI weight</div>
-                    </div>
-                    <div class="formula-card">
-                        <div class="formula-name">Average of All</div>
-                        <div class="formula-value" id="average">0 lbs</div>
-                        <div class="formula-range">Recommended target</div>
-                    </div>
-                </div>
+                <h2>📐 Results by Formula</h2>
+                <div class="breakdown-row"><span>Devine Formula</span><span id="devine">0 lbs</span></div>
+                <div class="breakdown-row"><span>Robinson Formula</span><span id="robinson">0 lbs</span></div>
+                <div class="breakdown-row"><span>Miller Formula</span><span id="miller">0 lbs</span></div>
+                <div class="breakdown-row"><span>Hamwi Formula</span><span id="hamwi">0 lbs</span></div>
+                <div class="breakdown-row"><span>Healthy BMI Range</span><span id="bmiRange">0 - 0 lbs</span></div>
+            </div>
+
+            <div class="card">
+                <h2>📈 Your Status</h2>
+                <div class="breakdown-row"><span>Current Weight</span><span id="current">0 lbs</span></div>
+                <div class="breakdown-row"><span>Difference from Ideal</span><span id="difference">0 lbs</span></div>
             </div>
 
             <div class="ad-container">
@@ -144,9 +110,9 @@
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
                     <a href="bmi-calculator.html" class="related-link">⚖️ BMI Calculator</a>
-                    <a href="body-fat-calculator.html" class="related-link">📏 Body Fat Calculator</a>
-                    <a href="calorie-calculator.html" class="related-link">🔥 Calorie Calculator</a>
-                    <a href="weight-loss-calculator.html" class="related-link">📉 Weight Loss Calculator</a>
+                    <a href="calorie-calculator.html" class="related-link">🔥 Calories</a>
+                    <a href="body-fat-calculator.html" class="related-link">📏 Body Fat</a>
+                    <a href="macro-calculator.html" class="related-link">🥗 Macros</a>
                 </div>
             </div>
         </div>
@@ -165,65 +131,39 @@
             const gender = document.getElementById('gender').value;
             const feet = parseInt(document.getElementById('feet').value) || 5;
             const inches = parseInt(document.getElementById('inches').value) || 10;
-            const currentWeight = parseFloat(document.getElementById('currentWeight').value) || 0;
-            
+            const weight = parseFloat(document.getElementById('weight').value) || 180;
+
             const totalInches = feet * 12 + inches;
-            const inchesOver5ft = Math.max(0, totalInches - 60);
-            const heightM = totalInches * 0.0254;
-            
-            let robinson, miller, devine, hamwi;
-            
+            const inchesOver5Ft = Math.max(0, totalInches - 60);
+
+            let devine, robinson, miller, hamwi;
+
             if (gender === 'male') {
-                robinson = 52 + 1.9 * inchesOver5ft;
-                miller = 56.2 + 1.41 * inchesOver5ft;
-                devine = 50 + 2.3 * inchesOver5ft;
-                hamwi = 48 + 2.7 * inchesOver5ft;
+                devine = 110 + (2.3 * inchesOver5Ft);
+                robinson = 114.4 + (3.1 * inchesOver5Ft);
+                miller = 123.8 + (2.6 * inchesOver5Ft);
+                hamwi = 106 + (6 * inchesOver5Ft);
             } else {
-                robinson = 49 + 1.7 * inchesOver5ft;
-                miller = 53.1 + 1.36 * inchesOver5ft;
-                devine = 45.5 + 2.3 * inchesOver5ft;
-                hamwi = 45.5 + 2.2 * inchesOver5ft;
+                devine = 100 + (2.3 * inchesOver5Ft);
+                robinson = 108.3 + (2.5 * inchesOver5Ft);
+                miller = 115.5 + (2.0 * inchesOver5Ft);
+                hamwi = 100 + (5 * inchesOver5Ft);
             }
-            
-            robinson = robinson * 2.20462;
-            miller = miller * 2.20462;
-            devine = devine * 2.20462;
-            hamwi = hamwi * 2.20462;
-            
-            const bmiLow = 18.5 * heightM * heightM * 2.20462;
-            const bmiHigh = 24.9 * heightM * heightM * 2.20462;
-            
-            const average = (robinson + miller + devine + hamwi) / 4;
-            const minIdeal = Math.min(robinson, miller, devine, hamwi);
-            const maxIdeal = Math.max(robinson, miller, devine, hamwi);
-            
-            const diff = currentWeight - average;
-            const diffText = document.getElementById('diffText');
-            const diffEl = document.getElementById('difference');
-            
-            if (Math.abs(diff) < 5) {
-                diffEl.textContent = 'At ideal weight! ✓';
-                diffEl.style.color = 'var(--success)';
-                diffText.textContent = '';
-            } else if (diff > 0) {
-                diffEl.textContent = Math.abs(diff).toFixed(0) + ' lbs above';
-                diffEl.style.color = '#f59e0b';
-                diffText.textContent = 'your ideal weight';
-            } else {
-                diffEl.textContent = Math.abs(diff).toFixed(0) + ' lbs below';
-                diffEl.style.color = '#3b82f6';
-                diffText.textContent = 'your ideal weight';
-            }
-            
-            document.getElementById('idealRange').textContent = Math.round(minIdeal) + ' - ' + Math.round(maxIdeal) + ' lbs';
+
+            const bmiMin = (18.5 * totalInches * totalInches) / 703;
+            const bmiMax = (24.9 * totalInches * totalInches) / 703;
+            const average = (devine + robinson + miller + hamwi) / 4;
+            const difference = weight - average;
+
+            document.getElementById('devine').textContent = Math.round(devine) + ' lbs';
             document.getElementById('robinson').textContent = Math.round(robinson) + ' lbs';
             document.getElementById('miller').textContent = Math.round(miller) + ' lbs';
-            document.getElementById('devine').textContent = Math.round(devine) + ' lbs';
             document.getElementById('hamwi').textContent = Math.round(hamwi) + ' lbs';
-            document.getElementById('bmiRange').textContent = Math.round(bmiLow) + ' - ' + Math.round(bmiHigh) + ' lbs';
+            document.getElementById('bmiRange').textContent = Math.round(bmiMin) + ' - ' + Math.round(bmiMax) + ' lbs';
             document.getElementById('average').textContent = Math.round(average) + ' lbs';
+            document.getElementById('current').textContent = weight + ' lbs';
+            document.getElementById('difference').textContent = (difference > 0 ? '+' : '') + Math.round(difference) + ' lbs';
         }
-        
         calculate();
     </script>
 </body>
