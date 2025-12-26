@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cost of Living Calculator - Compare Cities | WebTools Pro</title>
+    <meta name="description" content="Compare cost of living between cities. Calculate salary needed to maintain your lifestyle when relocating. Free cost of living comparison tool.">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/cost-of-living-calculator.html">
+    <meta property="og:title" content="Cost of Living Calculator - Compare Cities">
+    <meta property="og:description" content="Compare cost of living between cities and calculate equivalent salary.">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧮</text></svg>">
+    <style>
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --bg-dark: #0f172a; --bg-card: #1e293b; --text-light: #f8fafc; --text-muted: #94a3b8; --border: #334155; --white: #ffffff; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-light); line-height: 1.6; min-height: 100vh; }
+        .site-header { background: linear-gradient(135deg, var(--bg-dark), var(--bg-card)); border-bottom: 1px solid var(--border); padding: 15px 0; position: sticky; top: 0; z-index: 100; }
+        .header-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 22px; font-weight: 700; text-decoration: none; color: var(--text-light); display: flex; align-items: center; gap: 10px; }
+        .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--primary), #f59e0b); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; }
+        @media (max-width: 600px) { .nav-links { display: none; } }
+        .ad-top { background: var(--bg-card); padding: 12px 0; text-align: center; border-bottom: 1px solid var(--border); }
+        .ad-mobile { display: none; text-align: center; margin: 12px auto; max-width: 320px; }
+        @media (max-width: 768px) { .ad-mobile { display: block; } }
+        .main-layout { max-width: 1200px; margin: 0 auto; padding: 25px 20px; display: grid; grid-template-columns: 1fr 280px; gap: 25px; }
+        @media (max-width: 900px) { .main-layout { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        .hero { text-align: center; margin-bottom: 25px; }
+        .hero h1 { font-size: 38px; font-weight: 800; margin-bottom: 12px; background: linear-gradient(135deg, var(--text-light), var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { font-size: 16px; color: var(--text-muted); max-width: 500px; margin: 0 auto; }
+        @media (max-width: 600px) { .hero h1 { font-size: 28px; } }
+        .calc-card { background: var(--white); border-radius: 20px; padding: 35px; color: #1e293b; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        @media (max-width: 600px) { .calc-card { padding: 20px; } }
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .input-group input, .input-group select { width: 100%; padding: 14px 16px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 18px; font-weight: 600; color: #1e293b; }
+        .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--primary); }
+        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        @media (max-width: 600px) { .input-row { grid-template-columns: 1fr; } }
+        .calc-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+        .calc-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4); }
+        .results { margin-top: 25px; padding: 25px; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-radius: 16px; display: none; }
+        .results.show { display: block; }
+        .comparison-display { text-align: center; margin-bottom: 20px; padding: 20px; background: white; border-radius: 12px; }
+        .salary-needed { font-size: 42px; font-weight: 800; color: #16a34a; }
+        .result-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.1); }
+        .result-item:last-child { border-bottom: none; }
+        .result-label { font-weight: 500; color: #475569; }
+        .result-value { font-weight: 700; color: #1e293b; font-size: 16px; }
+        .result-value.increase { color: #dc2626; }
+        .result-value.decrease { color: #16a34a; }
+        .ad-inline { text-align: center; margin: 25px 0; padding: 15px; background: var(--bg-card); border-radius: 12px; }
+        .info-section { margin-top: 30px; padding: 25px; background: var(--bg-card); border-radius: 16px; }
+        .info-section h2 { font-size: 22px; margin-bottom: 15px; color: var(--text-light); }
+        .info-section p, .info-section li { color: var(--text-muted); margin-bottom: 12px; }
+        .info-section ul { padding-left: 20px; }
+        .related-tools { margin-top: 30px; padding: 25px; background: var(--bg-card); border-radius: 16px; }
+        .related-tools h3 { margin-bottom: 15px; }
+        .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-dark); border-radius: 10px; color: var(--text-light); text-decoration: none; font-size: 14px; }
+        .related-link:hover { background: var(--primary); }
+        .ad-bottom { text-align: center; margin: 25px 0; }
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar-ad { background: var(--bg-card); border-radius: 12px; padding: 15px; text-align: center; }
+        .sidebar-links { background: var(--bg-card); border-radius: 12px; padding: 20px; }
+        .sidebar-links h4 { margin-bottom: 12px; font-size: 14px; color: var(--text-muted); text-transform: uppercase; }
+        .sidebar-links a { display: block; padding: 10px 0; color: var(--text-light); text-decoration: none; font-size: 14px; border-bottom: 1px solid var(--border); }
+        .sidebar-links a:last-child { border-bottom: none; }
+        .site-footer { background: var(--bg-card); border-top: 1px solid var(--border); padding: 40px 20px; margin-top: 50px; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; }
+        .footer-section h4 { margin-bottom: 15px; font-size: 16px; }
+        .footer-section a { display: block; color: var(--text-muted); text-decoration: none; font-size: 14px; padding: 5px 0; }
+        .footer-bottom { text-align: center; padding-top: 30px; margin-top: 30px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 14px; }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-container">
+            <a href="index.html" class="logo"><div class="logo-icon">⚡</div>WebTools Pro</a>
+            <nav class="nav-links">
+                <a href="health-calculators.html">Health</a>
+                <a href="finance-calculators.html">Finance</a>
+                <a href="home-calculators.html">Home</a>
+                <a href="legal-calculators.html">Legal</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="ad-top">
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+
+    <div class="ad-mobile">
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+
+    <div class="main-layout">
+        <main class="content">
+            <div class="hero">
+                <h1>Cost of Living Calculator</h1>
+                <p>Compare cost of living between cities and calculate the salary you need to maintain your lifestyle.</p>
+            </div>
+
+            <div class="calc-card">
+                <div class="input-group">
+                    <label>Your Current Salary ($)</label>
+                    <input type="number" id="salary" placeholder="75000" value="75000">
+                </div>
+
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Current City</label>
+                        <select id="currentCity">
+                            <option value="100">Average US City (Index: 100)</option>
+                            <option value="187">New York, NY (187)</option>
+                            <option value="166">San Francisco, CA (166)</option>
+                            <option value="146">Los Angeles, CA (146)</option>
+                            <option value="142">Boston, MA (142)</option>
+                            <option value="139">Seattle, WA (139)</option>
+                            <option value="127">Washington, DC (127)</option>
+                            <option value="121">Denver, CO (121)</option>
+                            <option value="107">Chicago, IL (107)</option>
+                            <option value="103">Portland, OR (103)</option>
+                            <option value="96">Austin, TX (96)</option>
+                            <option value="91">Dallas, TX (91)</option>
+                            <option value="89">Phoenix, AZ (89)</option>
+                            <option value="87">Atlanta, GA (87)</option>
+                            <option value="84">Houston, TX (84)</option>
+                            <option value="82">Charlotte, NC (82)</option>
+                            <option value="78">Indianapolis, IN (78)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Destination City</label>
+                        <select id="destCity">
+                            <option value="100">Average US City (Index: 100)</option>
+                            <option value="187">New York, NY (187)</option>
+                            <option value="166">San Francisco, CA (166)</option>
+                            <option value="146">Los Angeles, CA (146)</option>
+                            <option value="142">Boston, MA (142)</option>
+                            <option value="139">Seattle, WA (139)</option>
+                            <option value="127">Washington, DC (127)</option>
+                            <option value="121">Denver, CO (121)</option>
+                            <option value="107">Chicago, IL (107)</option>
+                            <option value="103">Portland, OR (103)</option>
+                            <option value="96" selected>Austin, TX (96)</option>
+                            <option value="91">Dallas, TX (91)</option>
+                            <option value="89">Phoenix, AZ (89)</option>
+                            <option value="87">Atlanta, GA (87)</option>
+                            <option value="84">Houston, TX (84)</option>
+                            <option value="82">Charlotte, NC (82)</option>
+                            <option value="78">Indianapolis, IN (78)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="calc-btn" onclick="calculate()">Compare Cost of Living</button>
+
+                <div class="results" id="results">
+                    <div class="comparison-display">
+                        <div style="font-size: 14px; color: #475569; margin-bottom: 5px;">Equivalent Salary Needed</div>
+                        <div class="salary-needed" id="salaryNeeded">$0</div>
+                        <div style="font-size: 16px; color: #475569; margin-top: 10px;" id="changeText"></div>
+                    </div>
+
+                    <div class="result-item">
+                        <span class="result-label">Cost of Living Difference</span>
+                        <span class="result-value" id="colDiff">0%</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Annual Salary Difference</span>
+                        <span class="result-value" id="salaryDiff">$0</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Monthly Difference</span>
+                        <span class="result-value" id="monthlyDiff">$0</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Your Purchasing Power</span>
+                        <span class="result-value" id="purchasingPower">100%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ad-inline">
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+
+            <div class="info-section">
+                <h2>Understanding Cost of Living</h2>
+                <p>Cost of living indexes compare the relative expense of living in different cities. A higher index means higher costs.</p>
+                <ul>
+                    <li><strong>Index of 100:</strong> Represents the average US city</li>
+                    <li><strong>Housing:</strong> Typically the largest factor (30-50% of the index)</li>
+                    <li><strong>Other Factors:</strong> Food, transportation, healthcare, utilities, taxes</li>
+                    <li><strong>State Taxes:</strong> No income tax in TX, FL, WA, NV, WY, SD, AK, TN, NH</li>
+                    <li><strong>Remote Work:</strong> Consider keeping high salary while living in lower-cost area</li>
+                </ul>
+            </div>
+
+            <div class="related-tools">
+                <h3>Related Calculators</h3>
+                <div class="related-grid">
+                    <a href="take-home-pay-calculator.html" class="related-link">Take Home Pay</a>
+                    <a href="inflation-calculator.html" class="related-link">Inflation Calculator</a>
+                    <a href="moving-cost-calculator.html" class="related-link">Moving Cost Calculator</a>
+                    <a href="house-affordability-calculator.html" class="related-link">House Affordability</a>
+                </div>
+            </div>
+
+            <div class="ad-bottom">
+                <script type="text/javascript">atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="sidebar-ad">
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+            <div class="sidebar-ad">
+                <script type="text/javascript">atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
+            </div>
+            <div class="sidebar-links">
+                <h4>Popular Tools</h4>
+                <a href="bmi-calculator.html">BMI Calculator</a>
+                <a href="mortgage-calculator.html">Mortgage Calculator</a>
+                <a href="compound-interest.html">Compound Interest</a>
+                <a href="percentage-calculator.html">Percentage Calculator</a>
+            </div>
+        </aside>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-section"><h4>Finance Tools</h4><a href="mortgage-calculator.html">Mortgage Calculator</a><a href="compound-interest.html">Compound Interest</a><a href="take-home-pay-calculator.html">Take Home Pay</a></div>
+            <div class="footer-section"><h4>Health Tools</h4><a href="bmi-calculator.html">BMI Calculator</a><a href="calorie-calculator.html">Calorie Calculator</a><a href="body-fat-calculator.html">Body Fat Calculator</a></div>
+            <div class="footer-section"><h4>Home Tools</h4><a href="paint-calculator.html">Paint Calculator</a><a href="flooring-calculator.html">Flooring Calculator</a><a href="concrete-calculator.html">Concrete Calculator</a></div>
+            <div class="footer-section"><h4>Legal</h4><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a><a href="contact.html">Contact Us</a></div>
+        </div>
+        <div class="footer-bottom"><p>&copy; 2025 WebTools Pro. All rights reserved.</p></div>
+    </footer>
+
+    <script>
+        function calculate() {
+            const salary = parseFloat(document.getElementById('salary').value) || 0;
+            const currentIndex = parseFloat(document.getElementById('currentCity').value) || 100;
+            const destIndex = parseFloat(document.getElementById('destCity').value) || 100;
+
+            // Calculate equivalent salary
+            const salaryNeeded = salary * (destIndex / currentIndex);
+            const colDiff = ((destIndex - currentIndex) / currentIndex) * 100;
+            const salaryDiff = salaryNeeded - salary;
+            const monthlyDiff = salaryDiff / 12;
+
+            // Purchasing power if you keep same salary
+            const purchasingPower = (currentIndex / destIndex) * 100;
+
+            document.getElementById('salaryNeeded').textContent = '$' + Math.round(salaryNeeded).toLocaleString();
+
+            const changeEl = document.getElementById('changeText');
+            const colDiffEl = document.getElementById('colDiff');
+            const salaryDiffEl = document.getElementById('salaryDiff');
+            const monthlyDiffEl = document.getElementById('monthlyDiff');
+
+            if (colDiff > 0) {
+                changeEl.textContent = 'to maintain the same lifestyle (cost of living is ' + colDiff.toFixed(1) + '% higher)';
+                colDiffEl.textContent = '+' + colDiff.toFixed(1) + '%';
+                colDiffEl.className = 'result-value increase';
+                salaryDiffEl.textContent = '+$' + Math.round(salaryDiff).toLocaleString();
+                salaryDiffEl.className = 'result-value increase';
+                monthlyDiffEl.textContent = '+$' + Math.round(monthlyDiff).toLocaleString() + '/mo';
+                monthlyDiffEl.className = 'result-value increase';
+            } else if (colDiff < 0) {
+                changeEl.textContent = 'to maintain the same lifestyle (cost of living is ' + Math.abs(colDiff).toFixed(1) + '% lower)';
+                colDiffEl.textContent = colDiff.toFixed(1) + '%';
+                colDiffEl.className = 'result-value decrease';
+                salaryDiffEl.textContent = '-$' + Math.abs(Math.round(salaryDiff)).toLocaleString();
+                salaryDiffEl.className = 'result-value decrease';
+                monthlyDiffEl.textContent = '-$' + Math.abs(Math.round(monthlyDiff)).toLocaleString() + '/mo';
+                monthlyDiffEl.className = 'result-value decrease';
+            } else {
+                changeEl.textContent = '(same cost of living)';
+                colDiffEl.textContent = '0%';
+                colDiffEl.className = 'result-value';
+                salaryDiffEl.textContent = '$0';
+                salaryDiffEl.className = 'result-value';
+                monthlyDiffEl.textContent = '$0/mo';
+                monthlyDiffEl.className = 'result-value';
+            }
+
+            document.getElementById('purchasingPower').textContent = purchasingPower.toFixed(1) + '%';
+            document.getElementById('results').classList.add('show');
+        }
+    </script>
+</body>
+</html>
