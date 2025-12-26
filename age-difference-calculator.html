@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Difference Calculator - How Many Years Apart?</title>
+    <meta name="description" content="Calculate the age difference between two people. Free age gap calculator for couples, friends, and family.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #ec4899 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .person-section {
+            background: #fdf2f8;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .person-section h4 {
+            color: #be185d;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 11px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #ec4899;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 16px; margin-top: 5px; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .stat-item {
+            background: #fdf2f8;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .stat-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #be185d;
+        }
+        .stat-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .ages-section {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .ages-section h4 {
+            color: #be185d;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .age-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .age-row:last-child { border: none; }
+        .age-row .value { font-weight: 600; color: #be185d; }
+        .funfacts {
+            background: #fdf2f8;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .funfacts h4 {
+            color: #be185d;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .fact-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #fbcfe8;
+        }
+        .fact-item:last-child { border: none; }
+        .compatibility {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .compatibility h4 {
+            color: #be185d;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .compat-note {
+            font-size: 13px;
+            padding: 10px;
+            background: #fdf2f8;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #be185d; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #ec4899;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #f9a8d4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💕 Age Difference Calculator</h1>
+            <p class="subtitle">How many years apart?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="person-section">
+                <h4>👤 Person 1</h4>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Month</label>
+                        <select id="month1" onchange="calculate()">
+                            <option value="1">Jan</option>
+                            <option value="2">Feb</option>
+                            <option value="3">Mar</option>
+                            <option value="4">Apr</option>
+                            <option value="5">May</option>
+                            <option value="6" selected>Jun</option>
+                            <option value="7">Jul</option>
+                            <option value="8">Aug</option>
+                            <option value="9">Sep</option>
+                            <option value="10">Oct</option>
+                            <option value="11">Nov</option>
+                            <option value="12">Dec</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Day</label>
+                        <input type="number" id="day1" value="15" min="1" max="31" oninput="calculate()">
+                    </div>
+                    <div class="input-group">
+                        <label>Year</label>
+                        <input type="number" id="year1" value="1990" min="1920" max="2024" oninput="calculate()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="person-section">
+                <h4>👤 Person 2</h4>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Month</label>
+                        <select id="month2" onchange="calculate()">
+                            <option value="1">Jan</option>
+                            <option value="2">Feb</option>
+                            <option value="3" selected>Mar</option>
+                            <option value="4">Apr</option>
+                            <option value="5">May</option>
+                            <option value="6">Jun</option>
+                            <option value="7">Jul</option>
+                            <option value="8">Aug</option>
+                            <option value="9">Sep</option>
+                            <option value="10">Oct</option>
+                            <option value="11">Nov</option>
+                            <option value="12">Dec</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Day</label>
+                        <input type="number" id="day2" value="20" min="1" max="31" oninput="calculate()">
+                    </div>
+                    <div class="input-group">
+                        <label>Year</label>
+                        <input type="number" id="year2" value="1995" min="1920" max="2024" oninput="calculate()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Age Difference</div>
+                <div class="value" id="ageDiff">4 years</div>
+                <div class="sub" id="exactDiff">4 years, 9 months, 5 days</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="type">Person 1 Age</div>
+                    <div class="value" id="age1">34</div>
+                    <div class="note" id="zodiac1">♊ Gemini</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Person 2 Age</div>
+                    <div class="value" id="age2">29</div>
+                    <div class="note" id="zodiac2">♓ Pisces</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Total Days</div>
+                    <div class="value" id="totalDays">1,738</div>
+                    <div class="note">Apart</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Total Weeks</div>
+                    <div class="value" id="totalWeeks">248</div>
+                    <div class="note">Apart</div>
+                </div>
+            </div>
+
+            <div class="ages-section">
+                <h4>📅 Age Milestones</h4>
+                <div class="age-row">
+                    <span>When Person 1 was 18</span>
+                    <span class="value" id="milestone18">Person 2 was 13</span>
+                </div>
+                <div class="age-row">
+                    <span>When Person 1 was 21</span>
+                    <span class="value" id="milestone21">Person 2 was 16</span>
+                </div>
+                <div class="age-row">
+                    <span>When Person 1 was 30</span>
+                    <span class="value" id="milestone30">Person 2 was 25</span>
+                </div>
+                <div class="age-row">
+                    <span>When Person 2 turns 50</span>
+                    <span class="value" id="milestone50">Person 1 will be 55</span>
+                </div>
+            </div>
+
+            <div class="funfacts">
+                <h4>✨ Fun Facts</h4>
+                <div class="fact-item" id="fact1">📆 You were born 1,738 days apart</div>
+                <div class="fact-item" id="fact2">⏰ That's about 41,712 hours difference</div>
+                <div class="fact-item" id="fact3">🎂 Person 1 has had 5 more birthdays</div>
+                <div class="fact-item" id="fact4">🌍 Person 1 was alive for ~5 years before Person 2 was born</div>
+            </div>
+
+            <div class="compatibility">
+                <h4>💫 Age Gap Perspective</h4>
+                <div class="compat-note" id="compatNote">
+                    A 5-year age gap is quite common in relationships and typically narrows in significance as both partners get older.
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Date Tools</h4>
+            <a href="age-calculator.html">Age Calculator</a>
+            <a href="due-date-calculator.html">Due Date Calculator</a>
+            <a href="date-calculator.html">Date Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Age Difference Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function getZodiac(month, day) {
+            if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) return '♈ Aries';
+            if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) return '♉ Taurus';
+            if ((month === 5 && day >= 21) || (month === 6 && day <= 20)) return '♊ Gemini';
+            if ((month === 6 && day >= 21) || (month === 7 && day <= 22)) return '♋ Cancer';
+            if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) return '♌ Leo';
+            if ((month === 8 && day >= 23) || (month === 9 && day <= 22)) return '♍ Virgo';
+            if ((month === 9 && day >= 23) || (month === 10 && day <= 22)) return '♎ Libra';
+            if ((month === 10 && day >= 23) || (month === 11 && day <= 21)) return '♏ Scorpio';
+            if ((month === 11 && day >= 22) || (month === 12 && day <= 21)) return '♐ Sagittarius';
+            if ((month === 12 && day >= 22) || (month === 1 && day <= 19)) return '♑ Capricorn';
+            if ((month === 1 && day >= 20) || (month === 2 && day <= 18)) return '♒ Aquarius';
+            return '♓ Pisces';
+        }
+
+        function calculate() {
+            const month1 = parseInt(document.getElementById('month1').value);
+            const day1 = parseInt(document.getElementById('day1').value);
+            const year1 = parseInt(document.getElementById('year1').value);
+
+            const month2 = parseInt(document.getElementById('month2').value);
+            const day2 = parseInt(document.getElementById('day2').value);
+            const year2 = parseInt(document.getElementById('year2').value);
+
+            const date1 = new Date(year1, month1 - 1, day1);
+            const date2 = new Date(year2, month2 - 1, day2);
+            const today = new Date();
+
+            // Calculate ages
+            let age1 = today.getFullYear() - date1.getFullYear();
+            let age2 = today.getFullYear() - date2.getFullYear();
+            if (today < new Date(today.getFullYear(), month1 - 1, day1)) age1--;
+            if (today < new Date(today.getFullYear(), month2 - 1, day2)) age2--;
+
+            // Calculate difference
+            const diffMs = Math.abs(date2 - date1);
+            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            const diffWeeks = Math.floor(diffDays / 7);
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+
+            // Calculate years, months, days
+            let years = Math.abs(year2 - year1);
+            let months, days;
+            const older = date1 < date2 ? date1 : date2;
+            const younger = date1 < date2 ? date2 : date1;
+
+            let tempDate = new Date(older);
+            tempDate.setFullYear(tempDate.getFullYear() + years);
+            if (tempDate > younger) {
+                years--;
+                tempDate.setFullYear(tempDate.getFullYear() - 1);
+            }
+
+            months = 0;
+            while (true) {
+                tempDate.setMonth(tempDate.getMonth() + 1);
+                if (tempDate > younger) {
+                    tempDate.setMonth(tempDate.getMonth() - 1);
+                    break;
+                }
+                months++;
+            }
+
+            days = Math.floor((younger - tempDate) / (1000 * 60 * 60 * 24));
+
+            // Update display
+            document.getElementById('ageDiff').textContent = years + ' year' + (years !== 1 ? 's' : '');
+            document.getElementById('exactDiff').textContent = years + ' years, ' + months + ' months, ' + days + ' days';
+
+            document.getElementById('age1').textContent = age1;
+            document.getElementById('age2').textContent = age2;
+            document.getElementById('zodiac1').textContent = getZodiac(month1, day1);
+            document.getElementById('zodiac2').textContent = getZodiac(month2, day2);
+
+            document.getElementById('totalDays').textContent = diffDays.toLocaleString();
+            document.getElementById('totalWeeks').textContent = diffWeeks.toLocaleString();
+
+            // Milestones
+            const yearDiff = Math.abs(age1 - age2);
+            const olderAge1 = age1 > age2;
+            document.getElementById('milestone18').textContent = 'Person 2 was ' + (olderAge1 ? 18 - yearDiff : 18 + yearDiff);
+            document.getElementById('milestone21').textContent = 'Person 2 was ' + (olderAge1 ? 21 - yearDiff : 21 + yearDiff);
+            document.getElementById('milestone30').textContent = 'Person 2 was ' + (olderAge1 ? 30 - yearDiff : 30 + yearDiff);
+            document.getElementById('milestone50').textContent = 'Person 1 will be ' + (olderAge1 ? 50 + yearDiff : 50 - yearDiff);
+
+            // Fun facts
+            document.getElementById('fact1').textContent = '📆 You were born ' + diffDays.toLocaleString() + ' days apart';
+            document.getElementById('fact2').textContent = '⏰ That\'s about ' + diffHours.toLocaleString() + ' hours difference';
+            document.getElementById('fact3').textContent = '🎂 ' + (olderAge1 ? 'Person 1' : 'Person 2') + ' has had ' + yearDiff + ' more birthdays';
+            document.getElementById('fact4').textContent = '🌍 ' + (olderAge1 ? 'Person 1' : 'Person 2') + ' was alive for ~' + years + ' years before ' + (olderAge1 ? 'Person 2' : 'Person 1') + ' was born';
+
+            // Compatibility note
+            let compatNote;
+            if (years <= 2) {
+                compatNote = '💕 An age gap of ' + years + ' year' + (years !== 1 ? 's' : '') + ' is very small and typically goes unnoticed in relationships.';
+            } else if (years <= 5) {
+                compatNote = '💕 A ' + years + '-year age gap is quite common in relationships and typically narrows in significance as both partners get older.';
+            } else if (years <= 10) {
+                compatNote = '💕 A ' + years + '-year age gap is noticeable but many successful relationships have similar differences.';
+            } else {
+                compatNote = '💕 A ' + years + '-year age gap is significant. Life stage differences are worth considering, but many couples thrive with larger gaps.';
+            }
+            document.getElementById('compatNote').textContent = compatNote;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Road Trip Cost Calculator - Trip Expense Planner</title>
+    <meta name="description" content="Calculate your road trip costs including gas, hotels, and food. Free road trip budget calculator for vacation planning.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #f59e0b 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .section-title {
+            font-size: 14px;
+            color: #d97706;
+            font-weight: 600;
+            margin: 20px 0 10px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .section-title:first-of-type { border: none; padding-top: 0; margin-top: 0; }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #f59e0b;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .stat-item {
+            background: #fef3c7;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .stat-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #b45309;
+        }
+        .stat-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #b45309;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #b45309; }
+        .per-person {
+            background: #fef3c7;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .per-person h4 {
+            color: #b45309;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .per-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #fcd34d;
+            font-size: 14px;
+        }
+        .per-row:last-child { border: none; }
+        .per-row .value { font-weight: 600; color: #b45309; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #b45309;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #b45309; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #f59e0b;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fcd34d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚗 Road Trip Calculator</h1>
+            <p class="subtitle">Plan your road trip budget</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="section-title">🛣️ Trip Details</div>
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Total Distance (miles)</label>
+                    <input type="number" id="distance" value="1000" min="50" max="10000" step="50" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Number of Travelers</label>
+                    <input type="number" id="travelers" value="2" min="1" max="10" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Trip Days</label>
+                    <input type="number" id="days" value="5" min="1" max="30" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Hotel Nights</label>
+                    <input type="number" id="nights" value="4" min="0" max="30" step="1" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="section-title">⛽ Vehicle</div>
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Vehicle MPG</label>
+                    <input type="number" id="mpg" value="28" min="10" max="60" step="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Gas Price ($/gallon)</label>
+                    <input type="number" id="gasPrice" value="3.50" min="2" max="7" step="0.10" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="section-title">🏨 Costs</div>
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Hotel per Night ($)</label>
+                    <input type="number" id="hotelCost" value="120" min="0" max="500" step="10" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Food per Person/Day ($)</label>
+                    <input type="number" id="foodCost" value="50" min="20" max="200" step="5" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Activities Budget ($)</label>
+                    <input type="number" id="activities" value="200" min="0" max="2000" step="25" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Other Expenses ($)</label>
+                    <input type="number" id="other" value="100" min="0" max="1000" step="25" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Total Trip Cost</div>
+                <div class="value" id="totalCost">$1,225</div>
+                <div class="sub" id="perPerson">$612.50 per person</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="type">Gas Cost</div>
+                    <div class="value" id="gasCost">$125</div>
+                    <div class="note" id="gallons">35.7 gallons</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Lodging</div>
+                    <div class="value" id="lodgingTotal">$480</div>
+                    <div class="note">4 nights</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Food Total</div>
+                    <div class="value" id="foodTotal">$500</div>
+                    <div class="note">All travelers</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Cost/Mile</div>
+                    <div class="value" id="costPerMile">$1.23</div>
+                    <div class="note">All-in</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>📊 Cost Breakdown</h4>
+                <div class="break-row">
+                    <span>⛽ Gas</span>
+                    <span class="value" id="breakGas">$125</span>
+                </div>
+                <div class="break-row">
+                    <span>🏨 Hotels</span>
+                    <span class="value" id="breakHotel">$480</span>
+                </div>
+                <div class="break-row">
+                    <span>🍔 Food</span>
+                    <span class="value" id="breakFood">$500</span>
+                </div>
+                <div class="break-row">
+                    <span>🎢 Activities</span>
+                    <span class="value" id="breakActivities">$200</span>
+                </div>
+                <div class="break-row">
+                    <span>📦 Other</span>
+                    <span class="value" id="breakOther">$100</span>
+                </div>
+                <div class="break-row" style="font-weight: bold; border-top: 2px solid #e2e8f0; padding-top: 12px;">
+                    <span>Total</span>
+                    <span class="value" id="breakTotal">$1,405</span>
+                </div>
+            </div>
+
+            <div class="per-person">
+                <h4>👥 Per Person Split</h4>
+                <div class="per-row">
+                    <span>Gas Share</span>
+                    <span class="value" id="perGas">$62.50</span>
+                </div>
+                <div class="per-row">
+                    <span>Hotel Share</span>
+                    <span class="value" id="perHotel">$240</span>
+                </div>
+                <div class="per-row">
+                    <span>Food</span>
+                    <span class="value" id="perFood">$250</span>
+                </div>
+                <div class="per-row">
+                    <span>Activities Share</span>
+                    <span class="value" id="perActivities">$100</span>
+                </div>
+                <div class="per-row" style="font-weight: bold;">
+                    <span>Total per Person</span>
+                    <span class="value" id="perTotal">$652.50</span>
+                </div>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Road Trip Tips</h4>
+                <div class="tip-item">✓ Use GasBuddy app to find cheapest gas</div>
+                <div class="tip-item">✓ Book hotels in advance for better rates</div>
+                <div class="tip-item">✓ Pack snacks to reduce food costs</div>
+                <div class="tip-item">✓ Check for toll roads along your route</div>
+                <div class="tip-item">✓ Add 10-15% buffer for unexpected expenses</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Travel Tools</h4>
+            <a href="gas-mileage-calculator.html">Gas Mileage Calculator</a>
+            <a href="tip-calculator.html">Tip Calculator</a>
+            <a href="currency-converter.html">Currency Converter</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Road Trip Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const distance = parseFloat(document.getElementById('distance').value) || 1000;
+            const travelers = parseInt(document.getElementById('travelers').value) || 2;
+            const days = parseInt(document.getElementById('days').value) || 5;
+            const nights = parseInt(document.getElementById('nights').value) || 4;
+            const mpg = parseFloat(document.getElementById('mpg').value) || 28;
+            const gasPrice = parseFloat(document.getElementById('gasPrice').value) || 3.50;
+            const hotelCost = parseFloat(document.getElementById('hotelCost').value) || 120;
+            const foodCost = parseFloat(document.getElementById('foodCost').value) || 50;
+            const activities = parseFloat(document.getElementById('activities').value) || 200;
+            const other = parseFloat(document.getElementById('other').value) || 100;
+
+            // Calculate gas
+            const gallons = distance / mpg;
+            const gasCostTotal = gallons * gasPrice;
+
+            // Calculate totals
+            const lodgingTotal = nights * hotelCost;
+            const foodTotal = days * travelers * foodCost;
+            const totalCost = gasCostTotal + lodgingTotal + foodTotal + activities + other;
+            const perPerson = totalCost / travelers;
+            const costPerMile = totalCost / distance;
+
+            // Per person splits
+            const perGas = gasCostTotal / travelers;
+            const perHotel = lodgingTotal / travelers;
+            const perFood = foodTotal / travelers;
+            const perActivities = activities / travelers;
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + Math.round(totalCost).toLocaleString();
+            document.getElementById('perPerson').textContent = '$' + perPerson.toFixed(2) + ' per person';
+
+            document.getElementById('gasCost').textContent = '$' + Math.round(gasCostTotal);
+            document.getElementById('gallons').textContent = gallons.toFixed(1) + ' gallons';
+            document.getElementById('lodgingTotal').textContent = '$' + lodgingTotal.toLocaleString();
+            document.getElementById('foodTotal').textContent = '$' + foodTotal.toLocaleString();
+            document.getElementById('costPerMile').textContent = '$' + costPerMile.toFixed(2);
+
+            document.getElementById('breakGas').textContent = '$' + Math.round(gasCostTotal);
+            document.getElementById('breakHotel').textContent = '$' + lodgingTotal.toLocaleString();
+            document.getElementById('breakFood').textContent = '$' + foodTotal.toLocaleString();
+            document.getElementById('breakActivities').textContent = '$' + activities.toLocaleString();
+            document.getElementById('breakOther').textContent = '$' + other.toLocaleString();
+            document.getElementById('breakTotal').textContent = '$' + Math.round(totalCost).toLocaleString();
+
+            document.getElementById('perGas').textContent = '$' + perGas.toFixed(2);
+            document.getElementById('perHotel').textContent = '$' + perHotel.toFixed(2);
+            document.getElementById('perFood').textContent = '$' + perFood.toFixed(2);
+            document.getElementById('perActivities').textContent = '$' + perActivities.toFixed(2);
+            document.getElementById('perTotal').textContent = '$' + perPerson.toFixed(2);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

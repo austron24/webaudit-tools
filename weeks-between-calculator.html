@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weeks Between Dates Calculator - Days & Weeks Counter</title>
+    <meta name="description" content="Calculate how many weeks between two dates. Free date calculator for days, weeks, and months between any two dates.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #6366f1 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .date-section {
+            background: #eef2ff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .date-section h4 {
+            color: #4f46e5;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .input-group {
+            margin-bottom: 0;
+        }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+        .quick-dates {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .quick-btn {
+            padding: 6px 12px;
+            background: #e0e7ff;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #4338ca;
+            cursor: pointer;
+        }
+        .quick-btn:hover {
+            background: #c7d2fe;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 56px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 16px; margin-top: 5px; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .stat-item {
+            background: #eef2ff;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .stat-item .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4f46e5;
+        }
+        .stat-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .all-units {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .all-units h4 {
+            color: #4f46e5;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .unit-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .unit-row:last-child { border: none; }
+        .unit-row .value { font-weight: 600; color: #4f46e5; }
+        .weekdays {
+            background: #eef2ff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .weekdays h4 {
+            color: #4f46e5;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .weekday-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #c7d2fe;
+            font-size: 14px;
+        }
+        .weekday-row:last-child { border: none; }
+        .weekday-row .value { font-weight: 600; color: #4f46e5; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #4f46e5; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #6366f1;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #a5b4fc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📅 Weeks Between Calculator</h1>
+            <p class="subtitle">Calculate time between any two dates</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="date-section">
+                <h4>📆 Start Date</h4>
+                <div class="input-group">
+                    <input type="date" id="startDate" onchange="calculate()">
+                </div>
+                <div class="quick-dates">
+                    <button class="quick-btn" onclick="setToday('start')">Today</button>
+                    <button class="quick-btn" onclick="setStartOfYear('start')">Jan 1</button>
+                    <button class="quick-btn" onclick="setRelative('start', -30)">30 days ago</button>
+                </div>
+            </div>
+
+            <div class="date-section">
+                <h4>📆 End Date</h4>
+                <div class="input-group">
+                    <input type="date" id="endDate" onchange="calculate()">
+                </div>
+                <div class="quick-dates">
+                    <button class="quick-btn" onclick="setToday('end')">Today</button>
+                    <button class="quick-btn" onclick="setEndOfYear('end')">Dec 31</button>
+                    <button class="quick-btn" onclick="setRelative('end', 30)">+30 days</button>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Weeks Between</div>
+                <div class="value" id="weeks">12</div>
+                <div class="sub" id="weeksSub">12 weeks and 3 days</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="type">Total Days</div>
+                    <div class="value" id="days">87</div>
+                    <div class="note">Including end date</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Total Months</div>
+                    <div class="value" id="months">2.9</div>
+                    <div class="note">Approximately</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Weekdays</div>
+                    <div class="value" id="weekdays">62</div>
+                    <div class="note">Mon-Fri</div>
+                </div>
+                <div class="stat-item">
+                    <div class="type">Weekends</div>
+                    <div class="value" id="weekends">25</div>
+                    <div class="note">Sat-Sun</div>
+                </div>
+            </div>
+
+            <div class="all-units">
+                <h4>⏱️ Time in All Units</h4>
+                <div class="unit-row">
+                    <span>Years</span>
+                    <span class="value" id="years">0.24</span>
+                </div>
+                <div class="unit-row">
+                    <span>Months</span>
+                    <span class="value" id="monthsExact">2.87</span>
+                </div>
+                <div class="unit-row">
+                    <span>Weeks</span>
+                    <span class="value" id="weeksExact">12.43</span>
+                </div>
+                <div class="unit-row">
+                    <span>Days</span>
+                    <span class="value" id="daysExact">87</span>
+                </div>
+                <div class="unit-row">
+                    <span>Hours</span>
+                    <span class="value" id="hours">2,088</span>
+                </div>
+                <div class="unit-row">
+                    <span>Minutes</span>
+                    <span class="value" id="minutes">125,280</span>
+                </div>
+                <div class="unit-row">
+                    <span>Seconds</span>
+                    <span class="value" id="seconds">7,516,800</span>
+                </div>
+            </div>
+
+            <div class="weekdays">
+                <h4>📊 Day Breakdown</h4>
+                <div class="weekday-row">
+                    <span>Mondays</span>
+                    <span class="value" id="mondays">12</span>
+                </div>
+                <div class="weekday-row">
+                    <span>Tuesdays</span>
+                    <span class="value" id="tuesdays">13</span>
+                </div>
+                <div class="weekday-row">
+                    <span>Wednesdays</span>
+                    <span class="value" id="wednesdays">12</span>
+                </div>
+                <div class="weekday-row">
+                    <span>Thursdays</span>
+                    <span class="value" id="thursdays">13</span>
+                </div>
+                <div class="weekday-row">
+                    <span>Fridays</span>
+                    <span class="value" id="fridays">12</span>
+                </div>
+                <div class="weekday-row">
+                    <span>Saturdays</span>
+                    <span class="value" id="saturdays">12</span>
+                </div>
+                <div class="weekday-row">
+                    <span>Sundays</span>
+                    <span class="value" id="sundays">13</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Date Tools</h4>
+            <a href="date-calculator.html">Date Calculator</a>
+            <a href="age-calculator.html">Age Calculator</a>
+            <a href="due-date-calculator.html">Due Date Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Weeks Between Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        // Initialize with today and 3 months from now
+        function initDates() {
+            const today = new Date();
+            const future = new Date(today);
+            future.setMonth(future.getMonth() + 3);
+
+            document.getElementById('startDate').value = today.toISOString().split('T')[0];
+            document.getElementById('endDate').value = future.toISOString().split('T')[0];
+            calculate();
+        }
+
+        function setToday(which) {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById(which + 'Date').value = today;
+            calculate();
+        }
+
+        function setStartOfYear(which) {
+            const year = new Date().getFullYear();
+            document.getElementById(which + 'Date').value = year + '-01-01';
+            calculate();
+        }
+
+        function setEndOfYear(which) {
+            const year = new Date().getFullYear();
+            document.getElementById(which + 'Date').value = year + '-12-31';
+            calculate();
+        }
+
+        function setRelative(which, days) {
+            const base = new Date(document.getElementById(which + 'Date').value || new Date());
+            base.setDate(base.getDate() + days);
+            document.getElementById(which + 'Date').value = base.toISOString().split('T')[0];
+            calculate();
+        }
+
+        function calculate() {
+            const startStr = document.getElementById('startDate').value;
+            const endStr = document.getElementById('endDate').value;
+
+            if (!startStr || !endStr) return;
+
+            const start = new Date(startStr);
+            const end = new Date(endStr);
+
+            // Ensure start is before end
+            const diff = Math.abs(end - start);
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const weeks = Math.floor(days / 7);
+            const remainingDays = days % 7;
+
+            // All units
+            const hours = days * 24;
+            const minutes = hours * 60;
+            const seconds = minutes * 60;
+            const months = days / 30.44;
+            const years = days / 365.25;
+
+            // Count weekdays
+            let weekdayCounts = [0, 0, 0, 0, 0, 0, 0]; // Sun-Sat
+            let current = new Date(Math.min(start, end));
+            const last = new Date(Math.max(start, end));
+
+            while (current <= last) {
+                weekdayCounts[current.getDay()]++;
+                current.setDate(current.getDate() + 1);
+            }
+
+            const weekdayTotal = weekdayCounts[1] + weekdayCounts[2] + weekdayCounts[3] + weekdayCounts[4] + weekdayCounts[5];
+            const weekendTotal = weekdayCounts[0] + weekdayCounts[6];
+
+            // Update display
+            document.getElementById('weeks').textContent = weeks;
+            document.getElementById('weeksSub').textContent = weeks + ' week' + (weeks !== 1 ? 's' : '') + (remainingDays > 0 ? ' and ' + remainingDays + ' day' + (remainingDays !== 1 ? 's' : '') : '');
+
+            document.getElementById('days').textContent = days.toLocaleString();
+            document.getElementById('months').textContent = months.toFixed(1);
+            document.getElementById('weekdays').textContent = weekdayTotal;
+            document.getElementById('weekends').textContent = weekendTotal;
+
+            document.getElementById('years').textContent = years.toFixed(2);
+            document.getElementById('monthsExact').textContent = months.toFixed(2);
+            document.getElementById('weeksExact').textContent = (days / 7).toFixed(2);
+            document.getElementById('daysExact').textContent = days.toLocaleString();
+            document.getElementById('hours').textContent = hours.toLocaleString();
+            document.getElementById('minutes').textContent = minutes.toLocaleString();
+            document.getElementById('seconds').textContent = seconds.toLocaleString();
+
+            document.getElementById('mondays').textContent = weekdayCounts[1];
+            document.getElementById('tuesdays').textContent = weekdayCounts[2];
+            document.getElementById('wednesdays').textContent = weekdayCounts[3];
+            document.getElementById('thursdays').textContent = weekdayCounts[4];
+            document.getElementById('fridays').textContent = weekdayCounts[5];
+            document.getElementById('saturdays').textContent = weekdayCounts[6];
+            document.getElementById('sundays').textContent = weekdayCounts[0];
+        }
+
+        initDates();
+    </script>
+</body>
+</html>
