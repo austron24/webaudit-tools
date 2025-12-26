@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Nursing Home Abuse Calculator - Settlement Estimator</title>
+    <meta name="description" content="Estimate nursing home abuse and neglect lawsuit settlements. Calculate compensation for elder abuse. Free nursing home abuse calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #6b21a8 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .disclaimer {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: #92400e;
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #6b21a8;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #6b21a8;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #7c3aed; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #6b21a8 0%, #7c3aed 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 48px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .result-range { font-size: 16px; opacity: 0.8; margin-top: 10px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #f3e8ff;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #6b21a8; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #6b21a8; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #6b21a8; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #7c3aed;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #c4b5fd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏥 Nursing Home Abuse Calculator</h1>
+            <p class="subtitle">Estimate elder abuse settlement</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="disclaimer">
+                <strong>Disclaimer:</strong> Nursing home abuse cases vary significantly. This calculator provides rough estimates only. Many states have specific elder abuse laws that enhance damages. Consult an elder abuse attorney.
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Type of Abuse/Neglect</label>
+                    <select id="abuseType">
+                        <option value="neglect" selected>Neglect</option>
+                        <option value="bedsores">Bedsores/Pressure Ulcers</option>
+                        <option value="falls">Falls Due to Neglect</option>
+                        <option value="physical">Physical Abuse</option>
+                        <option value="medication">Medication Errors</option>
+                        <option value="sexual">Sexual Abuse</option>
+                        <option value="death">Wrongful Death</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Injury Severity</label>
+                    <select id="severity">
+                        <option value="minor">Minor</option>
+                        <option value="moderate" selected>Moderate</option>
+                        <option value="severe">Severe</option>
+                        <option value="catastrophic">Catastrophic</option>
+                        <option value="fatal">Fatal</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Medical Expenses ($)</label>
+                    <input type="number" id="medicalExpenses" value="50000" min="0" step="5000">
+                </div>
+                <div class="input-group">
+                    <label>Resident Age</label>
+                    <input type="number" id="age" value="78" min="60" max="105">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Duration of Abuse/Neglect</label>
+                    <select id="duration">
+                        <option value="single">Single Incident</option>
+                        <option value="days">Days</option>
+                        <option value="weeks" selected>Weeks</option>
+                        <option value="months">Months</option>
+                        <option value="years">Years</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Facility Knowledge</label>
+                    <select id="knowledge">
+                        <option value="unknown">Not Known to Staff</option>
+                        <option value="shouldKnow" selected>Should Have Known</option>
+                        <option value="knew">Knew and Did Nothing</option>
+                        <option value="covered">Covered Up</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Prior Violations</label>
+                    <select id="violations">
+                        <option value="none">None Known</option>
+                        <option value="some" selected>Some Violations</option>
+                        <option value="many">Many Violations</option>
+                        <option value="severe">Severe History</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Facility Type</label>
+                    <select id="facilityType">
+                        <option value="independent">Independent Facility</option>
+                        <option value="chain" selected>Chain/Corporate</option>
+                        <option value="large_chain">Large National Chain</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Settlement</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalSettlement">$0</div>
+                    <div class="result-label-main">Estimated Settlement Value</div>
+                    <div class="result-range" id="settlementRange">Range: $0 - $0</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="economicDamages">$0</div>
+                        <div class="summary-label">Economic Damages</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="nonEconomic">$0</div>
+                        <div class="summary-label">Pain & Suffering</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="punitiveDamages">$0</div>
+                        <div class="summary-label">Punitive Damages</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="afterFees">$0</div>
+                        <div class="summary-label">After Attorney Fees</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Settlement Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Medical Expenses</span>
+                        <span class="breakdown-value" id="displayMedical">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Future Care Costs</span>
+                        <span class="breakdown-value" id="displayFuture">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Pain & Suffering</span>
+                        <span class="breakdown-value" id="displayPain">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Emotional Distress</span>
+                        <span class="breakdown-value" id="displayEmotional">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Elder Abuse Enhancement</span>
+                        <span class="breakdown-value" id="displayEnhancement">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Legal Calculators</h4>
+            <a href="medical-malpractice-calculator.html">Medical Malpractice</a>
+            <a href="wrongful-death-calculator.html">Wrongful Death</a>
+            <a href="personal-injury-calculator.html">Personal Injury</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Nursing Home Abuse Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const abuseType = document.getElementById('abuseType').value;
+            const severity = document.getElementById('severity').value;
+            const medicalExpenses = parseFloat(document.getElementById('medicalExpenses').value);
+            const age = parseInt(document.getElementById('age').value);
+            const duration = document.getElementById('duration').value;
+            const knowledge = document.getElementById('knowledge').value;
+            const violations = document.getElementById('violations').value;
+            const facilityType = document.getElementById('facilityType').value;
+
+            // Future care costs based on severity
+            const futureCareMultipliers = {
+                minor: 0.2,
+                moderate: 0.5,
+                severe: 1.5,
+                catastrophic: 3.0,
+                fatal: 0
+            };
+            const futureCare = medicalExpenses * futureCareMultipliers[severity];
+
+            // Economic damages
+            const economicDamages = medicalExpenses + futureCare;
+
+            // Base pain and suffering multiplier
+            const severityMultipliers = {
+                minor: 2,
+                moderate: 4,
+                severe: 6,
+                catastrophic: 8,
+                fatal: 5
+            };
+            let painMultiplier = severityMultipliers[severity];
+
+            // Abuse type affects value
+            const abuseMultipliers = {
+                neglect: 1.0,
+                bedsores: 1.2,
+                falls: 1.0,
+                physical: 1.5,
+                medication: 1.1,
+                sexual: 2.0,
+                death: 1.3
+            };
+            painMultiplier *= abuseMultipliers[abuseType];
+
+            // Duration increases damages
+            const durationMultipliers = {
+                single: 0.8,
+                days: 1.0,
+                weeks: 1.2,
+                months: 1.5,
+                years: 2.0
+            };
+            painMultiplier *= durationMultipliers[duration];
+
+            const painSuffering = economicDamages * painMultiplier;
+            const emotionalDistress = painSuffering * 0.5;
+
+            // Punitive damages based on knowledge and violations
+            let punitiveMultiplier = 0;
+            if (knowledge === 'knew' || knowledge === 'covered') {
+                punitiveMultiplier = 1.5;
+            } else if (knowledge === 'shouldKnow') {
+                punitiveMultiplier = 0.5;
+            }
+
+            if (violations === 'many') punitiveMultiplier *= 1.5;
+            if (violations === 'severe') punitiveMultiplier *= 2;
+
+            // Facility type affects collectability and punitive
+            const facilityMultipliers = {
+                independent: 0.7,
+                chain: 1.0,
+                large_chain: 1.3
+            };
+            punitiveMultiplier *= facilityMultipliers[facilityType];
+
+            const punitiveDamages = (economicDamages + painSuffering) * punitiveMultiplier;
+
+            // Elder abuse enhancement (many states have this)
+            const elderEnhancement = (painSuffering + emotionalDistress) * 0.25;
+
+            // Non-economic total
+            const nonEconomicDamages = painSuffering + emotionalDistress + elderEnhancement;
+
+            // Total settlement
+            const totalSettlement = economicDamages + nonEconomicDamages + punitiveDamages;
+
+            // After attorney fees
+            const afterFees = totalSettlement * 0.6;
+
+            // Range
+            const lowEstimate = totalSettlement * 0.4;
+            const highEstimate = totalSettlement * 2;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalSettlement').textContent = formatMoney(totalSettlement);
+            document.getElementById('settlementRange').textContent = 'Range: ' + formatMoney(lowEstimate) + ' - ' + formatMoney(highEstimate);
+            document.getElementById('economicDamages').textContent = formatMoney(economicDamages);
+            document.getElementById('nonEconomic').textContent = formatMoney(nonEconomicDamages);
+            document.getElementById('punitiveDamages').textContent = formatMoney(punitiveDamages);
+            document.getElementById('afterFees').textContent = formatMoney(afterFees);
+
+            document.getElementById('displayMedical').textContent = formatMoney(medicalExpenses);
+            document.getElementById('displayFuture').textContent = formatMoney(futureCare);
+            document.getElementById('displayPain').textContent = formatMoney(painSuffering);
+            document.getElementById('displayEmotional').textContent = formatMoney(emotionalDistress);
+            document.getElementById('displayEnhancement').textContent = formatMoney(elderEnhancement);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
