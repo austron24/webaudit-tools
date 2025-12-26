@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Water Intake Calculator - Daily Water Needs</title>
-    <meta name="description" content="Free water intake calculator. Calculate how much water you should drink daily based on weight, activity, and climate.">
-    <meta name="keywords" content="water intake calculator, hydration calculator, daily water needs, water consumption, drink calculator">
+    <title>Water Intake Calculator - Daily Hydration Needs</title>
+    <meta name="description" content="Free water intake calculator. Calculate how much water you should drink daily based on weight, activity level, and climate.">
+    <meta name="keywords" content="water intake calculator, hydration calculator, daily water, drinking water, water consumption">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/water-intake-calculator.html">
     <style>
         :root { --primary: #0ea5e9; --primary-dark: #0284c7; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
@@ -25,25 +25,23 @@
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
         input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
         input:focus, select:focus { outline: none; border-color: var(--primary); }
-        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; position: relative; overflow: hidden; }
-        .result-hero::before { content: '💧'; position: absolute; font-size: 100px; opacity: 0.1; right: 20px; top: 50%; transform: translateY(-50%); }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
         .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
         .result-hero-label { color: rgba(255,255,255,0.8); }
-        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
-        .result-value { font-size: 1.4rem; font-weight: 700; color: var(--secondary); }
+        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
         .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
-        .glasses { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; justify-content: center; }
-        .glass { font-size: 2rem; opacity: 0.3; transition: all 0.3s; }
-        .glass.filled { opacity: 1; }
-        .tips { margin-top: 20px; }
-        .tip { display: flex; gap: 10px; padding: 12px; background: var(--bg-input); border-radius: 10px; margin-bottom: 10px; }
-        .tip-icon { font-size: 1.5rem; }
+        .water-visual { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; margin: 20px 0; }
+        .water-glass { width: 40px; height: 50px; background: var(--bg-input); border-radius: 0 0 8px 8px; position: relative; overflow: hidden; }
+        .water-glass.filled::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 80%; background: linear-gradient(180deg, #22d3ee, #0ea5e9); }
+        .tips-list { margin-top: 15px; }
+        .tip-item { display: flex; gap: 10px; padding: 12px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } .results-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
 <body>
@@ -66,84 +64,88 @@
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>🏃 Your Profile</h2>
+                <h2>📋 Your Information</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Weight (lbs)</label>
-                        <input type="number" id="weight" value="150" oninput="calculate()">
+                        <label>Weight</label>
+                        <input type="number" id="weight" value="160" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Unit</label>
+                        <select id="unit" onchange="calculate()">
+                            <option value="lbs" selected>Pounds (lbs)</option>
+                            <option value="kg">Kilograms (kg)</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Activity Level</label>
                         <select id="activity" onchange="calculate()">
-                            <option value="1.0">Sedentary (little exercise)</option>
-                            <option value="1.2" selected>Light (1-3 days/week)</option>
-                            <option value="1.4">Moderate (3-5 days/week)</option>
-                            <option value="1.6">Active (daily exercise)</option>
-                            <option value="1.8">Athlete (intense training)</option>
+                            <option value="sedentary">Sedentary (little exercise)</option>
+                            <option value="light">Light (1-3 days/week)</option>
+                            <option value="moderate" selected>Moderate (3-5 days/week)</option>
+                            <option value="active">Active (6-7 days/week)</option>
+                            <option value="very_active">Very Active (2x/day)</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Climate</label>
                         <select id="climate" onchange="calculate()">
-                            <option value="1.0">Cool/Temperate</option>
-                            <option value="1.1" selected>Moderate</option>
-                            <option value="1.2">Hot/Humid</option>
-                            <option value="1.3">Very Hot/Dry</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Gender</label>
-                        <select id="gender" onchange="calculate()">
-                            <option value="1.0">Male</option>
-                            <option value="0.9">Female</option>
+                            <option value="cold">Cold</option>
+                            <option value="moderate" selected>Moderate</option>
+                            <option value="hot">Hot/Humid</option>
                         </select>
                     </div>
                 </div>
                 
                 <div class="result-hero">
                     <div class="result-hero-label">Daily Water Intake</div>
-                    <div class="result-hero-value" id="waterOz">0 oz</div>
+                    <div class="result-hero-value" id="dailyOz">0 oz</div>
                 </div>
+                
+                <div class="water-visual" id="waterVisual"></div>
                 
                 <div class="results-grid">
                     <div class="result-card">
-                        <div class="result-value" id="waterLiters">0 L</div>
+                        <div class="result-value" id="liters">0 L</div>
                         <div class="result-label">Liters</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="waterCups">0</div>
-                        <div class="result-label">Cups (8 oz)</div>
+                        <div class="result-value" id="cups">0</div>
+                        <div class="result-label">Cups (8oz)</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="waterBottles">0</div>
-                        <div class="result-label">Water Bottles (16.9 oz)</div>
+                        <div class="result-value" id="bottles">0</div>
+                        <div class="result-label">Bottles (16.9oz)</div>
                     </div>
-                </div>
-                
-                <div style="text-align: center; margin-top: 20px;">
-                    <h3 style="color: var(--secondary); margin-bottom: 15px;">Glasses of Water Per Day</h3>
-                    <div class="glasses" id="glasses"></div>
+                    <div class="result-card">
+                        <div class="result-value" id="hourly">0 oz</div>
+                        <div class="result-label">Per Hour (16hr)</div>
+                    </div>
                 </div>
             </div>
 
             <div class="card">
                 <h2>💡 Hydration Tips</h2>
-                <div class="tips">
-                    <div class="tip">
-                        <div class="tip-icon">🌅</div>
-                        <div>Start your day with a glass of water to kickstart hydration</div>
+                <div class="tips-list">
+                    <div class="tip-item">
+                        <span>🌅</span>
+                        <span>Start your day with a glass of water before breakfast</span>
                     </div>
-                    <div class="tip">
-                        <div class="tip-icon">🍋</div>
-                        <div>Add lemon or fruit for flavor if plain water is boring</div>
+                    <div class="tip-item">
+                        <span>⏰</span>
+                        <span>Set hourly reminders to drink water throughout the day</span>
                     </div>
-                    <div class="tip">
-                        <div class="tip-icon">📱</div>
-                        <div>Set reminders to drink water throughout the day</div>
+                    <div class="tip-item">
+                        <span>🍋</span>
+                        <span>Add lemon or fruit for flavor if plain water is boring</span>
                     </div>
-                    <div class="tip">
-                        <div class="tip-icon">🥗</div>
-                        <div>Eat water-rich foods like cucumbers, watermelon, and oranges</div>
+                    <div class="tip-item">
+                        <span>🏃</span>
+                        <span>Drink extra water before, during, and after exercise</span>
+                    </div>
+                    <div class="tip-item">
+                        <span>🍎</span>
+                        <span>Eat water-rich foods like cucumbers, watermelon, and oranges</span>
                     </div>
                 </div>
             </div>
@@ -176,31 +178,47 @@
 
     <script>
         function calculate() {
-            const weight = parseFloat(document.getElementById('weight').value) || 0;
-            const activity = parseFloat(document.getElementById('activity').value) || 1.0;
-            const climate = parseFloat(document.getElementById('climate').value) || 1.0;
-            const gender = parseFloat(document.getElementById('gender').value) || 1.0;
+            let weight = parseFloat(document.getElementById('weight').value) || 0;
+            const unit = document.getElementById('unit').value;
+            const activity = document.getElementById('activity').value;
+            const climate = document.getElementById('climate').value;
             
-            // Base: 0.5 oz per pound of body weight
-            const baseOz = weight * 0.5;
-            const adjustedOz = baseOz * activity * climate * gender;
+            if (unit === 'kg') weight = weight * 2.205;
             
-            const liters = adjustedOz * 0.0296;
-            const cups = adjustedOz / 8;
-            const bottles = adjustedOz / 16.9;
+            let baseOz = weight * 0.5;
             
-            document.getElementById('waterOz').textContent = Math.round(adjustedOz) + ' oz';
-            document.getElementById('waterLiters').textContent = liters.toFixed(1) + ' L';
-            document.getElementById('waterCups').textContent = Math.round(cups);
-            document.getElementById('waterBottles').textContent = Math.round(bottles);
+            const activityMultipliers = {
+                sedentary: 1.0,
+                light: 1.1,
+                moderate: 1.2,
+                active: 1.3,
+                very_active: 1.5
+            };
             
-            // Generate glasses
-            const numGlasses = Math.round(cups);
-            let glassesHtml = '';
-            for (let i = 0; i < Math.min(numGlasses, 16); i++) {
-                glassesHtml += '<span class="glass filled">🥛</span>';
+            const climateMultipliers = {
+                cold: 0.9,
+                moderate: 1.0,
+                hot: 1.2
+            };
+            
+            const dailyOz = Math.round(baseOz * activityMultipliers[activity] * climateMultipliers[climate]);
+            const liters = (dailyOz * 0.0296).toFixed(1);
+            const cups = Math.ceil(dailyOz / 8);
+            const bottles = Math.ceil(dailyOz / 16.9);
+            const hourly = Math.round(dailyOz / 16);
+            
+            document.getElementById('dailyOz').textContent = dailyOz + ' oz';
+            document.getElementById('liters').textContent = liters + ' L';
+            document.getElementById('cups').textContent = cups;
+            document.getElementById('bottles').textContent = bottles;
+            document.getElementById('hourly').textContent = hourly + ' oz';
+            
+            const glasses = Math.min(cups, 12);
+            let visualHtml = '';
+            for (let i = 0; i < glasses; i++) {
+                visualHtml += '<div class="water-glass filled"></div>';
             }
-            document.getElementById('glasses').innerHTML = glassesHtml;
+            document.getElementById('waterVisual').innerHTML = visualHtml;
         }
         
         calculate();
