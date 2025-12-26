@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capital Gains Tax Calculator - Free Online Calculator | WebTools Pro</title>
+    <meta name="description" content="Calculate capital gains tax on stocks, real estate, and investments. Estimate short-term and long-term capital gains tax liability. Free calculator.">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/capital-gains-tax-calculator.html">
+    <meta property="og:title" content="Capital Gains Tax Calculator - Free Online Calculator">
+    <meta property="og:description" content="Calculate capital gains tax on stocks, real estate, and investments. Estimate short-term and long-term capital gains tax liability.">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧮</text></svg>">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --white: #ffffff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        .site-header {
+            background: linear-gradient(135deg, var(--bg-dark), var(--bg-card));
+            border-bottom: 1px solid var(--border);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary), #f59e0b);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .nav-links a:hover { color: var(--text-light); }
+        @media (max-width: 600px) { .nav-links { display: none; } }
+
+        .ad-top { background: var(--bg-card); padding: 12px 0; text-align: center; border-bottom: 1px solid var(--border); }
+        .ad-mobile { display: none; text-align: center; margin: 12px auto; max-width: 320px; }
+        @media (max-width: 768px) { .ad-mobile { display: block; } }
+
+        .main-layout {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 25px 20px;
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            gap: 25px;
+        }
+        @media (max-width: 900px) {
+            .main-layout { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+        }
+
+        .hero { text-align: center; margin-bottom: 25px; }
+        .hero h1 {
+            font-size: 38px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--text-light), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p { font-size: 16px; color: var(--text-muted); max-width: 500px; margin: 0 auto; }
+        @media (max-width: 600px) { .hero h1 { font-size: 28px; } }
+
+        .calc-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        @media (max-width: 600px) { .calc-card { padding: 20px; } }
+
+        .unit-toggle {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 25px;
+            background: #f1f5f9;
+            padding: 5px;
+            border-radius: 12px;
+        }
+        .unit-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            background: transparent;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+        .unit-btn.active {
+            background: var(--white);
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: #475569;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            transition: border-color 0.2s;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .calc-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .calc-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .results {
+            margin-top: 25px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border-radius: 16px;
+            display: none;
+        }
+        .results.show { display: block; }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        .result-item:last-child { border-bottom: none; }
+        .result-label { font-weight: 500; color: #475569; }
+        .result-value { font-weight: 700; color: #1e293b; font-size: 18px; }
+        .result-value.highlight { color: #16a34a; font-size: 24px; }
+
+        .ad-inline { text-align: center; margin: 25px 0; padding: 15px; background: var(--bg-card); border-radius: 12px; }
+
+        .info-section {
+            margin-top: 30px;
+            padding: 25px;
+            background: var(--bg-card);
+            border-radius: 16px;
+        }
+        .info-section h2 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: var(--text-light);
+        }
+        .info-section p, .info-section li {
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+        .info-section ul { padding-left: 20px; }
+
+        .related-tools {
+            margin-top: 30px;
+            padding: 25px;
+            background: var(--bg-card);
+            border-radius: 16px;
+        }
+        .related-tools h3 { margin-bottom: 15px; }
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        .related-link {
+            display: block;
+            padding: 12px 16px;
+            background: var(--bg-dark);
+            border-radius: 10px;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        .related-link:hover { background: var(--primary); }
+
+        .ad-bottom { text-align: center; margin: 25px 0; }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .sidebar-ad {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+        .sidebar-links {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .sidebar-links h4 { margin-bottom: 12px; font-size: 14px; color: var(--text-muted); text-transform: uppercase; }
+        .sidebar-links a {
+            display: block;
+            padding: 10px 0;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+        .sidebar-links a:last-child { border-bottom: none; }
+        .sidebar-links a:hover { color: var(--primary); }
+
+        .site-footer {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            padding: 40px 20px;
+            margin-top: 50px;
+        }
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+        .footer-section h4 { margin-bottom: 15px; font-size: 16px; }
+        .footer-section a {
+            display: block;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 5px 0;
+        }
+        .footer-section a:hover { color: var(--text-light); }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            margin-top: 30px;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">⚡</div>
+                WebTools Pro
+            </a>
+            <nav class="nav-links">
+                <a href="health-calculators.html">Health</a>
+                <a href="finance-calculators.html">Finance</a>
+                <a href="home-calculators.html">Home</a>
+                <a href="legal-calculators.html">Legal</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="ad-top">
+        <script type="text/javascript">
+            atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+
+    <div class="ad-mobile">
+        <script type="text/javascript">
+            atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+
+    <div class="main-layout">
+        <main class="content">
+            <div class="hero">
+                <h1>Capital Gains Tax Calculator</h1>
+                <p>Calculate your capital gains tax on stocks, real estate, crypto, and other investments.</p>
+            </div>
+
+            <div class="calc-card">
+                <div class="unit-toggle">
+                    <button class="unit-btn active" onclick="setType('short')">Short-Term</button>
+                    <button class="unit-btn" onclick="setType('long')">Long-Term</button>
+                </div>
+
+                <div class="input-group">
+                    <label>Purchase Price ($)</label>
+                    <input type="number" id="purchasePrice" placeholder="10000" value="10000">
+                </div>
+
+                <div class="input-group">
+                    <label>Sale Price ($)</label>
+                    <input type="number" id="salePrice" placeholder="15000" value="15000">
+                </div>
+
+                <div class="input-group">
+                    <label>Filing Status</label>
+                    <select id="filingStatus">
+                        <option value="single">Single</option>
+                        <option value="married">Married Filing Jointly</option>
+                        <option value="head">Head of Household</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Annual Taxable Income ($)</label>
+                    <input type="number" id="income" placeholder="75000" value="75000">
+                </div>
+
+                <button class="calc-btn" onclick="calculate()">Calculate Capital Gains Tax</button>
+
+                <div class="results" id="results">
+                    <div class="result-item">
+                        <span class="result-label">Capital Gain</span>
+                        <span class="result-value" id="gain">$0</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Tax Rate</span>
+                        <span class="result-value" id="rate">0%</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Estimated Tax</span>
+                        <span class="result-value highlight" id="tax">$0</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Net Profit After Tax</span>
+                        <span class="result-value" id="netProfit">$0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ad-inline">
+                <script type="text/javascript">
+                    atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };
+                </script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+
+            <div class="info-section">
+                <h2>About Capital Gains Tax</h2>
+                <p>Capital gains tax is levied on profits from the sale of assets like stocks, bonds, real estate, and cryptocurrency. The tax rate depends on how long you held the asset and your income level.</p>
+                <ul>
+                    <li><strong>Short-term gains</strong> (held less than 1 year) are taxed as ordinary income (10-37%)</li>
+                    <li><strong>Long-term gains</strong> (held 1+ years) are taxed at preferential rates (0%, 15%, or 20%)</li>
+                    <li>High earners may owe an additional 3.8% Net Investment Income Tax</li>
+                    <li>Primary residence exclusions may apply for real estate sales</li>
+                </ul>
+            </div>
+
+            <div class="related-tools">
+                <h3>Related Calculators</h3>
+                <div class="related-grid">
+                    <a href="tax-bracket-calculator.html" class="related-link">Tax Bracket Calculator</a>
+                    <a href="estate-tax-calculator.html" class="related-link">Estate Tax Calculator</a>
+                    <a href="investment-calculator.html" class="related-link">Investment Calculator</a>
+                    <a href="crypto-profit-calculator.html" class="related-link">Crypto Profit Calculator</a>
+                </div>
+            </div>
+
+            <div class="ad-bottom">
+                <script type="text/javascript">
+                    atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };
+                </script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="sidebar-ad">
+                <script type="text/javascript">
+                    atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };
+                </script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+            <div class="sidebar-ad">
+                <script type="text/javascript">
+                    atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };
+                </script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
+            </div>
+            <div class="sidebar-links">
+                <h4>Popular Tools</h4>
+                <a href="bmi-calculator.html">BMI Calculator</a>
+                <a href="mortgage-calculator.html">Mortgage Calculator</a>
+                <a href="compound-interest.html">Compound Interest</a>
+                <a href="percentage-calculator.html">Percentage Calculator</a>
+            </div>
+        </aside>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>Finance Tools</h4>
+                <a href="mortgage-calculator.html">Mortgage Calculator</a>
+                <a href="compound-interest.html">Compound Interest</a>
+                <a href="investment-calculator.html">Investment Calculator</a>
+                <a href="tax-bracket-calculator.html">Tax Bracket Calculator</a>
+            </div>
+            <div class="footer-section">
+                <h4>Health Tools</h4>
+                <a href="bmi-calculator.html">BMI Calculator</a>
+                <a href="calorie-calculator.html">Calorie Calculator</a>
+                <a href="body-fat-calculator.html">Body Fat Calculator</a>
+            </div>
+            <div class="footer-section">
+                <h4>Home Tools</h4>
+                <a href="paint-calculator.html">Paint Calculator</a>
+                <a href="flooring-calculator.html">Flooring Calculator</a>
+                <a href="concrete-calculator.html">Concrete Calculator</a>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+                <a href="contact.html">Contact Us</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 WebTools Pro. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        let gainType = 'short';
+
+        function setType(type) {
+            gainType = type;
+            document.querySelectorAll('.unit-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function calculate() {
+            const purchasePrice = parseFloat(document.getElementById('purchasePrice').value) || 0;
+            const salePrice = parseFloat(document.getElementById('salePrice').value) || 0;
+            const income = parseFloat(document.getElementById('income').value) || 0;
+            const filingStatus = document.getElementById('filingStatus').value;
+
+            const gain = salePrice - purchasePrice;
+            let rate = 0;
+
+            if (gain <= 0) {
+                document.getElementById('gain').textContent = '$' + gain.toLocaleString();
+                document.getElementById('rate').textContent = '0%';
+                document.getElementById('tax').textContent = '$0';
+                document.getElementById('netProfit').textContent = '$' + gain.toLocaleString();
+                document.getElementById('results').classList.add('show');
+                return;
+            }
+
+            if (gainType === 'long') {
+                // Long-term capital gains rates (2024)
+                if (filingStatus === 'married') {
+                    if (income <= 89250) rate = 0;
+                    else if (income <= 553850) rate = 15;
+                    else rate = 20;
+                } else if (filingStatus === 'head') {
+                    if (income <= 59750) rate = 0;
+                    else if (income <= 523050) rate = 15;
+                    else rate = 20;
+                } else {
+                    if (income <= 44625) rate = 0;
+                    else if (income <= 492300) rate = 15;
+                    else rate = 20;
+                }
+            } else {
+                // Short-term = ordinary income rates
+                const totalIncome = income + gain;
+                if (filingStatus === 'married') {
+                    if (totalIncome <= 22000) rate = 10;
+                    else if (totalIncome <= 89450) rate = 12;
+                    else if (totalIncome <= 190750) rate = 22;
+                    else if (totalIncome <= 364200) rate = 24;
+                    else if (totalIncome <= 462500) rate = 32;
+                    else if (totalIncome <= 693750) rate = 35;
+                    else rate = 37;
+                } else {
+                    if (totalIncome <= 11000) rate = 10;
+                    else if (totalIncome <= 44725) rate = 12;
+                    else if (totalIncome <= 95375) rate = 22;
+                    else if (totalIncome <= 182100) rate = 24;
+                    else if (totalIncome <= 231250) rate = 32;
+                    else if (totalIncome <= 578125) rate = 35;
+                    else rate = 37;
+                }
+            }
+
+            const tax = gain * (rate / 100);
+            const netProfit = gain - tax;
+
+            document.getElementById('gain').textContent = '$' + gain.toLocaleString();
+            document.getElementById('rate').textContent = rate + '%';
+            document.getElementById('tax').textContent = '$' + tax.toLocaleString(undefined, {maximumFractionDigits: 2});
+            document.getElementById('netProfit').textContent = '$' + netProfit.toLocaleString(undefined, {maximumFractionDigits: 2});
+            document.getElementById('results').classList.add('show');
+        }
+    </script>
+</body>
+</html>
