@@ -3,863 +3,246 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Closing Cost Calculator - Free Online Calculator | WebTools Pro</title>
-    <meta name="description" content="Calculate home closing costs for buyers and sellers. Estimate title, escrow, and lender fees. Free closing cost calculator.">
+    <title>Closing Cost Calculator - Estimate Your Closing Costs</title>
+    <meta name="description" content="Calculate estimated closing costs for buying a home. See lender fees, title charges, prepaid items, and total cash needed at closing.">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/closing-cost-calculator.html">
-    <meta property="og:title" content="Closing Cost Calculator - Free Online Calculator">
-    <meta property="og:description" content="Calculate home closing costs for buyers and sellers. Estimate title, escrow, and lender fees. Free closing cost calculator.">
+    <meta property="og:title" content="Closing Cost Calculator - Estimate Your Closing Costs">
+    <meta property="og:description" content="Get a detailed breakdown of your home closing costs.">
     <meta property="og:type" content="website">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧮</text></svg>">
     <style>
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --bg-dark: #0f172a;
-            --bg-card: #1e293b;
-            --text-light: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
-            --white: #ffffff;
-        }
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --warning: #f59e0b; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-light);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-        .site-header {
-            background: linear-gradient(135deg, var(--bg-dark), var(--bg-card));
-            border-bottom: 1px solid var(--border);
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo {
-            font-size: 22px;
-            font-weight: 700;
-            text-decoration: none;
-            color: var(--text-light);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--primary), #f59e0b);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-        .nav-links { display: flex; gap: 20px; }
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .nav-links a:hover { color: var(--text-light); }
-        @media (max-width: 600px) { .nav-links { display: none; } }
-
-        .ad-top { background: var(--bg-card); padding: 12px 0; text-align: center; border-bottom: 1px solid var(--border); }
-        .ad-mobile { display: none; text-align: center; margin: 12px auto; max-width: 320px; }
-        @media (max-width: 768px) { .ad-mobile { display: block; } }
-
-        .main-layout {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 25px 20px;
-            display: grid;
-            grid-template-columns: 1fr 280px;
-            gap: 25px;
-        }
-        @media (max-width: 900px) {
-            .main-layout { grid-template-columns: 1fr; }
-            .sidebar { display: none; }
-        }
-
-        .hero { text-align: center; margin-bottom: 25px; }
-        .hero h1 {
-            font-size: 38px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, var(--text-light), var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero p { font-size: 16px; color: var(--text-muted); max-width: 500px; margin: 0 auto; }
-        @media (max-width: 600px) { .hero h1 { font-size: 28px; } }
-
-        .calc-card {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 35px;
-            color: #1e293b;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-        @media (max-width: 600px) { .calc-card { padding: 20px; } }
-
-        .unit-toggle {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 25px;
-            background: #f1f5f9;
-            padding: 5px;
-            border-radius: 12px;
-        }
-        .unit-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            background: transparent;
-            color: #64748b;
-            transition: all 0.2s;
-        }
-        .unit-btn.active {
-            background: var(--white);
-            color: var(--primary);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .input-group { margin-bottom: 20px; }
-        .input-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: 700;
-            color: #475569;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .input-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        .input-row input, .input-group input, .input-group select {
-            flex: 1;
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.2s;
-            background: #f8fafc;
-        }
-        .input-row input:focus, .input-group input:focus, .input-group select:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: var(--white);
-        }
-        .input-row span { font-size: 13px; color: #64748b; font-weight: 600; min-width: 25px; }
-
-        .btn {
-            width: 100%;
-            padding: 16px 25px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: var(--white);
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: 8px;
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.35);
-        }
-
-        .results {
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 2px solid #e2e8f0;
-            display: none;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; min-height: 100vh; }
+        .header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; }
+        .nav-links a:hover { color: var(--primary); }
+        .ad-top { background: var(--bg-card); padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); }
+        .ad-mobile { display: none; background: var(--bg-card); padding: 0.5rem; text-align: center; }
+        .main-layout { display: flex; max-width: 1400px; margin: 0 auto; gap: 2rem; padding: 2rem; }
+        .content { flex: 1; min-width: 0; }
+        .sidebar { width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 1rem; }
+        .hero { text-align: center; margin-bottom: 2rem; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary), #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { color: var(--text-secondary); font-size: 1.1rem; }
+        .calculator-card { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .section-title { font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--primary); }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.75rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 0.5rem; color: var(--text-primary); font-size: 1rem; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+        .input-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .calculate-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; border-radius: 0.5rem; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; }
+        .calculate-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
+        .results { display: none; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
         .results.show { display: block; }
-        .bmi-display, .result-main { text-align: center; margin-bottom: 25px; }
-        .bmi-value, .result-value {
-            font-size: 56px;
-            font-weight: 800;
-            color: var(--primary);
-            line-height: 1.1;
-        }
-        .bmi-category, .result-label {
-            font-size: 22px;
-            font-weight: 600;
-            margin-top: 8px;
-            color: #1e293b;
-        }
-
-        .bmi-scale, .scale-bar-container { margin: 25px 0; }
-        .bmi-scale > div:first-child, .scale-bar {
-            height: 18px;
-            background: linear-gradient(to right, #3b82f6 0%, #22c55e 25%, #eab308 55%, #f97316 75%, #ef4444 100%);
-            border-radius: 9px;
-            position: relative;
-        }
-        .bmi-marker, .scale-marker {
-            position: absolute;
-            top: -6px;
-            width: 5px;
-            height: 30px;
-            background: #1e293b;
-            border-radius: 2px;
-            transform: translateX(-50%);
-            transition: left 0.4s ease;
-        }
-        .scale-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: #64748b;
-            margin-top: 10px;
-            font-weight: 600;
-        }
-
-        .category-info, .category-table {
-            background: #f8fafc;
-            border-radius: 14px;
-            overflow: hidden;
-            margin-top: 20px;
-        }
-        .category-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 14px 20px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .category-row:last-child { border: none; }
-        .category-row.active { background: #fef2f2; }
-
-        .result-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 12px;
-            margin-top: 20px;
-        }
-        .result-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 18px;
-            text-align: center;
-        }
-        .result-item-value { font-size: 22px; font-weight: 700; color: #1e293b; }
-        .result-item-label { font-size: 11px; color: #64748b; text-transform: uppercase; margin-top: 4px; letter-spacing: 0.5px; }
-
-        .ad-inline { background: #f8fafc; border-radius: 10px; padding: 15px; margin: 25px 0; text-align: center; }
-        .ad-bottom { background: var(--bg-card); padding: 25px 15px; text-align: center; margin-top: 30px; border-radius: 14px; }
-
-        .info-section {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 30px;
-            margin-top: 30px;
-        }
-        .info-section h2 { font-size: 22px; margin-bottom: 15px; color: var(--text-light); }
-        .info-section p { color: var(--text-muted); margin-bottom: 15px; font-size: 15px; line-height: 1.7; }
-        .info-section h3 { font-size: 18px; margin: 20px 0 12px; color: var(--text-light); }
-        .info-section ul { color: var(--text-muted); margin-left: 20px; }
-        .info-section li { margin-bottom: 10px; line-height: 1.6; }
-
-        .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .sidebar-ad { background: var(--bg-card); border-radius: 14px; padding: 15px; text-align: center; }
-        .sidebar-tools {
-            background: var(--bg-card);
-            border-radius: 14px;
-            padding: 20px;
-        }
-        .sidebar-tools h3 { font-size: 16px; margin-bottom: 15px; color: var(--text-light); }
-        .tool-link {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px;
-            border-radius: 10px;
-            text-decoration: none;
-            color: var(--text-muted);
-            transition: all 0.2s;
-            margin-bottom: 6px;
-        }
-        .tool-link:hover { background: rgba(99, 102, 241, 0.1); color: var(--text-light); }
-        .tool-icon-small {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-        }
-
-        .related-tools { margin-top: 35px; }
-        .related-tools h2 { font-size: 24px; margin-bottom: 20px; text-align: center; }
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px;
-        }
-        .tool-card {
-            background: var(--bg-card);
-            border-radius: 14px;
-            padding: 20px;
-            text-decoration: none;
-            color: var(--text-light);
-            transition: all 0.3s;
-            border: 1px solid var(--border);
-        }
-        .tool-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--primary);
-            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.2);
-        }
-        .tool-card-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            margin-bottom: 12px;
-        }
-        .tool-card h4 { font-size: 14px; margin-bottom: 6px; }
-        .tool-card p { font-size: 12px; color: var(--text-muted); }
-
-        .site-footer {
-            background: var(--bg-card);
-            border-top: 1px solid var(--border);
-            padding: 40px 20px 25px;
-            margin-top: 50px;
-        }
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 30px;
-        }
-        .footer-section h4 { font-size: 14px; margin-bottom: 15px; color: var(--text-light); }
-        .footer-section a {
-            display: block;
-            color: var(--text-muted);
-            text-decoration: none;
-            padding: 6px 0;
-            font-size: 13px;
-        }
-        .footer-section a:hover { color: var(--primary); }
-        .footer-bottom {
-            max-width: 1200px;
-            margin: 30px auto 0;
-            padding-top: 25px;
-            border-top: 1px solid var(--border);
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-        .footer-bottom a { color: var(--primary); text-decoration: none; }
-
-        .tools-promo { display: none; }
-        .cta-section { display: none; }
+        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .result-box { background: var(--bg-input); padding: 1.25rem; border-radius: 0.75rem; text-align: center; }
+        .result-box.highlight { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid var(--primary); }
+        .result-label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .result-value { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
+        .cost-breakdown { margin-top: 1.5rem; }
+        .cost-breakdown h4 { color: var(--text-primary); margin-bottom: 1rem; }
+        .cost-category { margin-bottom: 1.5rem; }
+        .cost-category h5 { color: var(--primary); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+        .cost-item { display: flex; justify-content: space-between; padding: 0.5rem 0; color: var(--text-secondary); }
+        .cost-item span:last-child { color: var(--text-primary); font-weight: 500; }
+        .cost-total { display: flex; justify-content: space-between; padding: 1rem 0; border-top: 2px solid var(--primary); margin-top: 1rem; font-size: 1.1rem; font-weight: 600; }
+        .ad-inline { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin: 2rem 0; }
+        .info-section { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .info-section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary); }
+        .info-section p, .info-section li { color: var(--text-secondary); margin-bottom: 0.75rem; }
+        .info-section ul { padding-left: 1.5rem; }
+        .related-tools { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); }
+        .related-tools h3 { margin-bottom: 1rem; color: var(--text-primary); }
+        .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+        .tool-link { display: block; padding: 1rem; background: var(--bg-input); border-radius: 0.5rem; text-decoration: none; color: var(--text-primary); }
+        .tool-link:hover { background: var(--border); transform: translateY(-2px); }
+        .ad-bottom { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin-top: 2rem; }
+        .footer { background: var(--bg-card); border-top: 1px solid var(--border); padding: 2rem; text-align: center; margin-top: 3rem; }
+        .footer p { color: var(--text-secondary); font-size: 0.9rem; }
+        @media (max-width: 968px) { .sidebar { display: none; } .main-layout { padding: 1rem; } }
+        @media (max-width: 640px) { .ad-top { display: none; } .ad-mobile { display: block; } .hero h1 { font-size: 1.75rem; } .input-row { grid-template-columns: 1fr; } .nav-links { display: none; } }
     </style>
 </head>
 <body>
-    <header class="site-header">
-        <div class="header-container">
-            <a href="index.html" class="logo">
-                <div class="logo-icon">🧮</div>
-                WebTools Pro
-            </a>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">CalcTools</a>
             <nav class="nav-links">
-                <a href="index.html">All Tools</a>
-                <a href="bmi-calculator.html">Health</a>
-                <a href="mortgage-calculator.html">Finance</a>
+                <a href="index.html">Home</a>
+                <a href="finance-calculators.html">Finance</a>
+                <a href="health-calculators.html">Health</a>
+                <a href="home-calculators.html">Home</a>
             </nav>
         </div>
     </header>
-
     <div class="ad-top">
-        <script>
-            atOptions = {
-                'key' : 'b43e7cf5057864a264961884e1f34530',
-                'format' : 'iframe',
-                'height' : 90,
-                'width' : 728,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
     </div>
-
     <div class="ad-mobile">
-        <script>
-            atOptions = {
-                'key' : '9f6b66d433cad4c02b643bdd4b7eefc0',
-                'format' : 'iframe',
-                'height' : 50,
-                'width' : 320,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
-
-    <main class="main-layout">
-        <div class="content">
-            <section class="hero">
+    <div class="main-layout">
+        <main class="content">
+            <div class="hero">
                 <h1>Closing Cost Calculator</h1>
-                <p>Calculate home closing costs for buyers and sellers. Estimate title, escrow, and lender fees. Free closing cost calculator....</p>
-            </section>
-
-            <div class="calc-card">
-                
-            <div class="input-group">
-                <label>Home Purchase Price ($)</label>
-                <input type="number" id="homePrice" value="350000" min="50000" step="10000">
+                <p>Estimate all costs you'll pay when buying a home</p>
             </div>
-
-            <div class="input-row">
-                <div class="input-group">
-                    <label>Down Payment (%)</label>
-                    <input type="number" id="downPercent" value="20" min="0" max="100" step="1">
-                </div>
-                <div class="input-group">
-                    <label>Loan Type</label>
-                    <select id="loanType">
-                        <option value="conventional">Conventional</option>
-                        <option value="fha">FHA</option>
-                        <option value="va">VA</option>
-                        <option value="usda">USDA</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="input-row">
-                <div class="input-group">
-                    <label>State</label>
-                    <select id="state">
-                        <option value="avg">Average (US)</option>
-                        <option value="high">High Cost State (NY, CA)</option>
-                        <option value="low">Low Cost State (Midwest)</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label>Buyer Type</label>
-                    <select id="buyerType">
-                        <option value="buyer">Buyer</option>
-                        <option value="seller">Seller</option>
-                    </select>
-                </div>
-            </div>
-
-            <button class="btn" onclick="calculate()">Calculate Closing Costs</button>
-
-            <div class="results" id="results">
-                <div class="result-box-main">
-                    <div class="result-value-main" id="totalClosing">$0</div>
-                    <div class="result-label-main">Estimated Closing Costs</div>
-                </div>
-
-                <div class="summary-grid">
-                    <div class="summary-box">
-                        <div class="summary-value" id="closingPercent">0%</div>
-                        <div class="summary-label">% of Home Price</div>
+            <div class="calculator-card">
+                <h2 class="section-title">Property & Loan Details</h2>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Purchase Price ($)</label>
+                        <input type="number" id="purchasePrice" value="350000" placeholder="350000">
                     </div>
-                    <div class="summary-box">
-                        <div class="summary-value" id="downPayment">$0</div>
-                        <div class="summary-label">Down Payment</div>
-                    </div>
-                    <div class="summary-box">
-                        <div class="summary-value" id="loanAmount">$0</div>
-                        <div class="summary-label">Loan Amount</div>
-                    </div>
-                    <div class="summary-box">
-                        <div class="summary-value" id="cashNeeded">$0</div>
-                        <div class="summary-label">Total Cash Needed</div>
+                    <div class="form-group">
+                        <label>Loan Amount ($)</label>
+                        <input type="number" id="loanAmount" value="280000" placeholder="280000">
                     </div>
                 </div>
-
-                <div class="breakdown">
-                    <h4>📋 Cost Breakdown</h4>
-                    <div class="breakdown-row">
-                        <span class="breakdown-label">Lender Fees (origination, etc)</span>
-                        <span class="breakdown-value" id="lenderFees">$0</span>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Interest Rate (%)</label>
+                        <input type="number" id="interestRate" value="7.0" step="0.125" placeholder="7.0">
                     </div>
-                    <div class="breakdown-row">
-                        <span class="breakdown-label">Title Insurance & Escrow</span>
-                        <span class="breakdown-value" id="titleFees">$0</span>
+                    <div class="form-group">
+                        <label>Property Tax Rate (%)</label>
+                        <input type="number" id="propertyTaxRate" value="1.25" step="0.1" placeholder="1.25">
                     </div>
-                    <div class="breakdown-row">
-                        <span class="breakdown-label">Appraisal & Inspection</span>
-                        <span class="breakdown-value" id="appraisalFees">$0</span>
+                </div>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Annual Insurance ($)</label>
+                        <input type="number" id="annualInsurance" value="1800" placeholder="1800">
                     </div>
-                    <div class="breakdown-row">
-                        <span class="breakdown-label">Government Fees & Taxes</span>
-                        <span class="breakdown-value" id="govFees">$0</span>
+                    <div class="form-group">
+                        <label>Months of Prepaid Taxes</label>
+                        <select id="prepaidTaxMonths">
+                            <option value="2">2 months</option>
+                            <option value="3" selected>3 months</option>
+                            <option value="4">4 months</option>
+                            <option value="6">6 months</option>
+                        </select>
                     </div>
-                    <div class="breakdown-row">
-                        <span class="breakdown-label">Prepaid Items (insurance, taxes)</span>
-                        <span class="breakdown-value" id="prepaidItems">$0</span>
+                </div>
+                <button class="calculate-btn" onclick="calculate()">Calculate Closing Costs</button>
+                <div class="results" id="results">
+                    <div class="result-grid">
+                        <div class="result-box highlight">
+                            <div class="result-label">Total Closing Costs</div>
+                            <div class="result-value" id="totalClosing">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Lender Fees</div>
+                            <div class="result-value" id="lenderFees">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Title & Escrow</div>
+                            <div class="result-value" id="titleFees">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Prepaids</div>
+                            <div class="result-value" id="prepaids">$0</div>
+                        </div>
                     </div>
+                    <div class="cost-breakdown" id="breakdown"></div>
                 </div>
             </div>
-        
-            </div>
-
             <div class="ad-inline">
-                <script>
-            atOptions = {
-                'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
-                'format' : 'iframe',
-                'height' : 250,
-                'width' : 300,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
             </div>
-
-            <section class="info-section">
-                <h2>About This Tool</h2>
-                <p>Calculate home closing costs for buyers and sellers. Estimate title, escrow, and lender fees. Free closing cost calculator.</p>
-                <p>This free online calculator provides instant, accurate results. No signup required - just enter your values and get your answer immediately.</p>
-            </section>
-
-            <section class="related-tools">
-                <h2>Related Tools</h2>
-                <div class="tools-grid">
-                    <a href="percentage-calc.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Percentage Calculator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                    <a href="average-calculator.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Average Calculatorulator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                    <a href="fraction-calculator.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Fraction Calculatorulator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                    <a href="scientific-calculator.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Scientific Calculatorulator</h4>
-                        <p>Free online tool</p>
-                    </a>
+            <div class="info-section">
+                <h2>Understanding Closing Costs</h2>
+                <p>Closing costs typically range from 2% to 5% of the loan amount and include various fees charged by lenders, title companies, and government agencies.</p>
+                <h3 style="color: var(--text-primary); margin: 1rem 0;">Common Closing Costs</h3>
+                <ul>
+                    <li><strong>Origination Fee:</strong> Lender's fee for processing the loan (0.5-1% of loan)</li>
+                    <li><strong>Appraisal Fee:</strong> Cost to have the property professionally appraised</li>
+                    <li><strong>Title Insurance:</strong> Protects against ownership disputes</li>
+                    <li><strong>Escrow Fees:</strong> Third-party handling of transaction documents</li>
+                    <li><strong>Prepaid Items:</strong> Property taxes and insurance paid in advance</li>
+                    <li><strong>Recording Fees:</strong> Government fees to record the deed</li>
+                </ul>
+            </div>
+            <div class="related-tools">
+                <h3>Related Calculators</h3>
+                <div class="tool-grid">
+                    <a href="mortgage-calculator.html" class="tool-link">Mortgage Calculator</a>
+                    <a href="home-affordability-calculator.html" class="tool-link">Home Affordability</a>
+                    <a href="title-insurance-calculator.html" class="tool-link">Title Insurance</a>
+                    <a href="earnest-money-calculator.html" class="tool-link">Earnest Money</a>
+                    <a href="down-payment-calculator.html" class="tool-link">Down Payment</a>
+                    <a href="pmi-calculator.html" class="tool-link">PMI Calculator</a>
                 </div>
-            </section>
-
+            </div>
             <div class="ad-bottom">
-                <script>
-            atOptions = {
-                'key' : 'bca56f01884f1cf07c196213009e77ac',
-                'format' : 'iframe',
-                'height' : 60,
-                'width' : 468,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
+                <script type="text/javascript">atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
             </div>
-        </div>
-
+        </main>
         <aside class="sidebar">
-            <div class="sidebar-ad">
-                <script>
-            atOptions = {
-                'key' : 'd4702b3e9743f9cd914a00e5026493f3',
-                'format' : 'iframe',
-                'height' : 600,
-                'width' : 160,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            <div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
             </div>
-            <div class="sidebar-ad">
-                <script>
-            atOptions = {
-                'key' : '8398a480b05e8a3236f9ea561b7cab1a',
-                'format' : 'iframe',
-                'height' : 300,
-                'width' : 160,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
-            </div>
-            <div class="sidebar-tools">
-                <h3>Popular Tools</h3>
-                <a href="bmi-calculator.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #ef4444, #dc2626);">🏃</div>
-                    BMI Calculator
-                </a>
-                <a href="mortgage-calculator.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #1e40af, #1d4ed8);">🏠</div>
-                    Mortgage Calculator
-                </a>
-                <a href="percentage-calc.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #16a34a, #15803d);">%</div>
-                    Percentage Calculator
-                </a>
-                <a href="age-calculator.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #ec4899, #be185d);">📅</div>
-                    Age Calculator
-                </a>
+            <div>
+                <script type="text/javascript">atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
             </div>
         </aside>
-    </main>
-
-    <footer class="site-footer">
-        <div class="footer-container">
-            <div class="footer-section">
-                <h4>Financial Tools</h4>
-                <a href="mortgage-calculator.html">Mortgage Calculator</a>
-                <a href="loan-calculator.html">Loan Calculator</a>
-                <a href="compound-interest-calculator.html">Compound Interest</a>
-                <a href="retirement-calculator.html">Retirement Calculator</a>
-            </div>
-            <div class="footer-section">
-                <h4>Health Tools</h4>
-                <a href="bmi-calculator.html">BMI Calculator</a>
-                <a href="calorie-calculator.html">Calorie Calculator</a>
-                <a href="body-fat-calculator.html">Body Fat Calculator</a>
-                <a href="water-intake-calculator.html">Water Intake</a>
-            </div>
-            <div class="footer-section">
-                <h4>Math Tools</h4>
-                <a href="percentage-calc.html">Percentage Calculator</a>
-                <a href="average-calculator.html">Average Calculator</a>
-                <a href="fraction-calculator.html">Fraction Calculator</a>
-                <a href="scientific-calculator.html">Scientific Calculator</a>
-            </div>
-            <div class="footer-section">
-                <h4>Converters</h4>
-                <a href="unit-converter.html">Unit Converter</a>
-                <a href="temperature-converter.html">Temperature</a>
-                <a href="currency-converter.html">Currency Converter</a>
-                <a href="timezone-converter.html">Time Zone</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 WebTools Pro. Free calculators & tools. | <a href="index.html">All 360+ Tools</a></p>
-        </div>
-    </footer>
-
-    <script>
-        atOptions = {'key':'9f6b66d433cad4c02b643bdd4b7eefc0','format':'iframe','height':50,'width':320,'params':{}};            </script><script src="https://www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script></div>
-
-        <div class="calc-card">
-            <div class="input-group">
-                <label>Home Purchase Price ($)</label>
-                <input type="number" id="homePrice" value="350000" min="50000" step="10000">
-            </div>
-
-            <div class="input-row">
-                <div class="input-group">
-                    <label>Down Payment (%)</label>
-                    <input type="number" id="downPercent" value="20" min="0" max="100" step="1">
-                </div>
-                <div class="input-group">
-                    <label>Loan Type</label>
-                    <select id="loanType">
-                        <option value="conventional">Conventional</option>
-                        <option value="fha">FHA</option>
-                        <option value="va">VA</option>
-                        <option value="usda">USDA</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="input-row">
-                <div class="input-group">
-                    <label>State</label>
-                    <select id="state">
-                        <option value="avg">Average (US)</option>
-                        <option value="high">High Cost State (NY, CA)</option>
-                        <option value="low">Low Cost State (Midwest)</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label>Buyer Type</label>
-                    <select id="buyerType">
-                        <option value="buyer">Buyer</option>
-                        <option value="seller">Seller</option>
-                    </select>
-                </div>
-            </div>
-
-            <button class="btn" onclick="calculate()">Calculate Closing Costs</button>
-
-            <div class="results" id="results">
-                <div class="result-box-main">
-                    <div class="result-value-main" id="totalClosing">$0</div>
-                    <div class="result-label-main">Estimated Closing Costs</div>
-                </div>
-
-                <div class="summary-grid">
-                    <div class="summary-box">
-                        <div class="summary-value" id="closingPercent">0%</div>
-                        <div class="summary-label">% of Home Price</div>
-                    </div>
-                    <div class="summary-box">
-                        <div class="summary-value" id="downPayment">$0</div>
-                        <div class="summary-label">Down Payment</div>
-                    </div>
-                    <div class="summary-box">
-                        <div class="summary-value" id="loanAmount">$0</div>
-                        <div class="summary-label">Loan Amount</div>
-                    </div>
-                    <div class="summary-box">
-                        <div class="summary-value" id="cashNeeded">$0</div>
-                        <div class="summary-label">Total Cash Needed</div>
-                    </div>
-                </div>
-
-                <div class="breakdown">
-                    <h4>📋 Cost Breakdown</h4>
-                    <div class="breakdown-row">
-                        <span class="breakdown-label">Lender Fees (origination, etc)</span>
-                        <span class="breakdown-value" id="lenderFees">$0</span>
-                    </div>
-                    <div class="breakdown-row">
-                        <span class="breakdown-label">Title Insurance & Escrow</span>
-                        <span class="breakdown-value" id="titleFees">$0</span>
-                    </div>
-                    <div class="breakdown-row">
-                        <span class="breakdown-label">Appraisal & Inspection</span>
-                        <span class="breakdown-value" id="appraisalFees">$0</span>
-                    </div>
-                    <div class="breakdown-row">
-                        <span class="breakdown-label">Government Fees & Taxes</span>
-                        <span class="breakdown-value" id="govFees">$0</span>
-                    </div>
-                    <div class="breakdown-row">
-                        <span class="breakdown-label">Prepaid Items (insurance, taxes)</span>
-                        <span class="breakdown-value" id="prepaidItems">$0</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="ad-container">
-            <script>
-                atOptions = {
-                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
-                    'format' : 'iframe',
-                    'height' : 250,
-                    'width' : 300,
-                    'params' : {}
-                };
-            </script>
-            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
-        </div>
-
-        <div class="ad-sidebar" style="text-align:center;margin:15px 0;"><script>atOptions = {'key':'8398a480b05e8a3236f9ea561b7cab1a','format':'iframe','height':300,'width':160,'params':{}};            </script><script src="https://www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script></div>
-
-        <div class="tools-promo">
-            <h4>More Home Buying Calculators</h4>
-            <a href="mortgage-calculator.html">Mortgage</a>
-            <a href="home-affordability-calculator.html">Home Affordability</a>
-            <a href="property-tax-calculator.html">Property Tax</a>
-            <a href="index.html">View All Tools</a>
-        </div>
     </div>
-
-    <footer>
-        <p>Closing Cost Calculator by WebAudit Pro</p>
-        <p><a href="index.html">More Free Tools</a></p>
+    <footer class="footer">
+        <p>&copy; 2024 CalcTools. Free online calculators for everyone.</p>
     </footer>
-
     <script>
-        function formatMoney(amount) {
-            return '$' + Math.round(amount).toLocaleString();
+        function formatCurrency(num) {
+            return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
         }
-
         function calculate() {
-            const price = parseFloat(document.getElementById('homePrice').value);
-            const downPercent = parseFloat(document.getElementById('downPercent').value) / 100;
-            const loanType = document.getElementById('loanType').value;
-            const state = document.getElementById('state').value;
-            const buyerType = document.getElementById('buyerType').value;
-
-            const downPayment = price * downPercent;
-            const loanAmount = price - downPayment;
-
-            // State factor
-            let stateFactor = 1;
-            if (state === 'high') stateFactor = 1.3;
-            if (state === 'low') stateFactor = 0.8;
-
-            // Calculate costs
-            let lenderFees, titleFees, appraisalFees, govFees, prepaidItems;
-
-            if (buyerType === 'buyer') {
-                // Buyer costs
-                lenderFees = loanAmount * 0.01 * stateFactor; // ~1% of loan
-                titleFees = price * 0.005 * stateFactor; // ~0.5% of price
-                appraisalFees = 800 * stateFactor;
-                govFees = price * 0.005 * stateFactor; // Recording, transfer taxes
-                prepaidItems = price * 0.01; // Insurance, taxes prepaid
-
-                // FHA/VA additional costs
-                if (loanType === 'fha') {
-                    lenderFees += loanAmount * 0.0175; // Upfront MIP
-                } else if (loanType === 'va') {
-                    lenderFees += loanAmount * 0.0215; // VA funding fee (first time)
-                }
-            } else {
-                // Seller costs
-                lenderFees = 0;
-                titleFees = price * 0.005 * stateFactor;
-                appraisalFees = 0;
-                govFees = price * 0.01 * stateFactor; // Transfer taxes higher for seller
-                prepaidItems = 0;
-            }
-
-            const totalClosing = lenderFees + titleFees + appraisalFees + govFees + prepaidItems;
-            const closingPercent = (totalClosing / price * 100).toFixed(1);
-            const cashNeeded = downPayment + totalClosing;
-
-            document.getElementById('results').style.display = 'block';
-            document.getElementById('totalClosing').textContent = formatMoney(totalClosing);
-            document.getElementById('closingPercent').textContent = closingPercent + '%';
-            document.getElementById('downPayment').textContent = formatMoney(downPayment);
-            document.getElementById('loanAmount').textContent = formatMoney(loanAmount);
-            document.getElementById('cashNeeded').textContent = formatMoney(cashNeeded);
-
-            document.getElementById('lenderFees').textContent = formatMoney(lenderFees);
-            document.getElementById('titleFees').textContent = formatMoney(titleFees);
-            document.getElementById('appraisalFees').textContent = formatMoney(appraisalFees);
-            document.getElementById('govFees').textContent = formatMoney(govFees);
-            document.getElementById('prepaidItems').textContent = formatMoney(prepaidItems);
+            const purchasePrice = parseFloat(document.getElementById('purchasePrice').value) || 0;
+            const loanAmount = parseFloat(document.getElementById('loanAmount').value) || 0;
+            const interestRate = parseFloat(document.getElementById('interestRate').value) || 0;
+            const propertyTaxRate = parseFloat(document.getElementById('propertyTaxRate').value) || 0;
+            const annualInsurance = parseFloat(document.getElementById('annualInsurance').value) || 0;
+            const prepaidTaxMonths = parseInt(document.getElementById('prepaidTaxMonths').value) || 3;
+            const originationFee = loanAmount * 0.01;
+            const appraisalFee = 550;
+            const creditReport = 50;
+            const underwriting = 750;
+            const processingFee = 400;
+            const floodCert = 25;
+            const taxService = 85;
+            const totalLenderFees = originationFee + appraisalFee + creditReport + underwriting + processingFee + floodCert + taxService;
+            const titleInsurance = purchasePrice * 0.005;
+            const lendersTitlePolicy = loanAmount * 0.0035;
+            const escrowFee = 1200;
+            const settlementFee = 450;
+            const recordingFees = 150;
+            const notaryFee = 150;
+            const totalTitleFees = titleInsurance + lendersTitlePolicy + escrowFee + settlementFee + recordingFees + notaryFee;
+            const annualPropertyTax = purchasePrice * (propertyTaxRate / 100);
+            const monthlyPropertyTax = annualPropertyTax / 12;
+            const prepaidTaxes = monthlyPropertyTax * prepaidTaxMonths;
+            const prepaidInsurance = annualInsurance;
+            const prepaidInterest = (loanAmount * (interestRate / 100) / 365) * 15;
+            const totalPrepaids = prepaidTaxes + prepaidInsurance + prepaidInterest;
+            const transferTax = purchasePrice * 0.002;
+            const governmentFees = transferTax + recordingFees;
+            const totalClosingCosts = totalLenderFees + totalTitleFees + totalPrepaids + governmentFees;
+            document.getElementById('totalClosing').textContent = formatCurrency(totalClosingCosts);
+            document.getElementById('lenderFees').textContent = formatCurrency(totalLenderFees);
+            document.getElementById('titleFees').textContent = formatCurrency(totalTitleFees);
+            document.getElementById('prepaids').textContent = formatCurrency(totalPrepaids);
+            document.getElementById('breakdown').innerHTML = '<h4>Detailed Cost Breakdown</h4><div class="cost-category"><h5>Lender Fees</h5><div class="cost-item"><span>Loan Origination (1%)</span><span>'+formatCurrency(originationFee)+'</span></div><div class="cost-item"><span>Appraisal Fee</span><span>'+formatCurrency(appraisalFee)+'</span></div><div class="cost-item"><span>Credit Report</span><span>'+formatCurrency(creditReport)+'</span></div><div class="cost-item"><span>Underwriting Fee</span><span>'+formatCurrency(underwriting)+'</span></div><div class="cost-item"><span>Processing Fee</span><span>'+formatCurrency(processingFee)+'</span></div><div class="cost-item"><span>Flood Certification</span><span>'+formatCurrency(floodCert)+'</span></div><div class="cost-item"><span>Tax Service Fee</span><span>'+formatCurrency(taxService)+'</span></div></div><div class="cost-category"><h5>Title & Escrow</h5><div class="cost-item"><span>Owner Title Insurance</span><span>'+formatCurrency(titleInsurance)+'</span></div><div class="cost-item"><span>Lender Title Policy</span><span>'+formatCurrency(lendersTitlePolicy)+'</span></div><div class="cost-item"><span>Escrow Fee</span><span>'+formatCurrency(escrowFee)+'</span></div><div class="cost-item"><span>Settlement Fee</span><span>'+formatCurrency(settlementFee)+'</span></div><div class="cost-item"><span>Recording Fees</span><span>'+formatCurrency(recordingFees)+'</span></div><div class="cost-item"><span>Notary Fee</span><span>'+formatCurrency(notaryFee)+'</span></div></div><div class="cost-category"><h5>Prepaids & Escrow Setup</h5><div class="cost-item"><span>Prepaid Property Taxes ('+prepaidTaxMonths+' months)</span><span>'+formatCurrency(prepaidTaxes)+'</span></div><div class="cost-item"><span>Prepaid Homeowners Insurance</span><span>'+formatCurrency(prepaidInsurance)+'</span></div><div class="cost-item"><span>Prepaid Interest (~15 days)</span><span>'+formatCurrency(prepaidInterest)+'</span></div></div><div class="cost-category"><h5>Government Fees</h5><div class="cost-item"><span>Transfer Tax</span><span>'+formatCurrency(transferTax)+'</span></div><div class="cost-item"><span>Recording Fees</span><span>'+formatCurrency(recordingFees)+'</span></div></div><div class="cost-total"><span>Total Closing Costs</span><span>'+formatCurrency(totalClosingCosts)+'</span></div>';
+            document.getElementById('results').classList.add('show');
         }
-
         calculate();
-    
     </script>
 </body>
 </html>

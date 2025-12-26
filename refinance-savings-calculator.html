@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refinance Savings Calculator - Is Refinancing Worth It?</title>
+    <meta name="description" content="Calculate how much you could save by refinancing your mortgage. See breakeven point, monthly savings, and total interest savings over the life of the loan.">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/refinance-savings-calculator.html">
+    <meta property="og:title" content="Refinance Savings Calculator - Should You Refinance?">
+    <meta property="og:description" content="Find out if refinancing your mortgage makes financial sense.">
+    <meta property="og:type" content="website">
+    <style>
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; min-height: 100vh; }
+        .header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; }
+        .nav-links a:hover { color: var(--primary); }
+        .ad-top { background: var(--bg-card); padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); }
+        .ad-mobile { display: none; background: var(--bg-card); padding: 0.5rem; text-align: center; }
+        .main-layout { display: flex; max-width: 1400px; margin: 0 auto; gap: 2rem; padding: 2rem; }
+        .content { flex: 1; min-width: 0; }
+        .sidebar { width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 1rem; }
+        .hero { text-align: center; margin-bottom: 2rem; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary), #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { color: var(--text-secondary); font-size: 1.1rem; }
+        .calculator-card { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .section-title { font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--primary); }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.75rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 0.5rem; color: var(--text-primary); font-size: 1rem; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+        .input-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .section-divider { margin: 2rem 0; padding-top: 2rem; border-top: 1px solid var(--border); }
+        .calculate-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; border-radius: 0.5rem; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; }
+        .calculate-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
+        .results { display: none; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+        .results.show { display: block; }
+        .verdict { text-align: center; padding: 2rem; border-radius: 1rem; margin-bottom: 2rem; }
+        .verdict.yes { background: rgba(16, 185, 129, 0.1); border: 2px solid var(--success); }
+        .verdict.no { background: rgba(239, 68, 68, 0.1); border: 2px solid var(--danger); }
+        .verdict.maybe { background: rgba(245, 158, 11, 0.1); border: 2px solid var(--warning); }
+        .verdict h2 { font-size: 1.75rem; margin-bottom: 0.5rem; }
+        .verdict.yes h2 { color: var(--success); }
+        .verdict.no h2 { color: var(--danger); }
+        .verdict.maybe h2 { color: var(--warning); }
+        .verdict p { color: var(--text-secondary); }
+        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .result-box { background: var(--bg-input); padding: 1.25rem; border-radius: 0.75rem; text-align: center; }
+        .result-box.highlight { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid var(--primary); }
+        .result-box.success { background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); }
+        .result-label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .result-value { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
+        .result-value.success { color: var(--success); }
+        .comparison-table { width: 100%; margin-top: 1.5rem; border-collapse: collapse; }
+        .comparison-table th, .comparison-table td { padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); }
+        .comparison-table th { color: var(--text-secondary); font-weight: 500; background: var(--bg-input); }
+        .comparison-table td { color: var(--text-primary); }
+        .comparison-table tr.new td { background: rgba(16, 185, 129, 0.05); }
+        .ad-inline { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin: 2rem 0; }
+        .info-section { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .info-section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary); }
+        .info-section p, .info-section li { color: var(--text-secondary); margin-bottom: 0.75rem; }
+        .info-section ul { padding-left: 1.5rem; }
+        .related-tools { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); }
+        .related-tools h3 { margin-bottom: 1rem; color: var(--text-primary); }
+        .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+        .tool-link { display: block; padding: 1rem; background: var(--bg-input); border-radius: 0.5rem; text-decoration: none; color: var(--text-primary); }
+        .tool-link:hover { background: var(--border); transform: translateY(-2px); }
+        .ad-bottom { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin-top: 2rem; }
+        .footer { background: var(--bg-card); border-top: 1px solid var(--border); padding: 2rem; text-align: center; margin-top: 3rem; }
+        .footer p { color: var(--text-secondary); font-size: 0.9rem; }
+        @media (max-width: 968px) { .sidebar { display: none; } .main-layout { padding: 1rem; } }
+        @media (max-width: 640px) { .ad-top { display: none; } .ad-mobile { display: block; } .hero h1 { font-size: 1.75rem; } .input-row { grid-template-columns: 1fr; } .nav-links { display: none; } .comparison-table { font-size: 0.85rem; } .comparison-table th, .comparison-table td { padding: 0.5rem; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">CalcTools</a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="finance-calculators.html">Finance</a>
+                <a href="health-calculators.html">Health</a>
+                <a href="home-calculators.html">Home</a>
+            </nav>
+        </div>
+    </header>
+    <div class="ad-top">
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-mobile">
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <div class="main-layout">
+        <main class="content">
+            <div class="hero">
+                <h1>Refinance Savings Calculator</h1>
+                <p>Find out if refinancing your mortgage is worth it</p>
+            </div>
+            <div class="calculator-card">
+                <h2 class="section-title">Current Mortgage</h2>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Current Loan Balance ($)</label>
+                        <input type="number" id="currentBalance" value="280000" placeholder="280000">
+                    </div>
+                    <div class="form-group">
+                        <label>Current Interest Rate (%)</label>
+                        <input type="number" id="currentRate" value="7.5" step="0.125" placeholder="7.5">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Current Monthly Payment ($)</label>
+                        <input type="number" id="currentPayment" value="2450" placeholder="2450">
+                    </div>
+                    <div class="form-group">
+                        <label>Months Remaining</label>
+                        <input type="number" id="monthsRemaining" value="324" placeholder="324">
+                    </div>
+                </div>
+                <div class="section-divider">
+                    <h2 class="section-title">New Loan Details</h2>
+                </div>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>New Interest Rate (%)</label>
+                        <input type="number" id="newRate" value="6.5" step="0.125" placeholder="6.5">
+                    </div>
+                    <div class="form-group">
+                        <label>New Loan Term</label>
+                        <select id="newTerm">
+                            <option value="15">15 years</option>
+                            <option value="20">20 years</option>
+                            <option value="30" selected>30 years</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Closing Costs ($)</label>
+                        <input type="number" id="closingCosts" value="6000" placeholder="6000">
+                    </div>
+                    <div class="form-group">
+                        <label>How Long You'll Stay (years)</label>
+                        <input type="number" id="stayYears" value="7" min="1" max="30" placeholder="7">
+                    </div>
+                </div>
+                <button class="calculate-btn" onclick="calculate()">Calculate Savings</button>
+                <div class="results" id="results">
+                    <div class="verdict" id="verdict"></div>
+                    <div class="result-grid">
+                        <div class="result-box highlight">
+                            <div class="result-label">Breakeven Point</div>
+                            <div class="result-value" id="breakeven">0 months</div>
+                        </div>
+                        <div class="result-box success">
+                            <div class="result-label">Monthly Savings</div>
+                            <div class="result-value success" id="monthlySavings">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Lifetime Interest Savings</div>
+                            <div class="result-value" id="interestSavings">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Net Savings Over Stay</div>
+                            <div class="result-value" id="netSavings">$0</div>
+                        </div>
+                    </div>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Current Loan</th>
+                                <th>New Loan</th>
+                                <th>Difference</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparisonBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="ad-inline">
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+            <div class="info-section">
+                <h2>When Does Refinancing Make Sense?</h2>
+                <p>Refinancing can save you money, but it depends on several factors:</p>
+                <ul>
+                    <li><strong>Rate Reduction:</strong> Generally, a 0.5-1% rate drop is worth considering</li>
+                    <li><strong>Time Horizon:</strong> You need to stay long enough to recoup closing costs</li>
+                    <li><strong>Closing Costs:</strong> Typically 2-5% of the loan amount</li>
+                    <li><strong>Loan Term:</strong> Shorter terms save interest but increase payments</li>
+                    <li><strong>Break-Even Point:</strong> Key metric - months until savings exceed costs</li>
+                </ul>
+            </div>
+            <div class="related-tools">
+                <h3>Related Calculators</h3>
+                <div class="tool-grid">
+                    <a href="mortgage-calculator.html" class="tool-link">Mortgage Calculator</a>
+                    <a href="mortgage-payoff-calculator.html" class="tool-link">Mortgage Payoff</a>
+                    <a href="home-equity-calculator.html" class="tool-link">Home Equity</a>
+                    <a href="closing-cost-calculator.html" class="tool-link">Closing Costs</a>
+                    <a href="amortization-calculator.html" class="tool-link">Amortization Schedule</a>
+                    <a href="loan-comparison-calculator.html" class="tool-link">Loan Comparison</a>
+                </div>
+            </div>
+            <div class="ad-bottom">
+                <script type="text/javascript">atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
+            </div>
+        </main>
+        <aside class="sidebar">
+            <div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+            <div>
+                <script type="text/javascript">atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
+            </div>
+        </aside>
+    </div>
+    <footer class="footer">
+        <p>&copy; 2024 CalcTools. Free online calculators for everyone.</p>
+    </footer>
+    <script>
+        function formatCurrency(num) {
+            return '$' + Math.round(num).toLocaleString('en-US');
+        }
+        function calculate() {
+            const currentBalance = parseFloat(document.getElementById('currentBalance').value) || 0;
+            const currentRate = parseFloat(document.getElementById('currentRate').value) / 100 || 0;
+            const currentPayment = parseFloat(document.getElementById('currentPayment').value) || 0;
+            const monthsRemaining = parseInt(document.getElementById('monthsRemaining').value) || 0;
+            const newRate = parseFloat(document.getElementById('newRate').value) / 100 || 0;
+            const newTerm = parseInt(document.getElementById('newTerm').value) || 30;
+            const closingCosts = parseFloat(document.getElementById('closingCosts').value) || 0;
+            const stayYears = parseInt(document.getElementById('stayYears').value) || 7;
+            const newMonthlyRate = newRate / 12;
+            const newMonths = newTerm * 12;
+            const newPayment = currentBalance * (newMonthlyRate * Math.pow(1 + newMonthlyRate, newMonths)) / (Math.pow(1 + newMonthlyRate, newMonths) - 1);
+            const monthlySavings = currentPayment - newPayment;
+            const breakeven = monthlySavings > 0 ? Math.ceil(closingCosts / monthlySavings) : 999;
+            let currentTotalInterest = 0;
+            let balance = currentBalance;
+            const currentMonthlyRate = currentRate / 12;
+            for (let i = 0; i < monthsRemaining; i++) {
+                const interest = balance * currentMonthlyRate;
+                currentTotalInterest += interest;
+                balance -= (currentPayment - interest);
+            }
+            let newTotalInterest = 0;
+            balance = currentBalance;
+            for (let i = 0; i < newMonths; i++) {
+                const interest = balance * newMonthlyRate;
+                newTotalInterest += interest;
+                balance -= (newPayment - interest);
+            }
+            const interestSavings = currentTotalInterest - newTotalInterest;
+            const stayMonths = stayYears * 12;
+            const totalSavingsDuringStay = monthlySavings * stayMonths;
+            const netSavings = totalSavingsDuringStay - closingCosts;
+            let verdictClass, verdictTitle, verdictText;
+            if (netSavings > 0 && breakeven < stayMonths) {
+                verdictClass = 'yes';
+                verdictTitle = 'Refinancing Makes Sense!';
+                verdictText = 'You\'ll save ' + formatCurrency(netSavings) + ' over your ' + stayYears + '-year stay.';
+            } else if (breakeven > stayMonths) {
+                verdictClass = 'no';
+                verdictTitle = 'Stay Put For Now';
+                verdictText = 'You\'d need to stay ' + Math.ceil(breakeven / 12) + ' years to break even on closing costs.';
+            } else {
+                verdictClass = 'maybe';
+                verdictTitle = 'Consider Carefully';
+                verdictText = 'Savings are marginal. Consider other factors like term length and your plans.';
+            }
+            document.getElementById('verdict').className = 'verdict ' + verdictClass;
+            document.getElementById('verdict').innerHTML = '<h2>' + verdictTitle + '</h2><p>' + verdictText + '</p>';
+            document.getElementById('breakeven').textContent = breakeven < 999 ? breakeven + ' months' : 'Never';
+            document.getElementById('monthlySavings').textContent = formatCurrency(monthlySavings);
+            document.getElementById('interestSavings').textContent = formatCurrency(interestSavings);
+            document.getElementById('netSavings').textContent = formatCurrency(netSavings);
+            document.getElementById('comparisonBody').innerHTML = '<tr><td>Interest Rate</td><td>' + (currentRate * 100).toFixed(2) + '%</td><td>' + (newRate * 100).toFixed(2) + '%</td><td style="color:var(--success)">' + ((currentRate - newRate) * 100).toFixed(2) + '%</td></tr><tr><td>Monthly Payment</td><td>' + formatCurrency(currentPayment) + '</td><td>' + formatCurrency(newPayment) + '</td><td style="color:var(--success)">' + formatCurrency(monthlySavings) + '</td></tr><tr><td>Loan Term</td><td>' + Math.ceil(monthsRemaining / 12) + ' years</td><td>' + newTerm + ' years</td><td>' + (newTerm - Math.ceil(monthsRemaining / 12)) + ' years</td></tr><tr><td>Total Interest</td><td>' + formatCurrency(currentTotalInterest) + '</td><td>' + formatCurrency(newTotalInterest) + '</td><td style="color:var(--success)">' + formatCurrency(interestSavings) + '</td></tr><tr><td>Closing Costs</td><td>$0</td><td>' + formatCurrency(closingCosts) + '</td><td style="color:var(--danger)">-' + formatCurrency(closingCosts) + '</td></tr>';
+            document.getElementById('results').classList.add('show');
+        }
+        calculate();
+    </script>
+</body>
+</html>

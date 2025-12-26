@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HELOC Payment Calculator - Calculate Your HELOC Payments</title>
+    <meta name="description" content="Calculate HELOC monthly payments during draw and repayment periods. Compare interest-only vs principal payments and see your total costs.">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/heloc-payment-calculator.html">
+    <meta property="og:title" content="HELOC Payment Calculator - Home Equity Line of Credit">
+    <meta property="og:description" content="Calculate your HELOC payments for draw and repayment periods.">
+    <meta property="og:type" content="website">
+    <style>
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --warning: #f59e0b; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; min-height: 100vh; }
+        .header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; }
+        .nav-links a:hover { color: var(--primary); }
+        .ad-top { background: var(--bg-card); padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); }
+        .ad-mobile { display: none; background: var(--bg-card); padding: 0.5rem; text-align: center; }
+        .main-layout { display: flex; max-width: 1400px; margin: 0 auto; gap: 2rem; padding: 2rem; }
+        .content { flex: 1; min-width: 0; }
+        .sidebar { width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 1rem; }
+        .hero { text-align: center; margin-bottom: 2rem; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary), #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { color: var(--text-secondary); font-size: 1.1rem; }
+        .calculator-card { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .section-title { font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--primary); }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.75rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 0.5rem; color: var(--text-primary); font-size: 1rem; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+        .input-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .calculate-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; border-radius: 0.5rem; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; }
+        .calculate-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
+        .results { display: none; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+        .results.show { display: block; }
+        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .result-box { background: var(--bg-input); padding: 1.25rem; border-radius: 0.75rem; text-align: center; }
+        .result-box.highlight { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid var(--primary); }
+        .result-box.warning { background: rgba(245, 158, 11, 0.1); border: 1px solid var(--warning); }
+        .result-label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .result-value { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
+        .phase-section { margin-bottom: 2rem; }
+        .phase-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+        .phase-number { width: 32px; height: 32px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; }
+        .phase-title { font-size: 1.1rem; color: var(--text-primary); }
+        .phase-card { background: var(--bg-input); padding: 1.5rem; border-radius: 0.75rem; }
+        .phase-row { display: flex; justify-content: space-between; padding: 0.5rem 0; }
+        .phase-row span:first-child { color: var(--text-secondary); }
+        .phase-row span:last-child { color: var(--text-primary); font-weight: 500; }
+        .rate-warning { background: rgba(245, 158, 11, 0.1); border: 1px solid var(--warning); padding: 1rem; border-radius: 0.5rem; margin-top: 1.5rem; }
+        .rate-warning p { color: var(--warning); font-size: 0.9rem; margin: 0; }
+        .ad-inline { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin: 2rem 0; }
+        .info-section { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .info-section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary); }
+        .info-section p, .info-section li { color: var(--text-secondary); margin-bottom: 0.75rem; }
+        .info-section ul { padding-left: 1.5rem; }
+        .related-tools { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); }
+        .related-tools h3 { margin-bottom: 1rem; color: var(--text-primary); }
+        .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+        .tool-link { display: block; padding: 1rem; background: var(--bg-input); border-radius: 0.5rem; text-decoration: none; color: var(--text-primary); }
+        .tool-link:hover { background: var(--border); transform: translateY(-2px); }
+        .ad-bottom { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin-top: 2rem; }
+        .footer { background: var(--bg-card); border-top: 1px solid var(--border); padding: 2rem; text-align: center; margin-top: 3rem; }
+        .footer p { color: var(--text-secondary); font-size: 0.9rem; }
+        @media (max-width: 968px) { .sidebar { display: none; } .main-layout { padding: 1rem; } }
+        @media (max-width: 640px) { .ad-top { display: none; } .ad-mobile { display: block; } .hero h1 { font-size: 1.75rem; } .input-row { grid-template-columns: 1fr; } .nav-links { display: none; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">CalcTools</a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="finance-calculators.html">Finance</a>
+                <a href="health-calculators.html">Health</a>
+                <a href="home-calculators.html">Home</a>
+            </nav>
+        </div>
+    </header>
+    <div class="ad-top">
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-mobile">
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <div class="main-layout">
+        <main class="content">
+            <div class="hero">
+                <h1>HELOC Payment Calculator</h1>
+                <p>Calculate payments for your home equity line of credit</p>
+            </div>
+            <div class="calculator-card">
+                <h2 class="section-title">HELOC Details</h2>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Credit Line Amount ($)</label>
+                        <input type="number" id="creditLine" value="100000" placeholder="100000">
+                    </div>
+                    <div class="form-group">
+                        <label>Amount You Plan to Use ($)</label>
+                        <input type="number" id="amountUsed" value="50000" placeholder="50000">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Interest Rate (%)</label>
+                        <input type="number" id="interestRate" value="8.5" step="0.125" placeholder="8.5">
+                    </div>
+                    <div class="form-group">
+                        <label>Draw Period (years)</label>
+                        <select id="drawPeriod">
+                            <option value="5">5 years</option>
+                            <option value="10" selected>10 years</option>
+                            <option value="15">15 years</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Repayment Period (years)</label>
+                        <select id="repaymentPeriod">
+                            <option value="10">10 years</option>
+                            <option value="15">15 years</option>
+                            <option value="20" selected>20 years</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Payment Type During Draw</label>
+                        <select id="drawPaymentType">
+                            <option value="interest" selected>Interest Only</option>
+                            <option value="principal">Interest + Principal</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="calculate-btn" onclick="calculate()">Calculate HELOC Payments</button>
+                <div class="results" id="results">
+                    <div class="result-grid">
+                        <div class="result-box highlight">
+                            <div class="result-label">Draw Period Payment</div>
+                            <div class="result-value" id="drawPayment">$0</div>
+                        </div>
+                        <div class="result-box warning">
+                            <div class="result-label">Repayment Period Payment</div>
+                            <div class="result-value" id="repaymentPayment">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Total Interest Cost</div>
+                            <div class="result-value" id="totalInterest">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Total Cost</div>
+                            <div class="result-value" id="totalCost">$0</div>
+                        </div>
+                    </div>
+                    <div class="phase-section">
+                        <div class="phase-header">
+                            <div class="phase-number">1</div>
+                            <div class="phase-title">Draw Period</div>
+                        </div>
+                        <div class="phase-card" id="drawPhaseDetails"></div>
+                    </div>
+                    <div class="phase-section">
+                        <div class="phase-header">
+                            <div class="phase-number">2</div>
+                            <div class="phase-title">Repayment Period</div>
+                        </div>
+                        <div class="phase-card" id="repaymentPhaseDetails"></div>
+                    </div>
+                    <div class="rate-warning">
+                        <p><strong>Variable Rate Warning:</strong> HELOCs typically have variable interest rates. If rates increase, your payments could rise significantly. Consider rate caps and your ability to handle higher payments.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="ad-inline">
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+            <div class="info-section">
+                <h2>How HELOCs Work</h2>
+                <p>A HELOC is a revolving line of credit secured by your home. It has two phases:</p>
+                <h3 style="color: var(--text-primary); margin: 1rem 0;">Draw Period (5-10 years)</h3>
+                <ul>
+                    <li>Borrow up to your credit limit as needed</li>
+                    <li>Usually only required to pay interest</li>
+                    <li>Can repay and reborrow during this time</li>
+                </ul>
+                <h3 style="color: var(--text-primary); margin: 1rem 0;">Repayment Period (10-20 years)</h3>
+                <ul>
+                    <li>Cannot borrow additional funds</li>
+                    <li>Must pay principal and interest</li>
+                    <li>Payments are typically higher than draw period</li>
+                </ul>
+            </div>
+            <div class="related-tools">
+                <h3>Related Calculators</h3>
+                <div class="tool-grid">
+                    <a href="home-equity-calculator.html" class="tool-link">Home Equity Calculator</a>
+                    <a href="mortgage-calculator.html" class="tool-link">Mortgage Calculator</a>
+                    <a href="debt-consolidation-calculator.html" class="tool-link">Debt Consolidation</a>
+                    <a href="refinance-calculator.html" class="tool-link">Refinance Calculator</a>
+                    <a href="loan-comparison-calculator.html" class="tool-link">Loan Comparison</a>
+                    <a href="interest-only-calculator.html" class="tool-link">Interest Only Loan</a>
+                </div>
+            </div>
+            <div class="ad-bottom">
+                <script type="text/javascript">atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
+            </div>
+        </main>
+        <aside class="sidebar">
+            <div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+            <div>
+                <script type="text/javascript">atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
+            </div>
+        </aside>
+    </div>
+    <footer class="footer">
+        <p>&copy; 2024 CalcTools. Free online calculators for everyone.</p>
+    </footer>
+    <script>
+        function formatCurrency(num) {
+            return '$' + Math.round(num).toLocaleString('en-US');
+        }
+        function calculate() {
+            const creditLine = parseFloat(document.getElementById('creditLine').value) || 0;
+            const amountUsed = parseFloat(document.getElementById('amountUsed').value) || 0;
+            const interestRate = parseFloat(document.getElementById('interestRate').value) / 100 || 0;
+            const drawPeriod = parseInt(document.getElementById('drawPeriod').value) || 10;
+            const repaymentPeriod = parseInt(document.getElementById('repaymentPeriod').value) || 20;
+            const drawPaymentType = document.getElementById('drawPaymentType').value;
+            const monthlyRate = interestRate / 12;
+            const drawMonths = drawPeriod * 12;
+            const repaymentMonths = repaymentPeriod * 12;
+            let drawPayment, drawInterest, balanceAfterDraw;
+            if (drawPaymentType === 'interest') {
+                drawPayment = amountUsed * monthlyRate;
+                drawInterest = drawPayment * drawMonths;
+                balanceAfterDraw = amountUsed;
+            } else {
+                const totalMonths = drawMonths + repaymentMonths;
+                drawPayment = amountUsed * (monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / (Math.pow(1 + monthlyRate, totalMonths) - 1);
+                let balance = amountUsed;
+                drawInterest = 0;
+                for (let i = 0; i < drawMonths; i++) {
+                    const interest = balance * monthlyRate;
+                    drawInterest += interest;
+                    balance -= (drawPayment - interest);
+                }
+                balanceAfterDraw = balance;
+            }
+            const repaymentPayment = balanceAfterDraw * (monthlyRate * Math.pow(1 + monthlyRate, repaymentMonths)) / (Math.pow(1 + monthlyRate, repaymentMonths) - 1);
+            let repaymentInterest = 0;
+            let balance = balanceAfterDraw;
+            for (let i = 0; i < repaymentMonths; i++) {
+                const interest = balance * monthlyRate;
+                repaymentInterest += interest;
+                balance -= (repaymentPayment - interest);
+            }
+            const totalInterest = drawInterest + repaymentInterest;
+            const totalCost = amountUsed + totalInterest;
+            document.getElementById('drawPayment').textContent = formatCurrency(drawPayment);
+            document.getElementById('repaymentPayment').textContent = formatCurrency(repaymentPayment);
+            document.getElementById('totalInterest').textContent = formatCurrency(totalInterest);
+            document.getElementById('totalCost').textContent = formatCurrency(totalCost);
+            document.getElementById('drawPhaseDetails').innerHTML = '<div class="phase-row"><span>Duration</span><span>' + drawPeriod + ' years (' + drawMonths + ' months)</span></div><div class="phase-row"><span>Payment Type</span><span>' + (drawPaymentType === 'interest' ? 'Interest Only' : 'Principal + Interest') + '</span></div><div class="phase-row"><span>Monthly Payment</span><span>' + formatCurrency(drawPayment) + '</span></div><div class="phase-row"><span>Total Payments During Draw</span><span>' + formatCurrency(drawPayment * drawMonths) + '</span></div><div class="phase-row"><span>Interest During Draw</span><span>' + formatCurrency(drawInterest) + '</span></div><div class="phase-row"><span>Balance After Draw Period</span><span>' + formatCurrency(balanceAfterDraw) + '</span></div>';
+            document.getElementById('repaymentPhaseDetails').innerHTML = '<div class="phase-row"><span>Duration</span><span>' + repaymentPeriod + ' years (' + repaymentMonths + ' months)</span></div><div class="phase-row"><span>Payment Type</span><span>Principal + Interest</span></div><div class="phase-row"><span>Monthly Payment</span><span>' + formatCurrency(repaymentPayment) + '</span></div><div class="phase-row"><span>Total Payments</span><span>' + formatCurrency(repaymentPayment * repaymentMonths) + '</span></div><div class="phase-row"><span>Interest During Repayment</span><span>' + formatCurrency(repaymentInterest) + '</span></div><div class="phase-row"><span>Payment Increase</span><span style="color:var(--warning)">+' + formatCurrency(repaymentPayment - drawPayment) + '/mo</span></div>';
+            document.getElementById('results').classList.add('show');
+        }
+        calculate();
+    </script>
+</body>
+</html>
