@@ -3,851 +3,266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cooking Measurement Converter - Free Online Calculator | WebTools Pro</title>
-    <meta name="description" content="Convert cooking measurements between cups, tablespoons, teaspoons, ounces, and milliliters. Free cooking measurement converter.">
+    <title>Cooking Converter - Kitchen Measurement Calculator</title>
+    <meta name="description" content="Free cooking converter. Convert cups, tablespoons, teaspoons, ounces, grams, and more. Essential for recipes and baking.">
+    <meta name="keywords" content="cooking converter, kitchen calculator, cups to tablespoons, grams to cups, recipe converter, baking measurements">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/cooking-converter.html">
-    <meta property="og:title" content="Cooking Measurement Converter - Free Online Calculator">
-    <meta property="og:description" content="Convert cooking measurements between cups, tablespoons, teaspoons, ounces, and milliliters. Free cooking measurement converter.">
-    <meta property="og:type" content="website">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧮</text></svg>">
     <style>
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --bg-dark: #0f172a;
-            --bg-card: #1e293b;
-            --text-light: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
-            --white: #ffffff;
-        }
+        :root { --primary: #f97316; --primary-dark: #ea580c; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-light);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-        .site-header {
-            background: linear-gradient(135deg, var(--bg-dark), var(--bg-card));
-            border-bottom: 1px solid var(--border);
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo {
-            font-size: 22px;
-            font-weight: 700;
-            text-decoration: none;
-            color: var(--text-light);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--primary), #f59e0b);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-        .nav-links { display: flex; gap: 20px; }
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .nav-links a:hover { color: var(--text-light); }
-        @media (max-width: 600px) { .nav-links { display: none; } }
-
-        .ad-top { background: var(--bg-card); padding: 12px 0; text-align: center; border-bottom: 1px solid var(--border); }
-        .ad-mobile { display: none; text-align: center; margin: 12px auto; max-width: 320px; }
-        @media (max-width: 768px) { .ad-mobile { display: block; } }
-
-        .main-layout {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 25px 20px;
-            display: grid;
-            grid-template-columns: 1fr 280px;
-            gap: 25px;
-        }
-        @media (max-width: 900px) {
-            .main-layout { grid-template-columns: 1fr; }
-            .sidebar { display: none; }
-        }
-
-        .hero { text-align: center; margin-bottom: 25px; }
-        .hero h1 {
-            font-size: 38px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, var(--text-light), var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero p { font-size: 16px; color: var(--text-muted); max-width: 500px; margin: 0 auto; }
-        @media (max-width: 600px) { .hero h1 { font-size: 28px; } }
-
-        .calc-card {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 35px;
-            color: #1e293b;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-        @media (max-width: 600px) { .calc-card { padding: 20px; } }
-
-        .unit-toggle {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 25px;
-            background: #f1f5f9;
-            padding: 5px;
-            border-radius: 12px;
-        }
-        .unit-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            background: transparent;
-            color: #64748b;
-            transition: all 0.2s;
-        }
-        .unit-btn.active {
-            background: var(--white);
-            color: var(--primary);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .input-group { margin-bottom: 20px; }
-        .input-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: 700;
-            color: #475569;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .input-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        .input-row input, .input-group input, .input-group select {
-            flex: 1;
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.2s;
-            background: #f8fafc;
-        }
-        .input-row input:focus, .input-group input:focus, .input-group select:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: var(--white);
-        }
-        .input-row span { font-size: 13px; color: #64748b; font-weight: 600; min-width: 25px; }
-
-        .btn {
-            width: 100%;
-            padding: 16px 25px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: var(--white);
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: 8px;
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.35);
-        }
-
-        .results {
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 2px solid #e2e8f0;
-            display: none;
-        }
-        .results.show { display: block; }
-        .bmi-display, .result-main { text-align: center; margin-bottom: 25px; }
-        .bmi-value, .result-value {
-            font-size: 56px;
-            font-weight: 800;
-            color: var(--primary);
-            line-height: 1.1;
-        }
-        .bmi-category, .result-label {
-            font-size: 22px;
-            font-weight: 600;
-            margin-top: 8px;
-            color: #1e293b;
-        }
-
-        .bmi-scale, .scale-bar-container { margin: 25px 0; }
-        .bmi-scale > div:first-child, .scale-bar {
-            height: 18px;
-            background: linear-gradient(to right, #3b82f6 0%, #22c55e 25%, #eab308 55%, #f97316 75%, #ef4444 100%);
-            border-radius: 9px;
-            position: relative;
-        }
-        .bmi-marker, .scale-marker {
-            position: absolute;
-            top: -6px;
-            width: 5px;
-            height: 30px;
-            background: #1e293b;
-            border-radius: 2px;
-            transform: translateX(-50%);
-            transition: left 0.4s ease;
-        }
-        .scale-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: #64748b;
-            margin-top: 10px;
-            font-weight: 600;
-        }
-
-        .category-info, .category-table {
-            background: #f8fafc;
-            border-radius: 14px;
-            overflow: hidden;
-            margin-top: 20px;
-        }
-        .category-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 14px 20px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .category-row:last-child { border: none; }
-        .category-row.active { background: #fef2f2; }
-
-        .result-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 12px;
-            margin-top: 20px;
-        }
-        .result-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 18px;
-            text-align: center;
-        }
-        .result-item-value { font-size: 22px; font-weight: 700; color: #1e293b; }
-        .result-item-label { font-size: 11px; color: #64748b; text-transform: uppercase; margin-top: 4px; letter-spacing: 0.5px; }
-
-        .ad-inline { background: #f8fafc; border-radius: 10px; padding: 15px; margin: 25px 0; text-align: center; }
-        .ad-bottom { background: var(--bg-card); padding: 25px 15px; text-align: center; margin-top: 30px; border-radius: 14px; }
-
-        .info-section {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 30px;
-            margin-top: 30px;
-        }
-        .info-section h2 { font-size: 22px; margin-bottom: 15px; color: var(--text-light); }
-        .info-section p { color: var(--text-muted); margin-bottom: 15px; font-size: 15px; line-height: 1.7; }
-        .info-section h3 { font-size: 18px; margin: 20px 0 12px; color: var(--text-light); }
-        .info-section ul { color: var(--text-muted); margin-left: 20px; }
-        .info-section li { margin-bottom: 10px; line-height: 1.6; }
-
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
+        .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
+        .content-area { display: flex; flex-direction: column; gap: 20px; }
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .sidebar-ad { background: var(--bg-card); border-radius: 14px; padding: 15px; text-align: center; }
-        .sidebar-tools {
-            background: var(--bg-card);
-            border-radius: 14px;
-            padding: 20px;
-        }
-        .sidebar-tools h3 { font-size: 16px; margin-bottom: 15px; color: var(--text-light); }
-        .tool-link {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px;
-            border-radius: 10px;
-            text-decoration: none;
-            color: var(--text-muted);
-            transition: all 0.2s;
-            margin-bottom: 6px;
-        }
-        .tool-link:hover { background: rgba(99, 102, 241, 0.1); color: var(--text-light); }
-        .tool-icon-small {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-        }
-
-        .related-tools { margin-top: 35px; }
-        .related-tools h2 { font-size: 24px; margin-bottom: 20px; text-align: center; }
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px;
-        }
-        .tool-card {
-            background: var(--bg-card);
-            border-radius: 14px;
-            padding: 20px;
-            text-decoration: none;
-            color: var(--text-light);
-            transition: all 0.3s;
-            border: 1px solid var(--border);
-        }
-        .tool-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--primary);
-            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.2);
-        }
-        .tool-card-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            margin-bottom: 12px;
-        }
-        .tool-card h4 { font-size: 14px; margin-bottom: 6px; }
-        .tool-card p { font-size: 12px; color: var(--text-muted); }
-
-        .site-footer {
-            background: var(--bg-card);
-            border-top: 1px solid var(--border);
-            padding: 40px 20px 25px;
-            margin-top: 50px;
-        }
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 30px;
-        }
-        .footer-section h4 { font-size: 14px; margin-bottom: 15px; color: var(--text-light); }
-        .footer-section a {
-            display: block;
-            color: var(--text-muted);
-            text-decoration: none;
-            padding: 6px 0;
-            font-size: 13px;
-        }
-        .footer-section a:hover { color: var(--primary); }
-        .footer-bottom {
-            max-width: 1200px;
-            margin: 30px auto 0;
-            padding-top: 25px;
-            border-top: 1px solid var(--border);
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-        .footer-bottom a { color: var(--primary); text-decoration: none; }
-
-        .tools-promo { display: none; }
-        .cta-section { display: none; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 40px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 2.5rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.9); font-size: 1.2rem; }
+        .quick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px; }
+        .quick-card { background: var(--bg-input); padding: 15px; border-radius: 10px; text-align: center; }
+        .quick-value { font-size: 1.2rem; font-weight: bold; color: var(--secondary); }
+        .quick-label { font-size: 0.85rem; color: var(--text-secondary); }
+        .ref-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .ref-table th, .ref-table td { padding: 10px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        .ref-table th { color: var(--secondary); }
+        .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        @media (max-width: 640px) { .form-grid, .quick-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <header class="site-header">
-        <div class="header-container">
-            <a href="index.html" class="logo">
-                <div class="logo-icon">🧮</div>
-                WebTools Pro
-            </a>
-            <nav class="nav-links">
-                <a href="index.html">All Tools</a>
-                <a href="bmi-calculator.html">Health</a>
-                <a href="mortgage-calculator.html">Finance</a>
-            </nav>
-        </div>
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-container" style="display: none;">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
+
+    <header class="header">
+        <h1>Cooking Converter</h1>
     </header>
 
-    <div class="ad-top">
-        <script>
-            atOptions = {
-                'key' : 'b43e7cf5057864a264961884e1f34530',
-                'format' : 'iframe',
-                'height' : 90,
-                'width' : 728,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
-    </div>
-
-    <div class="ad-mobile">
-        <script>
-            atOptions = {
-                'key' : '9f6b66d433cad4c02b643bdd4b7eefc0',
-                'format' : 'iframe',
-                'height' : 50,
-                'width' : 320,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
-    </div>
-
-    <main class="main-layout">
-        <div class="content">
-            <section class="hero">
-                <h1>Cooking Measurement Converter</h1>
-                <p>Convert cooking measurements between cups, tablespoons, teaspoons, ounces, and milliliters. Free cooking measurement converter....</p>
-            </section>
-
-            <div class="calc-card">
-                
-            <div class="input-grid">
-                <div class="input-group">
-                    <label>Amount</label>
-                    <input type="number" id="amount" value="1" min="0" step="0.125" oninput="calculate()">
-                </div>
-                <div class="input-group">
-                    <label>From</label>
-                    <select id="fromUnit" onchange="calculate()">
-                        <option value="cup" selected>Cup</option>
-                        <option value="tbsp">Tablespoon</option>
-                        <option value="tsp">Teaspoon</option>
-                        <option value="floz">Fluid Ounce</option>
-                        <option value="ml">Milliliter</option>
-                        <option value="liter">Liter</option>
-                        <option value="pint">Pint</option>
-                        <option value="quart">Quart</option>
-                        <option value="gallon">Gallon</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="result-box">
-                <div class="label">Converted Amount</div>
-                <div class="value" id="result">16 tbsp</div>
-                <div class="sub" id="subtext">1 cup = 16 tablespoons</div>
-            </div>
-
-            <div class="conversions">
-                <div class="conv-item">
-                    <div class="value" id="cups">1 cup</div>
-                    <div class="label">Cups</div>
-                </div>
-                <div class="conv-item">
-                    <div class="value" id="tbsp">16 tbsp</div>
-                    <div class="label">Tablespoons</div>
-                </div>
-                <div class="conv-item">
-                    <div class="value" id="tsp">48 tsp</div>
-                    <div class="label">Teaspoons</div>
-                </div>
-                <div class="conv-item">
-                    <div class="value" id="floz">8 fl oz</div>
-                    <div class="label">Fluid Ounces</div>
-                </div>
-                <div class="conv-item">
-                    <div class="value" id="ml">237 ml</div>
-                    <div class="label">Milliliters</div>
-                </div>
-                <div class="conv-item">
-                    <div class="value" id="liter">0.24 L</div>
-                    <div class="label">Liters</div>
+    <div class="main-container">
+        <div class="content-area">
+            <div class="card">
+                <h2>Convert Measurements</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Amount</label>
+                        <input type="number" id="amount" value="1" min="0" step="0.25" oninput="convert()">
+                    </div>
+                    <div class="form-group">
+                        <label>From</label>
+                        <select id="fromUnit" onchange="convert()">
+                            <option value="cup">Cup</option>
+                            <option value="tbsp" selected>Tablespoon</option>
+                            <option value="tsp">Teaspoon</option>
+                            <option value="floz">Fluid Ounce</option>
+                            <option value="ml">Milliliter</option>
+                            <option value="liter">Liter</option>
+                            <option value="oz">Ounce (weight)</option>
+                            <option value="gram">Gram</option>
+                            <option value="lb">Pound</option>
+                            <option value="kg">Kilogram</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>To</label>
+                        <select id="toUnit" onchange="convert()">
+                            <option value="cup">Cup</option>
+                            <option value="tbsp">Tablespoon</option>
+                            <option value="tsp" selected>Teaspoon</option>
+                            <option value="floz">Fluid Ounce</option>
+                            <option value="ml">Milliliter</option>
+                            <option value="liter">Liter</option>
+                            <option value="oz">Ounce (weight)</option>
+                            <option value="gram">Gram</option>
+                            <option value="lb">Pound</option>
+                            <option value="kg">Kilogram</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ingredient (for weight/volume)</label>
+                        <select id="ingredient" onchange="convert()">
+                            <option value="water" selected>Water</option>
+                            <option value="flour">All-Purpose Flour</option>
+                            <option value="sugar">Granulated Sugar</option>
+                            <option value="butter">Butter</option>
+                            <option value="milk">Milk</option>
+                            <option value="oil">Vegetable Oil</option>
+                            <option value="honey">Honey</option>
+                            <option value="salt">Salt</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
-            <div class="ref-table">
-                <h4>Quick Reference</h4>
-                <div class="ref-row">
-                    <span>1 cup</span>
-                    <span>= 16 tbsp = 48 tsp</span>
-                </div>
-                <div class="ref-row">
-                    <span>1 tablespoon</span>
-                    <span>= 3 teaspoons</span>
-                </div>
-                <div class="ref-row">
-                    <span>1 cup</span>
-                    <span>= 8 fluid ounces</span>
-                </div>
-                <div class="ref-row">
-                    <span>1 pint</span>
-                    <span>= 2 cups</span>
-                </div>
-                <div class="ref-row">
-                    <span>1 quart</span>
-                    <span>= 4 cups</span>
-                </div>
-                <div class="ref-row">
-                    <span>1 gallon</span>
-                    <span>= 16 cups</span>
-                </div>
-            </div>
-        
+            <div class="result-hero">
+                <div class="result-hero-label" id="convLabel">1 tablespoon =</div>
+                <div class="result-hero-value" id="result">3 teaspoons</div>
             </div>
 
-            <div class="ad-inline">
-                <script>
-            atOptions = {
-                'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
-                'format' : 'iframe',
-                'height' : 250,
-                'width' : 300,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            <div class="card">
+                <h2>All Conversions</h2>
+                <div class="quick-grid" id="quickGrid"></div>
             </div>
 
-            <section class="info-section">
-                <h2>About This Tool</h2>
-                <p>Convert cooking measurements between cups, tablespoons, teaspoons, ounces, and milliliters. Free cooking measurement converter.</p>
-                <p>This free online calculator provides instant, accurate results. No signup required - just enter your values and get your answer immediately.</p>
-            </section>
+            <div class="card">
+                <h2>Quick Reference - Volume</h2>
+                <table class="ref-table">
+                    <tr><th>Cups</th><th>Tbsp</th><th>Tsp</th><th>Fl Oz</th><th>mL</th></tr>
+                    <tr><td>1</td><td>16</td><td>48</td><td>8</td><td>237</td></tr>
+                    <tr><td>3/4</td><td>12</td><td>36</td><td>6</td><td>177</td></tr>
+                    <tr><td>1/2</td><td>8</td><td>24</td><td>4</td><td>118</td></tr>
+                    <tr><td>1/3</td><td>5.3</td><td>16</td><td>2.7</td><td>79</td></tr>
+                    <tr><td>1/4</td><td>4</td><td>12</td><td>2</td><td>59</td></tr>
+                </table>
+            </div>
 
-            <section class="related-tools">
+            <div class="card">
+                <h2>Common Ingredient Weights (per cup)</h2>
+                <table class="ref-table">
+                    <tr><th>Ingredient</th><th>Grams</th><th>Ounces</th></tr>
+                    <tr><td>All-Purpose Flour</td><td>125g</td><td>4.4 oz</td></tr>
+                    <tr><td>Granulated Sugar</td><td>200g</td><td>7 oz</td></tr>
+                    <tr><td>Brown Sugar (packed)</td><td>220g</td><td>7.75 oz</td></tr>
+                    <tr><td>Butter</td><td>227g</td><td>8 oz</td></tr>
+                    <tr><td>Honey</td><td>340g</td><td>12 oz</td></tr>
+                </table>
+            </div>
+
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+
+            <div class="card">
                 <h2>Related Tools</h2>
-                <div class="tools-grid">
-                    <a href="percentage-calc.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Percentage Calculator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                    <a href="average-calculator.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Average Calculatorulator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                    <a href="fraction-calculator.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Fraction Calculatorulator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                    <a href="scientific-calculator.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Scientific Calculatorulator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                </div>
-            </section>
-
-            <div class="ad-bottom">
-                <script>
-            atOptions = {
-                'key' : 'bca56f01884f1cf07c196213009e77ac',
-                'format' : 'iframe',
-                'height' : 60,
-                'width' : 468,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
-            </div>
-        </div>
-
-        <aside class="sidebar">
-            <div class="sidebar-ad">
-                <script>
-            atOptions = {
-                'key' : 'd4702b3e9743f9cd914a00e5026493f3',
-                'format' : 'iframe',
-                'height' : 600,
-                'width' : 160,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
-            </div>
-            <div class="sidebar-ad">
-                <script>
-            atOptions = {
-                'key' : '8398a480b05e8a3236f9ea561b7cab1a',
-                'format' : 'iframe',
-                'height' : 300,
-                'width' : 160,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
-            </div>
-            <div class="sidebar-tools">
-                <h3>Popular Tools</h3>
-                <a href="bmi-calculator.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #ef4444, #dc2626);">🏃</div>
-                    BMI Calculator
-                </a>
-                <a href="mortgage-calculator.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #1e40af, #1d4ed8);">🏠</div>
-                    Mortgage Calculator
-                </a>
-                <a href="percentage-calc.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #16a34a, #15803d);">%</div>
-                    Percentage Calculator
-                </a>
-                <a href="age-calculator.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #ec4899, #be185d);">📅</div>
-                    Age Calculator
-                </a>
-            </div>
-        </aside>
-    </main>
-
-    <footer class="site-footer">
-        <div class="footer-container">
-            <div class="footer-section">
-                <h4>Financial Tools</h4>
-                <a href="mortgage-calculator.html">Mortgage Calculator</a>
-                <a href="loan-calculator.html">Loan Calculator</a>
-                <a href="compound-interest-calculator.html">Compound Interest</a>
-                <a href="retirement-calculator.html">Retirement Calculator</a>
-            </div>
-            <div class="footer-section">
-                <h4>Health Tools</h4>
-                <a href="bmi-calculator.html">BMI Calculator</a>
-                <a href="calorie-calculator.html">Calorie Calculator</a>
-                <a href="body-fat-calculator.html">Body Fat Calculator</a>
-                <a href="water-intake-calculator.html">Water Intake</a>
-            </div>
-            <div class="footer-section">
-                <h4>Math Tools</h4>
-                <a href="percentage-calc.html">Percentage Calculator</a>
-                <a href="average-calculator.html">Average Calculator</a>
-                <a href="fraction-calculator.html">Fraction Calculator</a>
-                <a href="scientific-calculator.html">Scientific Calculator</a>
-            </div>
-            <div class="footer-section">
-                <h4>Converters</h4>
-                <a href="unit-converter.html">Unit Converter</a>
-                <a href="temperature-converter.html">Temperature</a>
-                <a href="currency-converter.html">Currency Converter</a>
-                <a href="timezone-converter.html">Time Zone</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 WebTools Pro. Free calculators & tools. | <a href="index.html">All 360+ Tools</a></p>
-        </div>
-    </footer>
-
-    <script>
-        atOptions = {'key':'9f6b66d433cad4c02b643bdd4b7eefc0','format':'iframe','height':50,'width':320,'params':{}};            </script><script src="https://www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script></div>
-
-        <div class="calc-card">
-            <div class="input-grid">
-                <div class="input-group">
-                    <label>Amount</label>
-                    <input type="number" id="amount" value="1" min="0" step="0.125" oninput="calculate()">
-                </div>
-                <div class="input-group">
-                    <label>From</label>
-                    <select id="fromUnit" onchange="calculate()">
-                        <option value="cup" selected>Cup</option>
-                        <option value="tbsp">Tablespoon</option>
-                        <option value="tsp">Teaspoon</option>
-                        <option value="floz">Fluid Ounce</option>
-                        <option value="ml">Milliliter</option>
-                        <option value="liter">Liter</option>
-                        <option value="pint">Pint</option>
-                        <option value="quart">Quart</option>
-                        <option value="gallon">Gallon</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="result-box">
-                <div class="label">Converted Amount</div>
-                <div class="value" id="result">16 tbsp</div>
-                <div class="sub" id="subtext">1 cup = 16 tablespoons</div>
-            </div>
-
-            <div class="conversions">
-                <div class="conv-item">
-                    <div class="value" id="cups">1 cup</div>
-                    <div class="label">Cups</div>
-                </div>
-                <div class="conv-item">
-                    <div class="value" id="tbsp">16 tbsp</div>
-                    <div class="label">Tablespoons</div>
-                </div>
-                <div class="conv-item">
-                    <div class="value" id="tsp">48 tsp</div>
-                    <div class="label">Teaspoons</div>
-                </div>
-                <div class="conv-item">
-                    <div class="value" id="floz">8 fl oz</div>
-                    <div class="label">Fluid Ounces</div>
-                </div>
-                <div class="conv-item">
-                    <div class="value" id="ml">237 ml</div>
-                    <div class="label">Milliliters</div>
-                </div>
-                <div class="conv-item">
-                    <div class="value" id="liter">0.24 L</div>
-                    <div class="label">Liters</div>
-                </div>
-            </div>
-
-            <div class="ref-table">
-                <h4>Quick Reference</h4>
-                <div class="ref-row">
-                    <span>1 cup</span>
-                    <span>= 16 tbsp = 48 tsp</span>
-                </div>
-                <div class="ref-row">
-                    <span>1 tablespoon</span>
-                    <span>= 3 teaspoons</span>
-                </div>
-                <div class="ref-row">
-                    <span>1 cup</span>
-                    <span>= 8 fluid ounces</span>
-                </div>
-                <div class="ref-row">
-                    <span>1 pint</span>
-                    <span>= 2 cups</span>
-                </div>
-                <div class="ref-row">
-                    <span>1 quart</span>
-                    <span>= 4 cups</span>
-                </div>
-                <div class="ref-row">
-                    <span>1 gallon</span>
-                    <span>= 16 cups</span>
+                <div class="related-tools">
+                    <a href="calorie-calculator.html" class="related-link">Calorie Calculator</a>
+                    <a href="unit-converter.html" class="related-link">Unit Converter</a>
+                    <a href="tip-calculator.html" class="related-link">Tip Calculator</a>
+                    <a href="temperature-converter.html" class="related-link">Temperature</a>
                 </div>
             </div>
         </div>
 
-        <div class="ad-container" style="text-align: center; margin: 25px 0;">
-            <script>
-                atOptions = {
-                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
-                    'format' : 'iframe',
-                    'height' : 250,
-                    'width' : 300,
-                    'params' : {}
-                };
-            </script>
-            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
-        </div>
-
-        <div class="ad-sidebar" style="text-align:center;margin:15px 0;"><script>atOptions = {'key':'8398a480b05e8a3236f9ea561b7cab1a','format':'iframe','height':300,'width':160,'params':{}};            </script><script src="https://www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script></div>
-
-        <div class="tools-promo">
-            <h4>More Cooking Tools</h4>
-            <a href="recipe-converter.html">Recipe Scaler</a>
-            <a href="unit-converter.html">Unit Converter</a>
-            <a href="temperature-converter.html">Temperature Converter</a>
-            <a href="index.html">View All 100+ Tools</a>
+        <div class="sidebar">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
         </div>
     </div>
 
-    <footer>
-        <p>Cooking Converter by WebAudit Pro</p>
-        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
-    </footer>
-
     <script>
-        // Everything in milliliters as base
-        const toML = {
+        // Volume units in ml
+        const volumeUnits = {
             cup: 236.588,
-            tbsp: 14.787,
-            tsp: 4.929,
-            floz: 29.574,
+            tbsp: 14.7868,
+            tsp: 4.92892,
+            floz: 29.5735,
             ml: 1,
-            liter: 1000,
-            pint: 473.176,
-            quart: 946.353,
-            gallon: 3785.41
+            liter: 1000
         };
 
-        function formatNumber(num) {
-            if (num >= 100) return Math.round(num);
-            if (num >= 10) return Math.round(num * 10) / 10;
-            if (num >= 1) return Math.round(num * 100) / 100;
-            return Math.round(num * 1000) / 1000;
-        }
+        // Weight units in grams
+        const weightUnits = {
+            oz: 28.3495,
+            gram: 1,
+            lb: 453.592,
+            kg: 1000
+        };
 
-        function calculate() {
+        // Grams per cup for ingredients
+        const ingredientDensity = {
+            water: 237,
+            flour: 125,
+            sugar: 200,
+            butter: 227,
+            milk: 245,
+            oil: 218,
+            honey: 340,
+            salt: 288
+        };
+
+        function convert() {
             const amount = parseFloat(document.getElementById('amount').value) || 0;
-            const fromUnit = document.getElementById('fromUnit').value;
+            const from = document.getElementById('fromUnit').value;
+            const to = document.getElementById('toUnit').value;
+            const ingredient = document.getElementById('ingredient').value;
 
-            // Convert to ml
-            const ml = amount * toML[fromUnit];
+            const isFromVolume = volumeUnits.hasOwnProperty(from);
+            const isToVolume = volumeUnits.hasOwnProperty(to);
+            const isFromWeight = weightUnits.hasOwnProperty(from);
+            const isToWeight = weightUnits.hasOwnProperty(to);
 
-            // Calculate all conversions
-            const cups = ml / toML.cup;
-            const tbsp = ml / toML.tbsp;
-            const tsp = ml / toML.tsp;
-            const floz = ml / toML.floz;
-            const liters = ml / toML.liter;
-
-            // Determine best display unit
-            let resultValue, resultUnit, subtext;
-            if (fromUnit === 'cup') {
-                resultValue = formatNumber(tbsp);
-                resultUnit = 'tbsp';
-                subtext = `${amount} cup${amount !== 1 ? 's' : ''} = ${resultValue} tablespoons`;
-            } else if (fromUnit === 'tbsp') {
-                resultValue = formatNumber(tsp);
-                resultUnit = 'tsp';
-                subtext = `${amount} tablespoon${amount !== 1 ? 's' : ''} = ${resultValue} teaspoons`;
-            } else if (fromUnit === 'tsp') {
-                resultValue = formatNumber(tbsp);
-                resultUnit = 'tbsp';
-                subtext = `${amount} teaspoon${amount !== 1 ? 's' : ''} = ${resultValue} tablespoons`;
-            } else if (fromUnit === 'ml') {
-                resultValue = formatNumber(tsp);
-                resultUnit = 'tsp';
-                subtext = `${amount} ml = ${resultValue} teaspoons`;
+            let result;
+            if (isFromVolume && isToVolume) {
+                const inMl = amount * volumeUnits[from];
+                result = inMl / volumeUnits[to];
+            } else if (isFromWeight && isToWeight) {
+                const inGrams = amount * weightUnits[from];
+                result = inGrams / weightUnits[to];
+            } else if (isFromVolume && isToWeight) {
+                // Volume to weight using ingredient density
+                const inCups = amount * volumeUnits[from] / volumeUnits['cup'];
+                const inGrams = inCups * ingredientDensity[ingredient];
+                result = inGrams / weightUnits[to];
             } else {
-                resultValue = formatNumber(cups);
-                resultUnit = 'cups';
-                subtext = `${amount} ${fromUnit}${amount !== 1 ? 's' : ''} = ${resultValue} cups`;
+                // Weight to volume
+                const inGrams = amount * weightUnits[from];
+                const inCups = inGrams / ingredientDensity[ingredient];
+                result = inCups * volumeUnits['cup'] / volumeUnits[to];
             }
 
-            document.getElementById('result').textContent = resultValue + ' ' + resultUnit;
-            document.getElementById('subtext').textContent = subtext;
+            const displayResult = result < 0.01 ? result.toExponential(2) : (result % 1 === 0 ? result : result.toFixed(2));
+            document.getElementById('convLabel').textContent = `${amount} ${from} =`;
+            document.getElementById('result').textContent = `${displayResult} ${to}`;
 
-            document.getElementById('cups').textContent = formatNumber(cups) + ' cup' + (cups !== 1 ? 's' : '');
-            document.getElementById('tbsp').textContent = formatNumber(tbsp) + ' tbsp';
-            document.getElementById('tsp').textContent = formatNumber(tsp) + ' tsp';
-            document.getElementById('floz').textContent = formatNumber(floz) + ' fl oz';
-            document.getElementById('ml').textContent = formatNumber(ml) + ' ml';
-            document.getElementById('liter').textContent = formatNumber(liters) + ' L';
+            // Quick conversions
+            const allUnits = {...volumeUnits, ...weightUnits};
+            let quickHTML = '';
+            ['cup', 'tbsp', 'tsp', 'ml', 'gram', 'oz'].forEach(unit => {
+                let conv;
+                if (isFromVolume && volumeUnits[unit]) {
+                    conv = (amount * volumeUnits[from]) / volumeUnits[unit];
+                } else if (isFromWeight && weightUnits[unit]) {
+                    conv = (amount * weightUnits[from]) / weightUnits[unit];
+                } else if (isFromVolume && weightUnits[unit]) {
+                    const inCups = amount * volumeUnits[from] / volumeUnits['cup'];
+                    conv = (inCups * ingredientDensity[ingredient]) / weightUnits[unit];
+                } else if (isFromWeight && volumeUnits[unit]) {
+                    const inCups = (amount * weightUnits[from]) / ingredientDensity[ingredient];
+                    conv = inCups * volumeUnits['cup'] / volumeUnits[unit];
+                }
+                if (conv !== undefined) {
+                    quickHTML += `<div class="quick-card"><div class="quick-value">${conv < 0.01 ? conv.toExponential(1) : conv.toFixed(2)}</div><div class="quick-label">${unit}</div></div>`;
+                }
+            });
+            document.getElementById('quickGrid').innerHTML = quickHTML;
         }
 
-        calculate();
-    
+        convert();
     </script>
 </body>
 </html>
