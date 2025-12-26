@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Countdown Calculator - Days Until Any Date</title>
+    <meta name="description" content="Count down days until your event. Calculate time remaining to any date with days, hours, and minutes.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #7c3aed 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #7c3aed;
+        }
+        .quick-events {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .quick-btn {
+            padding: 8px 16px;
+            background: #ede9fe;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #6d28d9;
+            cursor: pointer;
+        }
+        .quick-btn:hover { background: #ddd6fe; }
+        .result-box {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            border-radius: 16px;
+            padding: 35px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 72px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 18px; margin-top: 5px; }
+        .time-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .time-item {
+            background: #f5f3ff;
+            border-radius: 10px;
+            padding: 15px 10px;
+            text-align: center;
+        }
+        .time-item .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #6d28d9;
+        }
+        .time-item .type {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .all-units {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .all-units h4 {
+            color: #6d28d9;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .unit-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .unit-row:last-child { border: none; }
+        .unit-row .value { font-weight: 600; color: #6d28d9; }
+        .progress-section {
+            background: #f5f3ff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .progress-section h4 {
+            color: #6d28d9;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .progress-bar {
+            background: #ddd6fe;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #7c3aed, #a855f7);
+            height: 100%;
+            transition: width 0.3s;
+        }
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #64748b;
+        }
+        .weekday-info {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .weekday-info .day {
+            font-size: 24px;
+            font-weight: bold;
+            color: #6d28d9;
+        }
+        .weekday-info .date {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #6d28d9; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #7c3aed;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #c4b5fd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⏳ Event Countdown</h1>
+            <p class="subtitle">Count down to any date</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Event Name (optional)</label>
+                <input type="text" id="eventName" placeholder="My Birthday" oninput="calculate()">
+            </div>
+
+            <div class="input-group">
+                <label>Event Date</label>
+                <input type="date" id="eventDate" onchange="calculate()">
+            </div>
+
+            <div class="quick-events">
+                <button class="quick-btn" onclick="setNewYear()">New Year</button>
+                <button class="quick-btn" onclick="setValentines()">Valentine's</button>
+                <button class="quick-btn" onclick="setChristmas()">Christmas</button>
+                <button class="quick-btn" onclick="setHalloween()">Halloween</button>
+            </div>
+
+            <div class="result-box">
+                <div class="label" id="eventLabel">Days Until Event</div>
+                <div class="value" id="daysLeft">45</div>
+                <div class="sub" id="daysText">days remaining</div>
+            </div>
+
+            <div class="time-grid">
+                <div class="time-item">
+                    <div class="value" id="countDays">45</div>
+                    <div class="type">Days</div>
+                </div>
+                <div class="time-item">
+                    <div class="value" id="countHours">12</div>
+                    <div class="type">Hours</div>
+                </div>
+                <div class="time-item">
+                    <div class="value" id="countMins">30</div>
+                    <div class="type">Minutes</div>
+                </div>
+                <div class="time-item">
+                    <div class="value" id="countSecs">45</div>
+                    <div class="type">Seconds</div>
+                </div>
+            </div>
+
+            <div class="all-units">
+                <h4>⏱️ Time Remaining</h4>
+                <div class="unit-row">
+                    <span>Weeks</span>
+                    <span class="value" id="weeks">6.4</span>
+                </div>
+                <div class="unit-row">
+                    <span>Total Hours</span>
+                    <span class="value" id="hours">1,080</span>
+                </div>
+                <div class="unit-row">
+                    <span>Total Minutes</span>
+                    <span class="value" id="minutes">64,800</span>
+                </div>
+                <div class="unit-row">
+                    <span>Total Seconds</span>
+                    <span class="value" id="seconds">3,888,000</span>
+                </div>
+                <div class="unit-row">
+                    <span>Weekdays (Mon-Fri)</span>
+                    <span class="value" id="weekdays">32</span>
+                </div>
+                <div class="unit-row">
+                    <span>Weekends (Sat-Sun)</span>
+                    <span class="value" id="weekends">13</span>
+                </div>
+            </div>
+
+            <div class="weekday-info">
+                <div class="day" id="dayName">Tuesday</div>
+                <div class="date" id="fullDate">February 8, 2026</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Date Tools</h4>
+            <a href="date-calculator.html">Date Calculator</a>
+            <a href="weeks-between-calculator.html">Weeks Between</a>
+            <a href="age-calculator.html">Age Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Event Countdown Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function initDate() {
+            const future = new Date();
+            future.setDate(future.getDate() + 45);
+            document.getElementById('eventDate').value = future.toISOString().split('T')[0];
+            calculate();
+            setInterval(updateLive, 1000);
+        }
+
+        function setNewYear() {
+            const year = new Date().getFullYear() + 1;
+            document.getElementById('eventDate').value = year + '-01-01';
+            document.getElementById('eventName').value = 'New Year ' + year;
+            calculate();
+        }
+
+        function setValentines() {
+            let year = new Date().getFullYear();
+            const today = new Date();
+            const valentines = new Date(year, 1, 14);
+            if (today > valentines) year++;
+            document.getElementById('eventDate').value = year + '-02-14';
+            document.getElementById('eventName').value = "Valentine's Day";
+            calculate();
+        }
+
+        function setChristmas() {
+            let year = new Date().getFullYear();
+            const today = new Date();
+            const christmas = new Date(year, 11, 25);
+            if (today > christmas) year++;
+            document.getElementById('eventDate').value = year + '-12-25';
+            document.getElementById('eventName').value = 'Christmas';
+            calculate();
+        }
+
+        function setHalloween() {
+            let year = new Date().getFullYear();
+            const today = new Date();
+            const halloween = new Date(year, 9, 31);
+            if (today > halloween) year++;
+            document.getElementById('eventDate').value = year + '-10-31';
+            document.getElementById('eventName').value = 'Halloween';
+            calculate();
+        }
+
+        let targetDate = null;
+
+        function calculate() {
+            const eventStr = document.getElementById('eventDate').value;
+            const eventName = document.getElementById('eventName').value || 'Event';
+            if (!eventStr) return;
+
+            targetDate = new Date(eventStr + 'T00:00:00');
+            const now = new Date();
+
+            document.getElementById('eventLabel').textContent = 'Days Until ' + eventName;
+
+            // Day name and full date
+            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            document.getElementById('dayName').textContent = dayNames[targetDate.getDay()];
+            document.getElementById('fullDate').textContent = targetDate.toLocaleDateString('en-US', {
+                month: 'long', day: 'numeric', year: 'numeric'
+            });
+
+            updateLive();
+        }
+
+        function updateLive() {
+            if (!targetDate) return;
+
+            const now = new Date();
+            const diff = targetDate - now;
+
+            if (diff <= 0) {
+                document.getElementById('daysLeft').textContent = '0';
+                document.getElementById('daysText').textContent = "It's here!";
+                document.getElementById('countDays').textContent = '0';
+                document.getElementById('countHours').textContent = '0';
+                document.getElementById('countMins').textContent = '0';
+                document.getElementById('countSecs').textContent = '0';
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('daysLeft').textContent = days;
+            document.getElementById('daysText').textContent = days === 1 ? 'day remaining' : 'days remaining';
+            document.getElementById('countDays').textContent = days;
+            document.getElementById('countHours').textContent = hours;
+            document.getElementById('countMins').textContent = mins;
+            document.getElementById('countSecs').textContent = secs;
+
+            // All units
+            const totalHours = Math.floor(diff / (1000 * 60 * 60));
+            const totalMins = Math.floor(diff / (1000 * 60));
+            const totalSecs = Math.floor(diff / 1000);
+
+            document.getElementById('weeks').textContent = (days / 7).toFixed(1);
+            document.getElementById('hours').textContent = totalHours.toLocaleString();
+            document.getElementById('minutes').textContent = totalMins.toLocaleString();
+            document.getElementById('seconds').textContent = totalSecs.toLocaleString();
+
+            // Count weekdays/weekends
+            let weekdays = 0, weekends = 0;
+            let current = new Date(now);
+            current.setHours(0, 0, 0, 0);
+            while (current < targetDate) {
+                const day = current.getDay();
+                if (day === 0 || day === 6) weekends++;
+                else weekdays++;
+                current.setDate(current.getDate() + 1);
+            }
+            document.getElementById('weekdays').textContent = weekdays;
+            document.getElementById('weekends').textContent = weekends;
+        }
+
+        initDate();
+    </script>
+</body>
+</html>

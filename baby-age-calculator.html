@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baby Age Calculator - Weeks, Months & Milestones</title>
+    <meta name="description" content="Calculate your baby's exact age in weeks, months, and days. Track developmental milestones by age.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #ec4899 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #ec4899;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 16px; margin-top: 5px; }
+        .age-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .age-item {
+            background: #fdf2f8;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .age-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .age-item .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #db2777;
+        }
+        .age-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .milestone {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .milestone h4 {
+            color: #db2777;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .milestone-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .milestone-item:last-child { border: none; }
+        .milestone-item .status {
+            font-weight: 600;
+            color: #16a34a;
+        }
+        .milestone-item .status.upcoming {
+            color: #64748b;
+        }
+        .next-milestone {
+            background: #fdf2f8;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .next-milestone h4 {
+            color: #db2777;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .next-milestone .big {
+            font-size: 28px;
+            font-weight: bold;
+            color: #db2777;
+        }
+        .next-milestone .detail {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #db2777; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #ec4899;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #f9a8d4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>👶 Baby Age Calculator</h1>
+            <p class="subtitle">Track your baby's age and milestones</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Baby's Birth Date</label>
+                <input type="date" id="birthDate" onchange="calculate()">
+            </div>
+
+            <div class="result-box">
+                <div class="label">Baby's Age</div>
+                <div class="value" id="ageMain">12 weeks</div>
+                <div class="sub" id="ageSub">2 months and 26 days old</div>
+            </div>
+
+            <div class="age-grid">
+                <div class="age-item">
+                    <div class="type">Days</div>
+                    <div class="value" id="days">84</div>
+                    <div class="note">total</div>
+                </div>
+                <div class="age-item">
+                    <div class="type">Weeks</div>
+                    <div class="value" id="weeks">12</div>
+                    <div class="note">complete</div>
+                </div>
+                <div class="age-item">
+                    <div class="type">Months</div>
+                    <div class="value" id="months">2.8</div>
+                    <div class="note">approx</div>
+                </div>
+            </div>
+
+            <div class="next-milestone">
+                <h4>🎂 Next Milestone</h4>
+                <div class="big" id="nextMilestone">3 months</div>
+                <div class="detail" id="nextDate">in 4 days (Dec 29, 2025)</div>
+            </div>
+
+            <div class="milestone">
+                <h4>📊 Milestone Tracker</h4>
+                <div class="milestone-item">
+                    <span>1 week old</span>
+                    <span class="status" id="m1w">✓</span>
+                </div>
+                <div class="milestone-item">
+                    <span>1 month old</span>
+                    <span class="status" id="m1m">✓</span>
+                </div>
+                <div class="milestone-item">
+                    <span>3 months old</span>
+                    <span class="status" id="m3m">—</span>
+                </div>
+                <div class="milestone-item">
+                    <span>6 months old</span>
+                    <span class="status" id="m6m">—</span>
+                </div>
+                <div class="milestone-item">
+                    <span>9 months old</span>
+                    <span class="status" id="m9m">—</span>
+                </div>
+                <div class="milestone-item">
+                    <span>1 year old</span>
+                    <span class="status" id="m1y">—</span>
+                </div>
+                <div class="milestone-item">
+                    <span>18 months old</span>
+                    <span class="status" id="m18m">—</span>
+                </div>
+                <div class="milestone-item">
+                    <span>2 years old</span>
+                    <span class="status" id="m2y">—</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Parenting Tools</h4>
+            <a href="due-date-calculator.html">Due Date Calculator</a>
+            <a href="baby-formula-calculator.html">Baby Formula</a>
+            <a href="age-calculator.html">Age Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Baby Age Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function initDate() {
+            const birth = new Date();
+            birth.setMonth(birth.getMonth() - 3);
+            document.getElementById('birthDate').value = birth.toISOString().split('T')[0];
+            calculate();
+        }
+
+        function calculate() {
+            const birthStr = document.getElementById('birthDate').value;
+            if (!birthStr) return;
+
+            const birth = new Date(birthStr);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const diff = today - birth;
+            const totalDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const totalWeeks = Math.floor(totalDays / 7);
+            const totalMonths = totalDays / 30.44;
+
+            // Calculate months and days
+            let months = 0;
+            let tempDate = new Date(birth);
+            while (tempDate <= today) {
+                tempDate.setMonth(tempDate.getMonth() + 1);
+                if (tempDate <= today) months++;
+            }
+            tempDate.setMonth(tempDate.getMonth() - 1);
+            const remainingDays = Math.floor((today - tempDate) / (1000 * 60 * 60 * 24));
+
+            // Display main age
+            let mainAge, subAge;
+            if (totalDays < 7) {
+                mainAge = totalDays + ' day' + (totalDays !== 1 ? 's' : '');
+                subAge = 'newborn';
+            } else if (totalDays < 60) {
+                mainAge = totalWeeks + ' week' + (totalWeeks !== 1 ? 's' : '');
+                subAge = totalDays + ' days old';
+            } else if (months < 24) {
+                mainAge = months + ' month' + (months !== 1 ? 's' : '');
+                subAge = months + ' months and ' + remainingDays + ' days old';
+            } else {
+                const years = Math.floor(months / 12);
+                const remMonths = months % 12;
+                mainAge = years + ' year' + (years !== 1 ? 's' : '');
+                subAge = years + ' years and ' + remMonths + ' months old';
+            }
+
+            document.getElementById('ageMain').textContent = mainAge;
+            document.getElementById('ageSub').textContent = subAge;
+            document.getElementById('days').textContent = totalDays.toLocaleString();
+            document.getElementById('weeks').textContent = totalWeeks;
+            document.getElementById('months').textContent = totalMonths.toFixed(1);
+
+            // Milestones
+            const milestones = [
+                { id: 'm1w', days: 7 },
+                { id: 'm1m', days: 30 },
+                { id: 'm3m', days: 91 },
+                { id: 'm6m', days: 182 },
+                { id: 'm9m', days: 274 },
+                { id: 'm1y', days: 365 },
+                { id: 'm18m', days: 548 },
+                { id: 'm2y', days: 730 }
+            ];
+
+            let nextMilestone = null;
+            milestones.forEach(m => {
+                const el = document.getElementById(m.id);
+                if (totalDays >= m.days) {
+                    el.textContent = '✓';
+                    el.className = 'status';
+                } else {
+                    el.textContent = '—';
+                    el.className = 'status upcoming';
+                    if (!nextMilestone) nextMilestone = m;
+                }
+            });
+
+            // Next milestone
+            if (nextMilestone) {
+                const names = {
+                    'm1w': '1 week',
+                    'm1m': '1 month',
+                    'm3m': '3 months',
+                    'm6m': '6 months',
+                    'm9m': '9 months',
+                    'm1y': '1 year',
+                    'm18m': '18 months',
+                    'm2y': '2 years'
+                };
+                const daysUntil = nextMilestone.days - totalDays;
+                const nextDate = new Date(birth);
+                nextDate.setDate(nextDate.getDate() + nextMilestone.days);
+
+                document.getElementById('nextMilestone').textContent = names[nextMilestone.id];
+                document.getElementById('nextDate').textContent = 'in ' + daysUntil + ' days (' + nextDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ')';
+            } else {
+                document.getElementById('nextMilestone').textContent = 'All reached!';
+                document.getElementById('nextDate').textContent = 'Growing up so fast!';
+            }
+        }
+
+        initDate();
+    </script>
+</body>
+</html>

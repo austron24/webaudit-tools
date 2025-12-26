@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concrete Steps Calculator - Stairs Material Estimator</title>
+    <meta name="description" content="Calculate concrete needed for steps and stairs. Estimate cubic yards, bags of concrete, and materials for your stair project.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #78716c 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #78716c;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #78716c 0%, #57534e 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .materials-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .mat-item {
+            background: #f5f5f4;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .mat-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .mat-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #57534e;
+        }
+        .mat-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #57534e;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #57534e; }
+        .stair-diagram {
+            background: #f5f5f4;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .stair-diagram h4 {
+            color: #57534e;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .stair-diagram svg {
+            width: 100%;
+            max-height: 150px;
+        }
+        .standards {
+            background: #fafaf9;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .standards h4 {
+            color: #57534e;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .standard-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e7e5e4;
+            font-size: 13px;
+        }
+        .standard-row:last-child { border: none; }
+        .standard-row .value { font-weight: 600; color: #57534e; }
+        .tips {
+            background: #f5f5f4;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #57534e;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e7e5e4;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #57534e; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #78716c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #d6d3d1; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🪜 Concrete Steps Calculator</h1>
+            <p class="subtitle">Calculate materials for concrete stairs</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Number of Steps</label>
+                    <input type="number" id="numSteps" value="4" min="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Step Width (inches)</label>
+                    <input type="number" id="stepWidth" value="48" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Tread Depth (inches)</label>
+                    <input type="number" id="treadDepth" value="11" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Riser Height (inches)</label>
+                    <input type="number" id="riserHeight" value="7" oninput="calculate()">
+                </div>
+                <div class="input-group full">
+                    <label>Platform/Landing (optional)</label>
+                    <select id="platform" onchange="calculate()">
+                        <option value="none">No platform</option>
+                        <option value="small">Small (3' x 3')</option>
+                        <option value="medium">Medium (4' x 4')</option>
+                        <option value="large">Large (5' x 4')</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Platform Thickness (in)</label>
+                    <input type="number" id="platformThickness" value="6" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Step Base Thickness (in)</label>
+                    <input type="number" id="baseThickness" value="4" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Concrete Needed</div>
+                <div class="value" id="cubicYards">0.75</div>
+                <div class="sub" id="cubicFeet">cubic yards (20.3 cu ft)</div>
+            </div>
+
+            <div class="materials-grid">
+                <div class="mat-item">
+                    <div class="type">80 lb Bags</div>
+                    <div class="value" id="bags80">34</div>
+                    <div class="note">Quikrete/Sakrete</div>
+                </div>
+                <div class="mat-item">
+                    <div class="type">60 lb Bags</div>
+                    <div class="value" id="bags60">45</div>
+                    <div class="note">Alternative</div>
+                </div>
+                <div class="mat-item">
+                    <div class="type">Ready Mix</div>
+                    <div class="value" id="readyMix">$120-180</div>
+                    <div class="note">Delivered</div>
+                </div>
+                <div class="mat-item">
+                    <div class="type">Bag Cost</div>
+                    <div class="value" id="bagCost">$200-270</div>
+                    <div class="note">DIY option</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>📐 Dimensions</h4>
+                <div class="break-row">
+                    <span>Total Rise</span>
+                    <span class="value" id="totalRise">28 inches</span>
+                </div>
+                <div class="break-row">
+                    <span>Total Run</span>
+                    <span class="value" id="totalRun">44 inches</span>
+                </div>
+                <div class="break-row">
+                    <span>Step Volume (each)</span>
+                    <span class="value" id="stepVolume">0.15 cu ft</span>
+                </div>
+                <div class="break-row">
+                    <span>Base Volume</span>
+                    <span class="value" id="baseVolume">5.33 cu ft</span>
+                </div>
+                <div class="break-row">
+                    <span>Platform Volume</span>
+                    <span class="value" id="platformVolume">0 cu ft</span>
+                </div>
+            </div>
+
+            <div class="standards">
+                <h4>📏 Building Code Standards</h4>
+                <div class="standard-row">
+                    <span>Max Riser Height</span>
+                    <span class="value">7.75 inches</span>
+                </div>
+                <div class="standard-row">
+                    <span>Min Tread Depth</span>
+                    <span class="value">10 inches</span>
+                </div>
+                <div class="standard-row">
+                    <span>Min Stair Width</span>
+                    <span class="value">36 inches</span>
+                </div>
+                <div class="standard-row">
+                    <span>Ideal Riser + Tread</span>
+                    <span class="value">17-18 inches</span>
+                </div>
+                <div class="standard-row">
+                    <span>Handrail Required</span>
+                    <span class="value">4+ risers</span>
+                </div>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Concrete Steps Tips</h4>
+                <div class="tip-item">✓ Add 10% extra for waste and spillage</div>
+                <div class="tip-item">✓ Use 4000 PSI concrete mix for steps</div>
+                <div class="tip-item">✓ Form steps with 1/4" slope per foot for drainage</div>
+                <div class="tip-item">✓ Consider rebar for steps over 4' wide</div>
+                <div class="tip-item">✓ Allow 24-48 hours before removing forms</div>
+                <div class="tip-item">✓ Cure for 7 days before heavy use</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Construction Tools</h4>
+            <a href="concrete-calculator.html">Concrete Calculator</a>
+            <a href="stair-calculator.html">Stair Calculator</a>
+            <a href="rebar-calculator.html">Rebar Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Concrete Steps Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const numSteps = parseInt(document.getElementById('numSteps').value) || 1;
+            const stepWidth = parseFloat(document.getElementById('stepWidth').value) || 48;
+            const treadDepth = parseFloat(document.getElementById('treadDepth').value) || 11;
+            const riserHeight = parseFloat(document.getElementById('riserHeight').value) || 7;
+            const platform = document.getElementById('platform').value;
+            const platformThickness = parseFloat(document.getElementById('platformThickness').value) || 6;
+            const baseThickness = parseFloat(document.getElementById('baseThickness').value) || 4;
+
+            // Total rise and run
+            const totalRise = numSteps * riserHeight;
+            const totalRun = numSteps * treadDepth;
+
+            // Calculate step volumes (stacked trapezoid/rectangular approach)
+            // Each step is a rectangle: width × tread × riser + base underneath
+            let totalStepVolume = 0;
+
+            // Solid stair approach: base + incremental steps
+            // Base slab under all steps
+            const baseVolume = (stepWidth * totalRun * baseThickness) / 1728; // cu ft
+
+            // Each step adds volume
+            for (let i = 1; i <= numSteps; i++) {
+                // Step i has run from step to end
+                const stepRun = treadDepth;
+                const stepVol = (stepWidth * stepRun * riserHeight * (numSteps - i + 1)) / 1728;
+                totalStepVolume += (stepWidth * treadDepth * riserHeight) / 1728;
+            }
+
+            // Simplified solid stair calculation
+            // Volume = (width × total_run × average_height) + base
+            const avgHeight = totalRise / 2;
+            const stairVolume = (stepWidth * totalRun * (avgHeight + baseThickness)) / 1728;
+
+            // Platform volume
+            let platformVol = 0;
+            const platformSizes = {
+                'none': { w: 0, d: 0 },
+                'small': { w: 36, d: 36 },
+                'medium': { w: 48, d: 48 },
+                'large': { w: 60, d: 48 }
+            };
+            if (platform !== 'none') {
+                const p = platformSizes[platform];
+                platformVol = (p.w * p.d * platformThickness) / 1728;
+            }
+
+            // Total volume
+            let totalCuFt = stairVolume + platformVol;
+            totalCuFt = totalCuFt * 1.1; // 10% extra
+
+            const cubicYards = totalCuFt / 27;
+
+            // Bag calculations
+            const bags80 = Math.ceil(totalCuFt / 0.6); // 80lb bag = ~0.6 cu ft
+            const bags60 = Math.ceil(totalCuFt / 0.45); // 60lb bag = ~0.45 cu ft
+
+            // Update display
+            document.getElementById('cubicYards').textContent = cubicYards.toFixed(2);
+            document.getElementById('cubicFeet').textContent = 'cubic yards (' + totalCuFt.toFixed(1) + ' cu ft)';
+
+            document.getElementById('bags80').textContent = bags80;
+            document.getElementById('bags60').textContent = bags60;
+
+            // Cost estimates
+            const readyMixLow = Math.round(cubicYards * 150);
+            const readyMixHigh = Math.round(cubicYards * 200);
+            const bagCostLow = Math.round(bags80 * 6);
+            const bagCostHigh = Math.round(bags80 * 8);
+
+            document.getElementById('readyMix').textContent = '$' + readyMixLow + '-' + readyMixHigh;
+            document.getElementById('bagCost').textContent = '$' + bagCostLow + '-' + bagCostHigh;
+
+            // Breakdown
+            document.getElementById('totalRise').textContent = totalRise + ' inches';
+            document.getElementById('totalRun').textContent = totalRun + ' inches';
+            document.getElementById('stepVolume').textContent = (stairVolume / numSteps).toFixed(2) + ' cu ft';
+            document.getElementById('baseVolume').textContent = baseVolume.toFixed(2) + ' cu ft';
+            document.getElementById('platformVolume').textContent = platformVol.toFixed(2) + ' cu ft';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
