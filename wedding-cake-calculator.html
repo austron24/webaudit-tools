@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Wedding Cake Calculator - Size and Cost Estimator</title>
+    <meta name="description" content="Calculate wedding cake size and cost based on guest count. Estimate tiered cake servings and pricing. Free wedding cake calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #f472b6 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #f472b6;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #f472b6;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #ec4899; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #fce7f3;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #ec4899; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #ec4899; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #ec4899; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #be185d;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fbcfe8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎂 Wedding Cake Calculator</h1>
+            <p class="subtitle">Calculate size and cost for your wedding cake</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Number of Guests</label>
+                <input type="number" id="guests" value="150" min="20" max="500" step="10">
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Cake Style</label>
+                    <select id="cakeStyle">
+                        <option value="simple">Simple/Elegant</option>
+                        <option value="fondant" selected>Fondant Covered</option>
+                        <option value="elaborate">Elaborate/Custom</option>
+                        <option value="luxury">Luxury/Designer</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Number of Tiers</label>
+                    <select id="tiers">
+                        <option value="1">1 Tier</option>
+                        <option value="2">2 Tiers</option>
+                        <option value="3" selected>3 Tiers</option>
+                        <option value="4">4 Tiers</option>
+                        <option value="5">5 Tiers</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Filling Type</label>
+                    <select id="filling">
+                        <option value="buttercream">Buttercream</option>
+                        <option value="fruit" selected>Fruit/Jam</option>
+                        <option value="mousse">Mousse/Ganache</option>
+                        <option value="premium">Premium (Multiple)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Decorations</label>
+                    <select id="decorations">
+                        <option value="minimal">Minimal</option>
+                        <option value="moderate" selected>Moderate</option>
+                        <option value="elaborate">Elaborate</option>
+                        <option value="fresh-flowers">Fresh Flowers</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Cake Cost</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalCost">$0</div>
+                    <div class="result-label-main">Estimated Cake Cost</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="perSlice">$0</div>
+                        <div class="summary-label">Per Slice</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="servings">0</div>
+                        <div class="summary-label">Servings</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="recommendedTiers">0</div>
+                        <div class="summary-label">Recommended Tiers</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="cakeSize">-</div>
+                        <div class="summary-label">Suggested Sizes</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Cost Range</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Budget Option</span>
+                        <span class="breakdown-value" id="budgetCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Mid-Range</span>
+                        <span class="breakdown-value" id="midCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Premium</span>
+                        <span class="breakdown-value" id="premiumCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">National Average</span>
+                        <span class="breakdown-value">$500-700</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Wedding Calculators</h4>
+            <a href="wedding-budget-calculator.html">Wedding Budget</a>
+            <a href="party-budget-calculator.html">Party Budget</a>
+            <a href="gift-budget-calculator.html">Gift Budget</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Wedding Cake Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const guests = parseInt(document.getElementById('guests').value);
+            const cakeStyle = document.getElementById('cakeStyle').value;
+            const tiers = parseInt(document.getElementById('tiers').value);
+            const filling = document.getElementById('filling').value;
+            const decorations = document.getElementById('decorations').value;
+
+            // Servings (add 10% buffer)
+            const servings = Math.ceil(guests * 1.1);
+
+            // Recommended tiers based on guests
+            let recommendedTiers;
+            if (guests <= 50) recommendedTiers = 2;
+            else if (guests <= 100) recommendedTiers = 3;
+            else if (guests <= 200) recommendedTiers = 4;
+            else recommendedTiers = 5;
+
+            // Cake sizes suggestion
+            let cakeSize;
+            if (tiers === 3) cakeSize = '6", 9", 12"';
+            else if (tiers === 4) cakeSize = '6", 8", 10", 12"';
+            else if (tiers === 2) cakeSize = '8", 12"';
+            else if (tiers === 1) cakeSize = '12" or 14"';
+            else cakeSize = '6", 8", 10", 12", 14"';
+
+            // Base price per slice
+            let pricePerSlice = 5; // Default mid-range
+
+            // Style adjustment
+            if (cakeStyle === 'simple') pricePerSlice = 3.5;
+            else if (cakeStyle === 'elaborate') pricePerSlice = 8;
+            else if (cakeStyle === 'luxury') pricePerSlice = 12;
+
+            // Filling adjustment
+            if (filling === 'mousse') pricePerSlice += 1;
+            else if (filling === 'premium') pricePerSlice += 2;
+
+            // Decoration adjustment
+            if (decorations === 'elaborate') pricePerSlice += 2;
+            else if (decorations === 'fresh-flowers') pricePerSlice += 3;
+            else if (decorations === 'minimal') pricePerSlice -= 1;
+
+            // Tier adjustment (more tiers = more labor)
+            pricePerSlice += (tiers - 2) * 0.5;
+
+            const totalCost = servings * pricePerSlice;
+            const budgetCost = servings * 3;
+            const midCost = servings * 5;
+            const premiumCost = servings * 10;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalCost').textContent = formatMoney(totalCost);
+            document.getElementById('perSlice').textContent = '$' + pricePerSlice.toFixed(2);
+            document.getElementById('servings').textContent = servings;
+            document.getElementById('recommendedTiers').textContent = recommendedTiers;
+            document.getElementById('cakeSize').textContent = cakeSize;
+
+            document.getElementById('budgetCost').textContent = formatMoney(budgetCost);
+            document.getElementById('midCost').textContent = formatMoney(midCost);
+            document.getElementById('premiumCost').textContent = formatMoney(premiumCost);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

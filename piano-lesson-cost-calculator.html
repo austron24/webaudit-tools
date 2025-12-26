@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Piano Lesson Cost Calculator - Music Lessons Pricing</title>
+    <meta name="description" content="Calculate piano and music lesson costs. Compare private lessons vs group classes. Free music lesson cost calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #be185d 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #be185d;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #be185d;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #9d174d; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #be185d 0%, #9d174d 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #fce7f3;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #be185d; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #be185d; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #be185d; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #9d174d;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #f9a8d4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎹 Piano Lesson Calculator</h1>
+            <p class="subtitle">Estimate music lesson costs</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Instrument</label>
+                <select id="instrument">
+                    <option value="piano" selected>Piano</option>
+                    <option value="guitar">Guitar</option>
+                    <option value="violin">Violin</option>
+                    <option value="drums">Drums</option>
+                    <option value="voice">Voice/Singing</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Lesson Type</label>
+                    <select id="lessonType" onchange="updatePrice()">
+                        <option value="private" selected>Private (1-on-1)</option>
+                        <option value="semi">Semi-Private (2-3)</option>
+                        <option value="group">Group (4+)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Lesson Length</label>
+                    <select id="lessonLength" onchange="updatePrice()">
+                        <option value="30">30 minutes</option>
+                        <option value="45">45 minutes</option>
+                        <option value="60" selected>60 minutes</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Lessons per Week</label>
+                    <select id="lessonsPerWeek">
+                        <option value="1" selected>1 per week</option>
+                        <option value="2">2 per week</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Teacher Experience</label>
+                    <select id="teacherLevel" onchange="updatePrice()">
+                        <option value="student">Student/Beginner Teacher</option>
+                        <option value="experienced" selected>Experienced Teacher</option>
+                        <option value="professional">Professional/Conservatory</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Price per Lesson ($)</label>
+                <input type="number" id="pricePerLesson" value="60" min="15" max="300" step="5">
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Lesson Costs</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="monthlyCost">$0</div>
+                    <div class="result-label-main">Monthly Cost</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="perLesson">$0</div>
+                        <div class="summary-label">Per Lesson</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="annualCost">$0</div>
+                        <div class="summary-label">Annual Cost</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="lessonsYear">0</div>
+                        <div class="summary-label">Lessons per Year</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="hoursYear">0</div>
+                        <div class="summary-label">Hours per Year</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Cost Comparison</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Private 60min (avg)</span>
+                        <span class="breakdown-value">$50-80/lesson</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Semi-Private 60min</span>
+                        <span class="breakdown-value">$30-50/lesson</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Group Class 60min</span>
+                        <span class="breakdown-value">$15-30/lesson</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Music School Package</span>
+                        <span class="breakdown-value">10-15% savings</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Cost Calculators</h4>
+            <a href="daycare-cost-calculator.html">Daycare Cost</a>
+            <a href="hourly-rate-calculator.html">Hourly Rate</a>
+            <a href="budget-calculator.html">Budget</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Piano Lesson Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function updatePrice() {
+            const lessonType = document.getElementById('lessonType').value;
+            const lessonLength = parseInt(document.getElementById('lessonLength').value);
+            const teacherLevel = document.getElementById('teacherLevel').value;
+
+            // Base prices for 60min private with experienced teacher
+            let basePrice = 60;
+
+            // Adjust for lesson type
+            if (lessonType === 'semi') basePrice = 40;
+            else if (lessonType === 'group') basePrice = 25;
+
+            // Adjust for length
+            if (lessonLength === 30) basePrice *= 0.6;
+            else if (lessonLength === 45) basePrice *= 0.8;
+
+            // Adjust for teacher level
+            if (teacherLevel === 'student') basePrice *= 0.7;
+            else if (teacherLevel === 'professional') basePrice *= 1.5;
+
+            document.getElementById('pricePerLesson').value = Math.round(basePrice);
+        }
+
+        function calculate() {
+            const lessonLength = parseInt(document.getElementById('lessonLength').value);
+            const lessonsPerWeek = parseInt(document.getElementById('lessonsPerWeek').value);
+            const pricePerLesson = parseFloat(document.getElementById('pricePerLesson').value);
+
+            const lessonsMonth = lessonsPerWeek * 4.33; // avg weeks per month
+            const lessonsYear = lessonsPerWeek * 52;
+            const hoursYear = (lessonsYear * lessonLength) / 60;
+
+            const monthlyCost = pricePerLesson * lessonsMonth;
+            const annualCost = pricePerLesson * lessonsYear;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('monthlyCost').textContent = formatMoney(monthlyCost);
+            document.getElementById('perLesson').textContent = formatMoney(pricePerLesson);
+            document.getElementById('annualCost').textContent = formatMoney(annualCost);
+            document.getElementById('lessonsYear').textContent = lessonsYear;
+            document.getElementById('hoursYear').textContent = Math.round(hoursYear);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

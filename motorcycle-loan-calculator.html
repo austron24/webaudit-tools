@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Motorcycle Loan Calculator - Bike Financing Estimator</title>
+    <meta name="description" content="Calculate motorcycle loan payments and total financing costs. Compare motorcycle loan terms. Free motorcycle loan calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #dc2626 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #dc2626;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #dc2626;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #b91c1c; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #fee2e2;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #dc2626; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .breakdown h4 { color: #dc2626; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .tips {
+            background: #fee2e2;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .tips h4 { color: #b91c1c; margin-bottom: 15px; }
+        .tip { font-size: 14px; padding: 8px 0; border-bottom: 1px solid #fca5a5; }
+        .tip:last-child { border: none; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #dc2626; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #b91c1c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fca5a5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏍️ Motorcycle Loan Calculator</h1>
+            <p class="subtitle">Calculate your bike financing payments</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Motorcycle Price ($)</label>
+                <input type="number" id="bikePrice" value="15000" min="1000" step="500">
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Down Payment ($)</label>
+                    <input type="number" id="downPayment" value="2000" min="0" step="250">
+                </div>
+                <div class="input-group">
+                    <label>Trade-In Value ($)</label>
+                    <input type="number" id="tradeIn" value="0" min="0" step="250">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Interest Rate (%)</label>
+                    <input type="number" id="rate" value="7.99" min="1" max="30" step="0.25">
+                </div>
+                <div class="input-group">
+                    <label>Loan Term</label>
+                    <select id="term">
+                        <option value="24">24 months</option>
+                        <option value="36" selected>36 months</option>
+                        <option value="48">48 months</option>
+                        <option value="60">60 months</option>
+                        <option value="72">72 months</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Bike Condition</label>
+                <select id="condition">
+                    <option value="new" selected>New</option>
+                    <option value="used">Used</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Payment</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="monthlyPayment">$0</div>
+                    <div class="result-label-main">Monthly Payment</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="loanAmount">$0</div>
+                        <div class="summary-label">Loan Amount</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="totalInterest">$0</div>
+                        <div class="summary-label">Total Interest</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="totalCost">$0</div>
+                        <div class="summary-label">Total Cost</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="insurance">$0</div>
+                        <div class="summary-label">Est. Annual Insurance</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Loan Details</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Motorcycle Price</span>
+                        <span class="breakdown-value" id="displayPrice">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Down Payment</span>
+                        <span class="breakdown-value" id="displayDown">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Trade-In Credit</span>
+                        <span class="breakdown-value" id="displayTrade">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Amount Financed</span>
+                        <span class="breakdown-value" id="displayFinanced">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Total of Payments</span>
+                        <span class="breakdown-value" id="displayTotal">$0</span>
+                    </div>
+                </div>
+
+                <div class="tips">
+                    <h4>💡 Motorcycle Financing Tips</h4>
+                    <div class="tip">🏍️ Shorter loans = less interest paid</div>
+                    <div class="tip">📊 Credit union rates often beat dealers</div>
+                    <div class="tip">🛡️ Full coverage insurance required for financing</div>
+                    <div class="tip">🔧 Budget $500-1000/year for maintenance</div>
+                    <div class="tip">⛑️ Gear costs: $500-2000 for quality equipment</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Vehicle Calculators</h4>
+            <a href="auto-loan-payment-calculator.html">Auto Loan</a>
+            <a href="rv-loan-calculator.html">RV Loan</a>
+            <a href="boat-loan-calculator.html">Boat Loan</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Motorcycle Loan Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const price = parseFloat(document.getElementById('bikePrice').value);
+            const down = parseFloat(document.getElementById('downPayment').value);
+            const tradeIn = parseFloat(document.getElementById('tradeIn').value);
+            const rate = parseFloat(document.getElementById('rate').value) / 100 / 12;
+            const months = parseInt(document.getElementById('term').value);
+
+            const loanAmount = price - down - tradeIn;
+
+            // Monthly payment formula
+            const payment = loanAmount * (rate * Math.pow(1 + rate, months)) / (Math.pow(1 + rate, months) - 1);
+            const totalPayments = payment * months;
+            const totalInterest = totalPayments - loanAmount;
+
+            // Estimate insurance (~3-5% of value annually for motorcycles)
+            const annualInsurance = price * 0.04;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('monthlyPayment').textContent = formatMoney(payment);
+            document.getElementById('loanAmount').textContent = formatMoney(loanAmount);
+            document.getElementById('totalInterest').textContent = formatMoney(totalInterest);
+            document.getElementById('totalCost').textContent = formatMoney(totalPayments + down + tradeIn);
+            document.getElementById('insurance').textContent = formatMoney(annualInsurance);
+
+            document.getElementById('displayPrice').textContent = formatMoney(price);
+            document.getElementById('displayDown').textContent = formatMoney(down);
+            document.getElementById('displayTrade').textContent = formatMoney(tradeIn);
+            document.getElementById('displayFinanced').textContent = formatMoney(loanAmount);
+            document.getElementById('displayTotal').textContent = formatMoney(totalPayments);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

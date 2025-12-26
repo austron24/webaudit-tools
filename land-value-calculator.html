@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Land Value Calculator - Price Per Acre Estimator</title>
+    <meta name="description" content="Calculate land value and price per acre. Compare land costs and estimate property values. Free land value calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #166534 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #166534;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #166534;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #14532d; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #166534 0%, #14532d 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #dcfce7;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #166534; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #166534; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #166534; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #14532d;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #86efac; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏞️ Land Value Calculator</h1>
+            <p class="subtitle">Calculate price per acre and land values</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Total Land Price ($)</label>
+                    <input type="number" id="totalPrice" value="150000" min="1000" step="5000">
+                </div>
+                <div class="input-group">
+                    <label>Land Size (acres)</label>
+                    <input type="number" id="acres" value="10" min="0.1" step="0.5">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Land Type</label>
+                    <select id="landType">
+                        <option value="raw">Raw/Undeveloped</option>
+                        <option value="farm">Farmland</option>
+                        <option value="timber">Timberland</option>
+                        <option value="residential">Residential Lot</option>
+                        <option value="commercial">Commercial</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Location Type</label>
+                    <select id="locationType">
+                        <option value="rural">Rural</option>
+                        <option value="suburban">Suburban</option>
+                        <option value="urban">Urban</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Utilities Available</label>
+                <select id="utilities">
+                    <option value="none">None</option>
+                    <option value="partial">Partial (electric only)</option>
+                    <option value="full">Full (water, sewer, electric)</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Land Value</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="pricePerAcre">$0</div>
+                    <div class="result-label-main">Price Per Acre</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="pricePerSqFt">$0</div>
+                        <div class="summary-label">Price per Sq Ft</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="totalSqFt">0</div>
+                        <div class="summary-label">Total Sq Ft</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="totalPrice">$0</div>
+                        <div class="summary-label">Total Price</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="avgComparison">-</div>
+                        <div class="summary-label">vs National Avg</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Land Details</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Total Acres</span>
+                        <span class="breakdown-value" id="displayAcres">0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Total Square Feet</span>
+                        <span class="breakdown-value" id="displaySqFt">0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Est. Property Tax (1.1%)</span>
+                        <span class="breakdown-value" id="displayTax">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">National Avg (farmland)</span>
+                        <span class="breakdown-value">$3,800/acre</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Property Calculators</h4>
+            <a href="property-tax-calculator.html">Property Tax</a>
+            <a href="home-affordability-calculator.html">Home Affordability</a>
+            <a href="mortgage-calculator.html">Mortgage</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Land Value Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const price = parseFloat(document.getElementById('totalPrice').value);
+            const acres = parseFloat(document.getElementById('acres').value);
+
+            const pricePerAcre = price / acres;
+            const sqFtPerAcre = 43560;
+            const totalSqFt = acres * sqFtPerAcre;
+            const pricePerSqFt = price / totalSqFt;
+            const estimatedTax = price * 0.011;
+
+            // National average comparison (farmland ~$3,800/acre)
+            const nationalAvg = 3800;
+            const comparison = ((pricePerAcre - nationalAvg) / nationalAvg * 100);
+            let compText = comparison > 0 ? `+${comparison.toFixed(0)}%` : `${comparison.toFixed(0)}%`;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('pricePerAcre').textContent = formatMoney(pricePerAcre);
+            document.getElementById('pricePerSqFt').textContent = '$' + pricePerSqFt.toFixed(3);
+            document.getElementById('totalSqFt').textContent = Math.round(totalSqFt).toLocaleString();
+            document.getElementById('totalPrice').textContent = formatMoney(price);
+            document.getElementById('avgComparison').textContent = compText;
+
+            document.getElementById('displayAcres').textContent = acres.toFixed(2);
+            document.getElementById('displaySqFt').textContent = Math.round(totalSqFt).toLocaleString();
+            document.getElementById('displayTax').textContent = formatMoney(estimatedTax) + '/year';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

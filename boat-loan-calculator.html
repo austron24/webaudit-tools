@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Boat Loan Calculator - Marine Financing Estimator</title>
+    <meta name="description" content="Calculate boat loan payments, total interest, and financing costs. Compare boat loan terms. Free marine loan calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0369a1 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #0369a1;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #0369a1;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #075985; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #e0f2fe;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #0369a1; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .breakdown h4 { color: #0369a1; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .tips {
+            background: #e0f2fe;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .tips h4 { color: #075985; margin-bottom: 15px; }
+        .tip { font-size: 14px; padding: 8px 0; border-bottom: 1px solid #7dd3fc; }
+        .tip:last-child { border: none; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0369a1; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #075985;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #7dd3fc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⛵ Boat Loan Calculator</h1>
+            <p class="subtitle">Calculate your marine financing payments</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Boat Price ($)</label>
+                <input type="number" id="boatPrice" value="45000" min="5000" step="1000">
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Down Payment ($)</label>
+                    <input type="number" id="downPayment" value="9000" min="0" step="500">
+                </div>
+                <div class="input-group">
+                    <label>Trade-In Value ($)</label>
+                    <input type="number" id="tradeIn" value="0" min="0" step="500">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Interest Rate (%)</label>
+                    <input type="number" id="rate" value="7.5" min="1" max="25" step="0.25">
+                </div>
+                <div class="input-group">
+                    <label>Loan Term (years)</label>
+                    <select id="term">
+                        <option value="5">5 years</option>
+                        <option value="7">7 years</option>
+                        <option value="10" selected>10 years</option>
+                        <option value="12">12 years</option>
+                        <option value="15">15 years</option>
+                        <option value="20">20 years</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Boat Type</label>
+                <select id="boatType">
+                    <option value="new">New Boat</option>
+                    <option value="used">Used Boat</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Boat Payment</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="monthlyPayment">$0</div>
+                    <div class="result-label-main">Monthly Payment</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="loanAmount">$0</div>
+                        <div class="summary-label">Loan Amount</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="totalInterest">$0</div>
+                        <div class="summary-label">Total Interest</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="totalCost">$0</div>
+                        <div class="summary-label">Total Cost</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="downPercent">0%</div>
+                        <div class="summary-label">Down Payment %</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Loan Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Boat Price</span>
+                        <span class="breakdown-value" id="displayPrice">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Down Payment</span>
+                        <span class="breakdown-value" id="displayDown">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Trade-In Credit</span>
+                        <span class="breakdown-value" id="displayTrade">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Amount Financed</span>
+                        <span class="breakdown-value" id="displayFinanced">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Total of Payments</span>
+                        <span class="breakdown-value" id="displayTotal">$0</span>
+                    </div>
+                </div>
+
+                <div class="tips">
+                    <h4>💡 Boat Financing Tips</h4>
+                    <div class="tip">⚓ 10-20% down payment gets better rates</div>
+                    <div class="tip">📅 Shorter terms = less interest paid</div>
+                    <div class="tip">🏦 Compare marine lenders vs. banks</div>
+                    <div class="tip">🔧 Budget for maintenance: 10% of boat value/year</div>
+                    <div class="tip">📋 Insurance, storage, fuel add to total cost</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Loan Calculators</h4>
+            <a href="auto-loan-payment-calculator.html">Auto Loan</a>
+            <a href="car-loan-calculator.html">Car Loan</a>
+            <a href="mortgage-calculator.html">Mortgage</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Boat Loan Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const price = parseFloat(document.getElementById('boatPrice').value);
+            const down = parseFloat(document.getElementById('downPayment').value);
+            const tradeIn = parseFloat(document.getElementById('tradeIn').value);
+            const rate = parseFloat(document.getElementById('rate').value) / 100 / 12;
+            const years = parseInt(document.getElementById('term').value);
+            const months = years * 12;
+
+            const loanAmount = price - down - tradeIn;
+            const downPercent = ((down + tradeIn) / price * 100).toFixed(1);
+
+            // Monthly payment formula
+            const payment = loanAmount * (rate * Math.pow(1 + rate, months)) / (Math.pow(1 + rate, months) - 1);
+            const totalPayments = payment * months;
+            const totalInterest = totalPayments - loanAmount;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('monthlyPayment').textContent = formatMoney(payment);
+            document.getElementById('loanAmount').textContent = formatMoney(loanAmount);
+            document.getElementById('totalInterest').textContent = formatMoney(totalInterest);
+            document.getElementById('totalCost').textContent = formatMoney(totalPayments + down + tradeIn);
+            document.getElementById('downPercent').textContent = downPercent + '%';
+
+            document.getElementById('displayPrice').textContent = formatMoney(price);
+            document.getElementById('displayDown').textContent = formatMoney(down);
+            document.getElementById('displayTrade').textContent = formatMoney(tradeIn);
+            document.getElementById('displayFinanced').textContent = formatMoney(loanAmount);
+            document.getElementById('displayTotal').textContent = formatMoney(totalPayments);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

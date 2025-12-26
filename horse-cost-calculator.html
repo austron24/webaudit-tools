@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Horse Cost Calculator - Annual Horse Ownership Expenses</title>
+    <meta name="description" content="Calculate the true cost of owning a horse. Estimate feed, boarding, vet, and farrier costs. Free horse ownership calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #92400e 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .section-title {
+            font-size: 16px;
+            color: #92400e;
+            margin: 20px 0 15px;
+            padding-top: 15px;
+            border-top: 2px solid #fde68a;
+        }
+        .section-title:first-child { border: none; padding-top: 0; margin-top: 0; }
+        .input-group { margin-bottom: 15px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #92400e;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #92400e;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 20px;
+        }
+        .btn:hover { background: #78350f; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #92400e 0%, #78350f 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #fef3c7;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #92400e; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #92400e; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #92400e; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #78350f;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fcd34d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐴 Horse Cost Calculator</h1>
+            <p class="subtitle">Calculate annual horse ownership expenses</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="section-title">🏠 Housing</div>
+            <div class="input-group">
+                <label>Housing Type</label>
+                <select id="housingType" onchange="updateBoarding()">
+                    <option value="board">Full Board</option>
+                    <option value="pasture">Pasture Board</option>
+                    <option value="self">Self-Care Board</option>
+                    <option value="home">Keep at Home</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Monthly Board/Housing Cost ($)</label>
+                <input type="number" id="boarding" value="800" min="0" step="50">
+            </div>
+
+            <div class="section-title">🌾 Feed & Hay</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Hay ($/month)</label>
+                    <input type="number" id="hay" value="200" min="0" step="25">
+                </div>
+                <div class="input-group">
+                    <label>Grain/Feed ($/month)</label>
+                    <input type="number" id="grain" value="75" min="0" step="10">
+                </div>
+            </div>
+
+            <div class="section-title">🩺 Healthcare</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Vet Visits ($/year)</label>
+                    <input type="number" id="vet" value="500" min="0" step="50">
+                </div>
+                <div class="input-group">
+                    <label>Dental ($/year)</label>
+                    <input type="number" id="dental" value="200" min="0" step="25">
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Vaccines ($/year)</label>
+                    <input type="number" id="vaccines" value="150" min="0" step="25">
+                </div>
+                <div class="input-group">
+                    <label>Deworming ($/year)</label>
+                    <input type="number" id="deworming" value="100" min="0" step="25">
+                </div>
+            </div>
+
+            <div class="section-title">🔧 Maintenance</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Farrier ($/visit)</label>
+                    <input type="number" id="farrier" value="120" min="0" step="10">
+                </div>
+                <div class="input-group">
+                    <label>Farrier Visits/Year</label>
+                    <input type="number" id="farrierVisits" value="6" min="4" max="12" step="1">
+                </div>
+            </div>
+
+            <div class="section-title">📦 Other</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Tack & Equipment ($/year)</label>
+                    <input type="number" id="tack" value="500" min="0" step="50">
+                </div>
+                <div class="input-group">
+                    <label>Insurance ($/year)</label>
+                    <input type="number" id="insurance" value="600" min="0" step="50">
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Annual Cost</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="annualCost">$0</div>
+                    <div class="result-label-main">Annual Cost of Ownership</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="monthlyCost">$0</div>
+                        <div class="summary-label">Monthly Average</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="dailyCost">$0</div>
+                        <div class="summary-label">Daily Cost</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Cost Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Housing/Board</span>
+                        <span class="breakdown-value" id="displayBoard">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Feed & Hay</span>
+                        <span class="breakdown-value" id="displayFeed">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Healthcare</span>
+                        <span class="breakdown-value" id="displayHealth">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Farrier</span>
+                        <span class="breakdown-value" id="displayFarrier">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Tack & Equipment</span>
+                        <span class="breakdown-value" id="displayTack">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Insurance</span>
+                        <span class="breakdown-value" id="displayInsurance">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Pet Calculators</h4>
+            <a href="dog-food-calculator.html">Dog Food</a>
+            <a href="puppy-food-calculator.html">Puppy Food</a>
+            <a href="pet-age-calculator.html">Pet Age</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Horse Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function updateBoarding() {
+            const type = document.getElementById('housingType').value;
+            const costs = { board: 800, pasture: 400, self: 300, home: 150 };
+            document.getElementById('boarding').value = costs[type];
+        }
+
+        function calculate() {
+            const boarding = parseFloat(document.getElementById('boarding').value) * 12;
+            const hay = parseFloat(document.getElementById('hay').value) * 12;
+            const grain = parseFloat(document.getElementById('grain').value) * 12;
+            const vet = parseFloat(document.getElementById('vet').value);
+            const dental = parseFloat(document.getElementById('dental').value);
+            const vaccines = parseFloat(document.getElementById('vaccines').value);
+            const deworming = parseFloat(document.getElementById('deworming').value);
+            const farrier = parseFloat(document.getElementById('farrier').value);
+            const farrierVisits = parseFloat(document.getElementById('farrierVisits').value);
+            const tack = parseFloat(document.getElementById('tack').value);
+            const insurance = parseFloat(document.getElementById('insurance').value);
+
+            const feed = hay + grain;
+            const health = vet + dental + vaccines + deworming;
+            const farrierTotal = farrier * farrierVisits;
+
+            const total = boarding + feed + health + farrierTotal + tack + insurance;
+            const monthly = total / 12;
+            const daily = total / 365;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('annualCost').textContent = formatMoney(total);
+            document.getElementById('monthlyCost').textContent = formatMoney(monthly);
+            document.getElementById('dailyCost').textContent = formatMoney(daily);
+
+            document.getElementById('displayBoard').textContent = formatMoney(boarding);
+            document.getElementById('displayFeed').textContent = formatMoney(feed);
+            document.getElementById('displayHealth').textContent = formatMoney(health);
+            document.getElementById('displayFarrier').textContent = formatMoney(farrierTotal);
+            document.getElementById('displayTack').textContent = formatMoney(tack);
+            document.getElementById('displayInsurance').textContent = formatMoney(insurance);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
