@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fence Calculator - Estimate Fence Materials & Cost</title>
-    <meta name="description" content="Free fence calculator. Estimate materials and costs for wood, vinyl, and chain link fences. Calculate posts, rails, and pickets needed.">
-    <meta name="keywords" content="fence calculator, fencing materials, fence cost estimator, wood fence, vinyl fence calculator">
+    <meta name="description" content="Free fence calculator. Estimate materials, posts, and costs for your wood, vinyl, or chain link fence project.">
+    <meta name="keywords" content="fence calculator, fence cost, fence estimator, wood fence, fence posts, fence materials">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/fence-calculator.html">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #8b5cf6; --primary-dark: #7c3aed; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
         .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
-        .header { background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%); padding: 40px 20px; text-align: center; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
         .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
         .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
         .content-area { display: flex; flex-direction: column; gap: 20px; }
@@ -25,27 +25,21 @@
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
         input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
         input:focus, select:focus { outline: none; border-color: var(--primary); }
-        .result-hero { background: linear-gradient(135deg, var(--success), #059669); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
         .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
         .result-hero-label { color: rgba(255,255,255,0.8); }
         .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
-        .result-value { font-size: 1.4rem; font-weight: 700; color: var(--secondary); }
-        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.9rem; }
+        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
         .materials-list { margin-top: 20px; }
         .material-row { display: flex; justify-content: space-between; padding: 15px; background: var(--bg-input); border-radius: 10px; margin-bottom: 10px; }
-        .material-name { display: flex; align-items: center; gap: 10px; }
-        .material-icon { font-size: 1.3rem; }
-        .material-qty { font-weight: 700; color: var(--secondary); }
-        .fence-types { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
-        .fence-type { padding: 15px; border: 2px solid var(--border); border-radius: 10px; background: var(--bg-input); cursor: pointer; text-align: center; transition: all 0.3s; }
-        .fence-type:hover { border-color: var(--primary); }
-        .fence-type.selected { border-color: var(--success); background: rgba(16, 185, 129, 0.2); }
+        .material-row.total { background: var(--success); color: white; font-weight: 700; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .results-grid, .fence-types { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
 <body>
@@ -68,42 +62,32 @@
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>🪵 Fence Type</h2>
-                <div class="fence-types">
-                    <div class="fence-type selected" onclick="selectFence('wood', 25)">
-                        <div style="font-size: 1.5rem;">🪵</div>
-                        <div style="font-weight: 700;">Wood</div>
-                        <div style="font-size: 0.85rem; color: var(--text-secondary);">~$25/ft</div>
-                    </div>
-                    <div class="fence-type" onclick="selectFence('vinyl', 35)">
-                        <div style="font-size: 1.5rem;">⬜</div>
-                        <div style="font-weight: 700;">Vinyl</div>
-                        <div style="font-size: 0.85rem; color: var(--text-secondary);">~$35/ft</div>
-                    </div>
-                    <div class="fence-type" onclick="selectFence('chainlink', 15)">
-                        <div style="font-size: 1.5rem;">🔗</div>
-                        <div style="font-weight: 700;">Chain Link</div>
-                        <div style="font-size: 0.85rem; color: var(--text-secondary);">~$15/ft</div>
-                    </div>
-                </div>
-                
-                <h2>📏 Fence Dimensions</h2>
+                <h2>📐 Fence Specifications</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Total Linear Feet</label>
-                        <input type="number" id="linearFeet" value="150" oninput="calculate()">
+                        <label>Total Fence Length (ft)</label>
+                        <input type="number" id="length" value="100" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Fence Height (ft)</label>
                         <select id="height" onchange="calculate()">
                             <option value="4">4 feet</option>
+                            <option value="5">5 feet</option>
                             <option value="6" selected>6 feet</option>
                             <option value="8">8 feet</option>
                         </select>
                     </div>
                     <div class="form-group">
+                        <label>Fence Style</label>
+                        <select id="style" onchange="calculate()">
+                            <option value="privacy">Privacy (solid boards)</option>
+                            <option value="picket">Picket</option>
+                            <option value="shadowbox">Shadowbox</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label>Post Spacing (ft)</label>
-                        <select id="postSpacing" onchange="calculate()">
+                        <select id="spacing" onchange="calculate()">
                             <option value="6">6 feet</option>
                             <option value="8" selected>8 feet</option>
                             <option value="10">10 feet</option>
@@ -112,6 +96,10 @@
                     <div class="form-group">
                         <label>Number of Gates</label>
                         <input type="number" id="gates" value="1" min="0" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Gate Width (ft)</label>
+                        <input type="number" id="gateWidth" value="4" step="0.5" oninput="calculate()">
                     </div>
                 </div>
                 
@@ -127,22 +115,66 @@
                     </div>
                     <div class="result-card">
                         <div class="result-value" id="rails">0</div>
-                        <div class="result-label">Rails Needed</div>
+                        <div class="result-label">Rails (8ft)</div>
                     </div>
                     <div class="result-card">
                         <div class="result-value" id="pickets">0</div>
                         <div class="result-label">Pickets</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="costPerFoot">$0</div>
-                        <div class="result-label">Cost/Linear Foot</div>
+                        <div class="result-value" id="concrete">0</div>
+                        <div class="result-label">Bags Concrete</div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>📋 Materials List</h2>
-                <div class="materials-list" id="materialsList"></div>
+                <h2>💰 Materials Breakdown</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Post Price (each)</label>
+                        <input type="number" id="postPrice" value="15" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Rail Price (8ft)</label>
+                        <input type="number" id="railPrice" value="8" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Picket Price (each)</label>
+                        <input type="number" id="picketPrice" value="3" step="0.5" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Concrete Bag Price</label>
+                        <input type="number" id="concretePrice" value="5" oninput="calculate()">
+                    </div>
+                </div>
+                
+                <div class="materials-list">
+                    <div class="material-row">
+                        <span>Posts</span>
+                        <span id="postCost">$0</span>
+                    </div>
+                    <div class="material-row">
+                        <span>Rails</span>
+                        <span id="railCost">$0</span>
+                    </div>
+                    <div class="material-row">
+                        <span>Pickets/Boards</span>
+                        <span id="picketCost">$0</span>
+                    </div>
+                    <div class="material-row">
+                        <span>Concrete</span>
+                        <span id="concreteCost">$0</span>
+                    </div>
+                    <div class="material-row">
+                        <span>Hardware (10%)</span>
+                        <span id="hardwareCost">$0</span>
+                    </div>
+                    <div class="material-row total">
+                        <span>Total Materials</span>
+                        <span id="materialTotal">$0</span>
+                    </div>
+                </div>
             </div>
 
             <div class="ad-container">
@@ -155,9 +187,9 @@
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
                     <a href="concrete-calculator.html" class="related-link">🧱 Concrete Calculator</a>
+                    <a href="deck-calculator.html" class="related-link">🏠 Deck Calculator</a>
                     <a href="square-footage-calculator.html" class="related-link">📐 Square Footage</a>
-                    <a href="paint-calculator.html" class="related-link">🎨 Paint Calculator</a>
-                    <a href="home-value-calculator.html" class="related-link">🏠 Home Value</a>
+                    <a href="gravel-calculator.html" class="related-link">🪨 Gravel Calculator</a>
                 </div>
             </div>
         </div>
@@ -172,78 +204,52 @@
     </div>
 
     <script>
-        let fenceType = 'wood';
-        let pricePerFoot = 25;
-        
-        function selectFence(type, price) {
-            fenceType = type;
-            pricePerFoot = price;
-            document.querySelectorAll('.fence-type').forEach(t => t.classList.remove('selected'));
-            event.currentTarget.classList.add('selected');
-            calculate();
-        }
-        
         function calculate() {
-            const linearFeet = parseFloat(document.getElementById('linearFeet').value) || 0;
-            const height = parseInt(document.getElementById('height').value) || 6;
-            const postSpacing = parseInt(document.getElementById('postSpacing').value) || 8;
+            const length = parseFloat(document.getElementById('length').value) || 0;
+            const height = parseFloat(document.getElementById('height').value) || 6;
+            const spacing = parseFloat(document.getElementById('spacing').value) || 8;
             const gates = parseInt(document.getElementById('gates').value) || 0;
+            const gateWidth = parseFloat(document.getElementById('gateWidth').value) || 4;
+            const style = document.getElementById('style').value;
             
-            // Calculate materials
-            const posts = Math.ceil(linearFeet / postSpacing) + 1;
+            const fenceLength = length - (gates * gateWidth);
+            const posts = Math.ceil(fenceLength / spacing) + 1 + (gates * 2);
             const railsPerSection = height >= 6 ? 3 : 2;
-            const rails = (posts - 1) * railsPerSection;
+            const sections = Math.ceil(fenceLength / 8);
+            const rails = sections * railsPerSection;
             
-            // Pickets (5.5" wide + 0.25" gap = 5.75" per picket)
-            const picketsPerFoot = 12 / 5.75;
-            const pickets = Math.ceil(linearFeet * picketsPerFoot);
+            let picketSpacing = style === 'privacy' ? 0 : 3.5;
+            let picketsPerFoot = style === 'privacy' ? 2 : (12 / (5.5 + picketSpacing));
+            if (style === 'shadowbox') picketsPerFoot *= 1.5;
+            const pickets = Math.ceil(fenceLength * picketsPerFoot);
             
-            // Gate cost (~$200 per gate installed)
-            const gateCost = gates * 200;
+            const concrete = posts * 2;
             
-            // Total cost
-            const fenceCost = linearFeet * pricePerFoot;
-            const totalCost = fenceCost + gateCost;
-            const costPerFoot = totalCost / linearFeet;
-            
-            document.getElementById('totalCost').textContent = '$' + totalCost.toLocaleString(undefined, {maximumFractionDigits: 0});
             document.getElementById('posts').textContent = posts;
             document.getElementById('rails').textContent = rails;
-            document.getElementById('pickets').textContent = fenceType === 'chainlink' ? 'N/A' : pickets;
-            document.getElementById('costPerFoot').textContent = '$' + costPerFoot.toFixed(0);
+            document.getElementById('pickets').textContent = pickets;
+            document.getElementById('concrete').textContent = concrete;
             
-            // Materials list
-            let materials = '';
-            if (fenceType === 'wood') {
-                materials = `
-                    <div class="material-row"><div class="material-name"><span class="material-icon">🪵</span>4x4 Posts (${height + 2}ft)</div><span class="material-qty">${posts}</span></div>
-                    <div class="material-row"><div class="material-name"><span class="material-icon">📏</span>2x4 Rails (8ft)</div><span class="material-qty">${rails}</span></div>
-                    <div class="material-row"><div class="material-name"><span class="material-icon">🪓</span>1x6 Pickets (${height}ft)</div><span class="material-qty">${pickets}</span></div>
-                    <div class="material-row"><div class="material-name"><span class="material-icon">🔩</span>Post Caps</div><span class="material-qty">${posts}</span></div>
-                    <div class="material-row"><div class="material-name"><span class="material-icon">🧱</span>Concrete (50lb bags)</div><span class="material-qty">${posts * 2}</span></div>
-                `;
-            } else if (fenceType === 'vinyl') {
-                const panels = Math.ceil(linearFeet / 8);
-                materials = `
-                    <div class="material-row"><div class="material-name"><span class="material-icon">⬜</span>Vinyl Posts</div><span class="material-qty">${posts}</span></div>
-                    <div class="material-row"><div class="material-name"><span class="material-icon">📐</span>Vinyl Panels (8ft sections)</div><span class="material-qty">${panels}</span></div>
-                    <div class="material-row"><div class="material-name"><span class="material-icon">🔩</span>Post Caps</div><span class="material-qty">${posts}</span></div>
-                    <div class="material-row"><div class="material-name"><span class="material-icon">🧱</span>Concrete (50lb bags)</div><span class="material-qty">${posts * 2}</span></div>
-                `;
-            } else {
-                const meshRolls = Math.ceil(linearFeet / 50);
-                materials = `
-                    <div class="material-row"><div class="material-name"><span class="material-icon">🔩</span>Terminal Posts</div><span class="material-qty">${Math.ceil(posts * 0.3)}</span></div>
-                    <div class="material-row"><div class="material-name"><span class="material-icon">🪵</span>Line Posts</div><span class="material-qty">${Math.floor(posts * 0.7)}</span></div>
-                    <div class="material-row"><div class="material-name"><span class="material-icon">🔗</span>Chain Link Mesh (50ft rolls)</div><span class="material-qty">${meshRolls}</span></div>
-                    <div class="material-row"><div class="material-name"><span class="material-icon">📏</span>Top Rail (10ft sections)</div><span class="material-qty">${Math.ceil(linearFeet / 10)}</span></div>
-                    <div class="material-row"><div class="material-name"><span class="material-icon">🧱</span>Concrete (50lb bags)</div><span class="material-qty">${posts * 2}</span></div>
-                `;
-            }
-            if (gates > 0) {
-                materials += `<div class="material-row"><div class="material-name"><span class="material-icon">🚪</span>Gates</div><span class="material-qty">${gates}</span></div>`;
-            }
-            document.getElementById('materialsList').innerHTML = materials;
+            const postPrice = parseFloat(document.getElementById('postPrice').value) || 0;
+            const railPrice = parseFloat(document.getElementById('railPrice').value) || 0;
+            const picketPrice = parseFloat(document.getElementById('picketPrice').value) || 0;
+            const concretePrice = parseFloat(document.getElementById('concretePrice').value) || 0;
+            
+            const postCost = posts * postPrice;
+            const railCost = rails * railPrice;
+            const picketCost = pickets * picketPrice;
+            const concreteCost = concrete * concretePrice;
+            const subtotal = postCost + railCost + picketCost + concreteCost;
+            const hardwareCost = subtotal * 0.1;
+            const total = subtotal + hardwareCost;
+            
+            document.getElementById('postCost').textContent = '$' + Math.round(postCost).toLocaleString();
+            document.getElementById('railCost').textContent = '$' + Math.round(railCost).toLocaleString();
+            document.getElementById('picketCost').textContent = '$' + Math.round(picketCost).toLocaleString();
+            document.getElementById('concreteCost').textContent = '$' + Math.round(concreteCost).toLocaleString();
+            document.getElementById('hardwareCost').textContent = '$' + Math.round(hardwareCost).toLocaleString();
+            document.getElementById('materialTotal').textContent = '$' + Math.round(total).toLocaleString();
+            document.getElementById('totalCost').textContent = '$' + Math.round(total).toLocaleString();
         }
         
         calculate();

@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deck Calculator - Estimate Decking Materials & Cost</title>
-    <meta name="description" content="Free deck calculator. Estimate decking boards, joists, and costs for your deck building project.">
-    <meta name="keywords" content="deck calculator, decking cost, deck materials, deck estimator, deck boards">
-    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/deck-calculator.html">
+    <title>Soil Calculator - How Much Topsoil Do You Need?</title>
+    <meta name="description" content="Free soil calculator. Calculate how many cubic yards of topsoil, garden soil, or fill dirt you need.">
+    <meta name="keywords" content="soil calculator, topsoil calculator, garden soil, fill dirt, cubic yards soil">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/soil-calculator.html">
     <style>
-        :root { --primary: #d97706; --primary-dark: #b45309; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #854d0e; --primary-dark: #713f12; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -32,14 +32,17 @@
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
         .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
         .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
-        .cost-breakdown { margin-top: 20px; }
-        .cost-row { display: flex; justify-content: space-between; padding: 15px; background: var(--bg-input); border-radius: 10px; margin-bottom: 10px; }
-        .cost-row.total { background: var(--success); color: white; font-weight: 700; }
+        .soil-types { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px; }
+        .soil-card { padding: 15px; background: var(--bg-input); border-radius: 10px; border: 2px solid transparent; cursor: pointer; }
+        .soil-card:hover { border-color: var(--primary); }
+        .soil-card.selected { border-color: var(--success); }
+        .soil-name { font-weight: 700; margin-bottom: 5px; }
+        .soil-info { color: var(--text-secondary); font-size: 0.85rem; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 640px) { .form-grid, .results-grid, .soil-types { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
 <body>
@@ -56,56 +59,55 @@
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
     
     <header class="header">
-        <h1>🏠 Deck Calculator</h1>
+        <h1>🌱 Soil Calculator</h1>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>📐 Deck Dimensions</h2>
+                <h2>📐 Area Dimensions</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Deck Length (ft)</label>
-                        <input type="number" id="length" value="16" oninput="calculate()">
+                        <label>Length (ft)</label>
+                        <input type="number" id="length" value="20" step="0.5" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Deck Width (ft)</label>
-                        <input type="number" id="width" value="12" oninput="calculate()">
+                        <label>Width (ft)</label>
+                        <input type="number" id="width" value="10" step="0.5" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Decking Material</label>
-                        <select id="material" onchange="calculate()">
-                            <option value="pt">Pressure Treated Wood</option>
-                            <option value="cedar">Cedar</option>
-                            <option value="composite">Composite</option>
-                            <option value="trex">Trex/Premium Composite</option>
-                        </select>
+                        <label>Depth (inches)</label>
+                        <input type="number" id="depth" value="6" step="0.5" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Board Width</label>
-                        <select id="boardWidth" onchange="calculate()">
-                            <option value="5.5" selected>5.5" (standard)</option>
-                            <option value="3.5">3.5" (narrow)</option>
-                            <option value="7.25">7.25" (wide)</option>
-                        </select>
+                        <label>Price per Cubic Yard ($)</label>
+                        <input type="number" id="price" value="35" oninput="calculate()">
                     </div>
-                    <div class="form-group">
-                        <label>Joist Spacing</label>
-                        <select id="joistSpacing" onchange="calculate()">
-                            <option value="12">12" on center</option>
-                            <option value="16" selected>16" on center</option>
-                            <option value="24">24" on center</option>
-                        </select>
+                </div>
+                
+                <h3 style="color: var(--secondary); margin: 20px 0 15px;">Select Soil Type</h3>
+                <div class="soil-types">
+                    <div class="soil-card selected" onclick="selectSoil(this, 1.0, 'Topsoil')">
+                        <div class="soil-name">🌱 Topsoil</div>
+                        <div class="soil-info">Best for gardens & lawns</div>
                     </div>
-                    <div class="form-group">
-                        <label>Waste Factor (%)</label>
-                        <input type="number" id="waste" value="10" oninput="calculate()">
+                    <div class="soil-card" onclick="selectSoil(this, 0.9, 'Garden Mix')">
+                        <div class="soil-name">🌻 Garden Mix</div>
+                        <div class="soil-info">Amended for planting</div>
+                    </div>
+                    <div class="soil-card" onclick="selectSoil(this, 1.2, 'Fill Dirt')">
+                        <div class="soil-name">🏗️ Fill Dirt</div>
+                        <div class="soil-info">For grading & filling</div>
+                    </div>
+                    <div class="soil-card" onclick="selectSoil(this, 0.5, 'Compost')">
+                        <div class="soil-name">🍂 Compost</div>
+                        <div class="soil-info">Rich organic matter</div>
                     </div>
                 </div>
                 
                 <div class="result-hero">
-                    <div class="result-hero-label">Estimated Total Cost</div>
-                    <div class="result-hero-value" id="totalCost">$0</div>
+                    <div class="result-hero-label">Soil Needed</div>
+                    <div class="result-hero-value" id="totalYards">0 yd³</div>
                 </div>
                 
                 <div class="results-grid">
@@ -114,45 +116,40 @@
                         <div class="result-label">Square Feet</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="deckBoards">0</div>
-                        <div class="result-label">Deck Boards (12ft)</div>
+                        <div class="result-value" id="cubicFeet">0</div>
+                        <div class="result-label">Cubic Feet</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="joists">0</div>
-                        <div class="result-label">Joists (2x8)</div>
+                        <div class="result-value" id="tons">0</div>
+                        <div class="result-label">Tons (approx)</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="screws">0</div>
-                        <div class="result-label">Lbs of Screws</div>
+                        <div class="result-value" id="totalCost">$0</div>
+                        <div class="result-label">Estimated Cost</div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>💰 Cost Breakdown</h2>
-                <div class="cost-breakdown">
-                    <div class="cost-row">
-                        <span>Decking Boards</span>
-                        <span id="boardsCost">$0</span>
+                <h2>📏 Depth Guide</h2>
+                <div class="soil-types">
+                    <div class="soil-card">
+                        <div class="soil-name">2-3 inches</div>
+                        <div class="soil-info">Top dressing lawns</div>
                     </div>
-                    <div class="cost-row">
-                        <span>Joists & Frame</span>
-                        <span id="joistsCost">$0</span>
+                    <div class="soil-card">
+                        <div class="soil-name">4-6 inches</div>
+                        <div class="soil-info">Garden beds, flowers</div>
                     </div>
-                    <div class="cost-row">
-                        <span>Hardware & Screws</span>
-                        <span id="hardwareCost">$0</span>
+                    <div class="soil-card">
+                        <div class="soil-name">8-12 inches</div>
+                        <div class="soil-info">Vegetable gardens</div>
                     </div>
-                    <div class="cost-row">
-                        <span>Concrete Footings</span>
-                        <span id="footingsCost">$0</span>
-                    </div>
-                    <div class="cost-row total">
-                        <span>Materials Total</span>
-                        <span id="materialsCost">$0</span>
+                    <div class="soil-card">
+                        <div class="soil-name">12+ inches</div>
+                        <div class="soil-info">Raised beds, trees</div>
                     </div>
                 </div>
-                <p style="color: var(--text-secondary); margin-top: 15px; font-size: 0.9rem;">* Labor typically adds 50-100% to materials cost</p>
             </div>
 
             <div class="ad-container">
@@ -164,10 +161,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="fence-calculator.html" class="related-link">🏗️ Fence Calculator</a>
-                    <a href="concrete-calculator.html" class="related-link">🧱 Concrete Calculator</a>
+                    <a href="mulch-calculator.html" class="related-link">🌿 Mulch Calculator</a>
+                    <a href="gravel-calculator.html" class="related-link">🪨 Gravel Calculator</a>
                     <a href="square-footage-calculator.html" class="related-link">📐 Square Footage</a>
-                    <a href="paint-calculator.html" class="related-link">🎨 Paint Calculator</a>
+                    <a href="concrete-calculator.html" class="related-link">🧱 Concrete Calculator</a>
                 </div>
             </div>
         </div>
@@ -182,44 +179,32 @@
     </div>
 
     <script>
-        const materialPrices = {
-            pt: { board: 8, label: 'Pressure Treated' },
-            cedar: { board: 15, label: 'Cedar' },
-            composite: { board: 22, label: 'Composite' },
-            trex: { board: 35, label: 'Premium Composite' }
-        };
+        let density = 1.0;
+        
+        function selectSoil(el, d, name) {
+            document.querySelectorAll('.soil-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            density = d;
+            calculate();
+        }
         
         function calculate() {
             const length = parseFloat(document.getElementById('length').value) || 0;
             const width = parseFloat(document.getElementById('width').value) || 0;
-            const material = document.getElementById('material').value;
-            const boardWidth = parseFloat(document.getElementById('boardWidth').value) / 12;
-            const joistSpacing = parseFloat(document.getElementById('joistSpacing').value);
-            const waste = parseFloat(document.getElementById('waste').value) / 100 || 0.1;
+            const depth = parseFloat(document.getElementById('depth').value) || 0;
+            const price = parseFloat(document.getElementById('price').value) || 0;
             
             const sqFeet = length * width;
-            const boardsNeeded = Math.ceil((width / boardWidth) * (1 + waste));
-            const joists = Math.ceil((length * 12) / joistSpacing) + 1;
-            const screws = Math.ceil(sqFeet * 0.1);
-            const footings = Math.ceil(length / 6) * 2;
+            const depthFeet = depth / 12;
+            const cubicFeet = sqFeet * depthFeet;
+            const cubicYards = cubicFeet / 27;
+            const tons = cubicYards * density;
+            const totalCost = cubicYards * price;
             
             document.getElementById('sqFeet').textContent = Math.round(sqFeet).toLocaleString();
-            document.getElementById('deckBoards').textContent = boardsNeeded;
-            document.getElementById('joists').textContent = joists;
-            document.getElementById('screws').textContent = screws;
-            
-            const boardPrice = materialPrices[material].board;
-            const boardsCost = boardsNeeded * boardPrice;
-            const joistsCost = joists * 12;
-            const hardwareCost = screws * 8 + 50;
-            const footingsCost = footings * 15;
-            const totalCost = boardsCost + joistsCost + hardwareCost + footingsCost;
-            
-            document.getElementById('boardsCost').textContent = '$' + Math.round(boardsCost).toLocaleString();
-            document.getElementById('joistsCost').textContent = '$' + Math.round(joistsCost).toLocaleString();
-            document.getElementById('hardwareCost').textContent = '$' + Math.round(hardwareCost).toLocaleString();
-            document.getElementById('footingsCost').textContent = '$' + Math.round(footingsCost).toLocaleString();
-            document.getElementById('materialsCost').textContent = '$' + Math.round(totalCost).toLocaleString();
+            document.getElementById('cubicFeet').textContent = cubicFeet.toFixed(1);
+            document.getElementById('totalYards').textContent = cubicYards.toFixed(2) + ' yd³';
+            document.getElementById('tons').textContent = tons.toFixed(2);
             document.getElementById('totalCost').textContent = '$' + Math.round(totalCost).toLocaleString();
         }
         
