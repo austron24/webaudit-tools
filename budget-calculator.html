@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Calculator - Monthly Budget Planner</title>
+    <meta name="description" content="Free budget calculator. Plan your monthly budget, track expenses, and manage your finances with the 50/30/20 rule.">
+    <meta name="keywords" content="budget calculator, monthly budget, budget planner, expense tracker, 50 30 20 rule">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/budget-calculator.html">
+    <style>
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --error: #ef4444; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
+        .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
+        .content-area { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); font-size: 0.9rem; }
+        input { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus { outline: none; border-color: var(--primary); }
+        .result-hero { background: linear-gradient(135deg, var(--success), #059669); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero.negative { background: linear-gradient(135deg, var(--error), #dc2626); }
+        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.8); }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .result-value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.9rem; }
+        .budget-rule { margin-top: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .rule-box { padding: 20px; border-radius: 12px; text-align: center; }
+        .rule-box.needs { background: linear-gradient(135deg, rgba(34, 211, 238, 0.2), rgba(34, 211, 238, 0.1)); border: 1px solid var(--secondary); }
+        .rule-box.wants { background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.1)); border: 1px solid var(--accent); }
+        .rule-box.savings { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1)); border: 1px solid var(--success); }
+        .rule-percent { font-size: 2.5rem; font-weight: 800; }
+        .rule-box.needs .rule-percent { color: var(--secondary); }
+        .rule-box.wants .rule-percent { color: var(--accent); }
+        .rule-box.savings .rule-percent { color: var(--success); }
+        .rule-label { color: var(--text-secondary); margin: 5px 0; }
+        .rule-amount { font-weight: 700; font-size: 1.2rem; }
+        .expense-section { margin-top: 10px; }
+        .expense-section h3 { color: var(--secondary); margin-bottom: 10px; font-size: 1.1rem; }
+        .progress-bar { height: 20px; background: var(--border); border-radius: 10px; overflow: hidden; margin-top: 20px; }
+        .progress-fill { height: 100%; border-radius: 10px; transition: width 0.5s; display: flex; }
+        .progress-segment { height: 100%; }
+        .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        @media (max-width: 640px) { .form-grid, .results-grid, .budget-rule { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-container" style="display: none;">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
+    
+    <header class="header">
+        <h1>📊 Budget Calculator</h1>
+    </header>
+
+    <div class="main-container">
+        <div class="content-area">
+            <div class="card">
+                <h2>💵 Monthly Income</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Net Monthly Income</label>
+                        <input type="number" id="income" value="5000" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Other Income</label>
+                        <input type="number" id="otherIncome" value="0" oninput="calculate()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🏠 Monthly Expenses</h2>
+                <div class="expense-section">
+                    <h3>Needs (Essential)</h3>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Housing</label><input type="number" id="housing" value="1500" oninput="calculate()"></div>
+                        <div class="form-group"><label>Utilities</label><input type="number" id="utilities" value="200" oninput="calculate()"></div>
+                        <div class="form-group"><label>Groceries</label><input type="number" id="groceries" value="400" oninput="calculate()"></div>
+                        <div class="form-group"><label>Transportation</label><input type="number" id="transport" value="300" oninput="calculate()"></div>
+                        <div class="form-group"><label>Insurance</label><input type="number" id="insurance" value="200" oninput="calculate()"></div>
+                        <div class="form-group"><label>Healthcare</label><input type="number" id="healthcare" value="100" oninput="calculate()"></div>
+                    </div>
+                </div>
+                <div class="expense-section">
+                    <h3>Wants (Non-Essential)</h3>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Dining Out</label><input type="number" id="dining" value="200" oninput="calculate()"></div>
+                        <div class="form-group"><label>Entertainment</label><input type="number" id="entertainment" value="150" oninput="calculate()"></div>
+                        <div class="form-group"><label>Shopping</label><input type="number" id="shopping" value="100" oninput="calculate()"></div>
+                        <div class="form-group"><label>Subscriptions</label><input type="number" id="subscriptions" value="50" oninput="calculate()"></div>
+                    </div>
+                </div>
+                <div class="expense-section">
+                    <h3>Savings & Debt</h3>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Savings/Investing</label><input type="number" id="savings" value="500" oninput="calculate()"></div>
+                        <div class="form-group"><label>Debt Payments</label><input type="number" id="debt" value="200" oninput="calculate()"></div>
+                    </div>
+                </div>
+                
+                <div class="result-hero" id="resultHero">
+                    <div class="result-hero-label" id="resultLabel">Remaining Budget</div>
+                    <div class="result-hero-value" id="remaining">$0</div>
+                </div>
+                
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-value" id="totalIncome">$0</div>
+                        <div class="result-label">Total Income</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="totalExpenses">$0</div>
+                        <div class="result-label">Total Expenses</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="savingsRate">0%</div>
+                        <div class="result-label">Savings Rate</div>
+                    </div>
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📐 50/30/20 Budget Rule</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 15px;">Recommended allocation based on your income:</p>
+                <div class="budget-rule">
+                    <div class="rule-box needs">
+                        <div class="rule-percent">50%</div>
+                        <div class="rule-label">Needs</div>
+                        <div class="rule-amount" id="rule50">$0</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;">Actual: <span id="actual50">$0</span></div>
+                    </div>
+                    <div class="rule-box wants">
+                        <div class="rule-percent">30%</div>
+                        <div class="rule-label">Wants</div>
+                        <div class="rule-amount" id="rule30">$0</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;">Actual: <span id="actual30">$0</span></div>
+                    </div>
+                    <div class="rule-box savings">
+                        <div class="rule-percent">20%</div>
+                        <div class="rule-label">Savings</div>
+                        <div class="rule-amount" id="rule20">$0</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;">Actual: <span id="actual20">$0</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+
+            <div class="card">
+                <h2>🔗 Related Tools</h2>
+                <div class="related-tools">
+                    <a href="savings-goal-calculator.html" class="related-link">💰 Savings Goal</a>
+                    <a href="emergency-fund-calculator.html" class="related-link">🛡️ Emergency Fund</a>
+                    <a href="debt-payoff-calculator.html" class="related-link">💳 Debt Payoff</a>
+                    <a href="net-worth-calculator.html" class="related-link">💎 Net Worth</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            const income = parseFloat(document.getElementById('income').value) || 0;
+            const otherIncome = parseFloat(document.getElementById('otherIncome').value) || 0;
+            const totalIncome = income + otherIncome;
+            
+            // Needs
+            const housing = parseFloat(document.getElementById('housing').value) || 0;
+            const utilities = parseFloat(document.getElementById('utilities').value) || 0;
+            const groceries = parseFloat(document.getElementById('groceries').value) || 0;
+            const transport = parseFloat(document.getElementById('transport').value) || 0;
+            const insurance = parseFloat(document.getElementById('insurance').value) || 0;
+            const healthcare = parseFloat(document.getElementById('healthcare').value) || 0;
+            const totalNeeds = housing + utilities + groceries + transport + insurance + healthcare;
+            
+            // Wants
+            const dining = parseFloat(document.getElementById('dining').value) || 0;
+            const entertainment = parseFloat(document.getElementById('entertainment').value) || 0;
+            const shopping = parseFloat(document.getElementById('shopping').value) || 0;
+            const subscriptions = parseFloat(document.getElementById('subscriptions').value) || 0;
+            const totalWants = dining + entertainment + shopping + subscriptions;
+            
+            // Savings
+            const savings = parseFloat(document.getElementById('savings').value) || 0;
+            const debt = parseFloat(document.getElementById('debt').value) || 0;
+            const totalSavings = savings + debt;
+            
+            const totalExpenses = totalNeeds + totalWants + totalSavings;
+            const remaining = totalIncome - totalExpenses;
+            const savingsRate = totalIncome > 0 ? ((savings + remaining) / totalIncome) * 100 : 0;
+            
+            // Update display
+            document.getElementById('totalIncome').textContent = '$' + Math.round(totalIncome).toLocaleString();
+            document.getElementById('totalExpenses').textContent = '$' + Math.round(totalExpenses).toLocaleString();
+            document.getElementById('savingsRate').textContent = savingsRate.toFixed(0) + '%';
+            
+            const heroEl = document.getElementById('resultHero');
+            const remainingEl = document.getElementById('remaining');
+            const labelEl = document.getElementById('resultLabel');
+            
+            if (remaining >= 0) {
+                heroEl.classList.remove('negative');
+                labelEl.textContent = 'Remaining Budget';
+                remainingEl.textContent = '+$' + Math.round(remaining).toLocaleString();
+            } else {
+                heroEl.classList.add('negative');
+                labelEl.textContent = 'Over Budget';
+                remainingEl.textContent = '-$' + Math.abs(Math.round(remaining)).toLocaleString();
+            }
+            
+            // 50/30/20 rule
+            document.getElementById('rule50').textContent = '$' + Math.round(totalIncome * 0.5).toLocaleString();
+            document.getElementById('rule30').textContent = '$' + Math.round(totalIncome * 0.3).toLocaleString();
+            document.getElementById('rule20').textContent = '$' + Math.round(totalIncome * 0.2).toLocaleString();
+            document.getElementById('actual50').textContent = '$' + Math.round(totalNeeds).toLocaleString();
+            document.getElementById('actual30').textContent = '$' + Math.round(totalWants).toLocaleString();
+            document.getElementById('actual20').textContent = '$' + Math.round(totalSavings).toLocaleString();
+            
+            // Progress bar
+            if (totalIncome > 0) {
+                const needsPercent = (totalNeeds / totalIncome) * 100;
+                const wantsPercent = (totalWants / totalIncome) * 100;
+                const savingsPercent = (totalSavings / totalIncome) * 100;
+                
+                document.getElementById('progressFill').innerHTML = `
+                    <div class="progress-segment" style="width: ${Math.min(needsPercent, 100)}%; background: var(--secondary);"></div>
+                    <div class="progress-segment" style="width: ${Math.min(wantsPercent, 100 - needsPercent)}%; background: var(--accent);"></div>
+                    <div class="progress-segment" style="width: ${Math.min(savingsPercent, 100 - needsPercent - wantsPercent)}%; background: var(--success);"></div>
+                `;
+            }
+        }
+        
+        calculate();
+    </script>
+</body>
+</html>
