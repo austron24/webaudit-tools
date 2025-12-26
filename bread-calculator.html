@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bread Calculator - Baker's Percentage Recipe Scaler</title>
+    <meta name="description" content="Free bread calculator using baker's percentages. Scale bread recipes, calculate hydration, and get precise ingredient measurements for homemade bread.">
+    <meta name="keywords" content="bread calculator, baker's percentage, bread recipe, sourdough calculator, flour calculator">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/bread-calculator.html">
+    <style>
+        :root { --primary: #92400e; --primary-dark: #78350f; --secondary: #f59e0b; --accent: #22c55e; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
+        .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
+        .content-area { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 40px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.9); font-size: 1.2rem; }
+        .ingredient-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .ingredient-table th, .ingredient-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border); }
+        .ingredient-table th { background: var(--primary); color: white; }
+        .ingredient-table tr:nth-child(even) { background: var(--bg-input); }
+        .ingredient-table input { padding: 10px; }
+        .type-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        .type-btn { padding: 15px; background: var(--bg-input); border: 2px solid var(--border); border-radius: 10px; color: var(--text-primary); cursor: pointer; text-align: center; }
+        .type-btn:hover, .type-btn.active { background: var(--primary); border-color: var(--primary); }
+        .info-box { background: var(--bg-input); padding: 15px; border-radius: 10px; margin-top: 15px; border-left: 4px solid var(--secondary); }
+        .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        @media (max-width: 640px) { .form-grid, .type-btns { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-container" style="display: none;">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
+
+    <header class="header">
+        <h1>🍞 Bread Calculator</h1>
+    </header>
+
+    <div class="main-container">
+        <div class="content-area">
+            <div class="card">
+                <h2>🥖 Bread Type</h2>
+                <div class="type-btns">
+                    <button class="type-btn active" onclick="setType('basic', this)">
+                        🍞 Basic White
+                    </button>
+                    <button class="type-btn" onclick="setType('wholewheat', this)">
+                        🌾 Whole Wheat
+                    </button>
+                    <button class="type-btn" onclick="setType('sourdough', this)">
+                        🥖 Sourdough
+                    </button>
+                    <button class="type-btn" onclick="setType('brioche', this)">
+                        🥐 Brioche
+                    </button>
+                    <button class="type-btn" onclick="setType('focaccia', this)">
+                        🫓 Focaccia
+                    </button>
+                    <button class="type-btn" onclick="setType('ciabatta', this)">
+                        🥪 Ciabatta
+                    </button>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Number of Loaves</label>
+                        <input type="number" id="loaves" value="1" min="1" max="10" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Loaf Weight (grams)</label>
+                        <input type="number" id="loafWeight" value="900" step="50" oninput="calculate()">
+                    </div>
+                </div>
+
+                <div class="result-hero">
+                    <div class="result-hero-label">Total Dough Weight</div>
+                    <div class="result-hero-value" id="totalDough">0g</div>
+                    <div style="margin-top: 10px;" id="hydrationDisplay"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📊 Ingredients (Baker's Percentages)</h2>
+                <table class="ingredient-table">
+                    <thead>
+                        <tr>
+                            <th>Ingredient</th>
+                            <th>%</th>
+                            <th>Weight</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>🌾 Flour</td>
+                            <td>100%</td>
+                            <td id="flour">0g</td>
+                        </tr>
+                        <tr>
+                            <td>💧 Water</td>
+                            <td id="waterPct">65%</td>
+                            <td id="water">0g</td>
+                        </tr>
+                        <tr>
+                            <td>🧂 Salt</td>
+                            <td id="saltPct">2%</td>
+                            <td id="salt">0g</td>
+                        </tr>
+                        <tr id="yeastRow">
+                            <td>🍞 Yeast</td>
+                            <td id="yeastPct">1%</td>
+                            <td id="yeast">0g</td>
+                        </tr>
+                        <tr id="starterRow" style="display: none;">
+                            <td>🥖 Starter</td>
+                            <td id="starterPct">20%</td>
+                            <td id="starter">0g</td>
+                        </tr>
+                        <tr id="butterRow" style="display: none;">
+                            <td>🧈 Butter</td>
+                            <td id="butterPct">0%</td>
+                            <td id="butter">0g</td>
+                        </tr>
+                        <tr id="sugarRow" style="display: none;">
+                            <td>🍯 Sugar</td>
+                            <td id="sugarPct">0%</td>
+                            <td id="sugar">0g</td>
+                        </tr>
+                        <tr id="oilRow" style="display: none;">
+                            <td>🫒 Oil</td>
+                            <td id="oilPct">0%</td>
+                            <td id="oil">0g</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>📖 Tips</h2>
+                <div class="info-box">
+                    <strong>Hydration Guide:</strong><br>
+                    • 60-65%: Easy to handle, good for beginners<br>
+                    • 65-70%: Softer crumb, more open texture<br>
+                    • 70-80%: Artisan breads, needs practice<br>
+                    • 80%+: Ciabatta, focaccia, very wet dough
+                </div>
+                <div class="info-box" style="margin-top: 15px;">
+                    <strong>Baker's Percentage:</strong> All ingredients are expressed as a percentage of the flour weight. Flour is always 100%.
+                </div>
+            </div>
+
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+
+            <div class="card">
+                <h2>🔗 Related Tools</h2>
+                <div class="related-tools">
+                    <a href="pizza-dough-calculator.html" class="related-link">🍕 Pizza Dough</a>
+                    <a href="unit-price-calculator.html" class="related-link">🏷️ Unit Price</a>
+                    <a href="percentage-calculator.html" class="related-link">📊 Percentage</a>
+                    <a href="calorie-calculator.html" class="related-link">🔥 Calories</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const breadTypes = {
+            basic: { water: 65, salt: 2, yeast: 1, butter: 0, sugar: 0, oil: 0, starter: 0 },
+            wholewheat: { water: 70, salt: 2, yeast: 1.2, butter: 0, sugar: 2, oil: 0, starter: 0 },
+            sourdough: { water: 72, salt: 2, yeast: 0, butter: 0, sugar: 0, oil: 0, starter: 20 },
+            brioche: { water: 50, salt: 1.8, yeast: 1.5, butter: 30, sugar: 10, oil: 0, starter: 0 },
+            focaccia: { water: 75, salt: 2.5, yeast: 0.8, butter: 0, sugar: 0, oil: 8, starter: 0 },
+            ciabatta: { water: 80, salt: 2, yeast: 0.5, butter: 0, sugar: 0, oil: 3, starter: 0 }
+        };
+        
+        let currentType = 'basic';
+        
+        function setType(type, btn) {
+            currentType = type;
+            document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            calculate();
+        }
+
+        function calculate() {
+            const loaves = parseInt(document.getElementById('loaves').value) || 1;
+            const loafWeight = parseInt(document.getElementById('loafWeight').value) || 900;
+            const totalDough = loaves * loafWeight;
+            
+            const recipe = breadTypes[currentType];
+            
+            // Calculate total percentage
+            let totalPct = 100 + recipe.water + recipe.salt + recipe.yeast + recipe.butter + recipe.sugar + recipe.oil + recipe.starter;
+            
+            // Calculate flour weight
+            const flour = Math.round(totalDough * (100 / totalPct));
+            
+            // Calculate other ingredients based on flour
+            const water = Math.round(flour * (recipe.water / 100));
+            const salt = Math.round(flour * (recipe.salt / 100) * 10) / 10;
+            const yeast = Math.round(flour * (recipe.yeast / 100) * 10) / 10;
+            const butter = Math.round(flour * (recipe.butter / 100));
+            const sugar = Math.round(flour * (recipe.sugar / 100));
+            const oil = Math.round(flour * (recipe.oil / 100));
+            const starter = Math.round(flour * (recipe.starter / 100));
+            
+            document.getElementById('totalDough').textContent = totalDough + 'g';
+            document.getElementById('hydrationDisplay').textContent = recipe.water + '% Hydration';
+            
+            document.getElementById('flour').textContent = flour + 'g';
+            document.getElementById('water').textContent = water + 'g';
+            document.getElementById('waterPct').textContent = recipe.water + '%';
+            document.getElementById('salt').textContent = salt + 'g';
+            document.getElementById('saltPct').textContent = recipe.salt + '%';
+            document.getElementById('yeast').textContent = yeast + 'g';
+            document.getElementById('yeastPct').textContent = recipe.yeast + '%';
+            
+            // Show/hide optional rows
+            const yeastRow = document.getElementById('yeastRow');
+            const starterRow = document.getElementById('starterRow');
+            const butterRow = document.getElementById('butterRow');
+            const sugarRow = document.getElementById('sugarRow');
+            const oilRow = document.getElementById('oilRow');
+            
+            yeastRow.style.display = recipe.yeast > 0 ? '' : 'none';
+            starterRow.style.display = recipe.starter > 0 ? '' : 'none';
+            butterRow.style.display = recipe.butter > 0 ? '' : 'none';
+            sugarRow.style.display = recipe.sugar > 0 ? '' : 'none';
+            oilRow.style.display = recipe.oil > 0 ? '' : 'none';
+            
+            if (recipe.starter > 0) {
+                document.getElementById('starter').textContent = starter + 'g';
+                document.getElementById('starterPct').textContent = recipe.starter + '%';
+            }
+            if (recipe.butter > 0) {
+                document.getElementById('butter').textContent = butter + 'g';
+                document.getElementById('butterPct').textContent = recipe.butter + '%';
+            }
+            if (recipe.sugar > 0) {
+                document.getElementById('sugar').textContent = sugar + 'g';
+                document.getElementById('sugarPct').textContent = recipe.sugar + '%';
+            }
+            if (recipe.oil > 0) {
+                document.getElementById('oil').textContent = oil + 'g';
+                document.getElementById('oilPct').textContent = recipe.oil + '%';
+            }
+        }
+        
+        calculate();
+    </script>
+</body>
+</html>
