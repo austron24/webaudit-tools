@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fence Installation Cost Calculator - Fencing Price Estimates</title>
+    <meta name="description" content="Calculate fence installation costs. Estimate wood, vinyl, chain-link, and aluminum fencing prices per linear foot.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #854d0e 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #854d0e;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #854d0e 0%, #713f12 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #fef3c7;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .compare-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #854d0e;
+        }
+        .compare-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #854d0e;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #854d0e; }
+        .pricing {
+            background: #fef3c7;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 {
+            color: #854d0e;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .pricing table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #fde68a;
+        }
+        .pricing th { color: #854d0e; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #854d0e;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #854d0e; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #b45309;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fcd34d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏡 Fence Installation Cost</h1>
+            <p class="subtitle">Fencing material & labor estimates</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Linear Feet</label>
+                    <input type="number" id="feet" value="150" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Fence Height</label>
+                    <select id="height" onchange="calculate()">
+                        <option value="4">4 feet</option>
+                        <option value="6" selected>6 feet</option>
+                        <option value="8">8 feet</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Material Type</label>
+                    <select id="material" onchange="calculate()">
+                        <option value="chainlink">Chain Link</option>
+                        <option value="wood" selected>Wood (Privacy)</option>
+                        <option value="vinyl">Vinyl</option>
+                        <option value="aluminum">Aluminum</option>
+                        <option value="wroughtiron">Wrought Iron</option>
+                        <option value="composite">Composite</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Gates Needed</label>
+                    <input type="number" id="gates" value="1" min="0" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Terrain</label>
+                    <select id="terrain" onchange="calculate()">
+                        <option value="flat" selected>Flat</option>
+                        <option value="sloped">Sloped</option>
+                        <option value="rocky">Rocky/Difficult</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Total Cost</div>
+                <div class="value" id="totalCost">$3,500-5,500</div>
+                <div class="sub" id="perFoot">$23-37 per linear foot</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Materials</div>
+                    <div class="value" id="matCost">$2,500</div>
+                    <div class="note">Fence & posts</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Labor</div>
+                    <div class="value" id="laborCost">$2,000</div>
+                    <div class="note">Installation</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Gates</div>
+                    <div class="value" id="gateCost">$350</div>
+                    <div class="note">Per gate</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Timeline</div>
+                    <div class="value" id="timeline">2-3 days</div>
+                    <div class="note">Typical install</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Cost Breakdown</h4>
+                <div class="break-row">
+                    <span>Fence Panels/Boards</span>
+                    <span class="value" id="panelCost">$2,000</span>
+                </div>
+                <div class="break-row">
+                    <span>Posts & Hardware</span>
+                    <span class="value" id="postCost">$500</span>
+                </div>
+                <div class="break-row">
+                    <span>Gates</span>
+                    <span class="value" id="gateBreak">$350</span>
+                </div>
+                <div class="break-row">
+                    <span>Installation Labor</span>
+                    <span class="value" id="laborBreak">$2,000</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Fence Costs by Material</h4>
+                <table>
+                    <tr>
+                        <th>Material</th>
+                        <th>Per Linear Foot</th>
+                    </tr>
+                    <tr><td>Chain Link</td><td>$10-25</td></tr>
+                    <tr><td>Wood (Privacy)</td><td>$20-45</td></tr>
+                    <tr><td>Vinyl</td><td>$25-50</td></tr>
+                    <tr><td>Aluminum</td><td>$30-60</td></tr>
+                    <tr><td>Wrought Iron</td><td>$40-100</td></tr>
+                    <tr><td>Composite</td><td>$35-70</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Fence Installation Tips</h4>
+                <div class="tip-item">✓ Check property lines before installation</div>
+                <div class="tip-item">✓ Call 811 to mark utilities</div>
+                <div class="tip-item">✓ Get permits if required locally</div>
+                <div class="tip-item">✓ Consider HOA regulations</div>
+                <div class="tip-item">✓ Get multiple contractor quotes</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Outdoor Tools</h4>
+            <a href="deck-calculator.html">Deck Calculator</a>
+            <a href="landscaping-cost-calculator.html">Landscaping Cost</a>
+            <a href="paver-calculator.html">Paver Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Fence Installation Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const feet = parseFloat(document.getElementById('feet').value) || 150;
+            const height = parseInt(document.getElementById('height').value);
+            const material = document.getElementById('material').value;
+            const gates = parseInt(document.getElementById('gates').value) || 0;
+            const terrain = document.getElementById('terrain').value;
+
+            // Base cost per linear foot by material
+            const matCosts = {
+                chainlink: 12,
+                wood: 28,
+                vinyl: 35,
+                aluminum: 40,
+                wroughtiron: 65,
+                composite: 50
+            };
+            let costPerFoot = matCosts[material];
+
+            // Height multiplier
+            const heightMult = height === 4 ? 0.75 : (height === 8 ? 1.4 : 1.0);
+            costPerFoot *= heightMult;
+
+            // Terrain adjustment
+            const terrainMult = { flat: 1.0, sloped: 1.2, rocky: 1.4 };
+            costPerFoot *= terrainMult[terrain];
+
+            // Calculate material vs labor split (typically 55% materials, 45% labor)
+            const totalPerFoot = costPerFoot;
+            const matPerFoot = totalPerFoot * 0.55;
+            const laborPerFoot = totalPerFoot * 0.45;
+
+            const matCost = Math.round(feet * matPerFoot);
+            const laborCost = Math.round(feet * laborPerFoot);
+
+            // Gate costs
+            const gateBaseCost = material === 'chainlink' ? 150 :
+                                (material === 'wroughtiron' ? 600 : 350);
+            const gateTotalCost = gates * gateBaseCost;
+
+            // Post/hardware (included in matCost but broken out)
+            const postCost = Math.round(matCost * 0.2);
+            const panelCost = Math.round(matCost * 0.8);
+
+            const totalMid = matCost + laborCost + gateTotalCost;
+            const totalLow = Math.round(totalMid * 0.85);
+            const totalHigh = Math.round(totalMid * 1.2);
+
+            // Timeline
+            const days = feet < 100 ? '1-2' : (feet < 200 ? '2-3' : '3-5');
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + totalLow.toLocaleString() + '-' + totalHigh.toLocaleString();
+            document.getElementById('perFoot').textContent = '$' + Math.round(totalLow / feet) + '-' + Math.round(totalHigh / feet) + ' per linear foot';
+
+            document.getElementById('matCost').textContent = '$' + matCost.toLocaleString();
+            document.getElementById('laborCost').textContent = '$' + laborCost.toLocaleString();
+            document.getElementById('gateCost').textContent = gates > 0 ? '$' + Math.round(gateTotalCost / gates) : 'N/A';
+            document.getElementById('timeline').textContent = days + ' days';
+
+            document.getElementById('panelCost').textContent = '$' + panelCost.toLocaleString();
+            document.getElementById('postCost').textContent = '$' + postCost.toLocaleString();
+            document.getElementById('gateBreak').textContent = gates > 0 ? '$' + gateTotalCost.toLocaleString() : 'N/A';
+            document.getElementById('laborBreak').textContent = '$' + laborCost.toLocaleString();
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

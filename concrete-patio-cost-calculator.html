@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concrete Patio Cost Calculator - Patio Installation Prices</title>
+    <meta name="description" content="Calculate concrete patio costs. Estimate stamped, stained, and plain concrete patio prices per square foot.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #78716c 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #78716c;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #78716c 0%, #57534e 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #f5f5f4;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .compare-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #57534e;
+        }
+        .compare-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #57534e;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #57534e; }
+        .pricing {
+            background: #f5f5f4;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 {
+            color: #57534e;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .pricing table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #d6d3d1;
+        }
+        .pricing th { color: #57534e; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #57534e;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #57534e; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #78716c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #a8a29e; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏡 Concrete Patio Cost</h1>
+            <p class="subtitle">Patio installation & finish estimates</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Patio Size (sq ft)</label>
+                    <input type="number" id="sqft" value="300" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Thickness</label>
+                    <select id="thickness" onchange="calculate()">
+                        <option value="4" selected>4 inches (standard)</option>
+                        <option value="6">6 inches (heavy duty)</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Finish Type</label>
+                    <select id="finish" onchange="calculate()">
+                        <option value="plain">Plain/Broom Finish</option>
+                        <option value="stained" selected>Stained Concrete</option>
+                        <option value="stamped">Stamped Decorative</option>
+                        <option value="exposed">Exposed Aggregate</option>
+                        <option value="polished">Polished Concrete</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Site Prep Needed</label>
+                    <select id="prep" onchange="calculate()">
+                        <option value="minimal" selected>Minimal</option>
+                        <option value="moderate">Moderate (grading)</option>
+                        <option value="extensive">Extensive (removal)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Sealing</label>
+                    <select id="sealing" onchange="calculate()">
+                        <option value="none">None</option>
+                        <option value="basic" selected>Basic Sealer</option>
+                        <option value="premium">Premium Sealer</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Total Cost</div>
+                <div class="value" id="totalCost">$3,500-5,500</div>
+                <div class="sub" id="perSqft">$12-18 per sq ft</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Materials</div>
+                    <div class="value" id="matCost">$1,800</div>
+                    <div class="note">Concrete & supplies</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Labor</div>
+                    <div class="value" id="laborCost">$2,500</div>
+                    <div class="note">Pouring & finishing</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Curing Time</div>
+                    <div class="value" id="cure">7 days</div>
+                    <div class="note">Full strength: 28 days</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Lifespan</div>
+                    <div class="value">25-30 yrs</div>
+                    <div class="note">With maintenance</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Cost Breakdown</h4>
+                <div class="break-row">
+                    <span>Concrete & Materials</span>
+                    <span class="value" id="concreteCost">$1,500</span>
+                </div>
+                <div class="break-row">
+                    <span>Site Preparation</span>
+                    <span class="value" id="prepCost">$300</span>
+                </div>
+                <div class="break-row">
+                    <span>Finishing Work</span>
+                    <span class="value" id="finishCost">$800</span>
+                </div>
+                <div class="break-row">
+                    <span>Sealing</span>
+                    <span class="value" id="sealCost">$200</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Concrete Patio Costs by Finish</h4>
+                <table>
+                    <tr>
+                        <th>Finish Type</th>
+                        <th>Per Sq Ft</th>
+                    </tr>
+                    <tr><td>Plain/Broom Finish</td><td>$6-10</td></tr>
+                    <tr><td>Stained Concrete</td><td>$10-18</td></tr>
+                    <tr><td>Stamped Decorative</td><td>$15-25</td></tr>
+                    <tr><td>Exposed Aggregate</td><td>$12-20</td></tr>
+                    <tr><td>Polished Concrete</td><td>$8-15</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Concrete Patio Tips</h4>
+                <div class="tip-item">✓ Proper drainage prevents water damage</div>
+                <div class="tip-item">✓ Control joints reduce cracking</div>
+                <div class="tip-item">✓ Seal every 2-3 years for longevity</div>
+                <div class="tip-item">✓ Best poured in moderate temperatures</div>
+                <div class="tip-item">✓ Wait 28 days for full curing</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Outdoor Tools</h4>
+            <a href="paver-calculator.html">Paver Calculator</a>
+            <a href="concrete-calculator.html">Concrete Calculator</a>
+            <a href="deck-calculator.html">Deck Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Concrete Patio Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const sqft = parseFloat(document.getElementById('sqft').value) || 300;
+            const thickness = parseInt(document.getElementById('thickness').value);
+            const finish = document.getElementById('finish').value;
+            const prep = document.getElementById('prep').value;
+            const sealing = document.getElementById('sealing').value;
+
+            // Base cost per sq ft by finish
+            const finishCosts = {
+                plain: 8,
+                stained: 14,
+                stamped: 20,
+                exposed: 16,
+                polished: 12
+            };
+            let costPerSqft = finishCosts[finish];
+
+            // Thickness adjustment
+            if (thickness === 6) costPerSqft *= 1.25;
+
+            // Site prep costs
+            const prepCosts = { minimal: 1, moderate: 3, extensive: 6 };
+            const prepCost = Math.round(sqft * prepCosts[prep]);
+
+            // Sealing costs
+            const sealCosts = { none: 0, basic: 0.75, premium: 2 };
+            const sealCost = Math.round(sqft * sealCosts[sealing]);
+
+            // Base concrete & labor
+            const concreteCost = Math.round(sqft * costPerSqft * 0.4);
+            const laborCost = Math.round(sqft * costPerSqft * 0.45);
+            const finishingCost = Math.round(sqft * costPerSqft * 0.15);
+
+            const matTotal = concreteCost + sealCost;
+            const totalMid = concreteCost + laborCost + finishingCost + prepCost + sealCost;
+            const totalLow = Math.round(totalMid * 0.85);
+            const totalHigh = Math.round(totalMid * 1.2);
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + totalLow.toLocaleString() + '-' + totalHigh.toLocaleString();
+            document.getElementById('perSqft').textContent = '$' + Math.round(totalLow / sqft) + '-' + Math.round(totalHigh / sqft) + ' per sq ft';
+
+            document.getElementById('matCost').textContent = '$' + matTotal.toLocaleString();
+            document.getElementById('laborCost').textContent = '$' + laborCost.toLocaleString();
+
+            document.getElementById('concreteCost').textContent = '$' + concreteCost.toLocaleString();
+            document.getElementById('prepCost').textContent = '$' + prepCost.toLocaleString();
+            document.getElementById('finishCost').textContent = '$' + finishingCost.toLocaleString();
+            document.getElementById('sealCost').textContent = sealing !== 'none' ? '$' + sealCost.toLocaleString() : 'N/A';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

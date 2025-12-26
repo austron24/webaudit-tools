@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pool Installation Cost Calculator - Swimming Pool Price Estimates</title>
+    <meta name="description" content="Calculate pool installation costs. Estimate inground, above-ground, and fiberglass pool prices with installation.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0284c7 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #0284c7;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #e0f2fe;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .compare-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #0369a1;
+        }
+        .compare-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #0369a1;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #0369a1; }
+        .pricing {
+            background: #e0f2fe;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 {
+            color: #0369a1;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .pricing table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #7dd3fc;
+        }
+        .pricing th { color: #0369a1; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #0369a1;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0369a1; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0284c7;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #7dd3fc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏊 Pool Installation Cost</h1>
+            <p class="subtitle">Swimming pool pricing & installation</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group full">
+                    <label>Pool Type</label>
+                    <select id="poolType" onchange="calculate()">
+                        <option value="aboveground">Above-Ground</option>
+                        <option value="fiberglass" selected>Fiberglass Inground</option>
+                        <option value="vinyl">Vinyl Liner Inground</option>
+                        <option value="concrete">Concrete/Gunite</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Pool Size</label>
+                    <select id="size" onchange="calculate()">
+                        <option value="small">Small (12x24)</option>
+                        <option value="medium" selected>Medium (16x32)</option>
+                        <option value="large">Large (18x36)</option>
+                        <option value="xlarge">XL (20x40)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Depth</label>
+                    <select id="depth" onchange="calculate()">
+                        <option value="shallow">Shallow (4-5 ft)</option>
+                        <option value="standard" selected>Standard (3-8 ft)</option>
+                        <option value="deep">Deep (3-10 ft)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Decking/Patio</label>
+                    <select id="decking" onchange="calculate()">
+                        <option value="none">None</option>
+                        <option value="basic" selected>Basic Concrete</option>
+                        <option value="stamped">Stamped Concrete</option>
+                        <option value="pavers">Pavers</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Extras</label>
+                    <select id="extras" onchange="calculate()">
+                        <option value="none" selected>Basic Package</option>
+                        <option value="heating">+ Heater</option>
+                        <option value="lighting">+ LED Lighting</option>
+                        <option value="full">Full Package</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Total Cost</div>
+                <div class="value" id="totalCost">$45,000-65,000</div>
+                <div class="sub" id="poolNote">Includes installation & equipment</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Pool + Install</div>
+                    <div class="value" id="poolCost">$40,000</div>
+                    <div class="note">Shell & equipment</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Decking</div>
+                    <div class="value" id="deckingCost">$8,000</div>
+                    <div class="note">Surrounding area</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Yearly Cost</div>
+                    <div class="value" id="yearlyCost">$1,500</div>
+                    <div class="note">Maintenance & electric</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Timeline</div>
+                    <div class="value" id="timeline">4-8 wks</div>
+                    <div class="note">Installation</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Cost Breakdown</h4>
+                <div class="break-row">
+                    <span>Pool Shell/Liner</span>
+                    <span class="value" id="shellCost">$25,000</span>
+                </div>
+                <div class="break-row">
+                    <span>Excavation & Install</span>
+                    <span class="value" id="excavCost">$8,000</span>
+                </div>
+                <div class="break-row">
+                    <span>Equipment (pump, filter)</span>
+                    <span class="value" id="equipCost">$4,000</span>
+                </div>
+                <div class="break-row">
+                    <span>Decking/Patio</span>
+                    <span class="value" id="deckBreak">$8,000</span>
+                </div>
+                <div class="break-row">
+                    <span>Extras</span>
+                    <span class="value" id="extraCost">N/A</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Pool Costs by Type</h4>
+                <table>
+                    <tr>
+                        <th>Pool Type</th>
+                        <th>Price Range</th>
+                    </tr>
+                    <tr><td>Above-Ground</td><td>$3,000-15,000</td></tr>
+                    <tr><td>Fiberglass Inground</td><td>$35,000-65,000</td></tr>
+                    <tr><td>Vinyl Liner Inground</td><td>$28,000-50,000</td></tr>
+                    <tr><td>Concrete/Gunite</td><td>$50,000-100,000+</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Pool Installation Tips</h4>
+                <div class="tip-item">✓ Check local permits and regulations</div>
+                <div class="tip-item">✓ Consider long-term operating costs</div>
+                <div class="tip-item">✓ Fiberglass is fastest to install</div>
+                <div class="tip-item">✓ Concrete offers most customization</div>
+                <div class="tip-item">✓ Plan for safety fencing (often required)</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Pool & Home Tools</h4>
+            <a href="pool-calculator.html">Pool Volume Calculator</a>
+            <a href="pool-chemical-calculator.html">Pool Chemicals</a>
+            <a href="hot-tub-cost-calculator.html">Hot Tub Cost</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Pool Installation Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const poolType = document.getElementById('poolType').value;
+            const size = document.getElementById('size').value;
+            const depth = document.getElementById('depth').value;
+            const decking = document.getElementById('decking').value;
+            const extras = document.getElementById('extras').value;
+
+            // Base costs by pool type
+            const baseCosts = {
+                aboveground: 5000,
+                fiberglass: 45000,
+                vinyl: 35000,
+                concrete: 70000
+            };
+            let baseCost = baseCosts[poolType];
+
+            // Size multiplier
+            const sizeMult = { small: 0.7, medium: 1.0, large: 1.3, xlarge: 1.6 };
+            baseCost *= sizeMult[size];
+
+            // Depth adjustment
+            const depthMult = { shallow: 0.9, standard: 1.0, deep: 1.15 };
+            baseCost *= depthMult[depth];
+
+            // Break down costs
+            const shellCost = Math.round(baseCost * 0.55);
+            const excavCost = poolType === 'aboveground' ? 500 : Math.round(baseCost * 0.2);
+            const equipCost = poolType === 'aboveground' ? 1000 : Math.round(baseCost * 0.1);
+
+            // Decking costs
+            const deckSizes = { small: 400, medium: 600, large: 800, xlarge: 1000 };
+            const deckCosts = { none: 0, basic: 12, stamped: 20, pavers: 25 };
+            const deckingCost = Math.round(deckSizes[size] * deckCosts[decking]);
+
+            // Extra features
+            const extrasCosts = { none: 0, heating: 3500, lighting: 2000, full: 6000 };
+            const extraCost = extrasCosts[extras];
+
+            const totalMid = shellCost + excavCost + equipCost + deckingCost + extraCost;
+            const totalLow = Math.round(totalMid * 0.85);
+            const totalHigh = Math.round(totalMid * 1.25);
+
+            // Yearly operating costs
+            const yearlyCosts = { aboveground: 800, fiberglass: 1500, vinyl: 1800, concrete: 2500 };
+            const yearlyCost = yearlyCosts[poolType];
+
+            // Timeline
+            const timelines = { aboveground: '1-3 days', fiberglass: '2-4 wks', vinyl: '4-8 wks', concrete: '8-12 wks' };
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + totalLow.toLocaleString() + '-' + totalHigh.toLocaleString();
+
+            document.getElementById('poolCost').textContent = '$' + (shellCost + excavCost + equipCost).toLocaleString();
+            document.getElementById('deckingCost').textContent = deckingCost > 0 ? '$' + deckingCost.toLocaleString() : 'N/A';
+            document.getElementById('yearlyCost').textContent = '$' + yearlyCost.toLocaleString();
+            document.getElementById('timeline').textContent = timelines[poolType];
+
+            document.getElementById('shellCost').textContent = '$' + shellCost.toLocaleString();
+            document.getElementById('excavCost').textContent = '$' + excavCost.toLocaleString();
+            document.getElementById('equipCost').textContent = '$' + equipCost.toLocaleString();
+            document.getElementById('deckBreak').textContent = deckingCost > 0 ? '$' + deckingCost.toLocaleString() : 'N/A';
+            document.getElementById('extraCost').textContent = extraCost > 0 ? '$' + extraCost.toLocaleString() : 'N/A';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

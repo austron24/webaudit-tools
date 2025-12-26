@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gutter Installation Cost Calculator - Seamless Gutter Prices</title>
+    <meta name="description" content="Calculate gutter installation costs. Estimate seamless aluminum, vinyl, and copper gutter prices per linear foot.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #475569 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #475569;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #475569 0%, #334155 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #f1f5f9;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .compare-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #475569;
+        }
+        .compare-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #475569;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #475569; }
+        .pricing {
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 {
+            color: #475569;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .pricing table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #cbd5e1;
+        }
+        .pricing th { color: #475569; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #475569;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #475569; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #475569;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #94a3b8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏠 Gutter Installation Cost</h1>
+            <p class="subtitle">Seamless gutter & downspout estimates</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Linear Feet of Gutter</label>
+                    <input type="number" id="feet" value="150" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Stories</label>
+                    <select id="stories" onchange="calculate()">
+                        <option value="1" selected>1 Story</option>
+                        <option value="2">2 Stories</option>
+                        <option value="3">3+ Stories</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Gutter Material</label>
+                    <select id="material" onchange="calculate()">
+                        <option value="vinyl">Vinyl</option>
+                        <option value="aluminum" selected>Aluminum (Seamless)</option>
+                        <option value="steel">Steel</option>
+                        <option value="copper">Copper</option>
+                        <option value="zinc">Zinc</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Downspouts</label>
+                    <input type="number" id="downspouts" value="4" min="0" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Gutter Guards</label>
+                    <select id="guards" onchange="calculate()">
+                        <option value="none" selected>None</option>
+                        <option value="basic">Basic Screen</option>
+                        <option value="micro">Micro Mesh</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Total Cost</div>
+                <div class="value" id="totalCost">$1,500-2,500</div>
+                <div class="sub" id="perFoot">$10-17 per linear foot</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Materials</div>
+                    <div class="value" id="matCost">$900</div>
+                    <div class="note">Gutters & parts</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Labor</div>
+                    <div class="value" id="laborCost">$1,000</div>
+                    <div class="note">Installation</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Downspouts</div>
+                    <div class="value" id="downspoutCost">$100</div>
+                    <div class="note">Each</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Timeline</div>
+                    <div class="value" id="timeline">1 day</div>
+                    <div class="note">Typical install</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Cost Breakdown</h4>
+                <div class="break-row">
+                    <span>Gutters</span>
+                    <span class="value" id="gutterCost">$750</span>
+                </div>
+                <div class="break-row">
+                    <span>Downspouts</span>
+                    <span class="value" id="downCost">$400</span>
+                </div>
+                <div class="break-row">
+                    <span>Gutter Guards</span>
+                    <span class="value" id="guardCost">N/A</span>
+                </div>
+                <div class="break-row">
+                    <span>Installation Labor</span>
+                    <span class="value" id="laborBreak">$800</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Gutter Costs by Material</h4>
+                <table>
+                    <tr>
+                        <th>Material</th>
+                        <th>Per Linear Foot</th>
+                    </tr>
+                    <tr><td>Vinyl</td><td>$4-8</td></tr>
+                    <tr><td>Aluminum (Seamless)</td><td>$8-15</td></tr>
+                    <tr><td>Steel</td><td>$12-20</td></tr>
+                    <tr><td>Copper</td><td>$25-50</td></tr>
+                    <tr><td>Zinc</td><td>$20-35</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Gutter Tips</h4>
+                <div class="tip-item">✓ Seamless gutters reduce leaks</div>
+                <div class="tip-item">✓ Gutter guards save cleaning time</div>
+                <div class="tip-item">✓ Proper sizing prevents overflow</div>
+                <div class="tip-item">✓ Downspouts should drain away from foundation</div>
+                <div class="tip-item">✓ Regular cleaning extends lifespan</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Tools</h4>
+            <a href="new-roof-cost-calculator.html">New Roof Cost</a>
+            <a href="siding-cost-calculator.html">Siding Cost</a>
+            <a href="window-replacement-calculator.html">Window Replacement</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Gutter Installation Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const feet = parseFloat(document.getElementById('feet').value) || 150;
+            const stories = parseInt(document.getElementById('stories').value);
+            const material = document.getElementById('material').value;
+            const downspouts = parseInt(document.getElementById('downspouts').value) || 0;
+            const guards = document.getElementById('guards').value;
+
+            // Base cost per linear foot by material
+            const matCosts = {
+                vinyl: 5,
+                aluminum: 10,
+                steel: 15,
+                copper: 35,
+                zinc: 25
+            };
+            let costPerFoot = matCosts[material];
+
+            // Story height premium
+            const storyMult = stories === 1 ? 1.0 : (stories === 2 ? 1.2 : 1.5);
+            costPerFoot *= storyMult;
+
+            // Calculate gutter cost (materials)
+            const gutterCost = Math.round(feet * costPerFoot * 0.5);
+            const laborCost = Math.round(feet * costPerFoot * 0.5);
+
+            // Downspout costs
+            const downspoutUnitCost = material === 'copper' ? 200 : (material === 'steel' ? 120 : 100);
+            const downCost = downspouts * downspoutUnitCost;
+
+            // Gutter guard costs
+            const guardCosts = { none: 0, basic: 4, micro: 12 };
+            const guardCost = Math.round(feet * guardCosts[guards]);
+
+            const matTotal = gutterCost + downCost + guardCost;
+            const totalMid = matTotal + laborCost;
+            const totalLow = Math.round(totalMid * 0.85);
+            const totalHigh = Math.round(totalMid * 1.2);
+
+            // Timeline
+            const timeline = feet < 200 ? '1 day' : (feet < 400 ? '1-2 days' : '2-3 days');
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + totalLow.toLocaleString() + '-' + totalHigh.toLocaleString();
+            document.getElementById('perFoot').textContent = '$' + Math.round(totalLow / feet) + '-' + Math.round(totalHigh / feet) + ' per linear foot';
+
+            document.getElementById('matCost').textContent = '$' + matTotal.toLocaleString();
+            document.getElementById('laborCost').textContent = '$' + laborCost.toLocaleString();
+            document.getElementById('downspoutCost').textContent = downspouts > 0 ? '$' + downspoutUnitCost : 'N/A';
+            document.getElementById('timeline').textContent = timeline;
+
+            document.getElementById('gutterCost').textContent = '$' + gutterCost.toLocaleString();
+            document.getElementById('downCost').textContent = downspouts > 0 ? '$' + downCost.toLocaleString() : 'N/A';
+            document.getElementById('guardCost').textContent = guards !== 'none' ? '$' + guardCost.toLocaleString() : 'N/A';
+            document.getElementById('laborBreak').textContent = '$' + laborCost.toLocaleString();
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
