@@ -3,864 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paycheck Calculator - Free Online Calculator | WebTools Pro</title>
-    <meta name="description" content="Calculate your paycheck. Convert hourly to salary, annual to monthly. Estimate taxes and take-home pay. Free paycheck calculator.">
+    <title>Paycheck Calculator - Estimate Your Take-Home Pay</title>
+    <meta name="description" content="Calculate your paycheck after taxes and deductions. See federal, state, and FICA taxes and estimate your take-home pay.">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/paycheck-calculator.html">
-    <meta property="og:title" content="Paycheck Calculator - Free Online Calculator">
-    <meta property="og:description" content="Calculate your paycheck. Convert hourly to salary, annual to monthly. Estimate taxes and take-home pay. Free paycheck calculator.">
+    <meta property="og:title" content="Paycheck Calculator - Take-Home Pay Estimator">
+    <meta property="og:description" content="Calculate your paycheck after taxes and deductions.">
     <meta property="og:type" content="website">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧮</text></svg>">
     <style>
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --bg-dark: #0f172a;
-            --bg-card: #1e293b;
-            --text-light: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
-            --white: #ffffff;
-        }
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-light);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-        .site-header {
-            background: linear-gradient(135deg, var(--bg-dark), var(--bg-card));
-            border-bottom: 1px solid var(--border);
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo {
-            font-size: 22px;
-            font-weight: 700;
-            text-decoration: none;
-            color: var(--text-light);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--primary), #f59e0b);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-        .nav-links { display: flex; gap: 20px; }
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .nav-links a:hover { color: var(--text-light); }
-        @media (max-width: 600px) { .nav-links { display: none; } }
-
-        .ad-top { background: var(--bg-card); padding: 12px 0; text-align: center; border-bottom: 1px solid var(--border); }
-        .ad-mobile { display: none; text-align: center; margin: 12px auto; max-width: 320px; }
-        @media (max-width: 768px) { .ad-mobile { display: block; } }
-
-        .main-layout {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 25px 20px;
-            display: grid;
-            grid-template-columns: 1fr 280px;
-            gap: 25px;
-        }
-        @media (max-width: 900px) {
-            .main-layout { grid-template-columns: 1fr; }
-            .sidebar { display: none; }
-        }
-
-        .hero { text-align: center; margin-bottom: 25px; }
-        .hero h1 {
-            font-size: 38px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, var(--text-light), var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero p { font-size: 16px; color: var(--text-muted); max-width: 500px; margin: 0 auto; }
-        @media (max-width: 600px) { .hero h1 { font-size: 28px; } }
-
-        .calc-card {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 35px;
-            color: #1e293b;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-        @media (max-width: 600px) { .calc-card { padding: 20px; } }
-
-        .unit-toggle {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 25px;
-            background: #f1f5f9;
-            padding: 5px;
-            border-radius: 12px;
-        }
-        .unit-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            background: transparent;
-            color: #64748b;
-            transition: all 0.2s;
-        }
-        .unit-btn.active {
-            background: var(--white);
-            color: var(--primary);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .input-group { margin-bottom: 20px; }
-        .input-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: 700;
-            color: #475569;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .input-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        .input-row input, .input-group input, .input-group select {
-            flex: 1;
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.2s;
-            background: #f8fafc;
-        }
-        .input-row input:focus, .input-group input:focus, .input-group select:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: var(--white);
-        }
-        .input-row span { font-size: 13px; color: #64748b; font-weight: 600; min-width: 25px; }
-
-        .btn {
-            width: 100%;
-            padding: 16px 25px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: var(--white);
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: 8px;
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.35);
-        }
-
-        .results {
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 2px solid #e2e8f0;
-            display: none;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; min-height: 100vh; }
+        .header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; }
+        .nav-links a:hover { color: var(--primary); }
+        .ad-top { background: var(--bg-card); padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); }
+        .ad-mobile { display: none; background: var(--bg-card); padding: 0.5rem; text-align: center; }
+        .main-layout { display: flex; max-width: 1400px; margin: 0 auto; gap: 2rem; padding: 2rem; }
+        .content { flex: 1; min-width: 0; }
+        .sidebar { width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 1rem; }
+        .hero { text-align: center; margin-bottom: 2rem; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary), #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { color: var(--text-secondary); font-size: 1.1rem; }
+        .calculator-card { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .section-title { font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--primary); }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.75rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 0.5rem; color: var(--text-primary); font-size: 1rem; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+        .input-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .calculate-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; border-radius: 0.5rem; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; }
+        .calculate-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
+        .results { display: none; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
         .results.show { display: block; }
-        .bmi-display, .result-main { text-align: center; margin-bottom: 25px; }
-        .bmi-value, .result-value {
-            font-size: 56px;
-            font-weight: 800;
-            color: var(--primary);
-            line-height: 1.1;
-        }
-        .bmi-category, .result-label {
-            font-size: 22px;
-            font-weight: 600;
-            margin-top: 8px;
-            color: #1e293b;
-        }
-
-        .bmi-scale, .scale-bar-container { margin: 25px 0; }
-        .bmi-scale > div:first-child, .scale-bar {
-            height: 18px;
-            background: linear-gradient(to right, #3b82f6 0%, #22c55e 25%, #eab308 55%, #f97316 75%, #ef4444 100%);
-            border-radius: 9px;
-            position: relative;
-        }
-        .bmi-marker, .scale-marker {
-            position: absolute;
-            top: -6px;
-            width: 5px;
-            height: 30px;
-            background: #1e293b;
-            border-radius: 2px;
-            transform: translateX(-50%);
-            transition: left 0.4s ease;
-        }
-        .scale-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: #64748b;
-            margin-top: 10px;
-            font-weight: 600;
-        }
-
-        .category-info, .category-table {
-            background: #f8fafc;
-            border-radius: 14px;
-            overflow: hidden;
-            margin-top: 20px;
-        }
-        .category-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 14px 20px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .category-row:last-child { border: none; }
-        .category-row.active { background: #fef2f2; }
-
-        .result-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 12px;
-            margin-top: 20px;
-        }
-        .result-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 18px;
-            text-align: center;
-        }
-        .result-item-value { font-size: 22px; font-weight: 700; color: #1e293b; }
-        .result-item-label { font-size: 11px; color: #64748b; text-transform: uppercase; margin-top: 4px; letter-spacing: 0.5px; }
-
-        .ad-inline { background: #f8fafc; border-radius: 10px; padding: 15px; margin: 25px 0; text-align: center; }
-        .ad-bottom { background: var(--bg-card); padding: 25px 15px; text-align: center; margin-top: 30px; border-radius: 14px; }
-
-        .info-section {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 30px;
-            margin-top: 30px;
-        }
-        .info-section h2 { font-size: 22px; margin-bottom: 15px; color: var(--text-light); }
-        .info-section p { color: var(--text-muted); margin-bottom: 15px; font-size: 15px; line-height: 1.7; }
-        .info-section h3 { font-size: 18px; margin: 20px 0 12px; color: var(--text-light); }
-        .info-section ul { color: var(--text-muted); margin-left: 20px; }
-        .info-section li { margin-bottom: 10px; line-height: 1.6; }
-
-        .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .sidebar-ad { background: var(--bg-card); border-radius: 14px; padding: 15px; text-align: center; }
-        .sidebar-tools {
-            background: var(--bg-card);
-            border-radius: 14px;
-            padding: 20px;
-        }
-        .sidebar-tools h3 { font-size: 16px; margin-bottom: 15px; color: var(--text-light); }
-        .tool-link {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px;
-            border-radius: 10px;
-            text-decoration: none;
-            color: var(--text-muted);
-            transition: all 0.2s;
-            margin-bottom: 6px;
-        }
-        .tool-link:hover { background: rgba(99, 102, 241, 0.1); color: var(--text-light); }
-        .tool-icon-small {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-        }
-
-        .related-tools { margin-top: 35px; }
-        .related-tools h2 { font-size: 24px; margin-bottom: 20px; text-align: center; }
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px;
-        }
-        .tool-card {
-            background: var(--bg-card);
-            border-radius: 14px;
-            padding: 20px;
-            text-decoration: none;
-            color: var(--text-light);
-            transition: all 0.3s;
-            border: 1px solid var(--border);
-        }
-        .tool-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--primary);
-            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.2);
-        }
-        .tool-card-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            margin-bottom: 12px;
-        }
-        .tool-card h4 { font-size: 14px; margin-bottom: 6px; }
-        .tool-card p { font-size: 12px; color: var(--text-muted); }
-
-        .site-footer {
-            background: var(--bg-card);
-            border-top: 1px solid var(--border);
-            padding: 40px 20px 25px;
-            margin-top: 50px;
-        }
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 30px;
-        }
-        .footer-section h4 { font-size: 14px; margin-bottom: 15px; color: var(--text-light); }
-        .footer-section a {
-            display: block;
-            color: var(--text-muted);
-            text-decoration: none;
-            padding: 6px 0;
-            font-size: 13px;
-        }
-        .footer-section a:hover { color: var(--primary); }
-        .footer-bottom {
-            max-width: 1200px;
-            margin: 30px auto 0;
-            padding-top: 25px;
-            border-top: 1px solid var(--border);
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-        .footer-bottom a { color: var(--primary); text-decoration: none; }
-
-        .tools-promo { display: none; }
-        .cta-section { display: none; }
+        .paycheck-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+        .summary-card { background: var(--bg-input); padding: 1.5rem; border-radius: 0.75rem; text-align: center; }
+        .summary-card.highlight { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid var(--primary); }
+        .summary-label { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .summary-value { font-size: 2rem; font-weight: 700; }
+        .summary-value.success { color: var(--success); }
+        .deduction-breakdown { margin-top: 1.5rem; }
+        .deduction-breakdown h4 { color: var(--text-primary); margin-bottom: 1rem; }
+        .deduction-item { display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+        .deduction-item span:first-child { color: var(--text-secondary); }
+        .deduction-item span:last-child { color: var(--danger); }
+        .deduction-item.total { border-top: 2px solid var(--border); padding-top: 1rem; margin-top: 0.5rem; }
+        .deduction-item.total span { font-weight: 600; color: var(--text-primary); }
+        .ad-inline { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin: 2rem 0; }
+        .info-section { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .info-section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary); }
+        .info-section p, .info-section li { color: var(--text-secondary); margin-bottom: 0.75rem; }
+        .info-section ul { padding-left: 1.5rem; }
+        .related-tools { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); }
+        .related-tools h3 { margin-bottom: 1rem; color: var(--text-primary); }
+        .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+        .tool-link { display: block; padding: 1rem; background: var(--bg-input); border-radius: 0.5rem; text-decoration: none; color: var(--text-primary); }
+        .tool-link:hover { background: var(--border); transform: translateY(-2px); }
+        .ad-bottom { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin-top: 2rem; }
+        .footer { background: var(--bg-card); border-top: 1px solid var(--border); padding: 2rem; text-align: center; margin-top: 3rem; }
+        .footer p { color: var(--text-secondary); font-size: 0.9rem; }
+        @media (max-width: 968px) { .sidebar { display: none; } .main-layout { padding: 1rem; } .paycheck-summary { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) { .ad-top { display: none; } .ad-mobile { display: block; } .hero h1 { font-size: 1.75rem; } .input-row { grid-template-columns: 1fr; } .nav-links { display: none; } }
     </style>
 </head>
 <body>
-    <header class="site-header">
-        <div class="header-container">
-            <a href="index.html" class="logo">
-                <div class="logo-icon">🧮</div>
-                WebTools Pro
-            </a>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">CalcTools</a>
             <nav class="nav-links">
-                <a href="index.html">All Tools</a>
-                <a href="bmi-calculator.html">Health</a>
-                <a href="mortgage-calculator.html">Finance</a>
+                <a href="index.html">Home</a>
+                <a href="finance-calculators.html">Finance</a>
+                <a href="health-calculators.html">Health</a>
+                <a href="home-calculators.html">Home</a>
             </nav>
         </div>
     </header>
-
     <div class="ad-top">
-        <script>
-            atOptions = {
-                'key' : 'b43e7cf5057864a264961884e1f34530',
-                'format' : 'iframe',
-                'height' : 90,
-                'width' : 728,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
     </div>
-
     <div class="ad-mobile">
-        <script>
-            atOptions = {
-                'key' : '9f6b66d433cad4c02b643bdd4b7eefc0',
-                'format' : 'iframe',
-                'height' : 50,
-                'width' : 320,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
-
-    <main class="main-layout">
-        <div class="content">
-            <section class="hero">
+    <div class="main-layout">
+        <main class="content">
+            <div class="hero">
                 <h1>Paycheck Calculator</h1>
-                <p>Calculate your paycheck. Convert hourly to salary, annual to monthly. Estimate taxes and take-home pay. Free paycheck calculator....</p>
-            </section>
-
-            <div class="calc-card">
-                
-            <div class="pay-type">
-                <button class="pay-btn active" onclick="setPayType('hourly')">Hourly</button>
-                <button class="pay-btn" onclick="setPayType('salary')">Salary</button>
+                <p>Calculate your take-home pay after taxes</p>
             </div>
-
-            <div id="hourlyInputs">
-                <div class="input-group">
-                    <label>Hourly Rate</label>
-                    <div class="input-row">
-                        <span>$</span>
-                        <input type="number" id="hourlyRate" value="25" step="0.01">
-                        <span>/hour</span>
+            <div class="calculator-card">
+                <h2 class="section-title">Income Information</h2>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Gross Pay Per Period ($)</label>
+                        <input type="number" id="grossPay" value="2500" placeholder="2500">
+                    </div>
+                    <div class="form-group">
+                        <label>Pay Frequency</label>
+                        <select id="payFrequency">
+                            <option value="weekly">Weekly</option>
+                            <option value="biweekly" selected>Bi-weekly</option>
+                            <option value="semimonthly">Semi-monthly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
                     </div>
                 </div>
-                <div class="input-group">
-                    <label>Hours Per Week</label>
-                    <input type="number" id="hoursWeek" value="40" style="width: 100%; padding: 14px; border: 3px solid #e2e8f0; border-radius: 10px; font-size: 18px; text-align: center;">
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Filing Status</label>
+                        <select id="filingStatus">
+                            <option value="single" selected>Single</option>
+                            <option value="married">Married Filing Jointly</option>
+                            <option value="head">Head of Household</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Federal Allowances</label>
+                        <input type="number" id="allowances" value="1" min="0" placeholder="1">
+                    </div>
                 </div>
-            </div>
-
-            <div id="salaryInputs" style="display: none;">
-                <div class="input-group">
-                    <label>Annual Salary</label>
-                    <div class="input-row">
-                        <span>$</span>
-                        <input type="number" id="annualSalary" value="52000" step="1000">
-                        <span>/year</span>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>State Tax Rate (%)</label>
+                        <input type="number" id="stateTax" value="5" step="0.1" placeholder="5">
+                    </div>
+                    <div class="form-group">
+                        <label>Local Tax Rate (%)</label>
+                        <input type="number" id="localTax" value="0" step="0.1" placeholder="0">
+                    </div>
+                </div>
+                <h2 class="section-title" style="margin-top:2rem">Pre-Tax Deductions</h2>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>401(k) Contribution (%)</label>
+                        <input type="number" id="retirement" value="6" step="1" placeholder="6">
+                    </div>
+                    <div class="form-group">
+                        <label>Health Insurance ($)</label>
+                        <input type="number" id="healthInsurance" value="150" placeholder="150">
+                    </div>
+                </div>
+                <button class="calculate-btn" onclick="calculate()">Calculate Paycheck</button>
+                <div class="results" id="results">
+                    <div class="paycheck-summary">
+                        <div class="summary-card">
+                            <div class="summary-label">Gross Pay</div>
+                            <div class="summary-value" id="grossPayResult">$0</div>
+                        </div>
+                        <div class="summary-card highlight">
+                            <div class="summary-label">Take-Home Pay</div>
+                            <div class="summary-value success" id="netPayResult">$0</div>
+                        </div>
+                    </div>
+                    <div class="deduction-breakdown">
+                        <h4>Deductions Breakdown</h4>
+                        <div id="deductionsList"></div>
                     </div>
                 </div>
             </div>
-
-            <div class="input-group">
-                <label>Pay Frequency</label>
-                <select id="frequency" style="width: 100%; padding: 14px; border: 3px solid #e2e8f0; border-radius: 10px; font-size: 16px;">
-                    <option value="52">Weekly</option>
-                    <option value="26" selected>Bi-weekly (every 2 weeks)</option>
-                    <option value="24">Semi-monthly (twice a month)</option>
-                    <option value="12">Monthly</option>
-                </select>
-            </div>
-
-            <div class="results">
-                <div class="result-grid">
-                    <div class="result-item">
-                        <div class="value" id="hourlyEq">$25.00</div>
-                        <div class="label">Hourly</div>
-                    </div>
-                    <div class="result-item">
-                        <div class="value" id="weeklyPay">$1,000</div>
-                        <div class="label">Weekly</div>
-                    </div>
-                    <div class="result-item">
-                        <div class="value" id="biweeklyPay">$2,000</div>
-                        <div class="label">Bi-Weekly</div>
-                    </div>
-                    <div class="result-item">
-                        <div class="value" id="monthlyPay">$4,333</div>
-                        <div class="label">Monthly</div>
-                    </div>
-                    <div class="result-item" style="grid-column: span 2;">
-                        <div class="value" id="annualPay">$52,000</div>
-                        <div class="label">Annual Gross</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tax-section">
-                <h4>Estimated Take-Home (Single, US)</h4>
-                <div class="tax-row">
-                    <span class="label">Gross Pay (per paycheck)</span>
-                    <span class="value" id="grossCheck">$2,000</span>
-                </div>
-                <div class="tax-row">
-                    <span class="label">Federal Tax (~12%)</span>
-                    <span class="value" id="fedTax">-$240</span>
-                </div>
-                <div class="tax-row">
-                    <span class="label">State Tax (~5%)</span>
-                    <span class="value" id="stateTax">-$100</span>
-                </div>
-                <div class="tax-row">
-                    <span class="label">Social Security (6.2%)</span>
-                    <span class="value" id="ssTax">-$124</span>
-                </div>
-                <div class="tax-row">
-                    <span class="label">Medicare (1.45%)</span>
-                    <span class="value" id="medTax">-$29</span>
-                </div>
-                <div class="tax-row total">
-                    <span class="label">Take-Home Pay</span>
-                    <span class="value" id="takeHome">$1,507</span>
-                </div>
-            </div>
-        
-            </div>
-
             <div class="ad-inline">
-                <script>
-            atOptions = {
-                'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
-                'format' : 'iframe',
-                'height' : 250,
-                'width' : 300,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
             </div>
-
-            <section class="info-section">
-                <h2>About This Tool</h2>
-                <p>Calculate your paycheck. Convert hourly to salary, annual to monthly. Estimate taxes and take-home pay. Free paycheck calculator.</p>
-                <p>This free online calculator provides instant, accurate results. No signup required - just enter your values and get your answer immediately.</p>
-            </section>
-
-            <section class="related-tools">
-                <h2>Related Tools</h2>
-                <div class="tools-grid">
-                    <a href="percentage-calc.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Percentage Calculator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                    <a href="average-calculator.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Average Calculatorulator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                    <a href="fraction-calculator.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Fraction Calculatorulator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                    <a href="scientific-calculator.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Scientific Calculatorulator</h4>
-                        <p>Free online tool</p>
-                    </a>
+            <div class="info-section">
+                <h2>Understanding Your Paycheck</h2>
+                <p>Your paycheck includes several mandatory deductions:</p>
+                <ul>
+                    <li><strong>Federal Income Tax:</strong> Based on your income and filing status</li>
+                    <li><strong>Social Security:</strong> 6.2% of gross pay (up to $160,200 in 2023)</li>
+                    <li><strong>Medicare:</strong> 1.45% of all earnings</li>
+                    <li><strong>State & Local Taxes:</strong> Varies by location</li>
+                    <li><strong>Pre-tax Deductions:</strong> Reduce taxable income (401k, health insurance)</li>
+                </ul>
+            </div>
+            <div class="related-tools">
+                <h3>Related Calculators</h3>
+                <div class="tool-grid">
+                    <a href="salary-to-hourly-calculator.html" class="tool-link">Salary to Hourly</a>
+                    <a href="tax-bracket-calculator.html" class="tool-link">Tax Bracket</a>
+                    <a href="401k-calculator.html" class="tool-link">401(k) Calculator</a>
+                    <a href="overtime-calculator.html" class="tool-link">Overtime Calculator</a>
+                    <a href="budget-calculator.html" class="tool-link">Budget Calculator</a>
+                    <a href="debt-to-income-calculator.html" class="tool-link">Debt-to-Income</a>
                 </div>
-            </section>
-
+            </div>
             <div class="ad-bottom">
-                <script>
-            atOptions = {
-                'key' : 'bca56f01884f1cf07c196213009e77ac',
-                'format' : 'iframe',
-                'height' : 60,
-                'width' : 468,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
+                <script type="text/javascript">atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
             </div>
-        </div>
-
+        </main>
         <aside class="sidebar">
-            <div class="sidebar-ad">
-                <script>
-            atOptions = {
-                'key' : 'd4702b3e9743f9cd914a00e5026493f3',
-                'format' : 'iframe',
-                'height' : 600,
-                'width' : 160,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            <div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
             </div>
-            <div class="sidebar-ad">
-                <script>
-            atOptions = {
-                'key' : '8398a480b05e8a3236f9ea561b7cab1a',
-                'format' : 'iframe',
-                'height' : 300,
-                'width' : 160,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
-            </div>
-            <div class="sidebar-tools">
-                <h3>Popular Tools</h3>
-                <a href="bmi-calculator.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #ef4444, #dc2626);">🏃</div>
-                    BMI Calculator
-                </a>
-                <a href="mortgage-calculator.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #1e40af, #1d4ed8);">🏠</div>
-                    Mortgage Calculator
-                </a>
-                <a href="percentage-calc.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #16a34a, #15803d);">%</div>
-                    Percentage Calculator
-                </a>
-                <a href="age-calculator.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #ec4899, #be185d);">📅</div>
-                    Age Calculator
-                </a>
+            <div>
+                <script type="text/javascript">atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
             </div>
         </aside>
-    </main>
-
-    <footer class="site-footer">
-        <div class="footer-container">
-            <div class="footer-section">
-                <h4>Financial Tools</h4>
-                <a href="mortgage-calculator.html">Mortgage Calculator</a>
-                <a href="loan-calculator.html">Loan Calculator</a>
-                <a href="compound-interest-calculator.html">Compound Interest</a>
-                <a href="retirement-calculator.html">Retirement Calculator</a>
-            </div>
-            <div class="footer-section">
-                <h4>Health Tools</h4>
-                <a href="bmi-calculator.html">BMI Calculator</a>
-                <a href="calorie-calculator.html">Calorie Calculator</a>
-                <a href="body-fat-calculator.html">Body Fat Calculator</a>
-                <a href="water-intake-calculator.html">Water Intake</a>
-            </div>
-            <div class="footer-section">
-                <h4>Math Tools</h4>
-                <a href="percentage-calc.html">Percentage Calculator</a>
-                <a href="average-calculator.html">Average Calculator</a>
-                <a href="fraction-calculator.html">Fraction Calculator</a>
-                <a href="scientific-calculator.html">Scientific Calculator</a>
-            </div>
-            <div class="footer-section">
-                <h4>Converters</h4>
-                <a href="unit-converter.html">Unit Converter</a>
-                <a href="temperature-converter.html">Temperature</a>
-                <a href="currency-converter.html">Currency Converter</a>
-                <a href="timezone-converter.html">Time Zone</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 WebTools Pro. Free calculators & tools. | <a href="index.html">All 360+ Tools</a></p>
-        </div>
-    </footer>
-
-    <script>
-        atOptions = {'key':'9f6b66d433cad4c02b643bdd4b7eefc0','format':'iframe','height':50,'width':320,'params':{}};            </script><script src="https://www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script></div>
-
-        <div class="calc-card">
-            <div class="pay-type">
-                <button class="pay-btn active" onclick="setPayType('hourly')">Hourly</button>
-                <button class="pay-btn" onclick="setPayType('salary')">Salary</button>
-            </div>
-
-            <div id="hourlyInputs">
-                <div class="input-group">
-                    <label>Hourly Rate</label>
-                    <div class="input-row">
-                        <span>$</span>
-                        <input type="number" id="hourlyRate" value="25" step="0.01">
-                        <span>/hour</span>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label>Hours Per Week</label>
-                    <input type="number" id="hoursWeek" value="40" style="width: 100%; padding: 14px; border: 3px solid #e2e8f0; border-radius: 10px; font-size: 18px; text-align: center;">
-                </div>
-            </div>
-
-            <div id="salaryInputs" style="display: none;">
-                <div class="input-group">
-                    <label>Annual Salary</label>
-                    <div class="input-row">
-                        <span>$</span>
-                        <input type="number" id="annualSalary" value="52000" step="1000">
-                        <span>/year</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label>Pay Frequency</label>
-                <select id="frequency" style="width: 100%; padding: 14px; border: 3px solid #e2e8f0; border-radius: 10px; font-size: 16px;">
-                    <option value="52">Weekly</option>
-                    <option value="26" selected>Bi-weekly (every 2 weeks)</option>
-                    <option value="24">Semi-monthly (twice a month)</option>
-                    <option value="12">Monthly</option>
-                </select>
-            </div>
-
-            <div class="results">
-                <div class="result-grid">
-                    <div class="result-item">
-                        <div class="value" id="hourlyEq">$25.00</div>
-                        <div class="label">Hourly</div>
-                    </div>
-                    <div class="result-item">
-                        <div class="value" id="weeklyPay">$1,000</div>
-                        <div class="label">Weekly</div>
-                    </div>
-                    <div class="result-item">
-                        <div class="value" id="biweeklyPay">$2,000</div>
-                        <div class="label">Bi-Weekly</div>
-                    </div>
-                    <div class="result-item">
-                        <div class="value" id="monthlyPay">$4,333</div>
-                        <div class="label">Monthly</div>
-                    </div>
-                    <div class="result-item" style="grid-column: span 2;">
-                        <div class="value" id="annualPay">$52,000</div>
-                        <div class="label">Annual Gross</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tax-section">
-                <h4>Estimated Take-Home (Single, US)</h4>
-                <div class="tax-row">
-                    <span class="label">Gross Pay (per paycheck)</span>
-                    <span class="value" id="grossCheck">$2,000</span>
-                </div>
-                <div class="tax-row">
-                    <span class="label">Federal Tax (~12%)</span>
-                    <span class="value" id="fedTax">-$240</span>
-                </div>
-                <div class="tax-row">
-                    <span class="label">State Tax (~5%)</span>
-                    <span class="value" id="stateTax">-$100</span>
-                </div>
-                <div class="tax-row">
-                    <span class="label">Social Security (6.2%)</span>
-                    <span class="value" id="ssTax">-$124</span>
-                </div>
-                <div class="tax-row">
-                    <span class="label">Medicare (1.45%)</span>
-                    <span class="value" id="medTax">-$29</span>
-                </div>
-                <div class="tax-row total">
-                    <span class="label">Take-Home Pay</span>
-                    <span class="value" id="takeHome">$1,507</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="ad-container" style="text-align: center; margin: 25px 0;">
-            <script>
-                atOptions = {
-                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
-                    'format' : 'iframe',
-                    'height' : 250,
-                    'width' : 300,
-                    'params' : {}
-                };
-            </script>
-            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
-        </div>
-
-        <div class="ad-sidebar" style="text-align:center;margin:15px 0;"><script>atOptions = {'key':'8398a480b05e8a3236f9ea561b7cab1a','format':'iframe','height':300,'width':160,'params':{}};            </script><script src="https://www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script></div>
-
-        <div class="tools-promo">
-            <h4>More Finance Tools</h4>
-            <a href="loan-calculator.html">Loan Calculator</a>
-            <a href="sales-tax.html">Sales Tax</a>
-            <a href="tip-calculator.html">Tip Calculator</a>
-            <a href="index.html">View All 60+ Tools</a>
-        </div>
     </div>
-
-    <footer>
-        <p>Paycheck Calculator by WebAudit Pro</p>
-        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    <footer class="footer">
+        <p>&copy; 2024 CalcTools. Free online calculators for everyone.</p>
     </footer>
-
     <script>
-        let payType = 'hourly';
-
-        function setPayType(type) {
-            payType = type;
-            document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-            document.getElementById('hourlyInputs').style.display = type === 'hourly' ? 'block' : 'none';
-            document.getElementById('salaryInputs').style.display = type === 'salary' ? 'block' : 'none';
-            calculate();
+        function formatCurrency(num) {
+            return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
-
         function calculate() {
-            let annualGross;
-
-            if (payType === 'hourly') {
-                const rate = parseFloat(document.getElementById('hourlyRate').value) || 0;
-                const hours = parseFloat(document.getElementById('hoursWeek').value) || 40;
-                annualGross = rate * hours * 52;
-            } else {
-                annualGross = parseFloat(document.getElementById('annualSalary').value) || 0;
+            const grossPay = parseFloat(document.getElementById('grossPay').value) || 0;
+            const payFrequency = document.getElementById('payFrequency').value;
+            const filingStatus = document.getElementById('filingStatus').value;
+            const allowances = parseInt(document.getElementById('allowances').value) || 0;
+            const stateTaxRate = parseFloat(document.getElementById('stateTax').value) / 100 || 0;
+            const localTaxRate = parseFloat(document.getElementById('localTax').value) / 100 || 0;
+            const retirementPct = parseFloat(document.getElementById('retirement').value) / 100 || 0;
+            const healthInsurance = parseFloat(document.getElementById('healthInsurance').value) || 0;
+            const periodsPerYear = { weekly: 52, biweekly: 26, semimonthly: 24, monthly: 12 };
+            const periods = periodsPerYear[payFrequency];
+            const retirementDeduction = grossPay * retirementPct;
+            const taxableGross = grossPay - retirementDeduction - healthInsurance;
+            const annualTaxable = taxableGross * periods;
+            const allowanceValue = 4300;
+            const adjustedAnnual = Math.max(0, annualTaxable - (allowances * allowanceValue));
+            let federalTax = 0;
+            const brackets = filingStatus === 'single' ? 
+                [[11000, 0.10], [44725, 0.12], [95375, 0.22], [182100, 0.24], [231250, 0.32], [578125, 0.35], [Infinity, 0.37]] :
+                [[22000, 0.10], [89450, 0.12], [190750, 0.22], [364200, 0.24], [462500, 0.32], [693750, 0.35], [Infinity, 0.37]];
+            let remaining = adjustedAnnual;
+            let prevBracket = 0;
+            for (const [limit, rate] of brackets) {
+                const taxable = Math.min(remaining, limit - prevBracket);
+                federalTax += taxable * rate;
+                remaining -= taxable;
+                prevBracket = limit;
+                if (remaining <= 0) break;
             }
-
-            const frequency = parseInt(document.getElementById('frequency').value);
-            const perPaycheck = annualGross / frequency;
-            const weekly = annualGross / 52;
-            const hourly = weekly / 40;
-
-            document.getElementById('hourlyEq').textContent = '$' + hourly.toFixed(2);
-            document.getElementById('weeklyPay').textContent = '$' + weekly.toLocaleString('en-US', {maximumFractionDigits: 0});
-            document.getElementById('biweeklyPay').textContent = '$' + (annualGross / 26).toLocaleString('en-US', {maximumFractionDigits: 0});
-            document.getElementById('monthlyPay').textContent = '$' + (annualGross / 12).toLocaleString('en-US', {maximumFractionDigits: 0});
-            document.getElementById('annualPay').textContent = '$' + annualGross.toLocaleString('en-US', {maximumFractionDigits: 0});
-
-            // Tax estimates
-            const fedRate = annualGross > 89075 ? 0.22 : (annualGross > 41775 ? 0.12 : 0.10);
-            const stateRate = 0.05;
-            const ssRate = 0.062;
-            const medRate = 0.0145;
-
-            const fed = perPaycheck * fedRate;
-            const state = perPaycheck * stateRate;
-            const ss = perPaycheck * ssRate;
-            const med = perPaycheck * medRate;
-            const takeHome = perPaycheck - fed - state - ss - med;
-
-            document.getElementById('grossCheck').textContent = '$' + perPaycheck.toLocaleString('en-US', {maximumFractionDigits: 0});
-            document.getElementById('fedTax').textContent = '-$' + fed.toFixed(0);
-            document.getElementById('stateTax').textContent = '-$' + state.toFixed(0);
-            document.getElementById('ssTax').textContent = '-$' + ss.toFixed(0);
-            document.getElementById('medTax').textContent = '-$' + med.toFixed(0);
-            document.getElementById('takeHome').textContent = '$' + takeHome.toLocaleString('en-US', {maximumFractionDigits: 0});
+            const federalTaxPeriod = federalTax / periods;
+            const socialSecurity = grossPay * 0.062;
+            const medicare = grossPay * 0.0145;
+            const stateTax = taxableGross * stateTaxRate;
+            const localTax = taxableGross * localTaxRate;
+            const totalDeductions = federalTaxPeriod + socialSecurity + medicare + stateTax + localTax + retirementDeduction + healthInsurance;
+            const netPay = grossPay - totalDeductions;
+            document.getElementById('grossPayResult').textContent = formatCurrency(grossPay);
+            document.getElementById('netPayResult').textContent = formatCurrency(netPay);
+            let deductionsHTML = '';
+            deductionsHTML += '<div class="deduction-item"><span>Federal Income Tax</span><span>-' + formatCurrency(federalTaxPeriod) + '</span></div>';
+            deductionsHTML += '<div class="deduction-item"><span>Social Security (6.2%)</span><span>-' + formatCurrency(socialSecurity) + '</span></div>';
+            deductionsHTML += '<div class="deduction-item"><span>Medicare (1.45%)</span><span>-' + formatCurrency(medicare) + '</span></div>';
+            if (stateTax > 0) deductionsHTML += '<div class="deduction-item"><span>State Tax</span><span>-' + formatCurrency(stateTax) + '</span></div>';
+            if (localTax > 0) deductionsHTML += '<div class="deduction-item"><span>Local Tax</span><span>-' + formatCurrency(localTax) + '</span></div>';
+            if (retirementDeduction > 0) deductionsHTML += '<div class="deduction-item"><span>401(k) Contribution</span><span>-' + formatCurrency(retirementDeduction) + '</span></div>';
+            if (healthInsurance > 0) deductionsHTML += '<div class="deduction-item"><span>Health Insurance</span><span>-' + formatCurrency(healthInsurance) + '</span></div>';
+            deductionsHTML += '<div class="deduction-item total"><span>Total Deductions</span><span>-' + formatCurrency(totalDeductions) + '</span></div>';
+            document.getElementById('deductionsList').innerHTML = deductionsHTML;
+            document.getElementById('results').classList.add('show');
         }
-
-        document.querySelectorAll('input, select').forEach(el => {
-            el.addEventListener('input', calculate);
-            el.addEventListener('change', calculate);
-        });
-
         calculate();
-    
     </script>
 </body>
 </html>
