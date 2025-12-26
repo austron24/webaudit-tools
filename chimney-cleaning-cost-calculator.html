@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chimney Cleaning Cost Calculator - Chimney Sweep Prices 2025</title>
+    <meta name="description" content="Calculate chimney cleaning and sweep costs. Estimate inspection, cleaning, and repair prices for fireplace chimneys.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #dc2626 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group { margin-bottom: 15px; }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #dc2626;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #fee2e2;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type { font-size: 12px; color: #64748b; margin-bottom: 5px; }
+        .compare-item .value { font-size: 22px; font-weight: bold; color: #dc2626; }
+        .compare-item .note { font-size: 11px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 { color: #dc2626; margin-bottom: 15px; font-size: 14px; }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #dc2626; }
+        .pricing {
+            background: #fee2e2;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 { color: #dc2626; margin-bottom: 15px; font-size: 14px; }
+        .pricing table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #fca5a5;
+        }
+        .pricing th { color: #dc2626; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 { color: #dc2626; margin-bottom: 15px; font-size: 14px; }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #dc2626; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #dc2626;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fca5a5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔥 Chimney Cleaning Cost</h1>
+            <p class="subtitle">Chimney sweep and inspection prices</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group full">
+                    <label>Service Type</label>
+                    <select id="service" onchange="calculate()">
+                        <option value="cleaning" selected>Cleaning Only</option>
+                        <option value="inspection">Inspection (Level 1)</option>
+                        <option value="both">Cleaning + Inspection</option>
+                        <option value="level2">Level 2 Inspection (camera)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Chimney Type</label>
+                    <select id="type" onchange="calculate()">
+                        <option value="masonry" selected>Masonry/Brick</option>
+                        <option value="prefab">Prefab/Metal</option>
+                        <option value="woodstove">Wood Stove</option>
+                        <option value="pellet">Pellet Stove</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Stories/Height</label>
+                    <select id="height" onchange="calculate()">
+                        <option value="1">1 Story</option>
+                        <option value="2" selected>2 Story</option>
+                        <option value="3">3+ Story</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Additional Work</label>
+                    <select id="extras" onchange="calculate()">
+                        <option value="none" selected>None</option>
+                        <option value="cap">Chimney Cap Install</option>
+                        <option value="damper">Damper Repair</option>
+                        <option value="liner">Liner Inspection</option>
+                        <option value="creosote">Heavy Creosote Removal</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Total Cost</div>
+                <div class="value" id="totalCost">$150-250</div>
+                <div class="sub" id="frequency">Recommended annually</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Base Service</div>
+                    <div class="value" id="baseCost">$150</div>
+                    <div class="note">Sweep/inspect</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Add-ons</div>
+                    <div class="value" id="extrasCost">$0</div>
+                    <div class="note">Extra work</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Height Fee</div>
+                    <div class="value" id="heightCost">$0</div>
+                    <div class="note">If applicable</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Time</div>
+                    <div class="value" id="timeline">45-90 min</div>
+                    <div class="note">On-site</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Cost Breakdown</h4>
+                <div class="break-row">
+                    <span>Basic Cleaning</span>
+                    <span class="value" id="cleanBreak">$150</span>
+                </div>
+                <div class="break-row">
+                    <span>Inspection</span>
+                    <span class="value" id="inspectBreak">$0</span>
+                </div>
+                <div class="break-row">
+                    <span>Height Premium</span>
+                    <span class="value" id="heightBreak">$0</span>
+                </div>
+                <div class="break-row">
+                    <span>Additional Work</span>
+                    <span class="value" id="extrasBreak">$0</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Chimney Service Costs</h4>
+                <table>
+                    <tr><th>Service</th><th>Price Range</th></tr>
+                    <tr><td>Basic Cleaning</td><td>$125-250</td></tr>
+                    <tr><td>Level 1 Inspection</td><td>$75-125</td></tr>
+                    <tr><td>Level 2 Inspection</td><td>$150-500</td></tr>
+                    <tr><td>Chimney Cap Install</td><td>$150-400</td></tr>
+                    <tr><td>Damper Repair</td><td>$200-400</td></tr>
+                    <tr><td>Liner Replacement</td><td>$1,500-4,000</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Chimney Maintenance Tips</h4>
+                <div class="tip-item">✓ Clean annually or after every cord of wood</div>
+                <div class="tip-item">✓ Schedule before heating season</div>
+                <div class="tip-item">✓ CSIA certified sweeps recommended</div>
+                <div class="tip-item">✓ Creosote buildup is a fire hazard</div>
+                <div class="tip-item">✓ Level 2 inspection when buying/selling</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Tools</h4>
+            <a href="hvac-replacement-calculator.html">HVAC Cost</a>
+            <a href="home-inspection-cost-calculator.html">Home Inspection</a>
+            <a href="new-roof-cost-calculator.html">Roof Cost</a>
+            <a href="index.html">View All 235+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Chimney Cleaning Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const service = document.getElementById('service').value;
+            const type = document.getElementById('type').value;
+            const height = document.getElementById('height').value;
+            const extras = document.getElementById('extras').value;
+
+            // Base costs by service
+            const serviceCosts = {
+                cleaning: { clean: 175, inspect: 0 },
+                inspection: { clean: 0, inspect: 100 },
+                both: { clean: 150, inspect: 75 },
+                level2: { clean: 0, inspect: 350 }
+            };
+
+            let cleanCost = serviceCosts[service].clean;
+            let inspectCost = serviceCosts[service].inspect;
+
+            // Type adjustment
+            const typeMult = { masonry: 1.0, prefab: 0.85, woodstove: 0.75, pellet: 0.7 };
+            cleanCost *= typeMult[type];
+
+            // Height fee
+            let heightFee = 0;
+            if (height === '2') heightFee = 25;
+            else if (height === '3') heightFee = 75;
+
+            // Extras
+            const extrasCosts = {
+                none: 0,
+                cap: 250,
+                damper: 300,
+                liner: 150,
+                creosote: 100
+            };
+            const extrasCost = extrasCosts[extras];
+
+            const totalMid = Math.round(cleanCost + inspectCost + heightFee + extrasCost);
+            const totalLow = Math.round(totalMid * 0.85);
+            const totalHigh = Math.round(totalMid * 1.2);
+
+            // Timeline
+            let timeline = service === 'level2' ? '1.5-2 hrs' : '45-90 min';
+            if (extras !== 'none') timeline = '1-2 hrs';
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + totalLow + '-' + totalHigh;
+            document.getElementById('frequency').textContent = 'Recommended annually';
+
+            document.getElementById('baseCost').textContent = '$' + Math.round(cleanCost + inspectCost);
+            document.getElementById('extrasCost').textContent = extrasCost > 0 ? '$' + extrasCost : '$0';
+            document.getElementById('heightCost').textContent = heightFee > 0 ? '$' + heightFee : '$0';
+            document.getElementById('timeline').textContent = timeline;
+
+            document.getElementById('cleanBreak').textContent = cleanCost > 0 ? '$' + Math.round(cleanCost) : 'N/A';
+            document.getElementById('inspectBreak').textContent = inspectCost > 0 ? '$' + Math.round(inspectCost) : 'N/A';
+            document.getElementById('heightBreak').textContent = heightFee > 0 ? '$' + heightFee : '$0';
+            document.getElementById('extrasBreak').textContent = extrasCost > 0 ? '$' + extrasCost : '$0';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

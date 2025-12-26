@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appliance Repair Cost Calculator - Service Prices 2025</title>
+    <meta name="description" content="Calculate appliance repair costs. Estimate repair prices for refrigerators, washers, dryers, dishwashers, and ovens.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #6366f1 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group { margin-bottom: 15px; }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #eef2ff;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type { font-size: 12px; color: #64748b; margin-bottom: 5px; }
+        .compare-item .value { font-size: 22px; font-weight: bold; color: #4f46e5; }
+        .compare-item .note { font-size: 11px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 { color: #4f46e5; margin-bottom: 15px; font-size: 14px; }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #4f46e5; }
+        .pricing {
+            background: #eef2ff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 { color: #4f46e5; margin-bottom: 15px; font-size: 14px; }
+        .pricing table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #c7d2fe;
+        }
+        .pricing th { color: #4f46e5; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 { color: #4f46e5; margin-bottom: 15px; font-size: 14px; }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #4f46e5; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #6366f1;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #a5b4fc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔧 Appliance Repair Cost</h1>
+            <p class="subtitle">Service call and repair estimates</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group full">
+                    <label>Appliance Type</label>
+                    <select id="appliance" onchange="calculate()">
+                        <option value="refrigerator">Refrigerator</option>
+                        <option value="washer" selected>Washing Machine</option>
+                        <option value="dryer">Dryer</option>
+                        <option value="dishwasher">Dishwasher</option>
+                        <option value="oven">Oven/Range</option>
+                        <option value="microwave">Microwave</option>
+                        <option value="garbage">Garbage Disposal</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Repair Type</label>
+                    <select id="repair" onchange="calculate()">
+                        <option value="diagnostic">Diagnostic Only</option>
+                        <option value="minor" selected>Minor Repair</option>
+                        <option value="major">Major Repair</option>
+                        <option value="parts">Parts Replacement</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Appliance Age</label>
+                    <select id="age" onchange="calculate()">
+                        <option value="new">Under 5 years</option>
+                        <option value="mid" selected>5-10 years</option>
+                        <option value="old">Over 10 years</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Service Urgency</label>
+                    <select id="urgency" onchange="calculate()">
+                        <option value="standard" selected>Standard (next available)</option>
+                        <option value="sameday">Same Day</option>
+                        <option value="emergency">Emergency/Weekend</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Repair Cost</div>
+                <div class="value" id="totalCost">$150-250</div>
+                <div class="sub" id="recommendation">Repair recommended</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Service Call</div>
+                    <div class="value" id="serviceFee">$75-100</div>
+                    <div class="note">Diagnostic fee</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Labor</div>
+                    <div class="value" id="laborCost">$50-100</div>
+                    <div class="note">Per hour</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Parts</div>
+                    <div class="value" id="partsCost">$25-50</div>
+                    <div class="note">Estimated</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Replace Cost</div>
+                    <div class="value" id="replaceCost">$800+</div>
+                    <div class="note">New appliance</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Cost Breakdown</h4>
+                <div class="break-row">
+                    <span>Service/Diagnostic Fee</span>
+                    <span class="value" id="diagBreak">$85</span>
+                </div>
+                <div class="break-row">
+                    <span>Labor (estimated hours)</span>
+                    <span class="value" id="laborBreak">$100</span>
+                </div>
+                <div class="break-row">
+                    <span>Parts (if needed)</span>
+                    <span class="value" id="partsBreak">$50</span>
+                </div>
+                <div class="break-row">
+                    <span>Urgency Premium</span>
+                    <span class="value" id="urgencyBreak">$0</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Average Repair Costs by Appliance</h4>
+                <table>
+                    <tr><th>Appliance</th><th>Avg Repair</th><th>Replace</th></tr>
+                    <tr><td>Refrigerator</td><td>$200-400</td><td>$1,200+</td></tr>
+                    <tr><td>Washer</td><td>$150-300</td><td>$800+</td></tr>
+                    <tr><td>Dryer</td><td>$100-250</td><td>$700+</td></tr>
+                    <tr><td>Dishwasher</td><td>$150-300</td><td>$600+</td></tr>
+                    <tr><td>Oven/Range</td><td>$150-400</td><td>$1,000+</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Repair vs Replace Tips</h4>
+                <div class="tip-item">✓ 50% rule: If repair > 50% of new, replace</div>
+                <div class="tip-item">✓ Get service fee waived with repair</div>
+                <div class="tip-item">✓ Check warranty before paying</div>
+                <div class="tip-item">✓ Get 2-3 quotes for major repairs</div>
+                <div class="tip-item">✓ Consider age - 10+ years often not worth repairing</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Tools</h4>
+            <a href="hvac-replacement-calculator.html">HVAC Cost</a>
+            <a href="electrician-cost-calculator.html">Electrician Cost</a>
+            <a href="plumber-cost-calculator.html">Plumber Cost</a>
+            <a href="index.html">View All 235+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Appliance Repair Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const appliance = document.getElementById('appliance').value;
+            const repair = document.getElementById('repair').value;
+            const age = document.getElementById('age').value;
+            const urgency = document.getElementById('urgency').value;
+
+            // Base costs by appliance
+            const applianceCosts = {
+                refrigerator: { service: 95, labor: 85, parts: 120, replace: 1500 },
+                washer: { service: 85, labor: 75, parts: 80, replace: 900 },
+                dryer: { service: 80, labor: 70, parts: 60, replace: 750 },
+                dishwasher: { service: 85, labor: 75, parts: 90, replace: 700 },
+                oven: { service: 90, labor: 80, parts: 100, replace: 1200 },
+                microwave: { service: 70, labor: 50, parts: 40, replace: 300 },
+                garbage: { service: 75, labor: 60, parts: 50, replace: 400 }
+            };
+
+            const app = applianceCosts[appliance];
+
+            // Repair type multipliers
+            const repairMult = { diagnostic: 0.3, minor: 1, major: 2, parts: 1.5 };
+
+            // Calculate components
+            let serviceFee = app.service;
+            let laborCost = Math.round(app.labor * repairMult[repair]);
+            let partsCost = repair === 'diagnostic' ? 0 : Math.round(app.parts * repairMult[repair]);
+
+            // Urgency premium
+            let urgencyPremium = 0;
+            if (urgency === 'sameday') urgencyPremium = 50;
+            else if (urgency === 'emergency') urgencyPremium = 100;
+
+            // Age factor
+            if (age === 'old') {
+                partsCost = Math.round(partsCost * 1.3);
+            }
+
+            const totalMid = serviceFee + laborCost + partsCost + urgencyPremium;
+            const totalLow = Math.round(totalMid * 0.8);
+            const totalHigh = Math.round(totalMid * 1.3);
+
+            // Recommendation
+            let recommendation = 'Repair recommended';
+            if (totalMid > app.replace * 0.5) {
+                recommendation = 'Consider replacing instead';
+            }
+            if (age === 'old' && totalMid > app.replace * 0.3) {
+                recommendation = 'Replace recommended (appliance age)';
+            }
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + totalLow + '-' + totalHigh;
+            document.getElementById('recommendation').textContent = recommendation;
+
+            document.getElementById('serviceFee').textContent = '$' + serviceFee;
+            document.getElementById('laborCost').textContent = '$' + laborCost;
+            document.getElementById('partsCost').textContent = partsCost > 0 ? '$' + partsCost : 'N/A';
+            document.getElementById('replaceCost').textContent = '$' + app.replace.toLocaleString() + '+';
+
+            document.getElementById('diagBreak').textContent = '$' + serviceFee;
+            document.getElementById('laborBreak').textContent = '$' + laborCost;
+            document.getElementById('partsBreak').textContent = partsCost > 0 ? '$' + partsCost : '$0';
+            document.getElementById('urgencyBreak').textContent = urgencyPremium > 0 ? '$' + urgencyPremium : '$0';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

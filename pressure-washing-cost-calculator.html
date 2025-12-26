@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pressure Washing Cost Calculator - Power Washing Prices 2025</title>
+    <meta name="description" content="Calculate pressure washing costs. Estimate power washing prices for driveways, decks, siding, and fences.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0891b2 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group { margin-bottom: 15px; }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #0891b2;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #e0f2fe;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type { font-size: 12px; color: #64748b; margin-bottom: 5px; }
+        .compare-item .value { font-size: 22px; font-weight: bold; color: #0891b2; }
+        .compare-item .note { font-size: 11px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 { color: #0891b2; margin-bottom: 15px; font-size: 14px; }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #0891b2; }
+        .pricing {
+            background: #e0f2fe;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 { color: #0891b2; margin-bottom: 15px; font-size: 14px; }
+        .pricing table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #7dd3fc;
+        }
+        .pricing th { color: #0891b2; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 { color: #0891b2; margin-bottom: 15px; font-size: 14px; }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0891b2; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0891b2;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #7dd3fc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💦 Pressure Washing Cost</h1>
+            <p class="subtitle">Power washing service estimates</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group full">
+                    <label>Surface Type</label>
+                    <select id="surface" onchange="calculate()">
+                        <option value="driveway" selected>Driveway/Concrete</option>
+                        <option value="deck">Deck</option>
+                        <option value="siding">House Siding</option>
+                        <option value="fence">Fence</option>
+                        <option value="patio">Patio/Walkway</option>
+                        <option value="roof">Roof (soft wash)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Square Footage</label>
+                    <input type="number" id="sqft" value="600" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Condition</label>
+                    <select id="condition" onchange="calculate()">
+                        <option value="light">Light Cleaning</option>
+                        <option value="moderate" selected>Moderate Buildup</option>
+                        <option value="heavy">Heavy Staining</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Additional Services</label>
+                    <select id="extras" onchange="calculate()">
+                        <option value="none" selected>None</option>
+                        <option value="seal">Sealing After Wash</option>
+                        <option value="stain">Stain Removal Treatment</option>
+                        <option value="both">Sealing + Stain Treatment</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Total Cost</div>
+                <div class="value" id="totalCost">$150-250</div>
+                <div class="sub" id="perSqft">$0.25-0.40 per sq ft</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Base Wash</div>
+                    <div class="value" id="baseCost">$150</div>
+                    <div class="note">Pressure washing</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Extras</div>
+                    <div class="value" id="extrasCost">$0</div>
+                    <div class="note">Add-ons</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">DIY Rental</div>
+                    <div class="value" id="diyCost">$75</div>
+                    <div class="note">Equipment only</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Time</div>
+                    <div class="value" id="timeline">1-2 hrs</div>
+                    <div class="note">Professional</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Cost Breakdown</h4>
+                <div class="break-row">
+                    <span>Service Call/Minimum</span>
+                    <span class="value" id="minBreak">$100</span>
+                </div>
+                <div class="break-row">
+                    <span>Per Sq Ft Rate</span>
+                    <span class="value" id="rateBreak">$0.30</span>
+                </div>
+                <div class="break-row">
+                    <span>Condition Adjustment</span>
+                    <span class="value" id="condBreak">+$0</span>
+                </div>
+                <div class="break-row">
+                    <span>Additional Services</span>
+                    <span class="value" id="extrasBreak">$0</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Typical Pressure Washing Rates</h4>
+                <table>
+                    <tr><th>Surface</th><th>Per Sq Ft</th><th>Typical Job</th></tr>
+                    <tr><td>Driveway</td><td>$0.15-0.35</td><td>$100-250</td></tr>
+                    <tr><td>Deck</td><td>$0.25-0.50</td><td>$150-300</td></tr>
+                    <tr><td>House Siding</td><td>$0.25-0.50</td><td>$300-600</td></tr>
+                    <tr><td>Fence</td><td>$0.15-0.30</td><td>$100-200</td></tr>
+                    <tr><td>Roof (soft wash)</td><td>$0.30-0.75</td><td>$300-700</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Pressure Washing Tips</h4>
+                <div class="tip-item">✓ Most pros have $100-150 minimum charge</div>
+                <div class="tip-item">✓ Soft wash for roofs (no high pressure)</div>
+                <div class="tip-item">✓ Seal decks/concrete after washing</div>
+                <div class="tip-item">✓ Spring/fall are best times</div>
+                <div class="tip-item">✓ Bundle multiple areas for discounts</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Tools</h4>
+            <a href="deck-stain-calculator.html">Deck Stain</a>
+            <a href="driveway-paving-calculator.html">Driveway Paving</a>
+            <a href="fence-installation-cost-calculator.html">Fence Install</a>
+            <a href="index.html">View All 235+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Pressure Washing Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const surface = document.getElementById('surface').value;
+            const sqft = parseFloat(document.getElementById('sqft').value) || 600;
+            const condition = document.getElementById('condition').value;
+            const extras = document.getElementById('extras').value;
+
+            // Base rate per sq ft by surface
+            const surfaceRates = {
+                driveway: 0.25,
+                deck: 0.35,
+                siding: 0.35,
+                fence: 0.22,
+                patio: 0.28,
+                roof: 0.50
+            };
+
+            let rate = surfaceRates[surface];
+
+            // Condition adjustment
+            const condMult = { light: 0.85, moderate: 1.0, heavy: 1.3 };
+            rate *= condMult[condition];
+
+            // Minimum charge
+            const minimum = 100;
+
+            // Base calculation
+            let baseCost = Math.max(sqft * rate, minimum);
+
+            // Extras
+            let extrasCost = 0;
+            if (extras === 'seal') extrasCost = sqft * 0.20;
+            else if (extras === 'stain') extrasCost = sqft * 0.15;
+            else if (extras === 'both') extrasCost = sqft * 0.30;
+
+            const totalMid = Math.round(baseCost + extrasCost);
+            const totalLow = Math.round(totalMid * 0.85);
+            const totalHigh = Math.round(totalMid * 1.2);
+
+            // DIY rental cost
+            const diyCost = 75;
+
+            // Timeline
+            let timeline = sqft <= 500 ? '1-2 hrs' : (sqft <= 1000 ? '2-3 hrs' : '3-4 hrs');
+            if (surface === 'siding' || surface === 'roof') {
+                timeline = sqft <= 1500 ? '2-3 hrs' : '4-6 hrs';
+            }
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + totalLow + '-' + totalHigh;
+            document.getElementById('perSqft').textContent = '$' + (totalLow/sqft).toFixed(2) + '-' + (totalHigh/sqft).toFixed(2) + ' per sq ft';
+
+            document.getElementById('baseCost').textContent = '$' + Math.round(baseCost);
+            document.getElementById('extrasCost').textContent = extrasCost > 0 ? '$' + Math.round(extrasCost) : '$0';
+            document.getElementById('diyCost').textContent = '$' + diyCost;
+            document.getElementById('timeline').textContent = timeline;
+
+            document.getElementById('minBreak').textContent = '$' + minimum;
+            document.getElementById('rateBreak').textContent = '$' + rate.toFixed(2);
+            document.getElementById('condBreak').textContent = condition === 'heavy' ? '+30%' : (condition === 'light' ? '-15%' : '+$0');
+            document.getElementById('extrasBreak').textContent = extrasCost > 0 ? '$' + Math.round(extrasCost) : '$0';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
