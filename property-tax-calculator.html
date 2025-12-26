@@ -3,286 +3,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Property Tax Calculator - Estimate Your Property Taxes</title>
-    <meta name="description" content="Calculate property taxes based on home value and local tax rates. See monthly and annual property tax estimates for your area.">
+    <title>Property Tax Calculator - Estimate Annual Property Taxes</title>
+    <meta name="description" content="Free property tax calculator. Estimate your annual property taxes based on home value and local tax rates.">
+    <meta name="keywords" content="property tax calculator, real estate tax, home tax estimator, annual property tax, tax assessment">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/property-tax-calculator.html">
-    <meta property="og:title" content="Property Tax Calculator - Estimate Your Property Taxes">
-    <meta property="og:description" content="Find out how much you'll pay in property taxes for your home.">
-    <meta property="og:type" content="website">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --warning: #f59e0b; }
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; min-height: 100vh; }
-        .header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
-        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; }
-        .nav-links { display: flex; gap: 1.5rem; }
-        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; }
-        .nav-links a:hover { color: var(--primary); }
-        .ad-top { background: var(--bg-card); padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); }
-        .ad-mobile { display: none; background: var(--bg-card); padding: 0.5rem; text-align: center; }
-        .main-layout { display: flex; max-width: 1400px; margin: 0 auto; gap: 2rem; padding: 2rem; }
-        .content { flex: 1; min-width: 0; }
-        .sidebar { width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 1rem; }
-        .hero { text-align: center; margin-bottom: 2rem; }
-        .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary), #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .hero p { color: var(--text-secondary); font-size: 1.1rem; }
-        .calculator-card { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
-        .section-title { font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--primary); }
-        .form-group { margin-bottom: 1.25rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; }
-        .form-group input, .form-group select { width: 100%; padding: 0.75rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 0.5rem; color: var(--text-primary); font-size: 1rem; }
-        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
-        .input-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-        .calculate-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; border-radius: 0.5rem; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; }
-        .calculate-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
-        .results { display: none; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
-        .results.show { display: block; }
-        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-        .result-box { background: var(--bg-input); padding: 1.25rem; border-radius: 0.75rem; text-align: center; }
-        .result-box.highlight { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid var(--primary); }
-        .result-label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
-        .result-value { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
-        .state-rates { margin-top: 2rem; }
-        .state-rates h4 { color: var(--text-primary); margin-bottom: 1rem; }
-        .rate-table { width: 100%; border-collapse: collapse; }
-        .rate-table th, .rate-table td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
-        .rate-table th { color: var(--text-secondary); font-weight: 500; background: var(--bg-input); }
-        .rate-table td { color: var(--text-primary); }
-        .rate-table tr:hover { background: var(--bg-input); }
-        .effective-rate { display: flex; align-items: center; gap: 0.5rem; }
-        .rate-bar { flex: 1; height: 8px; background: var(--bg-dark); border-radius: 4px; overflow: hidden; }
-        .rate-fill { height: 100%; background: var(--primary); border-radius: 4px; }
-        .ad-inline { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin: 2rem 0; }
-        .info-section { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
-        .info-section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary); }
-        .info-section p, .info-section li { color: var(--text-secondary); margin-bottom: 0.75rem; }
-        .info-section ul { padding-left: 1.5rem; }
-        .related-tools { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); }
-        .related-tools h3 { margin-bottom: 1rem; color: var(--text-primary); }
-        .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
-        .tool-link { display: block; padding: 1rem; background: var(--bg-input); border-radius: 0.5rem; text-decoration: none; color: var(--text-primary); }
-        .tool-link:hover { background: var(--border); transform: translateY(-2px); }
-        .ad-bottom { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin-top: 2rem; }
-        .footer { background: var(--bg-card); border-top: 1px solid var(--border); padding: 2rem; text-align: center; margin-top: 3rem; }
-        .footer p { color: var(--text-secondary); font-size: 0.9rem; }
-        @media (max-width: 968px) { .sidebar { display: none; } .main-layout { padding: 1rem; } }
-        @media (max-width: 640px) { .ad-top { display: none; } .ad-mobile { display: block; } .hero h1 { font-size: 1.75rem; } .input-row { grid-template-columns: 1fr; } .nav-links { display: none; } }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
+        .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
+        .content-area { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        .result-hero { background: linear-gradient(135deg, var(--success), #059669); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.8); }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .result-value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.9rem; }
+        .breakdown { margin-top: 20px; }
+        .breakdown-item { display: flex; justify-content: space-between; padding: 15px; background: var(--bg-input); border-radius: 10px; margin-bottom: 10px; }
+        .breakdown-label { color: var(--text-secondary); }
+        .breakdown-value { font-weight: 700; color: var(--text-primary); }
+        .state-rates { margin-top: 20px; padding: 20px; background: var(--bg-input); border-radius: 12px; }
+        .rate-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
+        .rate-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
+        .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } .rate-list { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="header-content">
-            <a href="index.html" class="logo">CalcTools</a>
-            <nav class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="finance-calculators.html">Finance</a>
-                <a href="health-calculators.html">Health</a>
-                <a href="home-calculators.html">Home</a>
-            </nav>
-        </div>
-    </header>
-    <div class="ad-top">
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
         <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
-        <script src="//www.topcreativeformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
     </div>
-    <div class="ad-mobile">
+    <div class="ad-container" style="display: none;">
+        <div class="ad-label">Advertisement</div>
         <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
-        <script src="//www.topcreativeformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
-    <div class="main-layout">
-        <main class="content">
-            <div class="hero">
-                <h1>Property Tax Calculator</h1>
-                <p>Estimate your annual property taxes by state</p>
-            </div>
-            <div class="calculator-card">
-                <h2 class="section-title">Property Details</h2>
-                <div class="input-row">
+    <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
+    
+    <header class="header">
+        <h1>🏠 Property Tax Calculator</h1>
+    </header>
+
+    <div class="main-container">
+        <div class="content-area">
+            <div class="card">
+                <h2>📊 Property Details</h2>
+                <div class="form-grid">
                     <div class="form-group">
                         <label>Property Value ($)</label>
-                        <input type="number" id="propertyValue" value="400000" placeholder="400000">
+                        <input type="number" id="propertyValue" value="350000" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>State</label>
-                        <select id="state">
-                            <option value="0.99">Alabama (0.99%)</option>
-                            <option value="1.04">Alaska (1.04%)</option>
-                            <option value="0.62">Arizona (0.62%)</option>
-                            <option value="0.62">Arkansas (0.62%)</option>
-                            <option value="0.73">California (0.73%)</option>
-                            <option value="0.51">Colorado (0.51%)</option>
-                            <option value="2.14">Connecticut (2.14%)</option>
-                            <option value="0.56">Delaware (0.56%)</option>
-                            <option value="0.89">Florida (0.89%)</option>
-                            <option value="0.90">Georgia (0.90%)</option>
-                            <option value="0.28">Hawaii (0.28%)</option>
-                            <option value="0.69">Idaho (0.69%)</option>
-                            <option value="2.27">Illinois (2.27%)</option>
-                            <option value="0.85">Indiana (0.85%)</option>
-                            <option value="1.57">Iowa (1.57%)</option>
-                            <option value="1.41">Kansas (1.41%)</option>
-                            <option value="0.86">Kentucky (0.86%)</option>
-                            <option value="0.55">Louisiana (0.55%)</option>
-                            <option value="1.30">Maine (1.30%)</option>
-                            <option value="1.09">Maryland (1.09%)</option>
-                            <option value="1.23">Massachusetts (1.23%)</option>
-                            <option value="1.54">Michigan (1.54%)</option>
-                            <option value="1.12">Minnesota (1.12%)</option>
-                            <option value="0.81">Mississippi (0.81%)</option>
-                            <option value="0.97">Missouri (0.97%)</option>
-                            <option value="0.84">Montana (0.84%)</option>
-                            <option value="1.73">Nebraska (1.73%)</option>
-                            <option value="0.60">Nevada (0.60%)</option>
-                            <option value="2.18">New Hampshire (2.18%)</option>
-                            <option value="2.49" selected>New Jersey (2.49%)</option>
-                            <option value="0.80">New Mexico (0.80%)</option>
-                            <option value="1.72">New York (1.72%)</option>
-                            <option value="0.84">North Carolina (0.84%)</option>
-                            <option value="0.98">North Dakota (0.98%)</option>
-                            <option value="1.56">Ohio (1.56%)</option>
-                            <option value="0.90">Oklahoma (0.90%)</option>
-                            <option value="0.97">Oregon (0.97%)</option>
-                            <option value="1.58">Pennsylvania (1.58%)</option>
-                            <option value="1.63">Rhode Island (1.63%)</option>
-                            <option value="0.57">South Carolina (0.57%)</option>
-                            <option value="1.31">South Dakota (1.31%)</option>
-                            <option value="0.71">Tennessee (0.71%)</option>
-                            <option value="1.80">Texas (1.80%)</option>
-                            <option value="0.63">Utah (0.63%)</option>
-                            <option value="1.90">Vermont (1.90%)</option>
-                            <option value="0.82">Virginia (0.82%)</option>
-                            <option value="0.98">Washington (0.98%)</option>
-                            <option value="0.58">West Virginia (0.58%)</option>
-                            <option value="1.85">Wisconsin (1.85%)</option>
-                            <option value="0.61">Wyoming (0.61%)</option>
-                        </select>
+                        <label>Tax Rate (%)</label>
+                        <input type="number" id="taxRate" value="1.1" step="0.01" oninput="calculate()">
                     </div>
-                </div>
-                <div class="input-row">
                     <div class="form-group">
                         <label>Assessment Ratio (%)</label>
-                        <input type="number" id="assessmentRatio" value="100" placeholder="100">
+                        <input type="number" id="assessmentRatio" value="100" min="1" max="100" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Homestead Exemption ($)</label>
-                        <input type="number" id="exemption" value="0" placeholder="0">
+                        <input type="number" id="exemption" value="0" oninput="calculate()">
                     </div>
                 </div>
-                <button class="calculate-btn" onclick="calculate()">Calculate Property Tax</button>
-                <div class="results" id="results">
-                    <div class="result-grid">
-                        <div class="result-box highlight">
-                            <div class="result-label">Annual Property Tax</div>
-                            <div class="result-value" id="annualTax">$0</div>
-                        </div>
-                        <div class="result-box">
-                            <div class="result-label">Monthly Tax</div>
-                            <div class="result-value" id="monthlyTax">$0</div>
-                        </div>
-                        <div class="result-box">
-                            <div class="result-label">Effective Tax Rate</div>
-                            <div class="result-value" id="effectiveRate">0%</div>
-                        </div>
-                        <div class="result-box">
-                            <div class="result-label">Taxable Value</div>
-                            <div class="result-value" id="taxableValue">$0</div>
-                        </div>
+                
+                <div class="result-hero">
+                    <div class="result-hero-label">Annual Property Tax</div>
+                    <div class="result-hero-value" id="annualTax">$0</div>
+                </div>
+                
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-value" id="monthlyTax">$0</div>
+                        <div class="result-label">Monthly</div>
                     </div>
-                    <div class="state-rates">
-                        <h4>How Your State Compares</h4>
-                        <div id="stateComparison"></div>
+                    <div class="result-card">
+                        <div class="result-value" id="quarterlyTax">$0</div>
+                        <div class="result-label">Quarterly</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="dailyTax">$0</div>
+                        <div class="result-label">Daily</div>
+                    </div>
+                </div>
+                
+                <div class="breakdown">
+                    <h3 style="color: var(--secondary); margin-bottom: 15px;">Tax Calculation Breakdown</h3>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Market Value</span>
+                        <span class="breakdown-value" id="marketValue">$0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">× Assessment Ratio</span>
+                        <span class="breakdown-value" id="ratioDisplay">100%</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">= Assessed Value</span>
+                        <span class="breakdown-value" id="assessedValue">$0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">− Exemptions</span>
+                        <span class="breakdown-value" id="exemptionDisplay">$0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">= Taxable Value</span>
+                        <span class="breakdown-value" id="taxableValue">$0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">× Tax Rate</span>
+                        <span class="breakdown-value" id="rateDisplay">0%</span>
+                    </div>
+                    <div class="breakdown-item" style="background: var(--success); color: white;">
+                        <span class="breakdown-label" style="color: rgba(255,255,255,0.8);">= Annual Tax</span>
+                        <span class="breakdown-value" id="finalTax">$0</span>
                     </div>
                 </div>
             </div>
-            <div class="ad-inline">
+
+            <div class="card">
+                <h2>📋 State Average Tax Rates</h2>
+                <div class="state-rates">
+                    <p style="color: var(--text-secondary); margin-bottom: 10px;">Average effective property tax rates by state:</p>
+                    <div class="rate-list">
+                        <div class="rate-item"><span>New Jersey</span><span style="color: var(--accent);">2.21%</span></div>
+                        <div class="rate-item"><span>Illinois</span><span style="color: var(--accent);">2.08%</span></div>
+                        <div class="rate-item"><span>Texas</span><span style="color: var(--accent);">1.69%</span></div>
+                        <div class="rate-item"><span>Connecticut</span><span style="color: var(--accent);">1.63%</span></div>
+                        <div class="rate-item"><span>New York</span><span style="color: var(--accent);">1.40%</span></div>
+                        <div class="rate-item"><span>California</span><span style="color: var(--accent);">0.71%</span></div>
+                        <div class="rate-item"><span>Florida</span><span style="color: var(--accent);">0.83%</span></div>
+                        <div class="rate-item"><span>Hawaii</span><span style="color: var(--accent);">0.27%</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
                 <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
-                <script src="//www.topcreativeformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
             </div>
-            <div class="info-section">
-                <h2>Understanding Property Taxes</h2>
-                <p>Property taxes are local taxes based on the value of your property. They fund schools, roads, emergency services, and local government.</p>
-                <h3 style="color: var(--text-primary); margin: 1rem 0;">Key Concepts</h3>
-                <ul>
-                    <li><strong>Assessed Value:</strong> The value assigned by your local assessor (may differ from market value)</li>
-                    <li><strong>Assessment Ratio:</strong> Percentage of market value used for taxes (varies by state)</li>
-                    <li><strong>Mill Rate:</strong> Tax per $1,000 of assessed value</li>
-                    <li><strong>Homestead Exemption:</strong> Reduction for primary residences in many states</li>
-                </ul>
-            </div>
-            <div class="related-tools">
-                <h3>Related Calculators</h3>
-                <div class="tool-grid">
-                    <a href="mortgage-calculator.html" class="tool-link">Mortgage Calculator</a>
-                    <a href="home-affordability-calculator.html" class="tool-link">Home Affordability</a>
-                    <a href="closing-cost-calculator.html" class="tool-link">Closing Costs</a>
-                    <a href="home-selling-calculator.html" class="tool-link">Home Selling Costs</a>
-                    <a href="rent-vs-buy-calculator.html" class="tool-link">Rent vs Buy</a>
-                    <a href="tax-bracket-calculator.html" class="tool-link">Tax Bracket</a>
+
+            <div class="card">
+                <h2>🔗 Related Tools</h2>
+                <div class="related-tools">
+                    <a href="home-value-calculator.html" class="related-link">🏠 Home Value Calculator</a>
+                    <a href="mortgage-calculator.html" class="related-link">💰 Mortgage Calculator</a>
+                    <a href="rent-vs-buy-calculator.html" class="related-link">🏘️ Rent vs Buy</a>
+                    <a href="tax-bracket-calculator.html" class="related-link">📊 Tax Bracket Calculator</a>
                 </div>
             </div>
-            <div class="ad-bottom">
-                <script type="text/javascript">atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };</script>
-                <script src="//www.topcreativeformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
-            </div>
-        </main>
-        <aside class="sidebar">
-            <div>
+        </div>
+
+        <div class="sidebar">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
                 <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
-                <script src="//www.topcreativeformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
             </div>
-            <div>
-                <script type="text/javascript">atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };</script>
-                <script src="//www.topcreativeformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
-            </div>
-        </aside>
+        </div>
     </div>
-    <footer class="footer">
-        <p>&copy; 2024 CalcTools. Free online calculators for everyone.</p>
-    </footer>
+
     <script>
-        function formatCurrency(num) {
-            return '$' + Math.round(num).toLocaleString('en-US');
-        }
-        const stateData = [
-            { name: 'New Jersey', rate: 2.49 },
-            { name: 'Illinois', rate: 2.27 },
-            { name: 'New Hampshire', rate: 2.18 },
-            { name: 'Connecticut', rate: 2.14 },
-            { name: 'Vermont', rate: 1.90 },
-            { name: 'Wisconsin', rate: 1.85 },
-            { name: 'Texas', rate: 1.80 },
-            { name: 'Nebraska', rate: 1.73 },
-            { name: 'New York', rate: 1.72 },
-            { name: 'Rhode Island', rate: 1.63 },
-            { name: 'Hawaii', rate: 0.28 },
-            { name: 'Alabama', rate: 0.99 }
-        ];
         function calculate() {
             const propertyValue = parseFloat(document.getElementById('propertyValue').value) || 0;
-            const stateRate = parseFloat(document.getElementById('state').value) || 0;
+            const taxRate = parseFloat(document.getElementById('taxRate').value) / 100 || 0;
             const assessmentRatio = parseFloat(document.getElementById('assessmentRatio').value) / 100 || 1;
             const exemption = parseFloat(document.getElementById('exemption').value) || 0;
+            
             const assessedValue = propertyValue * assessmentRatio;
             const taxableValue = Math.max(0, assessedValue - exemption);
-            const annualTax = taxableValue * (stateRate / 100);
+            const annualTax = taxableValue * taxRate;
+            
             const monthlyTax = annualTax / 12;
-            const effectiveRate = (annualTax / propertyValue) * 100;
-            document.getElementById('annualTax').textContent = formatCurrency(annualTax);
-            document.getElementById('monthlyTax').textContent = formatCurrency(monthlyTax);
-            document.getElementById('effectiveRate').textContent = effectiveRate.toFixed(2) + '%';
-            document.getElementById('taxableValue').textContent = formatCurrency(taxableValue);
-            const maxRate = 2.5;
-            let comparisonHTML = '<table class="rate-table"><thead><tr><th>State</th><th>Effective Rate</th><th>Annual Tax</th></tr></thead><tbody>';
-            stateData.forEach(s => {
-                const tax = propertyValue * (s.rate / 100);
-                const barWidth = (s.rate / maxRate) * 100;
-                comparisonHTML += '<tr><td>' + s.name + '</td><td><div class="effective-rate"><span>' + s.rate.toFixed(2) + '%</span><div class="rate-bar"><div class="rate-fill" style="width:' + barWidth + '%"></div></div></div></td><td>' + formatCurrency(tax) + '</td></tr>';
-            });
-            comparisonHTML += '</tbody></table>';
-            document.getElementById('stateComparison').innerHTML = comparisonHTML;
-            document.getElementById('results').classList.add('show');
+            const quarterlyTax = annualTax / 4;
+            const dailyTax = annualTax / 365;
+            
+            document.getElementById('annualTax').textContent = '$' + annualTax.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('monthlyTax').textContent = '$' + monthlyTax.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('quarterlyTax').textContent = '$' + quarterlyTax.toLocaleString(undefined, {maximumFractionDigits: 0});
+            document.getElementById('dailyTax').textContent = '$' + dailyTax.toFixed(2);
+            
+            document.getElementById('marketValue').textContent = '$' + propertyValue.toLocaleString();
+            document.getElementById('ratioDisplay').textContent = (assessmentRatio * 100).toFixed(0) + '%';
+            document.getElementById('assessedValue').textContent = '$' + assessedValue.toLocaleString();
+            document.getElementById('exemptionDisplay').textContent = '$' + exemption.toLocaleString();
+            document.getElementById('taxableValue').textContent = '$' + taxableValue.toLocaleString();
+            document.getElementById('rateDisplay').textContent = (taxRate * 100).toFixed(2) + '%';
+            document.getElementById('finalTax').textContent = '$' + annualTax.toLocaleString(undefined, {maximumFractionDigits: 0});
         }
+        
         calculate();
     </script>
 </body>

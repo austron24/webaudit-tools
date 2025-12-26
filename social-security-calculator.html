@@ -3,905 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Social Security Calculator - Free Online Calculator | WebTools Pro</title>
-    <meta name="description" content="Estimate your Social Security retirement benefits. Free Social Security calculator based on earnings and retirement age.">
+    <title>Social Security Calculator - Estimate Your Benefits</title>
+    <meta name="description" content="Free Social Security calculator. Estimate your retirement benefits based on earnings history and claiming age.">
+    <meta name="keywords" content="social security calculator, retirement benefits, SSA calculator, social security estimate, retirement planning">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/social-security-calculator.html">
-    <meta property="og:title" content="Social Security Calculator - Free Online Calculator">
-    <meta property="og:description" content="Estimate your Social Security retirement benefits. Free Social Security calculator based on earnings and retirement age.">
-    <meta property="og:type" content="website">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧮</text></svg>">
     <style>
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --bg-dark: #0f172a;
-            --bg-card: #1e293b;
-            --text-light: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
-            --white: #ffffff;
-        }
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-light);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-        .site-header {
-            background: linear-gradient(135deg, var(--bg-dark), var(--bg-card));
-            border-bottom: 1px solid var(--border);
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo {
-            font-size: 22px;
-            font-weight: 700;
-            text-decoration: none;
-            color: var(--text-light);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--primary), #f59e0b);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-        .nav-links { display: flex; gap: 20px; }
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .nav-links a:hover { color: var(--text-light); }
-        @media (max-width: 600px) { .nav-links { display: none; } }
-
-        .ad-top { background: var(--bg-card); padding: 12px 0; text-align: center; border-bottom: 1px solid var(--border); }
-        .ad-mobile { display: none; text-align: center; margin: 12px auto; max-width: 320px; }
-        @media (max-width: 768px) { .ad-mobile { display: block; } }
-
-        .main-layout {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 25px 20px;
-            display: grid;
-            grid-template-columns: 1fr 280px;
-            gap: 25px;
-        }
-        @media (max-width: 900px) {
-            .main-layout { grid-template-columns: 1fr; }
-            .sidebar { display: none; }
-        }
-
-        .hero { text-align: center; margin-bottom: 25px; }
-        .hero h1 {
-            font-size: 38px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, var(--text-light), var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero p { font-size: 16px; color: var(--text-muted); max-width: 500px; margin: 0 auto; }
-        @media (max-width: 600px) { .hero h1 { font-size: 28px; } }
-
-        .calc-card {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 35px;
-            color: #1e293b;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-        @media (max-width: 600px) { .calc-card { padding: 20px; } }
-
-        .unit-toggle {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 25px;
-            background: #f1f5f9;
-            padding: 5px;
-            border-radius: 12px;
-        }
-        .unit-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            background: transparent;
-            color: #64748b;
-            transition: all 0.2s;
-        }
-        .unit-btn.active {
-            background: var(--white);
-            color: var(--primary);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .input-group { margin-bottom: 20px; }
-        .input-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: 700;
-            color: #475569;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .input-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        .input-row input, .input-group input, .input-group select {
-            flex: 1;
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.2s;
-            background: #f8fafc;
-        }
-        .input-row input:focus, .input-group input:focus, .input-group select:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: var(--white);
-        }
-        .input-row span { font-size: 13px; color: #64748b; font-weight: 600; min-width: 25px; }
-
-        .btn {
-            width: 100%;
-            padding: 16px 25px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: var(--white);
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: 8px;
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.35);
-        }
-
-        .results {
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 2px solid #e2e8f0;
-            display: none;
-        }
-        .results.show { display: block; }
-        .bmi-display, .result-main { text-align: center; margin-bottom: 25px; }
-        .bmi-value, .result-value {
-            font-size: 56px;
-            font-weight: 800;
-            color: var(--primary);
-            line-height: 1.1;
-        }
-        .bmi-category, .result-label {
-            font-size: 22px;
-            font-weight: 600;
-            margin-top: 8px;
-            color: #1e293b;
-        }
-
-        .bmi-scale, .scale-bar-container { margin: 25px 0; }
-        .bmi-scale > div:first-child, .scale-bar {
-            height: 18px;
-            background: linear-gradient(to right, #3b82f6 0%, #22c55e 25%, #eab308 55%, #f97316 75%, #ef4444 100%);
-            border-radius: 9px;
-            position: relative;
-        }
-        .bmi-marker, .scale-marker {
-            position: absolute;
-            top: -6px;
-            width: 5px;
-            height: 30px;
-            background: #1e293b;
-            border-radius: 2px;
-            transform: translateX(-50%);
-            transition: left 0.4s ease;
-        }
-        .scale-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: #64748b;
-            margin-top: 10px;
-            font-weight: 600;
-        }
-
-        .category-info, .category-table {
-            background: #f8fafc;
-            border-radius: 14px;
-            overflow: hidden;
-            margin-top: 20px;
-        }
-        .category-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 14px 20px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .category-row:last-child { border: none; }
-        .category-row.active { background: #fef2f2; }
-
-        .result-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 12px;
-            margin-top: 20px;
-        }
-        .result-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 18px;
-            text-align: center;
-        }
-        .result-item-value { font-size: 22px; font-weight: 700; color: #1e293b; }
-        .result-item-label { font-size: 11px; color: #64748b; text-transform: uppercase; margin-top: 4px; letter-spacing: 0.5px; }
-
-        .ad-inline { background: #f8fafc; border-radius: 10px; padding: 15px; margin: 25px 0; text-align: center; }
-        .ad-bottom { background: var(--bg-card); padding: 25px 15px; text-align: center; margin-top: 30px; border-radius: 14px; }
-
-        .info-section {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 30px;
-            margin-top: 30px;
-        }
-        .info-section h2 { font-size: 22px; margin-bottom: 15px; color: var(--text-light); }
-        .info-section p { color: var(--text-muted); margin-bottom: 15px; font-size: 15px; line-height: 1.7; }
-        .info-section h3 { font-size: 18px; margin: 20px 0 12px; color: var(--text-light); }
-        .info-section ul { color: var(--text-muted); margin-left: 20px; }
-        .info-section li { margin-bottom: 10px; line-height: 1.6; }
-
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
+        .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
+        .content-area { display: flex; flex-direction: column; gap: 20px; }
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .sidebar-ad { background: var(--bg-card); border-radius: 14px; padding: 15px; text-align: center; }
-        .sidebar-tools {
-            background: var(--bg-card);
-            border-radius: 14px;
-            padding: 20px;
-        }
-        .sidebar-tools h3 { font-size: 16px; margin-bottom: 15px; color: var(--text-light); }
-        .tool-link {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px;
-            border-radius: 10px;
-            text-decoration: none;
-            color: var(--text-muted);
-            transition: all 0.2s;
-            margin-bottom: 6px;
-        }
-        .tool-link:hover { background: rgba(99, 102, 241, 0.1); color: var(--text-light); }
-        .tool-icon-small {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-        }
-
-        .related-tools { margin-top: 35px; }
-        .related-tools h2 { font-size: 24px; margin-bottom: 20px; text-align: center; }
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px;
-        }
-        .tool-card {
-            background: var(--bg-card);
-            border-radius: 14px;
-            padding: 20px;
-            text-decoration: none;
-            color: var(--text-light);
-            transition: all 0.3s;
-            border: 1px solid var(--border);
-        }
-        .tool-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--primary);
-            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.2);
-        }
-        .tool-card-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            margin-bottom: 12px;
-        }
-        .tool-card h4 { font-size: 14px; margin-bottom: 6px; }
-        .tool-card p { font-size: 12px; color: var(--text-muted); }
-
-        .site-footer {
-            background: var(--bg-card);
-            border-top: 1px solid var(--border);
-            padding: 40px 20px 25px;
-            margin-top: 50px;
-        }
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 30px;
-        }
-        .footer-section h4 { font-size: 14px; margin-bottom: 15px; color: var(--text-light); }
-        .footer-section a {
-            display: block;
-            color: var(--text-muted);
-            text-decoration: none;
-            padding: 6px 0;
-            font-size: 13px;
-        }
-        .footer-section a:hover { color: var(--primary); }
-        .footer-bottom {
-            max-width: 1200px;
-            margin: 30px auto 0;
-            padding-top: 25px;
-            border-top: 1px solid var(--border);
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-        .footer-bottom a { color: var(--primary); text-decoration: none; }
-
-        .tools-promo { display: none; }
-        .cta-section { display: none; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        .result-hero { background: linear-gradient(135deg, var(--success), #059669); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.8); }
+        .claiming-ages { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .age-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .age-card:hover { transform: translateY(-2px); }
+        .age-card.selected { border: 2px solid var(--success); background: rgba(16, 185, 129, 0.2); }
+        .age-value { font-size: 1.8rem; font-weight: 800; color: var(--secondary); }
+        .age-card.selected .age-value { color: var(--success); }
+        .age-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.9rem; }
+        .age-reduction { color: var(--accent); font-size: 0.85rem; margin-top: 5px; }
+        .lifetime-comparison { margin-top: 20px; padding: 20px; background: var(--bg-input); border-radius: 12px; }
+        .comparison-bar { height: 30px; background: var(--border); border-radius: 8px; margin: 10px 0; overflow: hidden; }
+        .bar-fill { height: 100%; border-radius: 8px; transition: width 0.5s; }
+        .comparison-labels { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .annual-breakdown { margin-top: 20px; }
+        .annual-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } .claiming-ages { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <header class="site-header">
-        <div class="header-container">
-            <a href="index.html" class="logo">
-                <div class="logo-icon">🧮</div>
-                WebTools Pro
-            </a>
-            <nav class="nav-links">
-                <a href="index.html">All Tools</a>
-                <a href="bmi-calculator.html">Health</a>
-                <a href="mortgage-calculator.html">Finance</a>
-            </nav>
-        </div>
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-container" style="display: none;">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
+    
+    <header class="header">
+        <h1>🏛️ Social Security Calculator</h1>
     </header>
 
-    <div class="ad-top">
-        <script>
-            atOptions = {
-                'key' : 'b43e7cf5057864a264961884e1f34530',
-                'format' : 'iframe',
-                'height' : 90,
-                'width' : 728,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
-    </div>
-
-    <div class="ad-mobile">
-        <script>
-            atOptions = {
-                'key' : '9f6b66d433cad4c02b643bdd4b7eefc0',
-                'format' : 'iframe',
-                'height' : 50,
-                'width' : 320,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
-    </div>
-
-    <main class="main-layout">
-        <div class="content">
-            <section class="hero">
-                <h1>Social Security Calculator</h1>
-                <p>Estimate your Social Security retirement benefits. Free Social Security calculator based on earnings and retirement age....</p>
-            </section>
-
-            <div class="calc-card">
+    <div class="main-container">
+        <div class="content-area">
+            <div class="card">
+                <h2>📊 Your Information</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Current Age</label>
+                        <input type="number" id="currentAge" value="55" min="22" max="70" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Birth Year</label>
+                        <input type="number" id="birthYear" value="1970" min="1943" max="2002" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Average Annual Earnings ($)</label>
+                        <input type="number" id="avgEarnings" value="75000" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Years of Work History</label>
+                        <input type="number" id="workYears" value="30" min="10" max="45" oninput="calculate()">
+                    </div>
+                </div>
                 
-            <div class="input-grid">
-                <div class="input-group">
-                    <label>Current Age</label>
-                    <input type="number" id="currentAge" value="55" min="22" max="70" step="1" oninput="calculate()">
+                <div class="result-hero">
+                    <div class="result-hero-label">Estimated Monthly Benefit at FRA</div>
+                    <div class="result-hero-value" id="monthlyBenefit">$0</div>
                 </div>
-                <div class="input-group">
-                    <label>Retirement Age</label>
-                    <select id="retireAge" onchange="calculate()">
-                        <option value="62">62 (Early)</option>
-                        <option value="65">65</option>
-                        <option value="67" selected>67 (Full Retirement)</option>
-                        <option value="70">70 (Maximum)</option>
-                    </select>
+                
+                <h3 style="color: var(--secondary); margin: 20px 0 15px;">Claiming Age Options</h3>
+                <div class="claiming-ages">
+                    <div class="age-card" onclick="selectAge(62)">
+                        <div class="age-label">Early Retirement</div>
+                        <div class="age-value" id="benefit62">$0</div>
+                        <div class="age-label">Age 62</div>
+                        <div class="age-reduction" id="reduction62">-30%</div>
+                    </div>
+                    <div class="age-card selected" onclick="selectAge(67)">
+                        <div class="age-label">Full Retirement Age</div>
+                        <div class="age-value" id="benefit67">$0</div>
+                        <div class="age-label">Age 67</div>
+                        <div class="age-reduction">Full Benefit</div>
+                    </div>
+                    <div class="age-card" onclick="selectAge(70)">
+                        <div class="age-label">Delayed Retirement</div>
+                        <div class="age-value" id="benefit70">$0</div>
+                        <div class="age-label">Age 70</div>
+                        <div class="age-reduction" id="increase70">+24%</div>
+                    </div>
                 </div>
-                <div class="input-group full">
-                    <label>Average Annual Earnings ($)</label>
-                    <input type="number" id="earnings" value="75000" min="10000" max="500000" step="5000" oninput="calculate()">
+                
+                <div class="lifetime-comparison">
+                    <h3 style="color: var(--secondary); margin-bottom: 15px;">Lifetime Benefits Comparison (to age 85)</h3>
+                    
+                    <div class="comparison-labels">
+                        <span>Age 62</span>
+                        <span id="lifetime62">$0</span>
+                    </div>
+                    <div class="comparison-bar">
+                        <div class="bar-fill" id="bar62" style="width: 80%; background: #ef4444;"></div>
+                    </div>
+                    
+                    <div class="comparison-labels">
+                        <span>Age 67</span>
+                        <span id="lifetime67">$0</span>
+                    </div>
+                    <div class="comparison-bar">
+                        <div class="bar-fill" id="bar67" style="width: 90%; background: var(--primary);"></div>
+                    </div>
+                    
+                    <div class="comparison-labels">
+                        <span>Age 70</span>
+                        <span id="lifetime70">$0</span>
+                    </div>
+                    <div class="comparison-bar">
+                        <div class="bar-fill" id="bar70" style="width: 100%; background: var(--success);"></div>
+                    </div>
                 </div>
-                <div class="input-group full">
-                    <label>Years Worked (with SS-covered earnings)</label>
-                    <input type="number" id="yearsWorked" value="30" min="10" max="45" step="1" oninput="calculate()">
-                </div>
-            </div>
-
-            <div class="result-box">
-                <div class="label">Estimated Monthly Benefit</div>
-                <div class="value" id="monthlyBenefit">$2,430</div>
-                <div class="sub" id="annualBenefit">$29,160 per year</div>
-            </div>
-
-            <div class="compare-grid">
-                <div class="compare-item" id="age62box">
-                    <div class="age">Age 62</div>
-                    <div class="amount" id="benefit62">$1,701</div>
-                    <div class="note">30% reduction</div>
-                </div>
-                <div class="compare-item selected" id="age67box">
-                    <div class="age">Age 67 (FRA)</div>
-                    <div class="amount" id="benefit67">$2,430</div>
-                    <div class="note">Full benefit</div>
-                </div>
-                <div class="compare-item" id="age70box">
-                    <div class="age">Age 70</div>
-                    <div class="amount" id="benefit70">$3,013</div>
-                    <div class="note">24% increase</div>
-                </div>
-            </div>
-
-            <div class="breakdown">
-                <h4>📊 Calculation Details</h4>
-                <div class="break-row">
-                    <span>Average Indexed Monthly Earnings</span>
-                    <span class="value" id="aime">$5,208</span>
-                </div>
-                <div class="break-row">
-                    <span>Primary Insurance Amount (PIA)</span>
-                    <span class="value" id="pia">$2,430</span>
-                </div>
-                <div class="break-row">
-                    <span>Retirement Age Adjustment</span>
-                    <span class="value" id="adjustment">0%</span>
-                </div>
-                <div class="break-row">
-                    <span>Full Retirement Age (FRA)</span>
-                    <span class="value">67</span>
-                </div>
-            </div>
-
-            <div class="lifetime">
-                <h4>💰 Lifetime Benefits Estimate</h4>
-                <div class="lifetime-row">
-                    <span>If Retire at 62 (live to 85)</span>
-                    <span class="value" id="lifetime62">$469,476</span>
-                </div>
-                <div class="lifetime-row">
-                    <span>If Retire at 67 (live to 85)</span>
-                    <span class="value" id="lifetime67">$524,880</span>
-                </div>
-                <div class="lifetime-row">
-                    <span>If Retire at 70 (live to 85)</span>
-                    <span class="value" id="lifetime70">$542,340</span>
+                
+                <div class="annual-breakdown">
+                    <h3 style="color: var(--secondary); margin-bottom: 15px;">Annual Benefit Summary</h3>
+                    <div class="annual-item">
+                        <span>Annual Benefit at FRA</span>
+                        <span id="annualFRA">$0</span>
+                    </div>
+                    <div class="annual-item">
+                        <span>Your Full Retirement Age (FRA)</span>
+                        <span id="fraAge">67</span>
+                    </div>
+                    <div class="annual-item">
+                        <span>Maximum Benefit (Age 70)</span>
+                        <span id="maxAnnual">$0</span>
+                    </div>
+                    <div class="annual-item">
+                        <span>Early Benefit (Age 62)</span>
+                        <span id="earlyAnnual">$0</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="tips">
-                <h4>📋 Key Facts</h4>
-                <div class="tip-item">✓ Full Retirement Age (FRA) is 67 for those born 1960+</div>
-                <div class="tip-item">✓ Benefits reduced 6.67%/year if taken before FRA</div>
-                <div class="tip-item">✓ Benefits increase 8%/year if delayed past FRA (up to 70)</div>
-                <div class="tip-item">✓ SS benefits are based on highest 35 years of earnings</div>
-                <div class="tip-item">✓ Spousal benefits up to 50% of partner's PIA</div>
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
             </div>
 
-            <div class="disclaimer">
-                ⚠️ This is an estimate only. Actual benefits depend on your complete earnings history, exact birth date, and current SSA formulas. Create a my Social Security account at ssa.gov for your official estimate.
-            </div>
-        
-            </div>
-
-            <div class="ad-inline">
-                <script>
-            atOptions = {
-                'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
-                'format' : 'iframe',
-                'height' : 250,
-                'width' : 300,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
-            </div>
-
-            <section class="info-section">
-                <h2>About This Tool</h2>
-                <p>Estimate your Social Security retirement benefits. Free Social Security calculator based on earnings and retirement age.</p>
-                <p>This free online calculator provides instant, accurate results. No signup required - just enter your values and get your answer immediately.</p>
-            </section>
-
-            <section class="related-tools">
-                <h2>Related Tools</h2>
-                <div class="tools-grid">
-                    <a href="percentage-calc.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Percentage Calculator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                    <a href="average-calculator.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Average Calculatorulator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                    <a href="fraction-calculator.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Fraction Calculatorulator</h4>
-                        <p>Free online tool</p>
-                    </a>
-                    <a href="scientific-calculator.html" class="tool-card">
-                        <div class="tool-card-icon" style="background: linear-gradient(135deg, #22c55e, #22c55ecc);">🔢</div>
-                        <h4>Scientific Calculatorulator</h4>
-                        <p>Free online tool</p>
-                    </a>
+            <div class="card">
+                <h2>🔗 Related Tools</h2>
+                <div class="related-tools">
+                    <a href="retirement-calculator.html" class="related-link">💰 Retirement Calculator</a>
+                    <a href="investment-calculator.html" class="related-link">📈 Investment Calculator</a>
+                    <a href="compound-interest-calculator.html" class="related-link">💵 Compound Interest</a>
+                    <a href="life-insurance-calculator.html" class="related-link">🛡️ Life Insurance</a>
                 </div>
-            </section>
-
-            <div class="ad-bottom">
-                <script>
-            atOptions = {
-                'key' : 'bca56f01884f1cf07c196213009e77ac',
-                'format' : 'iframe',
-                'height' : 60,
-                'width' : 468,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
             </div>
         </div>
 
-        <aside class="sidebar">
-            <div class="sidebar-ad">
-                <script>
-            atOptions = {
-                'key' : 'd4702b3e9743f9cd914a00e5026493f3',
-                'format' : 'iframe',
-                'height' : 600,
-                'width' : 160,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+        <div class="sidebar">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
             </div>
-            <div class="sidebar-ad">
-                <script>
-            atOptions = {
-                'key' : '8398a480b05e8a3236f9ea561b7cab1a',
-                'format' : 'iframe',
-                'height' : 300,
-                'width' : 160,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
-            </div>
-            <div class="sidebar-tools">
-                <h3>Popular Tools</h3>
-                <a href="bmi-calculator.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #ef4444, #dc2626);">🏃</div>
-                    BMI Calculator
-                </a>
-                <a href="mortgage-calculator.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #1e40af, #1d4ed8);">🏠</div>
-                    Mortgage Calculator
-                </a>
-                <a href="percentage-calc.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #16a34a, #15803d);">%</div>
-                    Percentage Calculator
-                </a>
-                <a href="age-calculator.html" class="tool-link">
-                    <div class="tool-icon-small" style="background: linear-gradient(135deg, #ec4899, #be185d);">📅</div>
-                    Age Calculator
-                </a>
-            </div>
-        </aside>
-    </main>
-
-    <footer class="site-footer">
-        <div class="footer-container">
-            <div class="footer-section">
-                <h4>Financial Tools</h4>
-                <a href="mortgage-calculator.html">Mortgage Calculator</a>
-                <a href="loan-calculator.html">Loan Calculator</a>
-                <a href="compound-interest-calculator.html">Compound Interest</a>
-                <a href="retirement-calculator.html">Retirement Calculator</a>
-            </div>
-            <div class="footer-section">
-                <h4>Health Tools</h4>
-                <a href="bmi-calculator.html">BMI Calculator</a>
-                <a href="calorie-calculator.html">Calorie Calculator</a>
-                <a href="body-fat-calculator.html">Body Fat Calculator</a>
-                <a href="water-intake-calculator.html">Water Intake</a>
-            </div>
-            <div class="footer-section">
-                <h4>Math Tools</h4>
-                <a href="percentage-calc.html">Percentage Calculator</a>
-                <a href="average-calculator.html">Average Calculator</a>
-                <a href="fraction-calculator.html">Fraction Calculator</a>
-                <a href="scientific-calculator.html">Scientific Calculator</a>
-            </div>
-            <div class="footer-section">
-                <h4>Converters</h4>
-                <a href="unit-converter.html">Unit Converter</a>
-                <a href="temperature-converter.html">Temperature</a>
-                <a href="currency-converter.html">Currency Converter</a>
-                <a href="timezone-converter.html">Time Zone</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 WebTools Pro. Free calculators & tools. | <a href="index.html">All 360+ Tools</a></p>
-        </div>
-    </footer>
-
-    <script>
-        atOptions = {'key':'9f6b66d433cad4c02b643bdd4b7eefc0','format':'iframe','height':50,'width':320,'params':{}};            </script><script src="https://www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script></div>
-
-        <div class="calc-card">
-            <div class="input-grid">
-                <div class="input-group">
-                    <label>Current Age</label>
-                    <input type="number" id="currentAge" value="55" min="22" max="70" step="1" oninput="calculate()">
-                </div>
-                <div class="input-group">
-                    <label>Retirement Age</label>
-                    <select id="retireAge" onchange="calculate()">
-                        <option value="62">62 (Early)</option>
-                        <option value="65">65</option>
-                        <option value="67" selected>67 (Full Retirement)</option>
-                        <option value="70">70 (Maximum)</option>
-                    </select>
-                </div>
-                <div class="input-group full">
-                    <label>Average Annual Earnings ($)</label>
-                    <input type="number" id="earnings" value="75000" min="10000" max="500000" step="5000" oninput="calculate()">
-                </div>
-                <div class="input-group full">
-                    <label>Years Worked (with SS-covered earnings)</label>
-                    <input type="number" id="yearsWorked" value="30" min="10" max="45" step="1" oninput="calculate()">
-                </div>
-            </div>
-
-            <div class="result-box">
-                <div class="label">Estimated Monthly Benefit</div>
-                <div class="value" id="monthlyBenefit">$2,430</div>
-                <div class="sub" id="annualBenefit">$29,160 per year</div>
-            </div>
-
-            <div class="compare-grid">
-                <div class="compare-item" id="age62box">
-                    <div class="age">Age 62</div>
-                    <div class="amount" id="benefit62">$1,701</div>
-                    <div class="note">30% reduction</div>
-                </div>
-                <div class="compare-item selected" id="age67box">
-                    <div class="age">Age 67 (FRA)</div>
-                    <div class="amount" id="benefit67">$2,430</div>
-                    <div class="note">Full benefit</div>
-                </div>
-                <div class="compare-item" id="age70box">
-                    <div class="age">Age 70</div>
-                    <div class="amount" id="benefit70">$3,013</div>
-                    <div class="note">24% increase</div>
-                </div>
-            </div>
-
-            <div class="breakdown">
-                <h4>📊 Calculation Details</h4>
-                <div class="break-row">
-                    <span>Average Indexed Monthly Earnings</span>
-                    <span class="value" id="aime">$5,208</span>
-                </div>
-                <div class="break-row">
-                    <span>Primary Insurance Amount (PIA)</span>
-                    <span class="value" id="pia">$2,430</span>
-                </div>
-                <div class="break-row">
-                    <span>Retirement Age Adjustment</span>
-                    <span class="value" id="adjustment">0%</span>
-                </div>
-                <div class="break-row">
-                    <span>Full Retirement Age (FRA)</span>
-                    <span class="value">67</span>
-                </div>
-            </div>
-
-            <div class="lifetime">
-                <h4>💰 Lifetime Benefits Estimate</h4>
-                <div class="lifetime-row">
-                    <span>If Retire at 62 (live to 85)</span>
-                    <span class="value" id="lifetime62">$469,476</span>
-                </div>
-                <div class="lifetime-row">
-                    <span>If Retire at 67 (live to 85)</span>
-                    <span class="value" id="lifetime67">$524,880</span>
-                </div>
-                <div class="lifetime-row">
-                    <span>If Retire at 70 (live to 85)</span>
-                    <span class="value" id="lifetime70">$542,340</span>
-                </div>
-            </div>
-
-            <div class="tips">
-                <h4>📋 Key Facts</h4>
-                <div class="tip-item">✓ Full Retirement Age (FRA) is 67 for those born 1960+</div>
-                <div class="tip-item">✓ Benefits reduced 6.67%/year if taken before FRA</div>
-                <div class="tip-item">✓ Benefits increase 8%/year if delayed past FRA (up to 70)</div>
-                <div class="tip-item">✓ SS benefits are based on highest 35 years of earnings</div>
-                <div class="tip-item">✓ Spousal benefits up to 50% of partner's PIA</div>
-            </div>
-
-            <div class="disclaimer">
-                ⚠️ This is an estimate only. Actual benefits depend on your complete earnings history, exact birth date, and current SSA formulas. Create a my Social Security account at ssa.gov for your official estimate.
-            </div>
-        </div>
-
-        <div class="ad-container" style="text-align: center; margin: 25px 0;">
-            <script>
-                atOptions = {
-                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
-                    'format' : 'iframe',
-                    'height' : 250,
-                    'width' : 300,
-                    'params' : {}
-                };
-            </script>
-            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
-        </div>
-
-        <div class="ad-sidebar" style="text-align:center;margin:15px 0;"><script>atOptions = {'key':'8398a480b05e8a3236f9ea561b7cab1a','format':'iframe','height':300,'width':160,'params':{}};            </script><script src="https://www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script></div>
-
-        <div class="tools-promo">
-            <h4>More Retirement Tools</h4>
-            <a href="retirement-calculator.html">Retirement Calculator</a>
-            <a href="savings-calculator.html">Savings Calculator</a>
-            <a href="inflation-calculator.html">Inflation Calculator</a>
-            <a href="index.html">View All 100+ Tools</a>
         </div>
     </div>
 
-    <footer>
-        <p>Social Security Calculator by WebAudit Pro</p>
-        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
-    </footer>
-
     <script>
+        let selectedAge = 67;
+        
+        function selectAge(age) {
+            selectedAge = age;
+            document.querySelectorAll('.age-card').forEach(c => c.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+        }
+        
         function calculate() {
             const currentAge = parseInt(document.getElementById('currentAge').value) || 55;
-            const retireAge = parseInt(document.getElementById('retireAge').value) || 67;
-            const earnings = parseFloat(document.getElementById('earnings').value) || 75000;
-            const yearsWorked = parseInt(document.getElementById('yearsWorked').value) || 30;
-
-            // Calculate AIME (simplified - uses average earnings / 12)
-            // In reality, SSA uses highest 35 years indexed to current dollars
-            const aime = Math.round(earnings / 12);
-
-            // 2024 bend points
-            const bendPoint1 = 1174;
-            const bendPoint2 = 7078;
-
-            // Calculate PIA using bend point formula
+            const birthYear = parseInt(document.getElementById('birthYear').value) || 1970;
+            const avgEarnings = parseFloat(document.getElementById('avgEarnings').value) || 0;
+            const workYears = parseInt(document.getElementById('workYears').value) || 35;
+            
+            // Determine Full Retirement Age based on birth year
+            let fra = 67;
+            if (birthYear <= 1954) fra = 66;
+            else if (birthYear >= 1960) fra = 67;
+            else fra = 66 + (birthYear - 1954) * 2 / 12;
+            
+            // Calculate AIME (Average Indexed Monthly Earnings) - simplified
+            const maxTaxableEarnings = 160200; // 2023 cap
+            const cappedEarnings = Math.min(avgEarnings, maxTaxableEarnings);
+            const aime = (cappedEarnings * Math.min(workYears, 35)) / (35 * 12);
+            
+            // Calculate PIA (Primary Insurance Amount) using 2024 bend points
             let pia = 0;
-            if (aime <= bendPoint1) {
+            if (aime <= 1174) {
                 pia = aime * 0.90;
-            } else if (aime <= bendPoint2) {
-                pia = (bendPoint1 * 0.90) + ((aime - bendPoint1) * 0.32);
+            } else if (aime <= 7078) {
+                pia = 1174 * 0.90 + (aime - 1174) * 0.32;
             } else {
-                pia = (bendPoint1 * 0.90) + ((bendPoint2 - bendPoint1) * 0.32) + ((aime - bendPoint2) * 0.15);
+                pia = 1174 * 0.90 + (7078 - 1174) * 0.32 + (aime - 7078) * 0.15;
             }
-
-            // Cap PIA at maximum benefit (around $4,800 in 2024)
-            pia = Math.min(pia, 4800);
-
-            // Adjust for years worked (simplified - reduce if < 35 years)
-            if (yearsWorked < 35) {
-                pia *= (yearsWorked / 35);
-            }
-
-            // Age adjustments
-            const fra = 67;
-            let adjustment = 0;
-            let adjustedBenefit = pia;
-
-            if (retireAge < fra) {
-                // Reduce by 6.67% per year (5/9 of 1% per month) for first 36 months
-                // Then 5% per year (5/12 of 1% per month) for additional months
-                const monthsEarly = (fra - retireAge) * 12;
-                if (monthsEarly <= 36) {
-                    adjustment = -(monthsEarly * (5/9));
-                } else {
-                    adjustment = -(36 * (5/9)) - ((monthsEarly - 36) * (5/12));
-                }
-            } else if (retireAge > fra) {
-                // Increase by 8% per year (2/3 of 1% per month)
-                const monthsLate = (retireAge - fra) * 12;
-                adjustment = monthsLate * (2/3);
-            }
-
-            adjustedBenefit = Math.round(pia * (1 + adjustment/100));
-
+            
             // Calculate benefits at different ages
             const monthsEarly62 = (fra - 62) * 12;
-            const reduction62 = -(36 * (5/9)) - ((monthsEarly62 - 36) * (5/12));
-            const benefit62 = Math.round(pia * (1 + reduction62/100));
-
-            const benefit67 = Math.round(pia);
-
-            const monthsLate70 = (70 - fra) * 12;
-            const increase70 = monthsLate70 * (2/3);
-            const benefit70 = Math.round(pia * (1 + increase70/100));
-
-            // Lifetime benefits (assuming live to 85)
-            const lifetime62 = benefit62 * 12 * 23;
-            const lifetime67 = benefit67 * 12 * 18;
-            const lifetime70 = benefit70 * 12 * 15;
-
+            const reductionPer62 = monthsEarly62 <= 36 ? monthsEarly62 * 5/9/100 : 36 * 5/9/100 + (monthsEarly62 - 36) * 5/12/100;
+            const benefit62 = pia * (1 - reductionPer62);
+            
+            const benefit67 = pia; // At FRA (assuming FRA is 67)
+            
+            const monthsDelayed = (70 - fra) * 12;
+            const increase70 = monthsDelayed * 2/3/100;
+            const benefit70 = pia * (1 + increase70);
+            
+            // Lifetime benefits calculation (to age 85)
+            const lifetime62 = benefit62 * 12 * (85 - 62);
+            const lifetime67 = benefit67 * 12 * (85 - 67);
+            const lifetime70 = benefit70 * 12 * (85 - 70);
+            
             // Update display
-            document.getElementById('monthlyBenefit').textContent = '$' + adjustedBenefit.toLocaleString();
-            document.getElementById('annualBenefit').textContent = '$' + (adjustedBenefit * 12).toLocaleString() + ' per year';
-
-            document.getElementById('benefit62').textContent = '$' + benefit62.toLocaleString();
-            document.getElementById('benefit67').textContent = '$' + benefit67.toLocaleString();
-            document.getElementById('benefit70').textContent = '$' + benefit70.toLocaleString();
-
-            // Highlight selected age
-            document.querySelectorAll('.compare-item').forEach(el => el.classList.remove('selected'));
-            if (retireAge <= 62) document.getElementById('age62box').classList.add('selected');
-            else if (retireAge <= 67) document.getElementById('age67box').classList.add('selected');
-            else document.getElementById('age70box').classList.add('selected');
-
-            document.getElementById('aime').textContent = '$' + aime.toLocaleString();
-            document.getElementById('pia').textContent = '$' + Math.round(pia).toLocaleString();
-            document.getElementById('adjustment').textContent = (adjustment >= 0 ? '+' : '') + adjustment.toFixed(1) + '%';
-
-            document.getElementById('lifetime62').textContent = '$' + lifetime62.toLocaleString();
-            document.getElementById('lifetime67').textContent = '$' + lifetime67.toLocaleString();
-            document.getElementById('lifetime70').textContent = '$' + lifetime70.toLocaleString();
+            document.getElementById('monthlyBenefit').textContent = '$' + Math.round(pia).toLocaleString();
+            document.getElementById('benefit62').textContent = '$' + Math.round(benefit62).toLocaleString();
+            document.getElementById('benefit67').textContent = '$' + Math.round(benefit67).toLocaleString();
+            document.getElementById('benefit70').textContent = '$' + Math.round(benefit70).toLocaleString();
+            
+            document.getElementById('reduction62').textContent = '-' + (reductionPer62 * 100).toFixed(0) + '%';
+            document.getElementById('increase70').textContent = '+' + (increase70 * 100).toFixed(0) + '%';
+            
+            document.getElementById('lifetime62').textContent = '$' + Math.round(lifetime62).toLocaleString();
+            document.getElementById('lifetime67').textContent = '$' + Math.round(lifetime67).toLocaleString();
+            document.getElementById('lifetime70').textContent = '$' + Math.round(lifetime70).toLocaleString();
+            
+            const maxLifetime = Math.max(lifetime62, lifetime67, lifetime70);
+            document.getElementById('bar62').style.width = (lifetime62 / maxLifetime * 100) + '%';
+            document.getElementById('bar67').style.width = (lifetime67 / maxLifetime * 100) + '%';
+            document.getElementById('bar70').style.width = (lifetime70 / maxLifetime * 100) + '%';
+            
+            document.getElementById('annualFRA').textContent = '$' + Math.round(pia * 12).toLocaleString();
+            document.getElementById('fraAge').textContent = fra.toFixed(0);
+            document.getElementById('maxAnnual').textContent = '$' + Math.round(benefit70 * 12).toLocaleString();
+            document.getElementById('earlyAnnual').textContent = '$' + Math.round(benefit62 * 12).toLocaleString();
         }
-
+        
         calculate();
-    
     </script>
 </body>
 </html>
