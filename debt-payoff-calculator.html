@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Debt Payoff Calculator - Pay Off Debt Faster</title>
-    <meta name="description" content="Free debt payoff calculator. Calculate how long to pay off debt and compare snowball vs avalanche methods.">
-    <meta name="keywords" content="debt payoff calculator, debt snowball, debt avalanche, pay off debt, debt free">
+    <title>Debt Payoff Calculator - Payoff Time & Interest</title>
+    <meta name="description" content="Free debt payoff calculator. Calculate how long to pay off debt, total interest, and create a debt-free plan.">
+    <meta name="keywords" content="debt payoff calculator, debt free calculator, loan payoff, credit card payoff, debt snowball">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/debt-payoff-calculator.html">
     <style>
         :root { --primary: #dc2626; --primary-dark: #b91c1c; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
@@ -20,27 +20,24 @@
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
         .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
         .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
-        .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); font-size: 0.9rem; }
-        input, select { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
-        input:focus, select:focus { outline: none; border-color: var(--primary); }
-        .result-hero { background: linear-gradient(135deg, var(--success), #059669); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        input { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus { outline: none; border-color: var(--primary); }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
         .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
         .result-hero-label { color: rgba(255,255,255,0.8); }
-        .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
         .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
         .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
-        .debt-list { margin-top: 15px; }
-        .debt-item { display: grid; grid-template-columns: 1fr auto auto auto auto; gap: 10px; padding: 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 10px; align-items: center; }
-        .add-btn { padding: 12px 24px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; }
-        .remove-btn { padding: 8px 12px; background: var(--bg-dark); color: var(--text-secondary); border: none; border-radius: 6px; cursor: pointer; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr 1fr; } .debt-item { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -55,77 +52,61 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
-    
+
     <header class="header">
-        <h1>💳 Debt Payoff Calculator</h1>
+        <h1>🎯 Debt Payoff Calculator</h1>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>📝 Your Debts</h2>
-                <div id="debtList">
-                    <div class="debt-item">
-                        <input type="text" placeholder="Name" value="Credit Card 1">
-                        <input type="number" placeholder="Balance" value="5000" style="width: 120px;">
-                        <input type="number" placeholder="APR %" value="22" style="width: 80px;">
-                        <input type="number" placeholder="Min Payment" value="100" style="width: 100px;">
-                        <button class="remove-btn" onclick="removeDebt(this)">✕</button>
+                <h2>💳 Debt Details</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Total Debt ($)</label>
+                        <input type="number" id="debt" value="15000" step="500" oninput="calculate()">
                     </div>
-                    <div class="debt-item">
-                        <input type="text" placeholder="Name" value="Credit Card 2">
-                        <input type="number" placeholder="Balance" value="3000" style="width: 120px;">
-                        <input type="number" placeholder="APR %" value="18" style="width: 80px;">
-                        <input type="number" placeholder="Min Payment" value="60" style="width: 100px;">
-                        <button class="remove-btn" onclick="removeDebt(this)">✕</button>
+                    <div class="form-group">
+                        <label>Interest Rate (%)</label>
+                        <input type="number" id="rate" value="18" step="0.5" oninput="calculate()">
                     </div>
-                    <div class="debt-item">
-                        <input type="text" placeholder="Name" value="Car Loan">
-                        <input type="number" placeholder="Balance" value="12000" style="width: 120px;">
-                        <input type="number" placeholder="APR %" value="6" style="width: 80px;">
-                        <input type="number" placeholder="Min Payment" value="300" style="width: 100px;">
-                        <button class="remove-btn" onclick="removeDebt(this)">✕</button>
+                    <div class="form-group">
+                        <label>Monthly Payment ($)</label>
+                        <input type="number" id="payment" value="400" step="25" oninput="calculate()">
                     </div>
-                </div>
-                <button class="add-btn" onclick="addDebt()" style="margin-top: 15px;">+ Add Debt</button>
-                
-                <div class="form-grid" style="margin-top: 20px; grid-template-columns: 1fr 1fr;">
                     <div class="form-group">
                         <label>Extra Monthly Payment ($)</label>
-                        <input type="number" id="extraPayment" value="200" oninput="calculate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Payoff Strategy</label>
-                        <select id="strategy" onchange="calculate()">
-                            <option value="avalanche" selected>Avalanche (Highest Interest First)</option>
-                            <option value="snowball">Snowball (Lowest Balance First)</option>
-                        </select>
+                        <input type="number" id="extra" value="100" step="25" oninput="calculate()">
                     </div>
                 </div>
-                
+
                 <div class="result-hero">
-                    <div class="result-hero-label">Debt-Free In</div>
+                    <div class="result-hero-label">Payoff Time (with extra)</div>
                     <div class="result-hero-value" id="payoffTime">0 months</div>
                 </div>
-                
+
                 <div class="results-grid">
-                    <div class="result-card">
-                        <div class="result-value" id="totalDebt">$0</div>
-                        <div class="result-label">Total Debt</div>
-                    </div>
                     <div class="result-card">
                         <div class="result-value" id="totalInterest">$0</div>
                         <div class="result-label">Total Interest</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="monthlyPayment">$0</div>
-                        <div class="result-label">Monthly Payment</div>
-                    </div>
-                    <div class="result-card">
                         <div class="result-value" id="interestSaved">$0</div>
                         <div class="result-label">Interest Saved</div>
                     </div>
+                    <div class="result-card">
+                        <div class="result-value" id="timeSaved">0</div>
+                        <div class="result-label">Months Saved</div>
+                    </div>
                 </div>
+            </div>
+
+            <div class="card">
+                <h2>📊 Comparison</h2>
+                <div class="breakdown-row"><span>Without Extra Payments</span><span id="withoutExtra">0 months</span></div>
+                <div class="breakdown-row"><span>Interest Without Extra</span><span id="interestWithout">$0</span></div>
+                <div class="breakdown-row"><span>With Extra Payments</span><span id="withExtra">0 months</span></div>
+                <div class="breakdown-row"><span>Interest With Extra</span><span id="interestWith">$0</span></div>
             </div>
 
             <div class="ad-container">
@@ -137,10 +118,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="loan-calculator.html" class="related-link">🏦 Loan Calculator</a>
-                    <a href="budget-calculator.html" class="related-link">📊 Budget Planner</a>
-                    <a href="savings-goal-calculator.html" class="related-link">💰 Savings Goal</a>
                     <a href="credit-card-payoff-calculator.html" class="related-link">💳 Credit Card Payoff</a>
+                    <a href="loan-calculator.html" class="related-link">💵 Loan Calculator</a>
+                    <a href="emergency-fund-calculator.html" class="related-link">🏦 Emergency Fund</a>
+                    <a href="savings-goal-calculator.html" class="related-link">🎯 Savings Goal</a>
                 </div>
             </div>
         </div>
@@ -155,119 +136,45 @@
     </div>
 
     <script>
-        function addDebt() {
-            const list = document.getElementById('debtList');
-            const item = document.createElement('div');
-            item.className = 'debt-item';
-            item.innerHTML = `
-                <input type="text" placeholder="Name" value="New Debt">
-                <input type="number" placeholder="Balance" value="1000" style="width: 120px;">
-                <input type="number" placeholder="APR %" value="15" style="width: 80px;">
-                <input type="number" placeholder="Min Payment" value="50" style="width: 100px;">
-                <button class="remove-btn" onclick="removeDebt(this)">✕</button>
-            `;
-            list.appendChild(item);
-            calculate();
-        }
-        
-        function removeDebt(btn) {
-            btn.parentElement.remove();
-            calculate();
-        }
-        
-        function getDebts() {
-            const items = document.querySelectorAll('.debt-item');
-            return Array.from(items).map(item => {
-                const inputs = item.querySelectorAll('input');
-                return {
-                    name: inputs[0].value,
-                    balance: parseFloat(inputs[1].value) || 0,
-                    apr: parseFloat(inputs[2].value) || 0,
-                    minPayment: parseFloat(inputs[3].value) || 0
-                };
-            });
-        }
-        
-        function calculate() {
-            const debts = getDebts();
-            const extraPayment = parseFloat(document.getElementById('extraPayment').value) || 0;
-            const strategy = document.getElementById('strategy').value;
-            
-            const totalDebt = debts.reduce((sum, d) => sum + d.balance, 0);
-            const minPayments = debts.reduce((sum, d) => sum + d.minPayment, 0);
-            const monthlyPayment = minPayments + extraPayment;
-            
-            let workingDebts = debts.map(d => ({...d}));
+        function calculatePayoff(balance, rate, payment) {
+            const monthlyRate = rate / 100 / 12;
             let months = 0;
             let totalInterest = 0;
-            const maxMonths = 600;
-            
-            while (workingDebts.some(d => d.balance > 0) && months < maxMonths) {
+            let remaining = balance;
+
+            while (remaining > 0 && months < 600) {
+                const interest = remaining * monthlyRate;
+                totalInterest += interest;
+                const principal = Math.min(payment - interest, remaining);
+                if (principal <= 0) return { months: Infinity, interest: Infinity };
+                remaining -= principal;
                 months++;
-                
-                if (strategy === 'avalanche') {
-                    workingDebts.sort((a, b) => b.apr - a.apr);
-                } else {
-                    workingDebts.sort((a, b) => a.balance - b.balance);
-                }
-                
-                let availableExtra = extraPayment;
-                
-                workingDebts.forEach(debt => {
-                    if (debt.balance > 0) {
-                        const monthlyRate = debt.apr / 100 / 12;
-                        const interest = debt.balance * monthlyRate;
-                        totalInterest += interest;
-                        debt.balance += interest;
-                        
-                        let payment = debt.minPayment;
-                        if (debt === workingDebts.find(d => d.balance > 0)) {
-                            payment += availableExtra;
-                            availableExtra = 0;
-                        }
-                        
-                        const actualPayment = Math.min(payment, debt.balance);
-                        debt.balance -= actualPayment;
-                        
-                        if (debt.balance < 0.01) {
-                            debt.balance = 0;
-                        }
-                    }
-                });
             }
-            
-            let minOnlyMonths = 0;
-            let minOnlyInterest = 0;
-            let minDebts = debts.map(d => ({...d}));
-            while (minDebts.some(d => d.balance > 0) && minOnlyMonths < maxMonths) {
-                minOnlyMonths++;
-                minDebts.forEach(debt => {
-                    if (debt.balance > 0) {
-                        const interest = debt.balance * (debt.apr / 100 / 12);
-                        minOnlyInterest += interest;
-                        debt.balance += interest - debt.minPayment;
-                        if (debt.balance < 0) debt.balance = 0;
-                    }
-                });
-            }
-            
-            const interestSaved = Math.max(0, minOnlyInterest - totalInterest);
-            
-            const years = Math.floor(months / 12);
-            const remainingMonths = months % 12;
-            const timeText = years > 0 ? `${years}y ${remainingMonths}m` : `${months} months`;
-            
-            document.getElementById('payoffTime').textContent = timeText;
-            document.getElementById('totalDebt').textContent = '$' + Math.round(totalDebt).toLocaleString();
-            document.getElementById('totalInterest').textContent = '$' + Math.round(totalInterest).toLocaleString();
-            document.getElementById('monthlyPayment').textContent = '$' + Math.round(monthlyPayment).toLocaleString();
-            document.getElementById('interestSaved').textContent = '$' + Math.round(interestSaved).toLocaleString();
+            return { months, interest: totalInterest };
         }
-        
-        document.querySelectorAll('input').forEach(input => {
-            input.addEventListener('input', calculate);
-        });
-        
+
+        function calculate() {
+            const debt = parseFloat(document.getElementById('debt').value) || 0;
+            const rate = parseFloat(document.getElementById('rate').value) || 0;
+            const payment = parseFloat(document.getElementById('payment').value) || 0;
+            const extra = parseFloat(document.getElementById('extra').value) || 0;
+
+            const without = calculatePayoff(debt, rate, payment);
+            const withExtra = calculatePayoff(debt, rate, payment + extra);
+
+            const monthsSaved = without.months - withExtra.months;
+            const interestSaved = without.interest - withExtra.interest;
+
+            document.getElementById('payoffTime').textContent = withExtra.months === Infinity ? 'Never' : withExtra.months + ' months';
+            document.getElementById('totalInterest').textContent = withExtra.interest === Infinity ? 'N/A' : '$' + Math.round(withExtra.interest).toLocaleString();
+            document.getElementById('interestSaved').textContent = '$' + Math.round(interestSaved).toLocaleString();
+            document.getElementById('timeSaved').textContent = monthsSaved + ' months';
+
+            document.getElementById('withoutExtra').textContent = without.months === Infinity ? 'Never' : without.months + ' months';
+            document.getElementById('interestWithout').textContent = without.interest === Infinity ? 'N/A' : '$' + Math.round(without.interest).toLocaleString();
+            document.getElementById('withExtra').textContent = withExtra.months === Infinity ? 'Never' : withExtra.months + ' months';
+            document.getElementById('interestWith').textContent = withExtra.interest === Infinity ? 'N/A' : '$' + Math.round(withExtra.interest).toLocaleString();
+        }
         calculate();
     </script>
 </body>

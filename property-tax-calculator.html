@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Property Tax Calculator - Estimate Annual Property Taxes</title>
-    <meta name="description" content="Free property tax calculator. Estimate your annual property taxes based on home value and local tax rates.">
-    <meta name="keywords" content="property tax calculator, real estate tax, home tax, annual property tax, tax assessment">
+    <title>Property Tax Calculator - Annual & Monthly Estimates</title>
+    <meta name="description" content="Free property tax calculator. Estimate your annual and monthly property taxes based on home value and local tax rates.">
+    <meta name="keywords" content="property tax calculator, real estate tax, annual property tax, home tax estimate">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/property-tax-calculator.html">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #dc2626; --primary-dark: #b91c1c; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -21,14 +21,14 @@
         .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
         .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
         input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
         input:focus, select:focus { outline: none; border-color: var(--primary); }
         .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
         .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
         .result-hero-label { color: rgba(255,255,255,0.8); }
-        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .results-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
         .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
         .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
@@ -52,9 +52,9 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
-    
+
     <header class="header">
-        <h1>🏛️ Property Tax Calculator</h1>
+        <h1>🏡 Property Tax Calculator</h1>
     </header>
 
     <div class="main-container">
@@ -63,86 +63,48 @@
                 <h2>🏠 Property Information</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Home Market Value ($)</label>
-                        <input type="number" id="marketValue" value="350000" oninput="calculate()">
+                        <label>Home Value ($)</label>
+                        <input type="number" id="value" value="400000" step="10000" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Tax Rate (%)</label>
+                        <input type="number" id="rate" value="1.1" step="0.1" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Assessment Ratio (%)</label>
-                        <input type="number" id="assessmentRatio" value="100" step="1" oninput="calculate()">
+                        <input type="number" id="assessment" value="100" step="5" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Property Tax Rate (%)</label>
-                        <input type="number" id="taxRate" value="1.1" step="0.01" oninput="calculate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Homestead Exemption ($)</label>
-                        <input type="number" id="exemption" value="0" oninput="calculate()">
+                        <label>Exemptions ($)</label>
+                        <input type="number" id="exemptions" value="0" step="1000" oninput="calculate()">
                     </div>
                 </div>
-                
+
                 <div class="result-hero">
                     <div class="result-hero-label">Annual Property Tax</div>
                     <div class="result-hero-value" id="annualTax">$0</div>
                 </div>
-                
+
                 <div class="results-grid">
                     <div class="result-card">
                         <div class="result-value" id="monthlyTax">$0</div>
-                        <div class="result-label">Monthly</div>
+                        <div class="result-label">Monthly Payment</div>
                     </div>
                     <div class="result-card">
                         <div class="result-value" id="assessedValue">$0</div>
                         <div class="result-label">Assessed Value</div>
                     </div>
-                    <div class="result-card">
-                        <div class="result-value" id="effectiveRate">0%</div>
-                        <div class="result-label">Effective Rate</div>
-                    </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>📊 Tax Breakdown</h2>
-                <div class="breakdown-row">
-                    <span>Market Value</span>
-                    <span id="marketDisplay">$0</span>
-                </div>
-                <div class="breakdown-row">
-                    <span>× Assessment Ratio</span>
-                    <span id="ratioDisplay">100%</span>
-                </div>
-                <div class="breakdown-row">
-                    <span>= Assessed Value</span>
-                    <span id="assessedDisplay">$0</span>
-                </div>
-                <div class="breakdown-row">
-                    <span>- Exemptions</span>
-                    <span id="exemptionDisplay">$0</span>
-                </div>
-                <div class="breakdown-row">
-                    <span>= Taxable Value</span>
-                    <span id="taxableDisplay">$0</span>
-                </div>
-                <div class="breakdown-row">
-                    <span>× Tax Rate</span>
-                    <span id="rateDisplay">0%</span>
-                </div>
-                <div class="breakdown-row" style="background: var(--primary); color: white; font-weight: 700;">
-                    <span>= Annual Tax</span>
-                    <span id="taxBreakdown">$0</span>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>📍 Average Rates by State</h2>
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
-                    <div class="breakdown-row"><span>New Jersey</span><span>2.21%</span></div>
-                    <div class="breakdown-row"><span>Illinois</span><span>2.08%</span></div>
-                    <div class="breakdown-row"><span>Texas</span><span>1.60%</span></div>
-                    <div class="breakdown-row"><span>California</span><span>0.71%</span></div>
-                    <div class="breakdown-row"><span>Florida</span><span>0.83%</span></div>
-                    <div class="breakdown-row"><span>Hawaii</span><span>0.29%</span></div>
-                </div>
+                <h2>📊 Average Tax Rates by State</h2>
+                <div class="breakdown-row"><span>New Jersey (Highest)</span><span>2.21%</span></div>
+                <div class="breakdown-row"><span>Illinois</span><span>2.05%</span></div>
+                <div class="breakdown-row"><span>Texas</span><span>1.60%</span></div>
+                <div class="breakdown-row"><span>National Average</span><span>1.07%</span></div>
+                <div class="breakdown-row"><span>Florida</span><span>0.80%</span></div>
+                <div class="breakdown-row"><span>Hawaii (Lowest)</span><span>0.31%</span></div>
             </div>
 
             <div class="ad-container">
@@ -154,10 +116,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="mortgage-calculator.html" class="related-link">🏦 Mortgage Calculator</a>
-                    <a href="home-value-calculator.html" class="related-link">🏠 Home Value</a>
+                    <a href="mortgage-calculator.html" class="related-link">🏡 Mortgage</a>
+                    <a href="home-affordability-calculator.html" class="related-link">💵 Affordability</a>
                     <a href="closing-cost-calculator.html" class="related-link">📋 Closing Costs</a>
-                    <a href="home-affordability-calculator.html" class="related-link">💰 Affordability</a>
+                    <a href="home-value-calculator.html" class="related-link">📈 Home Value</a>
                 </div>
             </div>
         </div>
@@ -173,31 +135,19 @@
 
     <script>
         function calculate() {
-            const marketValue = parseFloat(document.getElementById('marketValue').value) || 0;
-            const assessmentRatio = parseFloat(document.getElementById('assessmentRatio').value) / 100 || 1;
-            const taxRate = parseFloat(document.getElementById('taxRate').value) / 100 || 0;
-            const exemption = parseFloat(document.getElementById('exemption').value) || 0;
-            
-            const assessedValue = marketValue * assessmentRatio;
-            const taxableValue = Math.max(0, assessedValue - exemption);
-            const annualTax = taxableValue * taxRate;
+            const value = parseFloat(document.getElementById('value').value) || 0;
+            const rate = parseFloat(document.getElementById('rate').value) / 100;
+            const assessment = parseFloat(document.getElementById('assessment').value) / 100;
+            const exemptions = parseFloat(document.getElementById('exemptions').value) || 0;
+
+            const assessedValue = (value * assessment) - exemptions;
+            const annualTax = Math.max(0, assessedValue * rate);
             const monthlyTax = annualTax / 12;
-            const effectiveRate = marketValue > 0 ? (annualTax / marketValue) * 100 : 0;
-            
+
             document.getElementById('annualTax').textContent = '$' + Math.round(annualTax).toLocaleString();
             document.getElementById('monthlyTax').textContent = '$' + Math.round(monthlyTax).toLocaleString();
             document.getElementById('assessedValue').textContent = '$' + Math.round(assessedValue).toLocaleString();
-            document.getElementById('effectiveRate').textContent = effectiveRate.toFixed(2) + '%';
-            
-            document.getElementById('marketDisplay').textContent = '$' + marketValue.toLocaleString();
-            document.getElementById('ratioDisplay').textContent = (assessmentRatio * 100) + '%';
-            document.getElementById('assessedDisplay').textContent = '$' + Math.round(assessedValue).toLocaleString();
-            document.getElementById('exemptionDisplay').textContent = '$' + exemption.toLocaleString();
-            document.getElementById('taxableDisplay').textContent = '$' + Math.round(taxableValue).toLocaleString();
-            document.getElementById('rateDisplay').textContent = (taxRate * 100).toFixed(2) + '%';
-            document.getElementById('taxBreakdown').textContent = '$' + Math.round(annualTax).toLocaleString();
         }
-        
         calculate();
     </script>
 </body>

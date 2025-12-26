@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Down Payment Calculator - Home Buying Savings</title>
-    <meta name="description" content="Free down payment calculator. Calculate how much you need to save for a house down payment and create a savings plan.">
-    <meta name="keywords" content="down payment calculator, home buying, house down payment, mortgage down payment, savings calculator">
+    <title>Down Payment Calculator - How Much Do You Need?</title>
+    <meta name="description" content="Free down payment calculator. Calculate how much down payment you need for a house and how long it takes to save.">
+    <meta name="keywords" content="down payment calculator, house down payment, save for down payment, home buying">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/down-payment-calculator.html">
     <style>
-        :root { --primary: #8b5cf6; --primary-dark: #7c3aed; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #059669; --primary-dark: #047857; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -21,25 +21,23 @@
         .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
         .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
         input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
         input:focus, select:focus { outline: none; border-color: var(--primary); }
         .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
         .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
         .result-hero-label { color: rgba(255,255,255,0.8); }
-        .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
         .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
         .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
-        .progress-container { margin-top: 20px; padding: 20px; background: var(--bg-input); border-radius: 12px; }
-        .progress-bar { height: 20px; background: var(--bg-dark); border-radius: 10px; overflow: hidden; margin: 15px 0; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--success)); border-radius: 10px; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -54,7 +52,7 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
-    
+
     <header class="header">
         <h1>🏠 Down Payment Calculator</h1>
     </header>
@@ -62,94 +60,56 @@
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>💰 Down Payment Goal</h2>
+                <h2>💰 Home & Savings</h2>
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Home Price ($)</label>
-                        <input type="number" id="homePrice" value="350000" oninput="calculate()">
+                        <input type="number" id="price" value="400000" step="10000" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Down Payment (%)</label>
-                        <select id="downPaymentPct" onchange="calculate()">
-                            <option value="3">3% (FHA minimum)</option>
+                        <select id="percent" onchange="calculate()">
+                            <option value="3">3% (Minimum)</option>
                             <option value="5">5%</option>
                             <option value="10">10%</option>
-                            <option value="15">15%</option>
-                            <option value="20" selected>20% (avoid PMI)</option>
+                            <option value="20" selected>20% (No PMI)</option>
                             <option value="25">25%</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Closing Costs (%)</label>
-                        <input type="number" id="closingCosts" value="3" step="0.5" oninput="calculate()">
+                        <label>Current Savings ($)</label>
+                        <input type="number" id="savings" value="20000" step="1000" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Moving/Repair Fund ($)</label>
-                        <input type="number" id="movingFund" value="5000" oninput="calculate()">
+                        <label>Monthly Savings ($)</label>
+                        <input type="number" id="monthly" value="1500" step="100" oninput="calculate()">
                     </div>
                 </div>
-                
+
                 <div class="result-hero">
-                    <div class="result-hero-label">Total Savings Needed</div>
-                    <div class="result-hero-value" id="totalNeeded">$0</div>
+                    <div class="result-hero-label">Down Payment Needed</div>
+                    <div class="result-hero-value" id="downPayment">$0</div>
                 </div>
-                
+
                 <div class="results-grid">
                     <div class="result-card">
-                        <div class="result-value" id="downPayment">$0</div>
-                        <div class="result-label">Down Payment</div>
+                        <div class="result-value" id="remaining">$0</div>
+                        <div class="result-label">Still Need to Save</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="closingCostsAmt">$0</div>
-                        <div class="result-label">Closing Costs</div>
+                        <div class="result-value" id="months">0</div>
+                        <div class="result-label">Months to Save</div>
                     </div>
                     <div class="result-card">
                         <div class="result-value" id="loanAmount">$0</div>
                         <div class="result-label">Loan Amount</div>
                     </div>
-                    <div class="result-card">
-                        <div class="result-value" id="pmiStatus">No PMI</div>
-                        <div class="result-label">PMI Required?</div>
-                    </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>📊 Savings Plan</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Current Savings ($)</label>
-                        <input type="number" id="currentSavings" value="25000" oninput="calculate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Monthly Savings ($)</label>
-                        <input type="number" id="monthlySavings" value="1500" oninput="calculate()">
-                    </div>
-                </div>
-                
-                <div class="progress-container">
-                    <div style="display: flex; justify-content: space-between;">
-                        <span>Progress to Goal</span>
-                        <span id="progressPct">0%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
-                    </div>
-                    <div style="text-align: center; color: var(--text-secondary);">
-                        <span id="stillNeeded">$0 still needed</span>
-                    </div>
-                </div>
-                
-                <div class="results-grid" style="grid-template-columns: repeat(2, 1fr); margin-top: 20px;">
-                    <div class="result-card">
-                        <div class="result-value" id="monthsToGoal">0</div>
-                        <div class="result-label">Months to Goal</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="targetDate">--</div>
-                        <div class="result-label">Target Date</div>
-                    </div>
-                </div>
+                <h2>📊 Down Payment Options</h2>
+                <div id="options"></div>
             </div>
 
             <div class="ad-container">
@@ -161,10 +121,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="mortgage-calculator.html" class="related-link">🏠 Mortgage Calculator</a>
-                    <a href="rent-vs-buy-calculator.html" class="related-link">🏢 Rent vs Buy</a>
-                    <a href="savings-goal-calculator.html" class="related-link">💰 Savings Goal</a>
-                    <a href="compound-interest-calculator.html" class="related-link">📈 Compound Interest</a>
+                    <a href="mortgage-calculator.html" class="related-link">🏡 Mortgage</a>
+                    <a href="home-affordability-calculator.html" class="related-link">💵 Affordability</a>
+                    <a href="closing-cost-calculator.html" class="related-link">📋 Closing Costs</a>
+                    <a href="rent-vs-buy-calculator.html" class="related-link">🏘️ Rent vs Buy</a>
                 </div>
             </div>
         </div>
@@ -180,41 +140,31 @@
 
     <script>
         function calculate() {
-            const homePrice = parseFloat(document.getElementById('homePrice').value) || 0;
-            const downPaymentPct = parseFloat(document.getElementById('downPaymentPct').value) / 100;
-            const closingCostsPct = parseFloat(document.getElementById('closingCosts').value) / 100;
-            const movingFund = parseFloat(document.getElementById('movingFund').value) || 0;
-            const currentSavings = parseFloat(document.getElementById('currentSavings').value) || 0;
-            const monthlySavings = parseFloat(document.getElementById('monthlySavings').value) || 0;
-            
-            const downPayment = homePrice * downPaymentPct;
-            const closingCostsAmt = homePrice * closingCostsPct;
-            const loanAmount = homePrice - downPayment;
-            const totalNeeded = downPayment + closingCostsAmt + movingFund;
-            
-            const pmiRequired = downPaymentPct < 0.2;
-            
-            document.getElementById('downPayment').textContent = '$' + Math.round(downPayment).toLocaleString();
-            document.getElementById('closingCostsAmt').textContent = '$' + Math.round(closingCostsAmt).toLocaleString();
-            document.getElementById('loanAmount').textContent = '$' + Math.round(loanAmount).toLocaleString();
-            document.getElementById('totalNeeded').textContent = '$' + Math.round(totalNeeded).toLocaleString();
-            document.getElementById('pmiStatus').textContent = pmiRequired ? 'Yes, PMI Required' : 'No PMI';
-            document.getElementById('pmiStatus').style.color = pmiRequired ? '#ef4444' : '#10b981';
-            
-            const stillNeeded = Math.max(0, totalNeeded - currentSavings);
-            const progressPct = Math.min(100, (currentSavings / totalNeeded) * 100);
-            const monthsToGoal = monthlySavings > 0 ? Math.ceil(stillNeeded / monthlySavings) : 0;
-            
-            const targetDate = new Date();
-            targetDate.setMonth(targetDate.getMonth() + monthsToGoal);
-            
-            document.getElementById('progressPct').textContent = progressPct.toFixed(1) + '%';
-            document.getElementById('progressFill').style.width = progressPct + '%';
-            document.getElementById('stillNeeded').textContent = stillNeeded > 0 ? '$' + Math.round(stillNeeded).toLocaleString() + ' still needed' : 'Goal reached! 🎉';
-            document.getElementById('monthsToGoal').textContent = monthsToGoal;
-            document.getElementById('targetDate').textContent = targetDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+            const price = parseFloat(document.getElementById('price').value) || 0;
+            const percent = parseFloat(document.getElementById('percent').value) / 100;
+            const savings = parseFloat(document.getElementById('savings').value) || 0;
+            const monthly = parseFloat(document.getElementById('monthly').value) || 0;
+
+            const downPayment = price * percent;
+            const remaining = Math.max(0, downPayment - savings);
+            const months = monthly > 0 ? Math.ceil(remaining / monthly) : 0;
+            const loanAmount = price - downPayment;
+
+            document.getElementById('downPayment').textContent = '$' + downPayment.toLocaleString();
+            document.getElementById('remaining').textContent = '$' + remaining.toLocaleString();
+            document.getElementById('months').textContent = months + ' months';
+            document.getElementById('loanAmount').textContent = '$' + loanAmount.toLocaleString();
+
+            const options = [3, 5, 10, 20, 25];
+            let html = '';
+            options.forEach(pct => {
+                const dp = price * (pct / 100);
+                const loan = price - dp;
+                const pmi = pct < 20 ? 'Yes' : 'No';
+                html += '<div class="breakdown-row"><span>' + pct + '% ($' + dp.toLocaleString() + ')</span><span>Loan: $' + loan.toLocaleString() + ' | PMI: ' + pmi + '</span></div>';
+            });
+            document.getElementById('options').innerHTML = html;
         }
-        
         calculate();
     </script>
 </body>
