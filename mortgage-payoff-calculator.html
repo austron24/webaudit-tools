@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mortgage Payoff Calculator - Early Payoff Savings</title>
+    <meta name="description" content="Calculate how to pay off your mortgage early. See how extra payments reduce your loan term and save thousands in interest.">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/mortgage-payoff-calculator.html">
+    <meta property="og:title" content="Mortgage Payoff Calculator - Early Payoff Savings">
+    <meta property="og:description" content="See how extra payments help you pay off your mortgage faster.">
+    <meta property="og:type" content="website">
+    <style>
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --warning: #f59e0b; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; min-height: 100vh; }
+        .header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; }
+        .nav-links a:hover { color: var(--primary); }
+        .ad-top { background: var(--bg-card); padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); }
+        .ad-mobile { display: none; background: var(--bg-card); padding: 0.5rem; text-align: center; }
+        .main-layout { display: flex; max-width: 1400px; margin: 0 auto; gap: 2rem; padding: 2rem; }
+        .content { flex: 1; min-width: 0; }
+        .sidebar { width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 1rem; }
+        .hero { text-align: center; margin-bottom: 2rem; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary), #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { color: var(--text-secondary); font-size: 1.1rem; }
+        .calculator-card { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .section-title { font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--primary); }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.75rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 0.5rem; color: var(--text-primary); font-size: 1rem; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+        .input-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .calculate-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; border-radius: 0.5rem; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; }
+        .calculate-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
+        .results { display: none; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+        .results.show { display: block; }
+        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .result-box { background: var(--bg-input); padding: 1.25rem; border-radius: 0.75rem; text-align: center; }
+        .result-box.highlight { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid var(--primary); }
+        .result-box.success { background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); }
+        .result-label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .result-value { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
+        .result-value.success { color: var(--success); }
+        .comparison-table { width: 100%; margin-top: 1.5rem; border-collapse: collapse; }
+        .comparison-table th, .comparison-table td { padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); }
+        .comparison-table th { color: var(--text-secondary); font-weight: 500; background: var(--bg-input); }
+        .comparison-table td { color: var(--text-primary); }
+        .comparison-table tr.highlight td { background: rgba(16, 185, 129, 0.1); }
+        .payoff-visual { margin-top: 1.5rem; }
+        .payoff-visual h4 { color: var(--text-primary); margin-bottom: 0.75rem; }
+        .timeline-compare { display: flex; flex-direction: column; gap: 1rem; }
+        .timeline-item { display: flex; align-items: center; gap: 1rem; }
+        .timeline-label { min-width: 100px; color: var(--text-secondary); font-size: 0.9rem; text-align: right; }
+        .timeline-bar { flex: 1; height: 30px; background: var(--bg-input); border-radius: 15px; overflow: hidden; position: relative; }
+        .timeline-fill { height: 100%; border-radius: 15px; display: flex; align-items: center; justify-content: flex-end; padding-right: 1rem; font-size: 0.85rem; font-weight: 600; }
+        .timeline-fill.original { background: linear-gradient(90deg, #64748b, #94a3b8); }
+        .timeline-fill.accelerated { background: linear-gradient(90deg, var(--success), #34d399); }
+        .ad-inline { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin: 2rem 0; }
+        .info-section { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .info-section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary); }
+        .info-section p, .info-section li { color: var(--text-secondary); margin-bottom: 0.75rem; }
+        .info-section ul { padding-left: 1.5rem; }
+        .related-tools { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); }
+        .related-tools h3 { margin-bottom: 1rem; color: var(--text-primary); }
+        .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+        .tool-link { display: block; padding: 1rem; background: var(--bg-input); border-radius: 0.5rem; text-decoration: none; color: var(--text-primary); }
+        .tool-link:hover { background: var(--border); transform: translateY(-2px); }
+        .ad-bottom { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin-top: 2rem; }
+        .footer { background: var(--bg-card); border-top: 1px solid var(--border); padding: 2rem; text-align: center; margin-top: 3rem; }
+        .footer p { color: var(--text-secondary); font-size: 0.9rem; }
+        @media (max-width: 968px) { .sidebar { display: none; } .main-layout { padding: 1rem; } }
+        @media (max-width: 640px) { .ad-top { display: none; } .ad-mobile { display: block; } .hero h1 { font-size: 1.75rem; } .input-row { grid-template-columns: 1fr; } .nav-links { display: none; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">CalcTools</a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="finance-calculators.html">Finance</a>
+                <a href="health-calculators.html">Health</a>
+                <a href="home-calculators.html">Home</a>
+            </nav>
+        </div>
+    </header>
+    <div class="ad-top">
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-mobile">
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script src="//www.topcreativeformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <div class="main-layout">
+        <main class="content">
+            <div class="hero">
+                <h1>Mortgage Payoff Calculator</h1>
+                <p>See how extra payments help you become mortgage-free faster</p>
+            </div>
+            <div class="calculator-card">
+                <h3 class="section-title">Current Loan Details</h3>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Current Balance ($)</label>
+                        <input type="number" id="currentBalance" placeholder="350000" value="350000">
+                    </div>
+                    <div class="form-group">
+                        <label>Interest Rate (%)</label>
+                        <input type="number" id="interestRate" step="0.125" placeholder="6.5" value="6.5">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Remaining Term (years)</label>
+                        <input type="number" id="remainingTerm" placeholder="27" value="27">
+                    </div>
+                    <div class="form-group">
+                        <label>Current Monthly Payment ($)</label>
+                        <input type="number" id="currentPayment" placeholder="2200" value="" readonly style="background: var(--bg-dark);">
+                    </div>
+                </div>
+                <h3 class="section-title" style="margin-top: 1.5rem;">Extra Payments</h3>
+                <div class="input-row">
+                    <div class="form-group">
+                        <label>Extra Monthly Payment ($)</label>
+                        <input type="number" id="extraMonthly" placeholder="300" value="300">
+                    </div>
+                    <div class="form-group">
+                        <label>One-Time Lump Sum ($)</label>
+                        <input type="number" id="lumpSum" placeholder="0" value="0">
+                    </div>
+                </div>
+                <button class="calculate-btn" onclick="calculate()">Calculate Payoff</button>
+                <div class="results" id="results">
+                    <div class="result-grid">
+                        <div class="result-box highlight">
+                            <div class="result-label">New Payoff Time</div>
+                            <div class="result-value" id="newPayoff">0 years</div>
+                        </div>
+                        <div class="result-box success">
+                            <div class="result-label">Time Saved</div>
+                            <div class="result-value success" id="timeSaved">0 years</div>
+                        </div>
+                        <div class="result-box success">
+                            <div class="result-label">Interest Saved</div>
+                            <div class="result-value success" id="interestSaved">$0</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-label">Payoff Date</div>
+                            <div class="result-value" id="payoffDate">-</div>
+                        </div>
+                    </div>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Original</th>
+                                <th>With Extra</th>
+                                <th>Savings</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="text-align: left; color: var(--text-secondary);">Monthly Payment</td>
+                                <td id="origPayment">$0</td>
+                                <td id="newPayment">$0</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; color: var(--text-secondary);">Payoff Time</td>
+                                <td id="origTime">0 years</td>
+                                <td id="newTime">0 years</td>
+                                <td id="timeDiff">0 years</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; color: var(--text-secondary);">Total Interest</td>
+                                <td id="origInterest">$0</td>
+                                <td id="newInterest">$0</td>
+                                <td id="interestDiff">$0</td>
+                            </tr>
+                            <tr class="highlight">
+                                <td style="text-align: left; color: var(--text-secondary);">Total Paid</td>
+                                <td id="origTotal">$0</td>
+                                <td id="newTotal">$0</td>
+                                <td id="totalDiff">$0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="payoff-visual">
+                        <h4>Payoff Timeline</h4>
+                        <div class="timeline-compare">
+                            <div class="timeline-item">
+                                <span class="timeline-label">Original</span>
+                                <div class="timeline-bar">
+                                    <div class="timeline-fill original" id="origBar" style="width: 100%">27 years</div>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <span class="timeline-label">Accelerated</span>
+                                <div class="timeline-bar">
+                                    <div class="timeline-fill accelerated" id="newBar" style="width: 70%">19 years</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ad-inline">
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+            <div class="info-section">
+                <h2>Strategies to Pay Off Faster</h2>
+                <p>Every extra dollar you pay goes directly to principal, reducing both your balance and future interest charges.</p>
+                <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Effective Methods</h3>
+                <ul>
+                    <li><strong>Biweekly payments:</strong> Make half payments every two weeks (= 13 monthly payments/year)</li>
+                    <li><strong>Round up:</strong> Round your payment up to the nearest $100</li>
+                    <li><strong>Annual bonus:</strong> Apply tax refunds or bonuses to principal</li>
+                    <li><strong>Refinance to shorter term:</strong> 15-year loans have lower rates and faster payoff</li>
+                </ul>
+            </div>
+            <div class="ad-bottom">
+                <script type="text/javascript">atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
+            </div>
+            <div class="related-tools">
+                <h3>Related Calculators</h3>
+                <div class="tool-grid">
+                    <a href="biweekly-mortgage-calculator.html" class="tool-link">Biweekly Mortgage</a>
+                    <a href="mortgage-recast-calculator.html" class="tool-link">Mortgage Recast</a>
+                    <a href="amortization-calculator.html" class="tool-link">Amortization Calculator</a>
+                    <a href="refinance-calculator.html" class="tool-link">Refinance Calculator</a>
+                    <a href="mortgage-calculator.html" class="tool-link">Mortgage Calculator</a>
+                    <a href="debt-payoff-calculator.html" class="tool-link">Debt Payoff</a>
+                </div>
+            </div>
+        </main>
+        <aside class="sidebar">
+            <div class="ad-sidebar">
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+            <div class="ad-sidebar">
+                <script type="text/javascript">atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };</script>
+                <script src="//www.topcreativeformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
+            </div>
+        </aside>
+    </div>
+    <footer class="footer">
+        <p>&copy; 2024 CalcTools. Free online calculators for everyone.</p>
+    </footer>
+    <script>
+        function calcPayment(principal, annualRate, years) {
+            const monthlyRate = annualRate / 100 / 12;
+            const numPayments = years * 12;
+            if (monthlyRate === 0) return principal / numPayments;
+            return (principal * monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / (Math.pow(1 + monthlyRate, numPayments) - 1);
+        }
+        function formatCurrency(num) {
+            return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        }
+        function calculate() {
+            const currentBalance = parseFloat(document.getElementById('currentBalance').value) || 0;
+            const interestRate = parseFloat(document.getElementById('interestRate').value) || 0;
+            const remainingTerm = parseFloat(document.getElementById('remainingTerm').value) || 27;
+            const extraMonthly = parseFloat(document.getElementById('extraMonthly').value) || 0;
+            const lumpSum = parseFloat(document.getElementById('lumpSum').value) || 0;
+            const monthlyPayment = calcPayment(currentBalance, interestRate, remainingTerm);
+            document.getElementById('currentPayment').value = monthlyPayment.toFixed(0);
+            const monthlyRate = interestRate / 100 / 12;
+            let balanceOrig = currentBalance;
+            let monthsOrig = 0;
+            let interestOrig = 0;
+            while (balanceOrig > 0 && monthsOrig < remainingTerm * 12) {
+                const interest = balanceOrig * monthlyRate;
+                interestOrig += interest;
+                const principal = Math.min(monthlyPayment - interest, balanceOrig);
+                balanceOrig -= principal;
+                monthsOrig++;
+            }
+            let balanceNew = currentBalance - lumpSum;
+            let monthsNew = 0;
+            let interestNew = 0;
+            const newMonthlyPayment = monthlyPayment + extraMonthly;
+            while (balanceNew > 0 && monthsNew < remainingTerm * 12) {
+                const interest = balanceNew * monthlyRate;
+                interestNew += interest;
+                const principal = Math.min(newMonthlyPayment - interest, balanceNew);
+                balanceNew -= principal;
+                monthsNew++;
+            }
+            const yearsOrig = monthsOrig / 12;
+            const yearsNew = monthsNew / 12;
+            const yearsSaved = yearsOrig - yearsNew;
+            const interestSaved = interestOrig - interestNew;
+            const totalOrig = monthlyPayment * monthsOrig;
+            const totalNew = newMonthlyPayment * monthsNew + lumpSum;
+            const payoffDate = new Date();
+            payoffDate.setMonth(payoffDate.getMonth() + monthsNew);
+            document.getElementById('newPayoff').textContent = yearsNew.toFixed(1) + ' years';
+            document.getElementById('timeSaved').textContent = yearsSaved.toFixed(1) + ' years';
+            document.getElementById('interestSaved').textContent = formatCurrency(interestSaved);
+            document.getElementById('payoffDate').textContent = payoffDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+            document.getElementById('origPayment').textContent = formatCurrency(monthlyPayment);
+            document.getElementById('newPayment').textContent = formatCurrency(newMonthlyPayment);
+            document.getElementById('origTime').textContent = yearsOrig.toFixed(1) + ' years';
+            document.getElementById('newTime').textContent = yearsNew.toFixed(1) + ' years';
+            document.getElementById('timeDiff').textContent = yearsSaved.toFixed(1) + ' years';
+            document.getElementById('origInterest').textContent = formatCurrency(interestOrig);
+            document.getElementById('newInterest').textContent = formatCurrency(interestNew);
+            document.getElementById('interestDiff').textContent = formatCurrency(interestSaved);
+            document.getElementById('origTotal').textContent = formatCurrency(totalOrig);
+            document.getElementById('newTotal').textContent = formatCurrency(totalNew);
+            document.getElementById('totalDiff').textContent = formatCurrency(totalOrig - totalNew);
+            const newBarPct = (yearsNew / yearsOrig) * 100;
+            document.getElementById('origBar').style.width = '100%';
+            document.getElementById('origBar').textContent = yearsOrig.toFixed(1) + ' years';
+            document.getElementById('newBar').style.width = newBarPct + '%';
+            document.getElementById('newBar').textContent = yearsNew.toFixed(1) + ' years';
+            document.getElementById('results').classList.add('show');
+        }
+        calculate();
+    </script>
+</body>
+</html>
