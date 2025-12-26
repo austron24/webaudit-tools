@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BMI Calculator - Body Mass Index & Healthy Weight Range</title>
-    <meta name="description" content="Free BMI calculator. Calculate your Body Mass Index, healthy weight range, and understand what your BMI means.">
-    <meta name="keywords" content="BMI calculator, body mass index, healthy weight, BMI chart, weight calculator">
+    <title>BMI Calculator - Calculate Your Body Mass Index</title>
+    <meta name="description" content="Free BMI calculator. Calculate your body mass index and see what category you fall into. Includes healthy weight ranges.">
+    <meta name="keywords" content="bmi calculator, body mass index, bmi chart, healthy weight, weight calculator">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/bmi-calculator.html">
     <style>
-        :root { --primary: #14b8a6; --primary-dark: #0d9488; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #14b8a6; --primary-dark: #0d9488; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -20,26 +20,35 @@
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
         .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
         .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .unit-toggle { display: flex; gap: 10px; margin-bottom: 20px; }
+        .unit-btn { flex: 1; padding: 12px; border: 2px solid var(--border); border-radius: 10px; background: var(--bg-input); color: var(--text-secondary); cursor: pointer; text-align: center; transition: all 0.3s; }
+        .unit-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
-        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
-        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        input { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus { outline: none; border-color: var(--primary); }
         .result-hero { padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
-        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
-        .result-hero-label { color: rgba(255,255,255,0.8); }
+        .result-hero.underweight { background: linear-gradient(135deg, #0ea5e9, #0284c7); }
+        .result-hero.normal { background: linear-gradient(135deg, var(--success), #047857); }
+        .result-hero.overweight { background: linear-gradient(135deg, var(--warning), #d97706); }
+        .result-hero.obese { background: linear-gradient(135deg, var(--danger), #b91c1c); }
+        .result-hero-value { font-size: 4rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.9); font-size: 1.2rem; }
         .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
         .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
         .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
-        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
+        .bmi-scale { display: flex; margin-top: 20px; border-radius: 10px; overflow: hidden; }
+        .scale-section { flex: 1; padding: 15px 10px; text-align: center; color: white; font-size: 0.85rem; }
+        .scale-under { background: #0ea5e9; }
+        .scale-normal { background: var(--success); }
+        .scale-over { background: var(--warning); }
+        .scale-obese { background: var(--danger); }
+        .bmi-pointer { width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 15px solid white; margin: 0 auto; position: relative; top: -5px; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
-        .bmi-underweight { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
-        .bmi-normal { background: linear-gradient(135deg, var(--success), #059669); }
-        .bmi-overweight { background: linear-gradient(135deg, #f59e0b, #d97706); }
-        .bmi-obese { background: linear-gradient(135deg, #ef4444, #dc2626); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
         @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
     </style>
@@ -64,49 +73,82 @@
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>📊 Your Measurements</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Height (feet)</label>
-                        <input type="number" id="feet" value="5" min="3" max="8" oninput="calculate()">
+                <h2>📏 Your Measurements</h2>
+                <div class="unit-toggle">
+                    <div class="unit-btn active" onclick="setUnit('imperial')">Imperial (lbs/ft)</div>
+                    <div class="unit-btn" onclick="setUnit('metric')">Metric (kg/cm)</div>
+                </div>
+
+                <div id="imperialInputs">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Height (feet)</label>
+                            <input type="number" id="feet" value="5" step="1" oninput="calculate()">
+                        </div>
+                        <div class="form-group">
+                            <label>Height (inches)</label>
+                            <input type="number" id="inches" value="10" step="1" oninput="calculate()">
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label>Height (inches)</label>
-                        <input type="number" id="inches" value="10" min="0" max="11" oninput="calculate()">
-                    </div>
-                    <div class="form-group" style="grid-column: span 2;">
-                        <label>Weight (lbs)</label>
-                        <input type="number" id="weight" value="170" min="50" max="600" oninput="calculate()">
+                        <label>Weight (pounds)</label>
+                        <input type="number" id="pounds" value="160" step="1" oninput="calculate()">
                     </div>
                 </div>
 
-                <div class="result-hero" id="resultHero">
-                    <div class="result-hero-value" id="bmi">0</div>
-                    <div class="result-hero-label" id="category">Normal</div>
+                <div id="metricInputs" style="display: none;">
+                    <div class="form-group">
+                        <label>Height (cm)</label>
+                        <input type="number" id="cm" value="178" step="1" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Weight (kg)</label>
+                        <input type="number" id="kg" value="73" step="0.5" oninput="calculate()">
+                    </div>
+                </div>
+
+                <div class="result-hero normal" id="resultHero">
+                    <div class="result-hero-value" id="bmiValue">0.0</div>
+                    <div class="result-hero-label" id="bmiCategory">Normal Weight</div>
+                </div>
+
+                <div class="bmi-scale">
+                    <div class="scale-section scale-under">Underweight<br>&lt;18.5</div>
+                    <div class="scale-section scale-normal">Normal<br>18.5-24.9</div>
+                    <div class="scale-section scale-over">Overweight<br>25-29.9</div>
+                    <div class="scale-section scale-obese">Obese<br>30+</div>
                 </div>
 
                 <div class="results-grid">
                     <div class="result-card">
-                        <div class="result-value" id="minWeight">0</div>
-                        <div class="result-label">Min Healthy (18.5 BMI)</div>
+                        <div class="result-value" id="healthyMin">0 lbs</div>
+                        <div class="result-label">Healthy Min</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="idealWeight">0</div>
-                        <div class="result-label">Ideal (22 BMI)</div>
+                        <div class="result-value" id="healthyMax">0 lbs</div>
+                        <div class="result-label">Healthy Max</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="maxWeight">0</div>
-                        <div class="result-label">Max Healthy (24.9 BMI)</div>
+                        <div class="result-value" id="idealWeight">0 lbs</div>
+                        <div class="result-label">Ideal Weight</div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>📋 BMI Categories (WHO)</h2>
-                <div class="breakdown-row" style="border-left: 4px solid #3b82f6;"><span>Underweight</span><span>Below 18.5</span></div>
-                <div class="breakdown-row" style="border-left: 4px solid var(--success);"><span>Normal Weight</span><span>18.5 - 24.9</span></div>
-                <div class="breakdown-row" style="border-left: 4px solid #f59e0b;"><span>Overweight</span><span>25 - 29.9</span></div>
-                <div class="breakdown-row" style="border-left: 4px solid #ef4444;"><span>Obese</span><span>30 and above</span></div>
+                <h2>📊 BMI Categories</h2>
+                <div style="background: var(--bg-input); padding: 15px; border-radius: 10px; margin-bottom: 10px;">
+                    <strong style="color: #0ea5e9;">Underweight:</strong> BMI less than 18.5
+                </div>
+                <div style="background: var(--bg-input); padding: 15px; border-radius: 10px; margin-bottom: 10px;">
+                    <strong style="color: var(--success);">Normal weight:</strong> BMI 18.5 to 24.9
+                </div>
+                <div style="background: var(--bg-input); padding: 15px; border-radius: 10px; margin-bottom: 10px;">
+                    <strong style="color: var(--warning);">Overweight:</strong> BMI 25 to 29.9
+                </div>
+                <div style="background: var(--bg-input); padding: 15px; border-radius: 10px;">
+                    <strong style="color: var(--danger);">Obese:</strong> BMI 30 or greater
+                </div>
             </div>
 
             <div class="ad-container">
@@ -119,9 +161,9 @@
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
                     <a href="calorie-calculator.html" class="related-link">🔥 Calorie Calculator</a>
-                    <a href="body-fat-calculator.html" class="related-link">📏 Body Fat</a>
-                    <a href="ideal-weight-calculator.html" class="related-link">🎯 Ideal Weight</a>
-                    <a href="blood-pressure-calculator.html" class="related-link">❤️ Blood Pressure</a>
+                    <a href="tdee-calculator.html" class="related-link">💪 TDEE Calculator</a>
+                    <a href="ideal-weight-calculator.html" class="related-link">⚖️ Ideal Weight</a>
+                    <a href="body-fat-calculator.html" class="related-link">📊 Body Fat</a>
                 </div>
             </div>
         </div>
@@ -136,40 +178,70 @@
     </div>
 
     <script>
+        let unit = 'imperial';
+
+        function setUnit(u) {
+            unit = u;
+            document.querySelectorAll('.unit-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('imperialInputs').style.display = u === 'imperial' ? 'block' : 'none';
+            document.getElementById('metricInputs').style.display = u === 'metric' ? 'block' : 'none';
+            
+            calculate();
+        }
+
         function calculate() {
-            const feet = parseInt(document.getElementById('feet').value) || 5;
-            const inches = parseInt(document.getElementById('inches').value) || 10;
-            const weight = parseFloat(document.getElementById('weight').value) || 170;
-
-            const totalInches = feet * 12 + inches;
-            const bmi = (weight / (totalInches * totalInches)) * 703;
-
-            let category, cssClass;
+            let heightInches, weightLbs;
+            
+            if (unit === 'imperial') {
+                const feet = parseFloat(document.getElementById('feet').value) || 0;
+                const inches = parseFloat(document.getElementById('inches').value) || 0;
+                heightInches = (feet * 12) + inches;
+                weightLbs = parseFloat(document.getElementById('pounds').value) || 0;
+            } else {
+                const cm = parseFloat(document.getElementById('cm').value) || 0;
+                const kg = parseFloat(document.getElementById('kg').value) || 0;
+                heightInches = cm / 2.54;
+                weightLbs = kg * 2.205;
+            }
+            
+            const bmi = (weightLbs / (heightInches * heightInches)) * 703;
+            
+            let category, heroClass;
             if (bmi < 18.5) {
                 category = 'Underweight';
-                cssClass = 'bmi-underweight';
+                heroClass = 'underweight';
             } else if (bmi < 25) {
                 category = 'Normal Weight';
-                cssClass = 'bmi-normal';
+                heroClass = 'normal';
             } else if (bmi < 30) {
                 category = 'Overweight';
-                cssClass = 'bmi-overweight';
+                heroClass = 'overweight';
             } else {
                 category = 'Obese';
-                cssClass = 'bmi-obese';
+                heroClass = 'obese';
             }
-
-            const minWeight = (18.5 * totalInches * totalInches) / 703;
-            const idealWeight = (22 * totalInches * totalInches) / 703;
-            const maxWeight = (24.9 * totalInches * totalInches) / 703;
-
-            document.getElementById('bmi').textContent = bmi.toFixed(1);
-            document.getElementById('category').textContent = category;
-            document.getElementById('resultHero').className = 'result-hero ' + cssClass;
-
-            document.getElementById('minWeight').textContent = Math.round(minWeight) + ' lbs';
-            document.getElementById('idealWeight').textContent = Math.round(idealWeight) + ' lbs';
-            document.getElementById('maxWeight').textContent = Math.round(maxWeight) + ' lbs';
+            
+            const healthyMinLbs = (18.5 / 703) * (heightInches * heightInches);
+            const healthyMaxLbs = (24.9 / 703) * (heightInches * heightInches);
+            const idealLbs = (21.7 / 703) * (heightInches * heightInches);
+            
+            document.getElementById('bmiValue').textContent = bmi.toFixed(1);
+            document.getElementById('bmiCategory').textContent = category;
+            
+            const hero = document.getElementById('resultHero');
+            hero.className = 'result-hero ' + heroClass;
+            
+            if (unit === 'imperial') {
+                document.getElementById('healthyMin').textContent = healthyMinLbs.toFixed(0) + ' lbs';
+                document.getElementById('healthyMax').textContent = healthyMaxLbs.toFixed(0) + ' lbs';
+                document.getElementById('idealWeight').textContent = idealLbs.toFixed(0) + ' lbs';
+            } else {
+                document.getElementById('healthyMin').textContent = (healthyMinLbs / 2.205).toFixed(1) + ' kg';
+                document.getElementById('healthyMax').textContent = (healthyMaxLbs / 2.205).toFixed(1) + ' kg';
+                document.getElementById('idealWeight').textContent = (idealLbs / 2.205).toFixed(1) + ' kg';
+            }
         }
         calculate();
     </script>

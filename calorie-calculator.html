@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calorie Calculator - Daily Calorie Needs & TDEE</title>
-    <meta name="description" content="Free calorie calculator. Calculate your daily calorie needs, BMR, and TDEE for weight loss, maintenance, or muscle gain.">
-    <meta name="keywords" content="calorie calculator, TDEE calculator, BMR calculator, daily calories, weight loss calories">
+    <title>Calorie Calculator - Daily Calorie Needs Calculator</title>
+    <meta name="description" content="Free calorie calculator. Calculate how many calories you need daily to maintain, lose, or gain weight. Includes activity levels.">
+    <meta name="keywords" content="calorie calculator, daily calorie needs, calorie intake, weight loss calories, calorie counter">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/calorie-calculator.html">
     <style>
-        :root { --primary: #f97316; --primary-dark: #ea580c; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #f97316; --primary-dark: #ea580c; --secondary: #22d3ee; --accent: #10b981; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -25,19 +25,29 @@
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
         input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
         input:focus, select:focus { outline: none; border-color: var(--primary); }
+        .gender-toggle { display: flex; gap: 10px; margin-bottom: 20px; }
+        .gender-btn { flex: 1; padding: 15px; border: 2px solid var(--border); border-radius: 10px; background: var(--bg-input); color: var(--text-secondary); cursor: pointer; text-align: center; transition: all 0.3s; font-size: 1.1rem; }
+        .gender-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
         .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
-        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
-        .result-hero-label { color: rgba(255,255,255,0.8); }
-        .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
-        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
-        .result-value { font-size: 1.2rem; font-weight: 700; color: var(--secondary); }
-        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.8rem; }
-        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
+        .result-hero-value { font-size: 3.5rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.9); }
+        .calorie-goals { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .goal-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .goal-card.lose { border-left: 4px solid var(--danger); }
+        .goal-card.maintain { border-left: 4px solid var(--accent); }
+        .goal-card.gain { border-left: 4px solid var(--secondary); }
+        .goal-value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
+        .goal-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .goal-subtitle { font-size: 0.75rem; color: var(--text-secondary); margin-top: 5px; }
+        .macro-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px; }
+        .macro-card { background: var(--bg-input); padding: 15px; border-radius: 10px; text-align: center; }
+        .macro-value { font-size: 1.3rem; font-weight: bold; color: var(--accent); }
+        .macro-label { font-size: 0.85rem; color: var(--text-secondary); }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } .results-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 640px) { .form-grid, .calorie-goals, .macro-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -60,72 +70,94 @@
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>📊 Your Information</h2>
+                <h2>👤 Your Information</h2>
+                <div class="gender-toggle">
+                    <div class="gender-btn active" onclick="setGender('male')">♂️ Male</div>
+                    <div class="gender-btn" onclick="setGender('female')">♀️ Female</div>
+                </div>
+
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Age (years)</label>
-                        <input type="number" id="age" value="30" min="15" max="100" oninput="calculate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Gender</label>
-                        <select id="gender" onchange="calculate()">
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                        </select>
+                        <input type="number" id="age" value="30" step="1" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Height (inches)</label>
-                        <input type="number" id="height" value="70" min="48" max="96" oninput="calculate()">
+                        <input type="number" id="height" value="70" step="1" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Weight (lbs)</label>
-                        <input type="number" id="weight" value="170" min="80" max="500" oninput="calculate()">
+                        <input type="number" id="weight" value="170" step="1" oninput="calculate()">
                     </div>
-                    <div class="form-group" style="grid-column: span 2;">
+                    <div class="form-group">
                         <label>Activity Level</label>
                         <select id="activity" onchange="calculate()">
-                            <option value="1.2">Sedentary (little or no exercise)</option>
-                            <option value="1.375">Lightly Active (1-3 days/week)</option>
-                            <option value="1.55" selected>Moderately Active (3-5 days/week)</option>
-                            <option value="1.725">Very Active (6-7 days/week)</option>
-                            <option value="1.9">Extra Active (very hard exercise)</option>
+                            <option value="1.2">Sedentary (little exercise)</option>
+                            <option value="1.375">Light (1-3 days/week)</option>
+                            <option value="1.55" selected>Moderate (3-5 days/week)</option>
+                            <option value="1.725">Active (6-7 days/week)</option>
+                            <option value="1.9">Very Active (2x/day)</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="result-hero">
-                    <div class="result-hero-label">Daily Calories (TDEE)</div>
-                    <div class="result-hero-value" id="tdee">0 cal</div>
+                    <div class="result-hero-label">Daily Calorie Needs</div>
+                    <div class="result-hero-value" id="maintenanceCalories">0</div>
+                    <div class="result-hero-label">calories/day</div>
                 </div>
 
-                <div class="results-grid">
-                    <div class="result-card">
-                        <div class="result-value" id="bmr">0</div>
-                        <div class="result-label">BMR</div>
+                <div class="calorie-goals">
+                    <div class="goal-card lose">
+                        <div class="goal-value" id="loseCalories">0</div>
+                        <div class="goal-label">Weight Loss</div>
+                        <div class="goal-subtitle">-500 cal/day = 1 lb/week</div>
                     </div>
-                    <div class="result-card">
-                        <div class="result-value" id="lose">0</div>
-                        <div class="result-label">Weight Loss</div>
+                    <div class="goal-card maintain">
+                        <div class="goal-value" id="maintainCalories">0</div>
+                        <div class="goal-label">Maintain Weight</div>
+                        <div class="goal-subtitle">Stay at current weight</div>
                     </div>
-                    <div class="result-card">
-                        <div class="result-value" id="maintain">0</div>
-                        <div class="result-label">Maintain</div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-value" id="gain">0</div>
-                        <div class="result-label">Muscle Gain</div>
+                    <div class="goal-card gain">
+                        <div class="goal-value" id="gainCalories">0</div>
+                        <div class="goal-label">Weight Gain</div>
+                        <div class="goal-subtitle">+500 cal/day = 1 lb/week</div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>📈 Calorie Goals by Objective</h2>
-                <div class="breakdown-row"><span>Extreme Weight Loss (-2 lbs/week)</span><span id="extremeLose">0 cal</span></div>
-                <div class="breakdown-row"><span>Weight Loss (-1 lb/week)</span><span id="mildLose">0 cal</span></div>
-                <div class="breakdown-row"><span>Mild Weight Loss (-0.5 lb/week)</span><span id="slowLose">0 cal</span></div>
-                <div class="breakdown-row"><span>Maintain Weight</span><span id="maintainCal">0 cal</span></div>
-                <div class="breakdown-row"><span>Mild Weight Gain (+0.5 lb/week)</span><span id="slowGain">0 cal</span></div>
-                <div class="breakdown-row"><span>Weight Gain (+1 lb/week)</span><span id="fastGain">0 cal</span></div>
+                <h2>🥗 Suggested Macros (Maintenance)</h2>
+                <div class="macro-grid">
+                    <div class="macro-card">
+                        <div class="macro-value" id="protein">0g</div>
+                        <div class="macro-label">Protein (30%)</div>
+                    </div>
+                    <div class="macro-card">
+                        <div class="macro-value" id="carbs">0g</div>
+                        <div class="macro-label">Carbs (40%)</div>
+                    </div>
+                    <div class="macro-card">
+                        <div class="macro-value" id="fat">0g</div>
+                        <div class="macro-label">Fat (30%)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📊 BMR & TDEE</h2>
+                <div class="form-grid">
+                    <div class="goal-card">
+                        <div class="goal-value" id="bmr">0</div>
+                        <div class="goal-label">BMR</div>
+                        <div class="goal-subtitle">Basal Metabolic Rate</div>
+                    </div>
+                    <div class="goal-card">
+                        <div class="goal-value" id="tdee">0</div>
+                        <div class="goal-label">TDEE</div>
+                        <div class="goal-subtitle">Total Daily Energy Expenditure</div>
+                    </div>
+                </div>
             </div>
 
             <div class="ad-container">
@@ -138,9 +170,9 @@
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
                     <a href="bmi-calculator.html" class="related-link">⚖️ BMI Calculator</a>
-                    <a href="body-fat-calculator.html" class="related-link">📏 Body Fat</a>
-                    <a href="macro-calculator.html" class="related-link">🥗 Macros</a>
-                    <a href="ideal-weight-calculator.html" class="related-link">🎯 Ideal Weight</a>
+                    <a href="tdee-calculator.html" class="related-link">💪 TDEE Calculator</a>
+                    <a href="macro-calculator.html" class="related-link">🥗 Macro Calculator</a>
+                    <a href="ideal-weight-calculator.html" class="related-link">📊 Ideal Weight</a>
                 </div>
             </div>
         </div>
@@ -155,35 +187,57 @@
     </div>
 
     <script>
-        function calculate() {
-            const age = parseInt(document.getElementById('age').value) || 30;
-            const gender = document.getElementById('gender').value;
-            const height = parseFloat(document.getElementById('height').value) * 2.54; // to cm
-            const weight = parseFloat(document.getElementById('weight').value) * 0.453592; // to kg
-            const activity = parseFloat(document.getElementById('activity').value);
+        let gender = 'male';
 
-            // Mifflin-St Jeor Equation
+        function setGender(g) {
+            gender = g;
+            document.querySelectorAll('.gender-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            calculate();
+        }
+
+        function calculate() {
+            const age = parseFloat(document.getElementById('age').value) || 0;
+            const height = parseFloat(document.getElementById('height').value) || 0; // inches
+            const weight = parseFloat(document.getElementById('weight').value) || 0; // lbs
+            const activity = parseFloat(document.getElementById('activity').value) || 1.55;
+            
+            // Convert to metric for Mifflin-St Jeor
+            const heightCm = height * 2.54;
+            const weightKg = weight / 2.205;
+            
+            // Calculate BMR using Mifflin-St Jeor Equation
             let bmr;
             if (gender === 'male') {
-                bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+                bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age) + 5;
             } else {
-                bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+                bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age) - 161;
             }
-
+            
+            // Calculate TDEE
             const tdee = bmr * activity;
-
-            document.getElementById('bmr').textContent = Math.round(bmr) + ' cal';
-            document.getElementById('tdee').textContent = Math.round(tdee) + ' cal';
-            document.getElementById('lose').textContent = Math.round(tdee - 500) + ' cal';
-            document.getElementById('maintain').textContent = Math.round(tdee) + ' cal';
-            document.getElementById('gain').textContent = Math.round(tdee + 300) + ' cal';
-
-            document.getElementById('extremeLose').textContent = Math.round(tdee - 1000) + ' cal';
-            document.getElementById('mildLose').textContent = Math.round(tdee - 500) + ' cal';
-            document.getElementById('slowLose').textContent = Math.round(tdee - 250) + ' cal';
-            document.getElementById('maintainCal').textContent = Math.round(tdee) + ' cal';
-            document.getElementById('slowGain').textContent = Math.round(tdee + 250) + ' cal';
-            document.getElementById('fastGain').textContent = Math.round(tdee + 500) + ' cal';
+            
+            // Calorie goals
+            const maintain = Math.round(tdee);
+            const lose = Math.round(tdee - 500);
+            const gain = Math.round(tdee + 500);
+            
+            // Macros (based on maintenance)
+            const protein = Math.round((maintain * 0.30) / 4);
+            const carbs = Math.round((maintain * 0.40) / 4);
+            const fat = Math.round((maintain * 0.30) / 9);
+            
+            document.getElementById('maintenanceCalories').textContent = maintain.toLocaleString();
+            document.getElementById('loseCalories').textContent = lose.toLocaleString();
+            document.getElementById('maintainCalories').textContent = maintain.toLocaleString();
+            document.getElementById('gainCalories').textContent = gain.toLocaleString();
+            
+            document.getElementById('protein').textContent = protein + 'g';
+            document.getElementById('carbs').textContent = carbs + 'g';
+            document.getElementById('fat').textContent = fat + 'g';
+            
+            document.getElementById('bmr').textContent = Math.round(bmr).toLocaleString();
+            document.getElementById('tdee').textContent = maintain.toLocaleString();
         }
         calculate();
     </script>
