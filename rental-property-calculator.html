@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Rental Property Calculator - Investment ROI Estimator</title>
+    <meta name="description" content="Calculate rental property returns and cash flow. Estimate cap rate, ROI, and monthly income. Free rental property investment calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #059669 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .section-title {
+            font-size: 16px;
+            color: #059669;
+            margin: 20px 0 15px;
+            padding-top: 15px;
+            border-top: 2px solid #d1fae5;
+        }
+        .section-title:first-child { border: none; padding-top: 0; margin-top: 0; }
+        .input-group { margin-bottom: 15px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #059669;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #059669;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 20px;
+        }
+        .btn:hover { background: #047857; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #d1fae5;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #059669; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #059669; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .breakdown-value.positive { color: #059669; }
+        .breakdown-value.negative { color: #dc2626; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #059669; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #047857;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #6ee7b7; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏘️ Rental Property Calculator</h1>
+            <p class="subtitle">Analyze your investment returns</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="section-title">🏠 Property Details</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Purchase Price ($)</label>
+                    <input type="number" id="price" value="300000" min="0" step="10000">
+                </div>
+                <div class="input-group">
+                    <label>Down Payment (%)</label>
+                    <input type="number" id="downPayment" value="20" min="0" max="100">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Interest Rate (%)</label>
+                    <input type="number" id="rate" value="7" min="0" max="15" step="0.125">
+                </div>
+                <div class="input-group">
+                    <label>Loan Term (years)</label>
+                    <select id="term">
+                        <option value="15">15 years</option>
+                        <option value="30" selected>30 years</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section-title">💰 Rental Income</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Monthly Rent ($)</label>
+                    <input type="number" id="rent" value="2200" min="0" step="100">
+                </div>
+                <div class="input-group">
+                    <label>Vacancy Rate (%)</label>
+                    <input type="number" id="vacancy" value="5" min="0" max="50">
+                </div>
+            </div>
+
+            <div class="section-title">📋 Monthly Expenses</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Property Tax ($/month)</label>
+                    <input type="number" id="tax" value="300" min="0" step="25">
+                </div>
+                <div class="input-group">
+                    <label>Insurance ($/month)</label>
+                    <input type="number" id="insurance" value="150" min="0" step="25">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Maintenance (%)</label>
+                    <input type="number" id="maintenance" value="5" min="0" max="20">
+                </div>
+                <div class="input-group">
+                    <label>Property Mgmt (%)</label>
+                    <input type="number" id="management" value="0" min="0" max="15">
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Analyze Investment</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="cashFlow">$0</div>
+                    <div class="result-label-main">Monthly Cash Flow</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="capRate">0%</div>
+                        <div class="summary-label">Cap Rate</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="cashOnCash">0%</div>
+                        <div class="summary-label">Cash-on-Cash Return</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="annualCashFlow">$0</div>
+                        <div class="summary-label">Annual Cash Flow</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="totalInvestment">$0</div>
+                        <div class="summary-label">Total Investment</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Monthly Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Gross Rent</span>
+                        <span class="breakdown-value positive" id="displayRent">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Vacancy Loss</span>
+                        <span class="breakdown-value negative" id="displayVacancy">-$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Effective Income</span>
+                        <span class="breakdown-value" id="effectiveIncome">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Mortgage Payment</span>
+                        <span class="breakdown-value negative" id="displayMortgage">-$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Property Tax</span>
+                        <span class="breakdown-value negative" id="displayTax">-$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Insurance</span>
+                        <span class="breakdown-value negative" id="displayInsurance">-$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Maintenance</span>
+                        <span class="breakdown-value negative" id="displayMaintenance">-$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Management</span>
+                        <span class="breakdown-value negative" id="displayManagement">-$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Real Estate Calculators</h4>
+            <a href="closing-cost-calculator.html">Closing Costs</a>
+            <a href="land-value-calculator.html">Land Value</a>
+            <a href="mortgage-calculator.html">Mortgage</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Rental Property Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const price = parseFloat(document.getElementById('price').value);
+            const downPaymentPct = parseFloat(document.getElementById('downPayment').value) / 100;
+            const rate = parseFloat(document.getElementById('rate').value) / 100 / 12;
+            const term = parseInt(document.getElementById('term').value) * 12;
+            const rent = parseFloat(document.getElementById('rent').value);
+            const vacancy = parseFloat(document.getElementById('vacancy').value) / 100;
+            const tax = parseFloat(document.getElementById('tax').value);
+            const insurance = parseFloat(document.getElementById('insurance').value);
+            const maintenance = parseFloat(document.getElementById('maintenance').value) / 100;
+            const management = parseFloat(document.getElementById('management').value) / 100;
+
+            // Calculate mortgage
+            const downPayment = price * downPaymentPct;
+            const loanAmount = price - downPayment;
+            const mortgage = loanAmount * (rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1);
+
+            // Calculate income
+            const vacancyLoss = rent * vacancy;
+            const effectiveIncome = rent - vacancyLoss;
+            const maintenanceCost = rent * maintenance;
+            const managementCost = rent * management;
+
+            // Total expenses
+            const totalExpenses = mortgage + tax + insurance + maintenanceCost + managementCost;
+
+            // Cash flow
+            const monthlyCashFlow = effectiveIncome - totalExpenses;
+            const annualCashFlow = monthlyCashFlow * 12;
+
+            // Calculate closing costs estimate (3-5% of price)
+            const closingCosts = price * 0.04;
+            const totalInvestment = downPayment + closingCosts;
+
+            // Cap rate (NOI / Price)
+            const annualNOI = (effectiveIncome - tax - insurance - maintenanceCost - managementCost) * 12;
+            const capRate = (annualNOI / price) * 100;
+
+            // Cash-on-cash return
+            const cashOnCash = (annualCashFlow / totalInvestment) * 100;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('cashFlow').textContent = formatMoney(monthlyCashFlow);
+            document.getElementById('capRate').textContent = capRate.toFixed(1) + '%';
+            document.getElementById('cashOnCash').textContent = cashOnCash.toFixed(1) + '%';
+            document.getElementById('annualCashFlow').textContent = formatMoney(annualCashFlow);
+            document.getElementById('totalInvestment').textContent = formatMoney(totalInvestment);
+
+            document.getElementById('displayRent').textContent = formatMoney(rent);
+            document.getElementById('displayVacancy').textContent = '-' + formatMoney(vacancyLoss);
+            document.getElementById('effectiveIncome').textContent = formatMoney(effectiveIncome);
+            document.getElementById('displayMortgage').textContent = '-' + formatMoney(mortgage);
+            document.getElementById('displayTax').textContent = '-' + formatMoney(tax);
+            document.getElementById('displayInsurance').textContent = '-' + formatMoney(insurance);
+            document.getElementById('displayMaintenance').textContent = '-' + formatMoney(maintenanceCost);
+            document.getElementById('displayManagement').textContent = '-' + formatMoney(managementCost);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

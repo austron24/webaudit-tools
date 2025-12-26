@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Alimony Calculator - Spousal Support Estimator</title>
+    <meta name="description" content="Estimate alimony and spousal support payments. Calculate based on income and marriage length. Free alimony calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #9333ea 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .disclaimer {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: #92400e;
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #9333ea;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #9333ea;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #7e22ce; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #f3e8ff;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #9333ea; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #9333ea; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #9333ea; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #7e22ce;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #d8b4fe; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💍 Alimony Calculator</h1>
+            <p class="subtitle">Estimate spousal support payments</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="disclaimer">
+                <strong>Disclaimer:</strong> Alimony varies greatly by state and circumstances. This provides a rough estimate only. Consult a family law attorney for accurate guidance.
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Higher Earner's Monthly Income ($)</label>
+                    <input type="number" id="higherIncome" value="10000" min="0" step="500">
+                </div>
+                <div class="input-group">
+                    <label>Lower Earner's Monthly Income ($)</label>
+                    <input type="number" id="lowerIncome" value="3000" min="0" step="500">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Marriage Length (years)</label>
+                    <input type="number" id="marriageYears" value="12" min="0" max="50">
+                </div>
+                <div class="input-group">
+                    <label>State Formula</label>
+                    <select id="formula">
+                        <option value="standard" selected>Standard (30-40% difference)</option>
+                        <option value="california">California Style</option>
+                        <option value="texas">Texas Style (Limited)</option>
+                        <option value="newyork">New York Style</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Children from Marriage</label>
+                <select id="children">
+                    <option value="yes">Yes - May affect calculation</option>
+                    <option value="no" selected>No</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Alimony</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="monthlyAlimony">$0</div>
+                    <div class="result-label-main">Estimated Monthly Alimony</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="annualAlimony">$0</div>
+                        <div class="summary-label">Annual Total</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="duration">0 years</div>
+                        <div class="summary-label">Typical Duration</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="totalPayout">$0</div>
+                        <div class="summary-label">Total Payout</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="incomeDiff">$0</div>
+                        <div class="summary-label">Income Difference</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Calculation Details</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Higher Income</span>
+                        <span class="breakdown-value" id="displayHigher">$0/mo</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Lower Income</span>
+                        <span class="breakdown-value" id="displayLower">$0/mo</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Income Gap</span>
+                        <span class="breakdown-value" id="displayGap">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Formula Applied</span>
+                        <span class="breakdown-value" id="displayFormula">30-40%</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Duration Rule</span>
+                        <span class="breakdown-value" id="displayRule">Half marriage length</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Family Calculators</h4>
+            <a href="child-support-calculator.html">Child Support</a>
+            <a href="budget-calculator.html">Budget Planner</a>
+            <a href="net-worth-calculator.html">Net Worth</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Alimony Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const higherIncome = parseFloat(document.getElementById('higherIncome').value);
+            const lowerIncome = parseFloat(document.getElementById('lowerIncome').value);
+            const marriageYears = parseInt(document.getElementById('marriageYears').value);
+            const formula = document.getElementById('formula').value;
+            const children = document.getElementById('children').value;
+
+            const incomeDiff = higherIncome - lowerIncome;
+
+            // Calculate based on formula
+            let percentage = 0.33; // Default 33%
+            let formulaText = '30-40% of difference';
+            let durationRule = 'Half marriage length';
+
+            switch(formula) {
+                case 'california':
+                    percentage = 0.40;
+                    formulaText = '40% of difference (CA)';
+                    break;
+                case 'texas':
+                    percentage = 0.20;
+                    formulaText = '20% max (TX - limited)';
+                    durationRule = 'Max 5-10 years';
+                    break;
+                case 'newyork':
+                    percentage = 0.30;
+                    formulaText = '30% higher - 20% lower (NY)';
+                    break;
+            }
+
+            // Child adjustment
+            if (children === 'yes') {
+                percentage *= 0.9; // Slightly reduce if child support also applies
+            }
+
+            const monthlyAlimony = incomeDiff * percentage;
+            const annualAlimony = monthlyAlimony * 12;
+
+            // Duration calculation (rough rule: half the marriage length)
+            let duration = Math.ceil(marriageYears / 2);
+            if (marriageYears >= 20) {
+                duration = marriageYears; // Long marriages may be permanent
+                durationRule = 'Long-term/permanent possible';
+            }
+            if (formula === 'texas') {
+                duration = Math.min(duration, 10);
+            }
+
+            const totalPayout = annualAlimony * duration;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('monthlyAlimony').textContent = formatMoney(monthlyAlimony);
+            document.getElementById('annualAlimony').textContent = formatMoney(annualAlimony);
+            document.getElementById('duration').textContent = duration + ' years';
+            document.getElementById('totalPayout').textContent = formatMoney(totalPayout);
+            document.getElementById('incomeDiff').textContent = formatMoney(incomeDiff);
+
+            document.getElementById('displayHigher').textContent = formatMoney(higherIncome) + '/mo';
+            document.getElementById('displayLower').textContent = formatMoney(lowerIncome) + '/mo';
+            document.getElementById('displayGap').textContent = formatMoney(incomeDiff);
+            document.getElementById('displayFormula').textContent = formulaText;
+            document.getElementById('displayRule').textContent = durationRule;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

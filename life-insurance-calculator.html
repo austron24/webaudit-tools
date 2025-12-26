@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Life Insurance Calculator - Coverage Needs Estimator</title>
+    <meta name="description" content="Calculate how much life insurance you need. Estimate coverage based on income, debts, and family needs. Free life insurance calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .section-title {
+            font-size: 16px;
+            color: #1e40af;
+            margin: 20px 0 15px;
+            padding-top: 15px;
+            border-top: 2px solid #dbeafe;
+        }
+        .section-title:first-child { border: none; padding-top: 0; margin-top: 0; }
+        .input-group { margin-bottom: 15px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #1e40af;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #1e40af;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 20px;
+        }
+        .btn:hover { background: #1e3a8a; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #dbeafe;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #1e40af; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #1e40af; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #1e40af; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #1e3a8a;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #93c5fd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛡️ Life Insurance Calculator</h1>
+            <p class="subtitle">How much coverage do you need?</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="section-title">💰 Income & Employment</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Annual Income ($)</label>
+                    <input type="number" id="income" value="75000" min="0" step="5000">
+                </div>
+                <div class="input-group">
+                    <label>Years to Replace Income</label>
+                    <input type="number" id="years" value="10" min="1" max="30">
+                </div>
+            </div>
+
+            <div class="section-title">👨‍👩‍👧‍👦 Family & Dependents</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Number of Children</label>
+                    <input type="number" id="children" value="2" min="0" max="10">
+                </div>
+                <div class="input-group">
+                    <label>College Funding (per child)</label>
+                    <select id="college">
+                        <option value="0">No college funding</option>
+                        <option value="50000">Community/State ($50k)</option>
+                        <option value="100000" selected>Public University ($100k)</option>
+                        <option value="200000">Private University ($200k)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section-title">🏠 Debts & Obligations</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Mortgage Balance ($)</label>
+                    <input type="number" id="mortgage" value="250000" min="0" step="10000">
+                </div>
+                <div class="input-group">
+                    <label>Other Debts ($)</label>
+                    <input type="number" id="debts" value="25000" min="0" step="1000">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Final Expenses ($)</label>
+                    <input type="number" id="funeral" value="15000" min="0" step="1000">
+                </div>
+                <div class="input-group">
+                    <label>Existing Life Insurance ($)</label>
+                    <input type="number" id="existing" value="0" min="0" step="10000">
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Coverage Needed</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalNeed">$0</div>
+                    <div class="result-label-main">Recommended Coverage</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="incomeNeed">$0</div>
+                        <div class="summary-label">Income Replacement</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="debtNeed">$0</div>
+                        <div class="summary-label">Debt Payoff</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="collegeNeed">$0</div>
+                        <div class="summary-label">Education Fund</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="monthlyPremium">$0</div>
+                        <div class="summary-label">Est. Monthly Premium</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Coverage Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Income Replacement</span>
+                        <span class="breakdown-value" id="displayIncome">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Mortgage Payoff</span>
+                        <span class="breakdown-value" id="displayMortgage">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Other Debts</span>
+                        <span class="breakdown-value" id="displayDebts">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Education Fund</span>
+                        <span class="breakdown-value" id="displayCollege">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Final Expenses</span>
+                        <span class="breakdown-value" id="displayFuneral">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Less: Existing Coverage</span>
+                        <span class="breakdown-value" id="displayExisting">-$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Insurance Calculators</h4>
+            <a href="pet-insurance-calculator.html">Pet Insurance</a>
+            <a href="home-warranty-calculator.html">Home Warranty</a>
+            <a href="car-depreciation-calculator.html">Car Value</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Life Insurance Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const income = parseFloat(document.getElementById('income').value);
+            const years = parseInt(document.getElementById('years').value);
+            const children = parseInt(document.getElementById('children').value);
+            const college = parseInt(document.getElementById('college').value);
+            const mortgage = parseFloat(document.getElementById('mortgage').value);
+            const debts = parseFloat(document.getElementById('debts').value);
+            const funeral = parseFloat(document.getElementById('funeral').value);
+            const existing = parseFloat(document.getElementById('existing').value);
+
+            // Calculate needs
+            const incomeNeed = income * years;
+            const collegeNeed = college * children;
+            const debtNeed = mortgage + debts;
+
+            const totalNeed = Math.max(0, incomeNeed + collegeNeed + debtNeed + funeral - existing);
+
+            // Estimate monthly premium (very rough: $20-40 per $100k for 20-year term, age 35)
+            const monthlyPremium = (totalNeed / 100000) * 25;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalNeed').textContent = formatMoney(totalNeed);
+            document.getElementById('incomeNeed').textContent = formatMoney(incomeNeed);
+            document.getElementById('debtNeed').textContent = formatMoney(debtNeed);
+            document.getElementById('collegeNeed').textContent = formatMoney(collegeNeed);
+            document.getElementById('monthlyPremium').textContent = formatMoney(monthlyPremium);
+
+            document.getElementById('displayIncome').textContent = formatMoney(incomeNeed);
+            document.getElementById('displayMortgage').textContent = formatMoney(mortgage);
+            document.getElementById('displayDebts').textContent = formatMoney(debts);
+            document.getElementById('displayCollege').textContent = formatMoney(collegeNeed);
+            document.getElementById('displayFuneral').textContent = formatMoney(funeral);
+            document.getElementById('displayExisting').textContent = '-' + formatMoney(existing);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

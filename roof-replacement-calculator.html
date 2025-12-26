@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Roof Replacement Calculator - Roofing Cost Estimator</title>
+    <meta name="description" content="Calculate roof replacement costs for shingles, metal, and tile. Get estimates for materials and labor. Free roofing cost calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #78350f 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #78350f;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #92400e;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #78350f; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #92400e 0%, #78350f 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #fef3c7;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #92400e; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #92400e; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #92400e; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #78350f;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fbbf24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏠 Roof Replacement Calculator</h1>
+            <p class="subtitle">Estimate your new roof costs</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Roof Size (sq ft)</label>
+                    <input type="number" id="roofSize" value="2000" min="500" step="100">
+                </div>
+                <div class="input-group">
+                    <label>Roof Pitch</label>
+                    <select id="pitch">
+                        <option value="low">Low (4/12 or less)</option>
+                        <option value="medium" selected>Medium (5/12 - 8/12)</option>
+                        <option value="steep">Steep (9/12 - 12/12)</option>
+                        <option value="extreme">Extreme (12/12+)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Roofing Material</label>
+                <select id="material">
+                    <option value="3tab">3-Tab Asphalt Shingles ($3-4/sqft)</option>
+                    <option value="architectural" selected>Architectural Shingles ($4-6/sqft)</option>
+                    <option value="premium">Premium Shingles ($6-9/sqft)</option>
+                    <option value="metal">Metal Roofing ($8-14/sqft)</option>
+                    <option value="tile">Clay/Concrete Tile ($10-18/sqft)</option>
+                    <option value="slate">Slate ($15-30/sqft)</option>
+                </select>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Layers to Remove</label>
+                    <select id="layers">
+                        <option value="1" selected>1 Layer</option>
+                        <option value="2">2 Layers</option>
+                        <option value="3">3 Layers</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Stories</label>
+                    <select id="stories">
+                        <option value="1">1 Story</option>
+                        <option value="2" selected>2 Stories</option>
+                        <option value="3">3 Stories</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Additional Features</label>
+                <select id="features">
+                    <option value="basic" selected>Basic (Standard vents)</option>
+                    <option value="skylights">Add Skylights (+$500-2000)</option>
+                    <option value="chimney">Complex Chimney (+$300-800)</option>
+                    <option value="full">Full Package (All features)</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Roof Cost</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalCost">$0</div>
+                    <div class="result-label-main">Estimated Roof Replacement Cost</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="perSqFt">$0</div>
+                        <div class="summary-label">Per Sq Ft (Installed)</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="materialCost">$0</div>
+                        <div class="summary-label">Materials</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="laborCost">$0</div>
+                        <div class="summary-label">Labor</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="lifespan">0 yrs</div>
+                        <div class="summary-label">Expected Lifespan</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Cost Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Roof Area</span>
+                        <span class="breakdown-value" id="displayArea">0 sq ft</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Roofing Squares</span>
+                        <span class="breakdown-value" id="displaySquares">0 squares</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Tear-off Cost</span>
+                        <span class="breakdown-value" id="tearoffCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Underlayment</span>
+                        <span class="breakdown-value" id="underlaymentCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Additional Features</span>
+                        <span class="breakdown-value" id="featuresCost">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Improvement Calculators</h4>
+            <a href="hvac-cost-calculator.html">HVAC Cost</a>
+            <a href="window-replacement-calculator.html">Window Replacement</a>
+            <a href="deck-cost-calculator.html">Deck Cost</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Roof Replacement Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const roofSize = parseInt(document.getElementById('roofSize').value);
+            const pitch = document.getElementById('pitch').value;
+            const material = document.getElementById('material').value;
+            const layers = parseInt(document.getElementById('layers').value);
+            const stories = parseInt(document.getElementById('stories').value);
+            const features = document.getElementById('features').value;
+
+            // Material costs per sq ft
+            const materialCosts = {
+                '3tab': 3.5,
+                architectural: 5,
+                premium: 7.5,
+                metal: 11,
+                tile: 14,
+                slate: 22
+            };
+
+            // Lifespans
+            const lifespans = {
+                '3tab': 20,
+                architectural: 30,
+                premium: 35,
+                metal: 50,
+                tile: 50,
+                slate: 75
+            };
+
+            // Pitch multiplier (steeper = more labor)
+            const pitchMult = { low: 1.0, medium: 1.1, steep: 1.3, extreme: 1.5 };
+
+            // Stories multiplier
+            const storyMult = { 1: 1.0, 2: 1.1, 3: 1.25 };
+
+            // Calculate roofing squares (1 square = 100 sq ft)
+            const squares = Math.ceil(roofSize / 100);
+
+            // Materials
+            const materialTotal = roofSize * materialCosts[material];
+
+            // Underlayment (~$0.50-1 per sq ft)
+            const underlaymentCost = roofSize * 0.75;
+
+            // Tear-off cost ($1-2 per sq ft per layer)
+            const tearoffCost = roofSize * 1.25 * layers;
+
+            // Labor ($2-4 per sq ft base, adjusted for pitch and stories)
+            const laborBase = roofSize * 3;
+            const laborCost = laborBase * pitchMult[pitch] * storyMult[stories];
+
+            // Features
+            const featureCosts = { basic: 0, skylights: 1200, chimney: 500, full: 2000 };
+            const featureTotal = featureCosts[features];
+
+            const totalCost = materialTotal + underlaymentCost + tearoffCost + laborCost + featureTotal;
+            const perSqFt = totalCost / roofSize;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalCost').textContent = formatMoney(totalCost);
+            document.getElementById('perSqFt').textContent = formatMoney(perSqFt);
+            document.getElementById('materialCost').textContent = formatMoney(materialTotal);
+            document.getElementById('laborCost').textContent = formatMoney(laborCost);
+            document.getElementById('lifespan').textContent = lifespans[material] + ' yrs';
+
+            document.getElementById('displayArea').textContent = roofSize.toLocaleString() + ' sq ft';
+            document.getElementById('displaySquares').textContent = squares + ' squares';
+            document.getElementById('tearoffCost').textContent = formatMoney(tearoffCost);
+            document.getElementById('underlaymentCost').textContent = formatMoney(underlaymentCost);
+            document.getElementById('featuresCost').textContent = formatMoney(featureTotal);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

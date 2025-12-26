@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Disability Insurance Calculator - Coverage Estimator</title>
+    <meta name="description" content="Calculate how much disability insurance you need. Estimate coverage based on income and expenses. Free disability insurance calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #7c3aed 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #7c3aed;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #7c3aed;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #6d28d9; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #ede9fe;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #7c3aed; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #7c3aed; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #7c3aed; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #6d28d9;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #c4b5fd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🩺 Disability Insurance Calculator</h1>
+            <p class="subtitle">Protect your income if you can't work</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Annual Gross Income ($)</label>
+                <input type="number" id="income" value="75000" min="0" step="5000">
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Monthly Essential Expenses ($)</label>
+                    <input type="number" id="expenses" value="4000" min="0" step="100">
+                </div>
+                <div class="input-group">
+                    <label>Your Age</label>
+                    <input type="number" id="age" value="35" min="18" max="65">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Occupation Risk</label>
+                    <select id="risk">
+                        <option value="low">Low Risk (Office/Professional)</option>
+                        <option value="medium" selected>Medium Risk (Healthcare/Sales)</option>
+                        <option value="high">High Risk (Construction/Labor)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Benefit Period</label>
+                    <select id="benefitPeriod">
+                        <option value="2">2 Years</option>
+                        <option value="5" selected>5 Years</option>
+                        <option value="10">10 Years</option>
+                        <option value="65">To Age 65</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Waiting Period</label>
+                    <select id="waitingPeriod">
+                        <option value="30">30 Days</option>
+                        <option value="60">60 Days</option>
+                        <option value="90" selected>90 Days</option>
+                        <option value="180">180 Days</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Emergency Fund (months)</label>
+                    <input type="number" id="emergency" value="3" min="0" max="24">
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Coverage Needed</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="monthlyBenefit">$0</div>
+                    <div class="result-label-main">Recommended Monthly Benefit</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="incomeReplace">0%</div>
+                        <div class="summary-label">Income Replacement</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="estPremium">$0</div>
+                        <div class="summary-label">Est. Monthly Premium</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="coverageGap">$0</div>
+                        <div class="summary-label">Monthly Coverage Gap</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="waitingCost">$0</div>
+                        <div class="summary-label">Waiting Period Cost</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Coverage Analysis</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Monthly Gross Income</span>
+                        <span class="breakdown-value" id="displayIncome">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Typical Max Coverage (60%)</span>
+                        <span class="breakdown-value" id="maxCoverage">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Your Essential Expenses</span>
+                        <span class="breakdown-value" id="displayExpenses">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Waiting Period</span>
+                        <span class="breakdown-value" id="displayWaiting">90 days</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Benefit Period</span>
+                        <span class="breakdown-value" id="displayBenefit">5 years</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Insurance Calculators</h4>
+            <a href="life-insurance-calculator.html">Life Insurance</a>
+            <a href="pet-insurance-calculator.html">Pet Insurance</a>
+            <a href="home-warranty-calculator.html">Home Warranty</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Disability Insurance Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const income = parseFloat(document.getElementById('income').value);
+            const expenses = parseFloat(document.getElementById('expenses').value);
+            const age = parseInt(document.getElementById('age').value);
+            const risk = document.getElementById('risk').value;
+            const benefitPeriod = document.getElementById('benefitPeriod').value;
+            const waitingPeriod = parseInt(document.getElementById('waitingPeriod').value);
+            const emergency = parseInt(document.getElementById('emergency').value);
+
+            const monthlyIncome = income / 12;
+
+            // Most policies cover 60% of income
+            const maxCoverage = monthlyIncome * 0.6;
+
+            // Recommended benefit is the lesser of max coverage or expenses
+            const recommendedBenefit = Math.min(maxCoverage, expenses);
+
+            // Income replacement percentage
+            const incomeReplace = (recommendedBenefit / monthlyIncome) * 100;
+
+            // Coverage gap (if expenses exceed max coverage)
+            const coverageGap = Math.max(0, expenses - maxCoverage);
+
+            // Waiting period cost (expenses during waiting period)
+            const waitingCost = expenses * (waitingPeriod / 30);
+
+            // Estimated premium (1-3% of benefit, varies by risk)
+            const riskMultiplier = { low: 0.015, medium: 0.02, high: 0.03 };
+            const ageMultiplier = 1 + ((age - 30) * 0.02);
+            const estPremium = recommendedBenefit * riskMultiplier[risk] * ageMultiplier;
+
+            // Benefit period display
+            const benefitDisplay = benefitPeriod === '65' ? 'To age 65' : benefitPeriod + ' years';
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('monthlyBenefit').textContent = formatMoney(recommendedBenefit);
+            document.getElementById('incomeReplace').textContent = Math.round(incomeReplace) + '%';
+            document.getElementById('estPremium').textContent = formatMoney(estPremium);
+            document.getElementById('coverageGap').textContent = formatMoney(coverageGap);
+            document.getElementById('waitingCost').textContent = formatMoney(waitingCost);
+
+            document.getElementById('displayIncome').textContent = formatMoney(monthlyIncome);
+            document.getElementById('maxCoverage').textContent = formatMoney(maxCoverage);
+            document.getElementById('displayExpenses').textContent = formatMoney(expenses);
+            document.getElementById('displayWaiting').textContent = waitingPeriod + ' days';
+            document.getElementById('displayBenefit').textContent = benefitDisplay;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
