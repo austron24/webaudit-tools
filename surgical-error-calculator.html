@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Surgical Error Calculator - Surgery Malpractice Settlement</title>
+    <meta name="description" content="Estimate surgical error malpractice settlements. Calculate compensation for surgery mistakes, wrong-site surgery, retained objects. Free surgical error calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #7c2d12 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #7c2d12;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #7c2d12;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #9a3412; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #7c2d12 0%, #9a3412 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 48px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .result-range { font-size: 16px; opacity: 0.8; margin-top: 10px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #ffedd5;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #7c2d12; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #7c2d12; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #7c2d12; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #9a3412;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fdba74; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔪 Surgical Error Calculator</h1>
+            <p class="subtitle">Estimate surgery malpractice settlement</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Type of Surgical Error</label>
+                    <select id="errorType">
+                        <option value="wrong_site">Wrong-Site Surgery</option>
+                        <option value="retained" selected>Retained Object</option>
+                        <option value="nerve">Nerve Damage</option>
+                        <option value="organ">Organ Damage</option>
+                        <option value="infection">Post-Op Infection</option>
+                        <option value="anesthesia">Anesthesia Error</option>
+                        <option value="wrong_procedure">Wrong Procedure</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Surgery Type</label>
+                    <select id="surgeryType">
+                        <option value="minor">Minor/Outpatient</option>
+                        <option value="moderate" selected>Moderate Surgery</option>
+                        <option value="major">Major Surgery</option>
+                        <option value="cardiac">Cardiac Surgery</option>
+                        <option value="neuro">Neurosurgery</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Medical Bills ($)</label>
+                    <input type="number" id="medicalBills" value="150000" min="0" step="10000">
+                </div>
+                <div class="input-group">
+                    <label>Lost Wages ($)</label>
+                    <input type="number" id="lostWages" value="50000" min="0" step="5000">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Outcome Severity</label>
+                    <select id="severity">
+                        <option value="minor">Minor Complications</option>
+                        <option value="moderate" selected>Moderate Harm</option>
+                        <option value="serious">Serious Injury</option>
+                        <option value="permanent">Permanent Disability</option>
+                        <option value="fatal">Death</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Corrective Surgery Needed</label>
+                    <select id="corrective">
+                        <option value="none">None</option>
+                        <option value="minor">Minor Procedure</option>
+                        <option value="major" selected>Major Surgery</option>
+                        <option value="multiple">Multiple Surgeries</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Hospital Type</label>
+                    <select id="hospital">
+                        <option value="community">Community Hospital</option>
+                        <option value="regional" selected>Regional Medical Center</option>
+                        <option value="academic">Academic/Teaching</option>
+                        <option value="specialty">Specialty Hospital</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Documentation of Error</label>
+                    <select id="documentation">
+                        <option value="poor">Unclear/Disputed</option>
+                        <option value="moderate" selected>Some Evidence</option>
+                        <option value="clear">Clear Documentation</option>
+                        <option value="admitted">Hospital Admitted Error</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Settlement</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalSettlement">$0</div>
+                    <div class="result-label-main">Estimated Settlement Value</div>
+                    <div class="result-range" id="settlementRange">Range: $0 - $0</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="economicDamages">$0</div>
+                        <div class="summary-label">Economic Damages</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="nonEconomic">$0</div>
+                        <div class="summary-label">Non-Economic</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="punitiveDamages">$0</div>
+                        <div class="summary-label">Punitive Damages</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="afterFees">$0</div>
+                        <div class="summary-label">After Attorney Fees</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Settlement Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Medical Expenses</span>
+                        <span class="breakdown-value" id="displayMedical">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Future Medical (Est.)</span>
+                        <span class="breakdown-value" id="displayFuture">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Lost Earnings</span>
+                        <span class="breakdown-value" id="displayWages">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Pain & Suffering</span>
+                        <span class="breakdown-value" id="displayPain">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Negligence Factor</span>
+                        <span class="breakdown-value" id="displayNegligence">1.0x</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Medical Malpractice Calculators</h4>
+            <a href="medical-malpractice-calculator.html">Medical Malpractice</a>
+            <a href="birth-injury-calculator.html">Birth Injury</a>
+            <a href="anesthesia-error-calculator.html">Anesthesia Error</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Surgical Error Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const errorType = document.getElementById('errorType').value;
+            const surgeryType = document.getElementById('surgeryType').value;
+            const medicalBills = parseFloat(document.getElementById('medicalBills').value);
+            const lostWages = parseFloat(document.getElementById('lostWages').value);
+            const severity = document.getElementById('severity').value;
+            const corrective = document.getElementById('corrective').value;
+            const hospital = document.getElementById('hospital').value;
+            const documentation = document.getElementById('documentation').value;
+
+            // Future medical based on corrective needs
+            const correctiveMultipliers = {
+                none: 0.2,
+                minor: 0.5,
+                major: 1.5,
+                multiple: 3.0
+            };
+            const futureMedical = medicalBills * correctiveMultipliers[corrective];
+
+            // Economic damages
+            const economicDamages = medicalBills + futureMedical + lostWages;
+
+            // Error type affects value (never events are worst)
+            const errorMultipliers = {
+                wrong_site: 2.0,
+                retained: 1.8,
+                nerve: 1.5,
+                organ: 1.6,
+                infection: 1.2,
+                anesthesia: 1.7,
+                wrong_procedure: 2.2
+            };
+            let painMultiplier = errorMultipliers[errorType];
+
+            // Surgery type affects stakes
+            const surgeryMultipliers = {
+                minor: 0.8,
+                moderate: 1.0,
+                major: 1.3,
+                cardiac: 1.6,
+                neuro: 1.8
+            };
+            painMultiplier *= surgeryMultipliers[surgeryType];
+
+            // Severity multiplier
+            const severityMultipliers = {
+                minor: 1.5,
+                moderate: 3.0,
+                serious: 5.0,
+                permanent: 8.0,
+                fatal: 6.0
+            };
+            painMultiplier *= severityMultipliers[severity];
+
+            const painSuffering = economicDamages * painMultiplier;
+
+            // Punitive damages based on negligence level
+            let negligenceMultiplier = 0;
+
+            // Clear "never events" get higher punitives
+            if (errorType === 'wrong_site' || errorType === 'wrong_procedure' || errorType === 'retained') {
+                negligenceMultiplier += 0.5;
+            }
+
+            // Documentation affects punitive potential
+            const docMultipliers = {
+                poor: 0.3,
+                moderate: 0.5,
+                clear: 0.8,
+                admitted: 1.2
+            };
+            negligenceMultiplier += docMultipliers[documentation];
+
+            // Hospital size affects resources/insurance
+            const hospitalMultipliers = {
+                community: 0.7,
+                regional: 1.0,
+                academic: 1.3,
+                specialty: 1.2
+            };
+            negligenceMultiplier *= hospitalMultipliers[hospital];
+
+            const punitiveDamages = (economicDamages + painSuffering) * negligenceMultiplier;
+
+            // Non-economic damages
+            const nonEconomicDamages = painSuffering;
+
+            // Total settlement
+            const totalSettlement = economicDamages + nonEconomicDamages + punitiveDamages;
+
+            // After attorney fees (33-40%)
+            const afterFees = totalSettlement * 0.6;
+
+            // Range
+            const lowEstimate = totalSettlement * 0.4;
+            const highEstimate = totalSettlement * 2.5;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalSettlement').textContent = formatMoney(totalSettlement);
+            document.getElementById('settlementRange').textContent = 'Range: ' + formatMoney(lowEstimate) + ' - ' + formatMoney(highEstimate);
+            document.getElementById('economicDamages').textContent = formatMoney(economicDamages);
+            document.getElementById('nonEconomic').textContent = formatMoney(nonEconomicDamages);
+            document.getElementById('punitiveDamages').textContent = formatMoney(punitiveDamages);
+            document.getElementById('afterFees').textContent = formatMoney(afterFees);
+
+            document.getElementById('displayMedical').textContent = formatMoney(medicalBills);
+            document.getElementById('displayFuture').textContent = formatMoney(futureMedical);
+            document.getElementById('displayWages').textContent = formatMoney(lostWages);
+            document.getElementById('displayPain').textContent = formatMoney(painSuffering);
+            document.getElementById('displayNegligence').textContent = (negligenceMultiplier + 1).toFixed(1) + 'x';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

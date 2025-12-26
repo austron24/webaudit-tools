@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Anesthesia Error Calculator - Anesthesia Malpractice Settlement</title>
+    <meta name="description" content="Estimate anesthesia malpractice settlements. Calculate compensation for anesthesia errors, awareness during surgery, overdose. Free anesthesia error calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #4c1d95 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #4c1d95;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #4c1d95;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #6d28d9; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 48px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .result-range { font-size: 16px; opacity: 0.8; margin-top: 10px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #ede9fe;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #4c1d95; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #4c1d95; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #4c1d95; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #6d28d9;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #c4b5fd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💉 Anesthesia Error Calculator</h1>
+            <p class="subtitle">Estimate anesthesia malpractice settlement</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Type of Anesthesia Error</label>
+                    <select id="errorType">
+                        <option value="awareness" selected>Anesthesia Awareness</option>
+                        <option value="overdose">Overdose</option>
+                        <option value="underdose">Underdose/Waking</option>
+                        <option value="intubation">Intubation Error</option>
+                        <option value="allergic">Allergic Reaction</option>
+                        <option value="positioning">Positioning Injury</option>
+                        <option value="cardiac">Cardiac Event</option>
+                        <option value="brain">Brain Damage/Hypoxia</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Anesthesia Type</label>
+                    <select id="anesthesiaType">
+                        <option value="local">Local Anesthesia</option>
+                        <option value="regional">Regional/Epidural</option>
+                        <option value="general" selected>General Anesthesia</option>
+                        <option value="sedation">IV Sedation</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Medical Bills ($)</label>
+                    <input type="number" id="medicalBills" value="200000" min="0" step="10000">
+                </div>
+                <div class="input-group">
+                    <label>Lost Wages ($)</label>
+                    <input type="number" id="lostWages" value="75000" min="0" step="5000">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Outcome Severity</label>
+                    <select id="severity">
+                        <option value="minor">Minor/Temporary</option>
+                        <option value="moderate" selected>Moderate Harm</option>
+                        <option value="serious">Serious Injury</option>
+                        <option value="permanent">Permanent Disability</option>
+                        <option value="brain">Brain Damage</option>
+                        <option value="fatal">Death</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Duration of Awareness (if applicable)</label>
+                    <select id="duration">
+                        <option value="none">N/A</option>
+                        <option value="brief">Brief (seconds)</option>
+                        <option value="minutes" selected>Minutes</option>
+                        <option value="extended">Extended Period</option>
+                        <option value="entire">Entire Surgery</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>PTSD/Psychological Impact</label>
+                    <select id="psychological">
+                        <option value="none">None</option>
+                        <option value="mild">Mild Anxiety</option>
+                        <option value="moderate" selected>Moderate PTSD</option>
+                        <option value="severe">Severe PTSD</option>
+                        <option value="debilitating">Debilitating</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Pre-Existing Conditions Noted</label>
+                    <select id="conditions">
+                        <option value="none" selected>None Relevant</option>
+                        <option value="noted">Noted but Ignored</option>
+                        <option value="allergies">Known Allergies</option>
+                        <option value="risk">High-Risk Patient</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Settlement</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalSettlement">$0</div>
+                    <div class="result-label-main">Estimated Settlement Value</div>
+                    <div class="result-range" id="settlementRange">Range: $0 - $0</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="economicDamages">$0</div>
+                        <div class="summary-label">Economic Damages</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="nonEconomic">$0</div>
+                        <div class="summary-label">Non-Economic</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="psychDamages">$0</div>
+                        <div class="summary-label">Psychological</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="afterFees">$0</div>
+                        <div class="summary-label">After Attorney Fees</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Settlement Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Medical Expenses</span>
+                        <span class="breakdown-value" id="displayMedical">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Future Treatment</span>
+                        <span class="breakdown-value" id="displayFuture">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Lost Earnings</span>
+                        <span class="breakdown-value" id="displayWages">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Pain & Suffering</span>
+                        <span class="breakdown-value" id="displayPain">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">PTSD/Trauma Damages</span>
+                        <span class="breakdown-value" id="displayPTSD">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Medical Malpractice Calculators</h4>
+            <a href="medical-malpractice-calculator.html">Medical Malpractice</a>
+            <a href="surgical-error-calculator.html">Surgical Error</a>
+            <a href="birth-injury-calculator.html">Birth Injury</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Anesthesia Error Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const errorType = document.getElementById('errorType').value;
+            const anesthesiaType = document.getElementById('anesthesiaType').value;
+            const medicalBills = parseFloat(document.getElementById('medicalBills').value);
+            const lostWages = parseFloat(document.getElementById('lostWages').value);
+            const severity = document.getElementById('severity').value;
+            const duration = document.getElementById('duration').value;
+            const psychological = document.getElementById('psychological').value;
+            const conditions = document.getElementById('conditions').value;
+
+            // Future medical for ongoing treatment
+            const severityFutureMultipliers = {
+                minor: 0.2,
+                moderate: 0.5,
+                serious: 1.5,
+                permanent: 4.0,
+                brain: 10.0,
+                fatal: 0
+            };
+            const futureMedical = medicalBills * severityFutureMultipliers[severity];
+
+            // Economic damages
+            const economicDamages = medicalBills + futureMedical + lostWages;
+
+            // Error type multiplier
+            const errorMultipliers = {
+                awareness: 2.5,
+                overdose: 2.0,
+                underdose: 1.5,
+                intubation: 1.8,
+                allergic: 1.6,
+                positioning: 1.2,
+                cardiac: 2.2,
+                brain: 3.0
+            };
+            let painMultiplier = errorMultipliers[errorType];
+
+            // Anesthesia type affects complexity
+            const anesthesiaMultipliers = {
+                local: 0.7,
+                regional: 0.9,
+                general: 1.2,
+                sedation: 1.0
+            };
+            painMultiplier *= anesthesiaMultipliers[anesthesiaType];
+
+            // Severity affects multiplier
+            const severityMultipliers = {
+                minor: 1.0,
+                moderate: 2.0,
+                serious: 4.0,
+                permanent: 7.0,
+                brain: 10.0,
+                fatal: 5.0
+            };
+            painMultiplier *= severityMultipliers[severity];
+
+            // Duration of awareness (for awareness cases)
+            if (errorType === 'awareness') {
+                const durationMultipliers = {
+                    none: 1.0,
+                    brief: 1.2,
+                    minutes: 1.5,
+                    extended: 2.0,
+                    entire: 3.0
+                };
+                painMultiplier *= durationMultipliers[duration];
+            }
+
+            const painSuffering = economicDamages * painMultiplier;
+
+            // Psychological damages (separate for anesthesia awareness)
+            const psychMultipliers = {
+                none: 0,
+                mild: 25000,
+                moderate: 75000,
+                severe: 200000,
+                debilitating: 500000
+            };
+            let psychDamages = psychMultipliers[psychological];
+
+            // Pre-existing conditions ignored increases value
+            const conditionMultipliers = {
+                none: 1.0,
+                noted: 1.3,
+                allergies: 1.5,
+                risk: 1.4
+            };
+            psychDamages *= conditionMultipliers[conditions];
+
+            // Non-economic damages
+            const nonEconomicDamages = painSuffering;
+
+            // Total settlement
+            const totalSettlement = economicDamages + nonEconomicDamages + psychDamages;
+
+            // After attorney fees (33-40%)
+            const afterFees = totalSettlement * 0.6;
+
+            // Range
+            const lowEstimate = totalSettlement * 0.4;
+            const highEstimate = totalSettlement * 2.5;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalSettlement').textContent = formatMoney(totalSettlement);
+            document.getElementById('settlementRange').textContent = 'Range: ' + formatMoney(lowEstimate) + ' - ' + formatMoney(highEstimate);
+            document.getElementById('economicDamages').textContent = formatMoney(economicDamages);
+            document.getElementById('nonEconomic').textContent = formatMoney(nonEconomicDamages);
+            document.getElementById('psychDamages').textContent = formatMoney(psychDamages);
+            document.getElementById('afterFees').textContent = formatMoney(afterFees);
+
+            document.getElementById('displayMedical').textContent = formatMoney(medicalBills);
+            document.getElementById('displayFuture').textContent = formatMoney(futureMedical);
+            document.getElementById('displayWages').textContent = formatMoney(lostWages);
+            document.getElementById('displayPain').textContent = formatMoney(painSuffering);
+            document.getElementById('displayPTSD').textContent = formatMoney(psychDamages);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

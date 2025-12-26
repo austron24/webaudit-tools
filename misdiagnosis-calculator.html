@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Misdiagnosis Calculator - Diagnostic Error Settlement</title>
+    <meta name="description" content="Estimate misdiagnosis malpractice settlements. Calculate compensation for delayed diagnosis, missed cancer, wrong diagnosis. Free misdiagnosis calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #166534 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #166534;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #166534;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #15803d; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #166534 0%, #15803d 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 48px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .result-range { font-size: 16px; opacity: 0.8; margin-top: 10px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #dcfce7;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #166534; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #166534; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #166534; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #15803d;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #86efac; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔬 Misdiagnosis Calculator</h1>
+            <p class="subtitle">Estimate diagnostic error settlement</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Type of Diagnostic Error</label>
+                    <select id="errorType">
+                        <option value="missed" selected>Missed Diagnosis</option>
+                        <option value="delayed">Delayed Diagnosis</option>
+                        <option value="wrong">Wrong Diagnosis</option>
+                        <option value="failed_refer">Failed to Refer</option>
+                        <option value="failed_test">Failed to Order Tests</option>
+                        <option value="misread">Misread Test Results</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Condition Misdiagnosed</label>
+                    <select id="condition">
+                        <option value="cancer" selected>Cancer</option>
+                        <option value="heart">Heart Condition</option>
+                        <option value="stroke">Stroke</option>
+                        <option value="infection">Serious Infection</option>
+                        <option value="appendicitis">Appendicitis</option>
+                        <option value="pulmonary">Pulmonary Embolism</option>
+                        <option value="meningitis">Meningitis</option>
+                        <option value="other">Other Condition</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Medical Bills ($)</label>
+                    <input type="number" id="medicalBills" value="250000" min="0" step="10000">
+                </div>
+                <div class="input-group">
+                    <label>Lost Wages ($)</label>
+                    <input type="number" id="lostWages" value="100000" min="0" step="5000">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Delay Duration</label>
+                    <select id="delay">
+                        <option value="weeks">Weeks</option>
+                        <option value="months" selected>Months</option>
+                        <option value="sixmonths">6+ Months</option>
+                        <option value="year">1+ Year</option>
+                        <option value="years">Multiple Years</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Impact of Delay</label>
+                    <select id="impact">
+                        <option value="minimal">Minimal Impact</option>
+                        <option value="moderate" selected>Worsened Prognosis</option>
+                        <option value="significant">Significant Harm</option>
+                        <option value="terminal">Made Terminal</option>
+                        <option value="fatal">Resulted in Death</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Additional Treatment Needed</label>
+                    <select id="treatment">
+                        <option value="minor">Minor Additional</option>
+                        <option value="moderate" selected>Moderate</option>
+                        <option value="extensive">Extensive</option>
+                        <option value="ongoing">Ongoing/Lifetime</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Number of Visits Before Correct Dx</label>
+                    <select id="visits">
+                        <option value="one">1-2 Visits</option>
+                        <option value="several" selected>3-5 Visits</option>
+                        <option value="many">6-10 Visits</option>
+                        <option value="extensive">10+ Visits</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Settlement</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalSettlement">$0</div>
+                    <div class="result-label-main">Estimated Settlement Value</div>
+                    <div class="result-range" id="settlementRange">Range: $0 - $0</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="economicDamages">$0</div>
+                        <div class="summary-label">Economic Damages</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="nonEconomic">$0</div>
+                        <div class="summary-label">Non-Economic</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="lossChance">$0</div>
+                        <div class="summary-label">Loss of Chance</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="afterFees">$0</div>
+                        <div class="summary-label">After Attorney Fees</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Settlement Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Medical Expenses</span>
+                        <span class="breakdown-value" id="displayMedical">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Future Treatment</span>
+                        <span class="breakdown-value" id="displayFuture">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Lost Earnings</span>
+                        <span class="breakdown-value" id="displayWages">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Pain & Suffering</span>
+                        <span class="breakdown-value" id="displayPain">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Delay Impact Factor</span>
+                        <span class="breakdown-value" id="displayDelay">1.0x</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Medical Malpractice Calculators</h4>
+            <a href="medical-malpractice-calculator.html">Medical Malpractice</a>
+            <a href="surgical-error-calculator.html">Surgical Error</a>
+            <a href="cancer-misdiagnosis-calculator.html">Cancer Misdiagnosis</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Misdiagnosis Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const errorType = document.getElementById('errorType').value;
+            const condition = document.getElementById('condition').value;
+            const medicalBills = parseFloat(document.getElementById('medicalBills').value);
+            const lostWages = parseFloat(document.getElementById('lostWages').value);
+            const delay = document.getElementById('delay').value;
+            const impact = document.getElementById('impact').value;
+            const treatment = document.getElementById('treatment').value;
+            const visits = document.getElementById('visits').value;
+
+            // Future medical based on treatment needed
+            const treatmentMultipliers = {
+                minor: 0.3,
+                moderate: 1.0,
+                extensive: 2.5,
+                ongoing: 5.0
+            };
+            const futureMedical = medicalBills * treatmentMultipliers[treatment];
+
+            // Economic damages
+            const economicDamages = medicalBills + futureMedical + lostWages;
+
+            // Condition type affects value (cancer cases highest)
+            const conditionMultipliers = {
+                cancer: 2.0,
+                heart: 1.8,
+                stroke: 1.7,
+                infection: 1.3,
+                appendicitis: 1.2,
+                pulmonary: 1.6,
+                meningitis: 1.5,
+                other: 1.0
+            };
+            let painMultiplier = conditionMultipliers[condition];
+
+            // Error type affects case strength
+            const errorMultipliers = {
+                missed: 1.3,
+                delayed: 1.2,
+                wrong: 1.4,
+                failed_refer: 1.1,
+                failed_test: 1.2,
+                misread: 1.3
+            };
+            painMultiplier *= errorMultipliers[errorType];
+
+            // Impact of delay is critical
+            const impactMultipliers = {
+                minimal: 1.0,
+                moderate: 2.0,
+                significant: 3.5,
+                terminal: 5.0,
+                fatal: 4.0
+            };
+            painMultiplier *= impactMultipliers[impact];
+
+            // Delay duration affects value
+            const delayMultipliers = {
+                weeks: 0.8,
+                months: 1.0,
+                sixmonths: 1.3,
+                year: 1.5,
+                years: 2.0
+            };
+            painMultiplier *= delayMultipliers[delay];
+
+            const painSuffering = economicDamages * painMultiplier;
+
+            // Loss of chance damages (specific to misdiagnosis)
+            let lossOfChanceDamages = 0;
+            if (impact === 'terminal' || impact === 'fatal') {
+                lossOfChanceDamages = economicDamages * 1.5;
+            } else if (impact === 'significant') {
+                lossOfChanceDamages = economicDamages * 0.8;
+            } else if (impact === 'moderate') {
+                lossOfChanceDamages = economicDamages * 0.4;
+            }
+
+            // Multiple visits show pattern
+            const visitMultipliers = {
+                one: 0.8,
+                several: 1.0,
+                many: 1.2,
+                extensive: 1.4
+            };
+            lossOfChanceDamages *= visitMultipliers[visits];
+
+            // Non-economic damages
+            const nonEconomicDamages = painSuffering;
+
+            // Total settlement
+            const totalSettlement = economicDamages + nonEconomicDamages + lossOfChanceDamages;
+
+            // After attorney fees (33-40%)
+            const afterFees = totalSettlement * 0.6;
+
+            // Range
+            const lowEstimate = totalSettlement * 0.35;
+            const highEstimate = totalSettlement * 2.5;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalSettlement').textContent = formatMoney(totalSettlement);
+            document.getElementById('settlementRange').textContent = 'Range: ' + formatMoney(lowEstimate) + ' - ' + formatMoney(highEstimate);
+            document.getElementById('economicDamages').textContent = formatMoney(economicDamages);
+            document.getElementById('nonEconomic').textContent = formatMoney(nonEconomicDamages);
+            document.getElementById('lossChance').textContent = formatMoney(lossOfChanceDamages);
+            document.getElementById('afterFees').textContent = formatMoney(afterFees);
+
+            document.getElementById('displayMedical').textContent = formatMoney(medicalBills);
+            document.getElementById('displayFuture').textContent = formatMoney(futureMedical);
+            document.getElementById('displayWages').textContent = formatMoney(lostWages);
+            document.getElementById('displayPain').textContent = formatMoney(painSuffering);
+            document.getElementById('displayDelay').textContent = painMultiplier.toFixed(1) + 'x';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
