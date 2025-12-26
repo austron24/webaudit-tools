@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cat Age Calculator - Cat Years to Human Years</title>
-    <meta name="description" content="Free cat age calculator. Convert your cat's age to human years and learn about their life stage.">
-    <meta name="keywords" content="cat age calculator, cat years, human years, pet age, cat age chart">
+    <title>Cat Age Calculator - Human Years Converter</title>
+    <meta name="description" content="Free cat age calculator. Convert your cat's age to human years using the accurate scientific formula.">
+    <meta name="keywords" content="cat age calculator, cat to human years, cat age converter, kitten age, feline age">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/cat-age-calculator.html">
     <style>
-        :root { --primary: #8b5cf6; --primary-dark: #7c3aed; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #ec4899; --primary-dark: #db2777; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -30,23 +30,17 @@
         .result-hero-label { color: rgba(255,255,255,0.8); }
         .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
-        .result-value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
-        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.9rem; }
-        .life-stage { padding: 20px; background: var(--bg-input); border-radius: 12px; margin-top: 20px; display: flex; align-items: center; gap: 20px; }
-        .life-stage-icon { font-size: 4rem; }
-        .life-stage-info { flex: 1; }
-        .life-stage-title { font-size: 1.5rem; color: var(--primary); font-weight: 700; }
-        .age-chart { margin-top: 20px; }
-        .chart-row { display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 12px; border-bottom: 1px solid var(--border); }
-        .chart-row.header { background: var(--primary); font-weight: 700; border-radius: 8px 8px 0 0; }
-        .tips-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
-        .tip-card { padding: 20px; background: var(--bg-input); border-radius: 12px; }
-        .tip-title { font-weight: 700; color: var(--secondary); margin-bottom: 10px; }
+        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .life-stage { padding: 20px; border-radius: 12px; text-align: center; margin-top: 20px; }
+        .life-stage.kitten { background: linear-gradient(135deg, #22c55e, #16a34a); }
+        .life-stage.adult { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .life-stage.senior { background: linear-gradient(135deg, #f59e0b, #d97706); }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .results-grid, .tips-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -69,29 +63,18 @@
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>🐾 Your Cat's Age</h2>
+                <h2>😺 Your Cat's Info</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Cat's Age (Years)</label>
-                        <input type="number" id="catYears" value="5" min="0" max="30" oninput="calculate()">
+                        <label>Cat's Age (years)</label>
+                        <input type="number" id="catAge" value="5" min="0" step="0.5" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Additional Months</label>
-                        <input type="number" id="catMonths" value="0" min="0" max="11" oninput="calculate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Indoor or Outdoor?</label>
+                        <label>Indoor or Outdoor</label>
                         <select id="lifestyle" onchange="calculate()">
                             <option value="indoor" selected>Indoor Only</option>
                             <option value="both">Indoor/Outdoor</option>
                             <option value="outdoor">Outdoor Only</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Breed Type</label>
-                        <select id="breed" onchange="calculate()">
-                            <option value="mixed" selected>Mixed/Domestic</option>
-                            <option value="purebred">Purebred</option>
                         </select>
                     </div>
                 </div>
@@ -101,61 +84,31 @@
                     <div class="result-hero-value" id="humanAge">0 years</div>
                 </div>
                 
-                <div class="life-stage" id="lifeStage">
-                    <div class="life-stage-icon">😺</div>
-                    <div class="life-stage-info">
-                        <div class="life-stage-title">Adult</div>
-                        <p style="color: var(--text-secondary);">Your cat is in their prime years</p>
-                    </div>
+                <div class="life-stage adult" id="lifeStage">
+                    <div style="font-size: 2rem;">🐱</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; margin-top: 10px;" id="stageName">Adult</div>
+                    <div style="opacity: 0.8;" id="stageDesc">Prime of life</div>
                 </div>
                 
                 <div class="results-grid">
                     <div class="result-card">
-                        <div class="result-value" id="lifeExpectancy">15-20</div>
-                        <div class="result-label">Life Expectancy (years)</div>
+                        <div class="result-value" id="lifeExpectancy">0</div>
+                        <div class="result-label">Avg. Life Expectancy</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="seniorAge">11</div>
-                        <div class="result-label">Senior Age Starts</div>
+                        <div class="result-value" id="remainingYears">0</div>
+                        <div class="result-label">Est. Years Remaining</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="vetVisits">1x</div>
-                        <div class="result-label">Recommended Vet Visits/Year</div>
+                        <div class="result-value" id="lifePercent">0%</div>
+                        <div class="result-label">Life Completed</div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>📊 Cat Age Conversion Chart</h2>
-                <div class="age-chart">
-                    <div class="chart-row header">
-                        <span>Cat Age</span>
-                        <span>Human Age</span>
-                        <span>Life Stage</span>
-                    </div>
-                    <div class="chart-row"><span>1 year</span><span>15 years</span><span>Junior</span></div>
-                    <div class="chart-row"><span>2 years</span><span>24 years</span><span>Young Adult</span></div>
-                    <div class="chart-row"><span>5 years</span><span>36 years</span><span>Adult</span></div>
-                    <div class="chart-row"><span>7 years</span><span>44 years</span><span>Mature</span></div>
-                    <div class="chart-row"><span>10 years</span><span>56 years</span><span>Mature</span></div>
-                    <div class="chart-row"><span>12 years</span><span>64 years</span><span>Senior</span></div>
-                    <div class="chart-row"><span>15 years</span><span>76 years</span><span>Super Senior</span></div>
-                    <div class="chart-row"><span>20 years</span><span>96 years</span><span>Super Senior</span></div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>💡 Care Tips for Your Cat's Life Stage</h2>
-                <div class="tips-grid" id="tips">
-                    <div class="tip-card">
-                        <div class="tip-title">🍽️ Nutrition</div>
-                        <p style="color: var(--text-secondary);">Feed age-appropriate food with proper protein levels</p>
-                    </div>
-                    <div class="tip-card">
-                        <div class="tip-title">🏥 Health Checkups</div>
-                        <p style="color: var(--text-secondary);">Annual vet visits with dental checks</p>
-                    </div>
-                </div>
+                <h2>📊 Age Conversion Chart</h2>
+                <div id="ageChart" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;"></div>
             </div>
 
             <div class="ad-container">
@@ -168,8 +121,8 @@
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
                     <a href="dog-age-calculator.html" class="related-link">🐕 Dog Age Calculator</a>
-                    <a href="age-calculator.html" class="related-link">🎂 Human Age Calculator</a>
-                    <a href="calorie-calculator.html" class="related-link">🍎 Calorie Calculator</a>
+                    <a href="pet-food-calculator.html" class="related-link">🍖 Pet Food Calculator</a>
+                    <a href="age-calculator.html" class="related-link">📅 Human Age Calculator</a>
                     <a href="bmi-calculator.html" class="related-link">⚖️ BMI Calculator</a>
                 </div>
             </div>
@@ -185,71 +138,63 @@
     </div>
 
     <script>
+        function calculateHumanAge(catAge) {
+            if (catAge <= 0) return 0;
+            if (catAge <= 1) return catAge * 15;
+            if (catAge <= 2) return 15 + ((catAge - 1) * 9);
+            return 24 + ((catAge - 2) * 4);
+        }
+        
         function calculate() {
-            const catYears = parseFloat(document.getElementById('catYears').value) || 0;
-            const catMonths = parseFloat(document.getElementById('catMonths').value) || 0;
+            const catAge = parseFloat(document.getElementById('catAge').value) || 0;
             const lifestyle = document.getElementById('lifestyle').value;
-            const totalCatAge = catYears + (catMonths / 12);
             
-            // Cat age conversion (AAHA/AAFP guidelines)
-            let humanAge = 0;
-            if (totalCatAge <= 1) {
-                humanAge = totalCatAge * 15;
-            } else if (totalCatAge <= 2) {
-                humanAge = 15 + (totalCatAge - 1) * 9;
+            const humanAge = Math.round(calculateHumanAge(catAge));
+            
+            let lifeExp = 15;
+            if (lifestyle === 'indoor') lifeExp = 17;
+            else if (lifestyle === 'outdoor') lifeExp = 5;
+            else lifeExp = 12;
+            
+            const remainingYears = Math.max(0, lifeExp - catAge);
+            const lifePercent = Math.min(100, (catAge / lifeExp) * 100);
+            
+            document.getElementById('humanAge').textContent = humanAge + ' years';
+            document.getElementById('lifeExpectancy').textContent = lifeExp + ' years';
+            document.getElementById('remainingYears').textContent = remainingYears.toFixed(1) + ' years';
+            document.getElementById('lifePercent').textContent = lifePercent.toFixed(0) + '%';
+            
+            const stageEl = document.getElementById('lifeStage');
+            const stageNameEl = document.getElementById('stageName');
+            const stageDescEl = document.getElementById('stageDesc');
+            
+            if (catAge < 1) {
+                stageEl.className = 'life-stage kitten';
+                stageNameEl.textContent = 'Kitten';
+                stageDescEl.textContent = 'Playful and growing';
+            } else if (catAge < 7) {
+                stageEl.className = 'life-stage adult';
+                stageNameEl.textContent = 'Adult';
+                stageDescEl.textContent = 'Prime of life';
+            } else if (catAge < 11) {
+                stageEl.className = 'life-stage adult';
+                stageNameEl.textContent = 'Mature';
+                stageDescEl.textContent = 'Middle-aged cat';
             } else {
-                humanAge = 24 + (totalCatAge - 2) * 4;
+                stageEl.className = 'life-stage senior';
+                stageNameEl.textContent = 'Senior';
+                stageDescEl.textContent = 'Golden years';
             }
             
-            document.getElementById('humanAge').textContent = Math.round(humanAge) + ' years';
-            
-            // Life stage and icon
-            let stage, stageDesc, icon;
-            if (totalCatAge < 0.5) { stage = 'Kitten'; stageDesc = 'Rapid growth and learning phase'; icon = '😸'; }
-            else if (totalCatAge < 2) { stage = 'Junior'; stageDesc = 'Still growing and developing'; icon = '😺'; }
-            else if (totalCatAge < 6) { stage = 'Adult'; stageDesc = 'Prime years - active and healthy'; icon = '😼'; }
-            else if (totalCatAge < 10) { stage = 'Mature'; stageDesc = 'Middle-aged, may slow down'; icon = '😺'; }
-            else if (totalCatAge < 15) { stage = 'Senior'; stageDesc = 'Golden years, needs extra care'; icon = '😿'; }
-            else { stage = 'Super Senior'; stageDesc = 'Geriatric, requires special attention'; icon = '🐱'; }
-            
-            document.getElementById('lifeStage').innerHTML = `
-                <div class="life-stage-icon">${icon}</div>
-                <div class="life-stage-info">
-                    <div class="life-stage-title">${stage}</div>
-                    <p style="color: var(--text-secondary);">${stageDesc}</p>
-                </div>
-            `;
-            
-            // Life expectancy based on lifestyle
-            const lifeExpectancy = {
-                indoor: '15-20',
-                both: '12-16',
-                outdoor: '5-10'
-            };
-            
-            document.getElementById('lifeExpectancy').textContent = lifeExpectancy[lifestyle];
-            document.getElementById('seniorAge').textContent = '11';
-            document.getElementById('vetVisits').textContent = totalCatAge > 10 ? '2x' : '1x';
-            
-            // Update tips based on life stage
-            let tips = '';
-            if (totalCatAge < 1) {
-                tips = `
-                    <div class="tip-card"><div class="tip-title">🍽️ Nutrition</div><p style="color: var(--text-secondary);">Kitten food with high protein for growth</p></div>
-                    <div class="tip-card"><div class="tip-title">💉 Vaccinations</div><p style="color: var(--text-secondary);">Complete core vaccine series</p></div>
-                `;
-            } else if (totalCatAge < 6) {
-                tips = `
-                    <div class="tip-card"><div class="tip-title">🍽️ Nutrition</div><p style="color: var(--text-secondary);">Adult maintenance diet with quality protein</p></div>
-                    <div class="tip-card"><div class="tip-title">🎾 Exercise</div><p style="color: var(--text-secondary);">Daily play sessions to maintain weight</p></div>
-                `;
-            } else {
-                tips = `
-                    <div class="tip-card"><div class="tip-title">🍽️ Nutrition</div><p style="color: var(--text-secondary);">Senior formula with joint support</p></div>
-                    <div class="tip-card"><div class="tip-title">🏥 Health</div><p style="color: var(--text-secondary);">Bi-annual checkups with bloodwork</p></div>
-                `;
+            let chartHtml = '';
+            for (let i = 1; i <= 10; i++) {
+                const hAge = Math.round(calculateHumanAge(i));
+                chartHtml += `<div style="background: var(--bg-input); padding: 10px; border-radius: 8px; text-align: center;">
+                    <div style="color: var(--text-secondary); font-size: 0.8rem;">${i} yr</div>
+                    <div style="color: var(--secondary); font-weight: 700;">${hAge}</div>
+                </div>`;
             }
-            document.getElementById('tips').innerHTML = tips;
+            document.getElementById('ageChart').innerHTML = chartHtml;
         }
         
         calculate();
