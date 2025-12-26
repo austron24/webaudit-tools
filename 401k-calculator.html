@@ -3,270 +3,247 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>401(k) Calculator - Retirement Savings Calculator</title>
-    <meta name="description" content="Calculate how much your 401(k) will grow over time. See the impact of employer match and contribution increases on your retirement savings.">
+    <title>401(k) Calculator - Retirement Savings Projector</title>
+    <meta name="description" content="Free 401(k) calculator. Project your retirement savings growth with employer matching. See how much you'll have at retirement.">
+    <meta name="keywords" content="401k calculator, retirement calculator, employer match, 401k savings, retirement planning">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/401k-calculator.html">
-    <meta property="og:title" content="401(k) Calculator - Maximize Your Retirement">
-    <meta property="og:description" content="See how your 401(k) contributions will grow over time.">
-    <meta property="og:type" content="website">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --warning: #f59e0b; }
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.6; min-height: 100vh; }
-        .header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
-        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; }
-        .nav-links { display: flex; gap: 1.5rem; }
-        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; }
-        .nav-links a:hover { color: var(--primary); }
-        .ad-top { background: var(--bg-card); padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); }
-        .ad-mobile { display: none; background: var(--bg-card); padding: 0.5rem; text-align: center; }
-        .main-layout { display: flex; max-width: 1400px; margin: 0 auto; gap: 2rem; padding: 2rem; }
-        .content { flex: 1; min-width: 0; }
-        .sidebar { width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 1rem; }
-        .hero { text-align: center; margin-bottom: 2rem; }
-        .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--primary), #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .hero p { color: var(--text-secondary); font-size: 1.1rem; }
-        .calculator-card { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
-        .section-title { font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--primary); }
-        .form-group { margin-bottom: 1.25rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; }
-        .form-group input, .form-group select { width: 100%; padding: 0.75rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 0.5rem; color: var(--text-primary); font-size: 1rem; }
-        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
-        .input-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-        .calculate-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; border-radius: 0.5rem; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; }
-        .calculate-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
-        .results { display: none; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
-        .results.show { display: block; }
-        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-        .result-box { background: var(--bg-input); padding: 1.25rem; border-radius: 0.75rem; text-align: center; }
-        .result-box.highlight { background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid var(--primary); }
-        .result-box.success { background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); }
-        .result-label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
-        .result-value { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
-        .result-value.success { color: var(--success); }
-        .breakdown { margin-top: 2rem; }
-        .breakdown h4 { color: var(--text-primary); margin-bottom: 1rem; }
-        .breakdown-bar { display: flex; height: 40px; border-radius: 8px; overflow: hidden; margin-bottom: 1rem; }
-        .breakdown-segment { display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; color: white; }
-        .segment-contribution { background: var(--primary); }
-        .segment-match { background: var(--success); }
-        .segment-growth { background: var(--warning); }
-        .breakdown-legend { display: flex; gap: 2rem; flex-wrap: wrap; }
-        .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: var(--text-secondary); }
-        .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
-        .match-impact { margin-top: 2rem; padding: 1.5rem; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); border-radius: 0.75rem; }
-        .match-impact h4 { color: var(--success); margin-bottom: 0.5rem; }
-        .match-impact p { color: var(--text-secondary); margin: 0; }
-        .ad-inline { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin: 2rem 0; }
-        .info-section { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
-        .info-section h2 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary); }
-        .info-section p, .info-section li { color: var(--text-secondary); margin-bottom: 0.75rem; }
-        .info-section ul { padding-left: 1.5rem; }
-        .related-tools { background: var(--bg-card); border-radius: 1rem; padding: 2rem; border: 1px solid var(--border); }
-        .related-tools h3 { margin-bottom: 1rem; color: var(--text-primary); }
-        .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
-        .tool-link { display: block; padding: 1rem; background: var(--bg-input); border-radius: 0.5rem; text-decoration: none; color: var(--text-primary); }
-        .tool-link:hover { background: var(--border); transform: translateY(-2px); }
-        .ad-bottom { background: var(--bg-card); padding: 1rem; text-align: center; border-radius: 0.5rem; margin-top: 2rem; }
-        .footer { background: var(--bg-card); border-top: 1px solid var(--border); padding: 2rem; text-align: center; margin-top: 3rem; }
-        .footer p { color: var(--text-secondary); font-size: 0.9rem; }
-        @media (max-width: 968px) { .sidebar { display: none; } .main-layout { padding: 1rem; } }
-        @media (max-width: 640px) { .ad-top { display: none; } .ad-mobile { display: block; } .hero h1 { font-size: 1.75rem; } .input-row { grid-template-columns: 1fr; } .nav-links { display: none; } }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
+        .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
+        .header { background: linear-gradient(135deg, var(--success) 0%, #059669 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
+        .content-area { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        .result-hero { background: linear-gradient(135deg, var(--success), #059669); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.8); }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .result-value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.9rem; }
+        .breakdown-bar { margin-top: 20px; padding: 20px; background: var(--bg-input); border-radius: 12px; }
+        .bar-container { height: 40px; display: flex; border-radius: 8px; overflow: hidden; margin: 15px 0; }
+        .bar-segment { display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; }
+        .legend { display: flex; justify-content: center; gap: 30px; }
+        .legend-item { display: flex; align-items: center; gap: 8px; }
+        .legend-dot { width: 16px; height: 16px; border-radius: 4px; }
+        .milestones { margin-top: 20px; }
+        .milestone-item { display: flex; justify-content: space-between; padding: 15px; background: var(--bg-input); border-radius: 10px; margin-bottom: 10px; }
+        .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="header-content">
-            <a href="index.html" class="logo">CalcTools</a>
-            <nav class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="finance-calculators.html">Finance</a>
-                <a href="health-calculators.html">Health</a>
-                <a href="home-calculators.html">Home</a>
-            </nav>
-        </div>
-    </header>
-    <div class="ad-top">
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
         <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
-        <script src="//www.topcreativeformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
     </div>
-    <div class="ad-mobile">
+    <div class="ad-container" style="display: none;">
+        <div class="ad-label">Advertisement</div>
         <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
-        <script src="//www.topcreativeformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
-    <div class="main-layout">
-        <main class="content">
-            <div class="hero">
-                <h1>401(k) Calculator</h1>
-                <p>See how your retirement savings will grow over time</p>
-            </div>
-            <div class="calculator-card">
-                <h2 class="section-title">Your 401(k) Details</h2>
-                <div class="input-row">
+    <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
+    
+    <header class="header">
+        <h1>📈 401(k) Calculator</h1>
+    </header>
+
+    <div class="main-container">
+        <div class="content-area">
+            <div class="card">
+                <h2>💼 Your 401(k) Details</h2>
+                <div class="form-grid">
                     <div class="form-group">
                         <label>Current Age</label>
-                        <input type="number" id="currentAge" value="30" placeholder="30">
+                        <input type="number" id="currentAge" value="30" min="18" max="70" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Retirement Age</label>
-                        <input type="number" id="retireAge" value="65" placeholder="65">
+                        <input type="number" id="retireAge" value="65" min="50" max="75" oninput="calculate()">
                     </div>
-                </div>
-                <div class="input-row">
                     <div class="form-group">
                         <label>Annual Salary ($)</label>
-                        <input type="number" id="salary" value="75000" placeholder="75000">
+                        <input type="number" id="salary" value="75000" oninput="calculate()">
                     </div>
-                    <div class="form-group">
-                        <label>Current 401(k) Balance ($)</label>
-                        <input type="number" id="currentBalance" value="25000" placeholder="25000">
-                    </div>
-                </div>
-                <div class="input-row">
                     <div class="form-group">
                         <label>Your Contribution (%)</label>
-                        <input type="number" id="contribution" value="10" step="1" placeholder="10">
+                        <input type="number" id="contribution" value="10" min="0" max="100" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Employer Match (%)</label>
-                        <input type="number" id="employerMatch" value="50" placeholder="50">
+                        <input type="number" id="employerMatch" value="50" min="0" max="100" oninput="calculate()">
                     </div>
-                </div>
-                <div class="input-row">
                     <div class="form-group">
                         <label>Match Up To (% of salary)</label>
-                        <input type="number" id="matchLimit" value="6" placeholder="6">
+                        <input type="number" id="matchLimit" value="6" min="0" max="100" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Expected Annual Return (%)</label>
-                        <input type="number" id="annualReturn" value="7" step="0.5" placeholder="7">
+                        <label>Current Balance ($)</label>
+                        <input type="number" id="currentBalance" value="25000" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Expected Return (%)</label>
+                        <input type="number" id="returnRate" value="7" step="0.5" oninput="calculate()">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>Expected Annual Salary Increase (%)</label>
-                    <input type="number" id="salaryIncrease" value="3" step="0.5" placeholder="3">
+                
+                <div class="result-hero">
+                    <div class="result-hero-label">Projected Balance at Retirement</div>
+                    <div class="result-hero-value" id="finalBalance">$0</div>
                 </div>
-                <button class="calculate-btn" onclick="calculate()">Calculate 401(k) Growth</button>
-                <div class="results" id="results">
-                    <div class="result-grid">
-                        <div class="result-box highlight">
-                            <div class="result-label">Balance at Retirement</div>
-                            <div class="result-value" id="finalBalance">$0</div>
-                        </div>
-                        <div class="result-box">
-                            <div class="result-label">Total Contributions</div>
-                            <div class="result-value" id="totalContributions">$0</div>
-                        </div>
-                        <div class="result-box success">
-                            <div class="result-label">Total Employer Match</div>
-                            <div class="result-value success" id="totalMatch">$0</div>
-                        </div>
-                        <div class="result-box">
-                            <div class="result-label">Investment Growth</div>
-                            <div class="result-value" id="totalGrowth">$0</div>
-                        </div>
+                
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-value" id="yourContribTotal">$0</div>
+                        <div class="result-label">Your Contributions</div>
                     </div>
-                    <div class="breakdown">
-                        <h4>Balance Composition</h4>
-                        <div class="breakdown-bar" id="breakdownBar"></div>
-                        <div class="breakdown-legend">
-                            <div class="legend-item"><span class="legend-dot" style="background:var(--primary)"></span>Your Contributions</div>
-                            <div class="legend-item"><span class="legend-dot" style="background:var(--success)"></span>Employer Match</div>
-                            <div class="legend-item"><span class="legend-dot" style="background:var(--warning)"></span>Investment Growth</div>
-                        </div>
+                    <div class="result-card">
+                        <div class="result-value" id="employerContribTotal">$0</div>
+                        <div class="result-label">Employer Match</div>
                     </div>
-                    <div class="match-impact" id="matchImpact"></div>
+                    <div class="result-card">
+                        <div class="result-value" id="investmentGrowth">$0</div>
+                        <div class="result-label">Investment Growth</div>
+                    </div>
+                </div>
+                
+                <div class="breakdown-bar">
+                    <h3 style="color: var(--secondary); margin-bottom: 10px;">Balance Breakdown</h3>
+                    <div class="bar-container" id="breakdownBar"></div>
+                    <div class="legend">
+                        <div class="legend-item"><div class="legend-dot" style="background: var(--primary);"></div><span>Your Contributions</span></div>
+                        <div class="legend-item"><div class="legend-dot" style="background: var(--success);"></div><span>Employer Match</span></div>
+                        <div class="legend-item"><div class="legend-dot" style="background: var(--accent);"></div><span>Growth</span></div>
+                    </div>
                 </div>
             </div>
-            <div class="ad-inline">
+
+            <div class="card">
+                <h2>🎯 Balance Milestones</h2>
+                <div class="milestones" id="milestones"></div>
+            </div>
+
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
                 <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
-                <script src="//www.topcreativeformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
             </div>
-            <div class="info-section">
-                <h2>401(k) Contribution Tips</h2>
-                <p>Maximize your retirement savings with these strategies:</p>
-                <ul>
-                    <li><strong>Get the Full Match:</strong> Contribute at least enough to get the full employer match - it's free money!</li>
-                    <li><strong>2024 Limits:</strong> You can contribute up to $23,000 ($30,500 if 50+)</li>
-                    <li><strong>Increase Gradually:</strong> Raise contributions 1% each year to painlessly grow savings</li>
-                    <li><strong>Consider Roth 401(k):</strong> Pay taxes now for tax-free withdrawals in retirement</li>
-                    <li><strong>Check Fees:</strong> Low-cost index funds outperform most actively managed funds</li>
-                </ul>
-            </div>
-            <div class="related-tools">
-                <h3>Related Calculators</h3>
-                <div class="tool-grid">
-                    <a href="retirement-calculator.html" class="tool-link">Retirement Calculator</a>
-                    <a href="roth-ira-calculator.html" class="tool-link">Roth IRA Calculator</a>
-                    <a href="compound-interest-calculator.html" class="tool-link">Compound Interest</a>
-                    <a href="investment-calculator.html" class="tool-link">Investment Calculator</a>
-                    <a href="salary-calculator.html" class="tool-link">Salary Calculator</a>
-                    <a href="tax-bracket-calculator.html" class="tool-link">Tax Bracket</a>
+
+            <div class="card">
+                <h2>🔗 Related Tools</h2>
+                <div class="related-tools">
+                    <a href="retirement-calculator.html" class="related-link">🏖️ Retirement Calculator</a>
+                    <a href="compound-interest-calculator.html" class="related-link">📊 Compound Interest</a>
+                    <a href="investment-calculator.html" class="related-link">📈 Investment Calculator</a>
+                    <a href="social-security-calculator.html" class="related-link">🏛️ Social Security</a>
                 </div>
             </div>
-            <div class="ad-bottom">
-                <script type="text/javascript">atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };</script>
-                <script src="//www.topcreativeformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
-            </div>
-        </main>
-        <aside class="sidebar">
-            <div>
+        </div>
+
+        <div class="sidebar">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
                 <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
-                <script src="//www.topcreativeformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
             </div>
-            <div>
-                <script type="text/javascript">atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };</script>
-                <script src="//www.topcreativeformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
-            </div>
-        </aside>
+        </div>
     </div>
-    <footer class="footer">
-        <p>&copy; 2024 CalcTools. Free online calculators for everyone.</p>
-    </footer>
+
     <script>
-        function formatCurrency(num) {
-            if (num >= 1000000) return '$' + (num / 1000000).toFixed(1) + 'M';
-            if (num >= 1000) return '$' + (num / 1000).toFixed(0) + 'K';
-            return '$' + Math.round(num).toLocaleString('en-US');
-        }
         function calculate() {
-            const currentAge = parseInt(document.getElementById('currentAge').value) || 0;
-            const retireAge = parseInt(document.getElementById('retireAge').value) || 0;
+            const currentAge = parseInt(document.getElementById('currentAge').value) || 30;
+            const retireAge = parseInt(document.getElementById('retireAge').value) || 65;
             const salary = parseFloat(document.getElementById('salary').value) || 0;
+            const contribution = parseFloat(document.getElementById('contribution').value) / 100 || 0;
+            const employerMatch = parseFloat(document.getElementById('employerMatch').value) / 100 || 0;
+            const matchLimit = parseFloat(document.getElementById('matchLimit').value) / 100 || 0;
             const currentBalance = parseFloat(document.getElementById('currentBalance').value) || 0;
-            const contributionPct = parseFloat(document.getElementById('contribution').value) / 100 || 0;
-            const employerMatchPct = parseFloat(document.getElementById('employerMatch').value) / 100 || 0;
-            const matchLimitPct = parseFloat(document.getElementById('matchLimit').value) / 100 || 0;
-            const annualReturn = parseFloat(document.getElementById('annualReturn').value) / 100 || 0;
-            const salaryIncrease = parseFloat(document.getElementById('salaryIncrease').value) / 100 || 0;
-            const years = retireAge - currentAge;
-            let balance = currentBalance;
-            let totalContributions = 0;
-            let totalMatch = 0;
-            let currentSalary = salary;
-            for (let y = 0; y < years; y++) {
-                const yourContribution = currentSalary * contributionPct;
-                const matchableContribution = Math.min(currentSalary * contributionPct, currentSalary * matchLimitPct);
-                const employerContribution = matchableContribution * employerMatchPct;
-                totalContributions += yourContribution;
-                totalMatch += employerContribution;
-                balance = (balance + yourContribution + employerContribution) * (1 + annualReturn);
-                currentSalary *= (1 + salaryIncrease);
+            const returnRate = parseFloat(document.getElementById('returnRate').value) / 100 || 0.07;
+            
+            const yearsToRetire = Math.max(0, retireAge - currentAge);
+            
+            // Annual contribution calculations
+            const yourAnnualContrib = salary * contribution;
+            const matchedContrib = Math.min(contribution, matchLimit);
+            const employerAnnualContrib = salary * matchedContrib * employerMatch;
+            const totalAnnualContrib = yourAnnualContrib + employerAnnualContrib;
+            
+            // Future value calculation with monthly contributions
+            const monthlyContrib = totalAnnualContrib / 12;
+            const monthlyRate = returnRate / 12;
+            const months = yearsToRetire * 12;
+            
+            // FV of current balance
+            const fvCurrent = currentBalance * Math.pow(1 + returnRate, yearsToRetire);
+            
+            // FV of monthly contributions
+            let fvContributions = 0;
+            if (monthlyRate > 0) {
+                fvContributions = monthlyContrib * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
+            } else {
+                fvContributions = monthlyContrib * months;
             }
-            const totalGrowth = balance - currentBalance - totalContributions - totalMatch;
-            const total = balance;
-            const contribPct = (totalContributions / total) * 100;
-            const matchPctVal = (totalMatch / total) * 100;
-            const growthPct = (totalGrowth / total) * 100;
-            document.getElementById('finalBalance').textContent = formatCurrency(balance);
-            document.getElementById('totalContributions').textContent = formatCurrency(totalContributions);
-            document.getElementById('totalMatch').textContent = formatCurrency(totalMatch);
-            document.getElementById('totalGrowth').textContent = formatCurrency(totalGrowth);
-            document.getElementById('breakdownBar').innerHTML = '<div class="breakdown-segment segment-contribution" style="width:' + contribPct + '%">' + (contribPct > 10 ? Math.round(contribPct) + '%' : '') + '</div><div class="breakdown-segment segment-match" style="width:' + matchPctVal + '%">' + (matchPctVal > 10 ? Math.round(matchPctVal) + '%' : '') + '</div><div class="breakdown-segment segment-growth" style="width:' + growthPct + '%">' + (growthPct > 10 ? Math.round(growthPct) + '%' : '') + '</div>';
-            document.getElementById('matchImpact').innerHTML = '<h4>Free Money from Employer Match</h4><p>Your employer will contribute ' + formatCurrency(totalMatch) + ' to your retirement over ' + years + ' years. That\'s like getting a ' + (employerMatchPct * Math.min(contributionPct, matchLimitPct) * 100).toFixed(1) + '% bonus on your salary!</p>';
-            document.getElementById('results').classList.add('show');
+            
+            const finalBalance = fvCurrent + fvContributions;
+            
+            // Breakdown
+            const totalYourContrib = yourAnnualContrib * yearsToRetire + currentBalance;
+            const totalEmployerContrib = employerAnnualContrib * yearsToRetire;
+            const investmentGrowth = finalBalance - totalYourContrib - totalEmployerContrib;
+            
+            document.getElementById('finalBalance').textContent = '$' + Math.round(finalBalance).toLocaleString();
+            document.getElementById('yourContribTotal').textContent = '$' + Math.round(totalYourContrib).toLocaleString();
+            document.getElementById('employerContribTotal').textContent = '$' + Math.round(totalEmployerContrib).toLocaleString();
+            document.getElementById('investmentGrowth').textContent = '$' + Math.round(investmentGrowth).toLocaleString();
+            
+            // Breakdown bar
+            const yourP = (totalYourContrib / finalBalance) * 100;
+            const empP = (totalEmployerContrib / finalBalance) * 100;
+            const growP = (investmentGrowth / finalBalance) * 100;
+            
+            document.getElementById('breakdownBar').innerHTML = `
+                <div class="bar-segment" style="width: ${yourP}%; background: var(--primary);">${yourP > 10 ? yourP.toFixed(0) + '%' : ''}</div>
+                <div class="bar-segment" style="width: ${empP}%; background: var(--success);">${empP > 10 ? empP.toFixed(0) + '%' : ''}</div>
+                <div class="bar-segment" style="width: ${growP}%; background: var(--accent);">${growP > 10 ? growP.toFixed(0) + '%' : ''}</div>
+            `;
+            
+            // Milestones
+            const milestones = [100000, 250000, 500000, 750000, 1000000, 2000000];
+            let milestonesHtml = '';
+            
+            for (const target of milestones) {
+                if (target <= finalBalance) {
+                    // Find year when target is reached
+                    let balance = currentBalance;
+                    let years = 0;
+                    while (balance < target && years < yearsToRetire) {
+                        balance = balance * (1 + returnRate) + totalAnnualContrib;
+                        years++;
+                    }
+                    const ageAtMilestone = currentAge + years;
+                    milestonesHtml += `<div class="milestone-item"><span>$${(target/1000).toFixed(0)}k</span><span>Age ${ageAtMilestone}</span></div>`;
+                }
+            }
+            
+            document.getElementById('milestones').innerHTML = milestonesHtml || '<p style="color: var(--text-secondary);">Increase contributions to reach milestones faster!</p>';
         }
+        
         calculate();
     </script>
 </body>
