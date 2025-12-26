@@ -3,55 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gas Mileage Calculator - Calculate MPG & Fuel Cost</title>
-    <meta name="description" content="Free gas mileage calculator. Calculate your car's MPG, fuel efficiency, and trip costs. Track your fuel economy over time.">
-    <meta name="keywords" content="gas mileage calculator, MPG calculator, fuel efficiency, fuel cost calculator, miles per gallon">
+    <title>Gas Mileage Calculator - MPG & Fuel Cost</title>
+    <meta name="description" content="Free gas mileage calculator. Calculate your MPG, fuel costs, and trip expenses based on distance and gas prices.">
+    <meta name="keywords" content="gas mileage calculator, MPG calculator, fuel cost, trip cost, gas calculator">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/gas-mileage-calculator.html">
-    <meta property="og:title" content="Gas Mileage Calculator">
-    <meta property="og:description" content="Calculate your car's MPG and fuel costs. Track fuel efficiency for any vehicle.">
-    <meta property="og:type" content="website">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --error: #ef4444; }
+        :root { --primary: #ef4444; --primary-dark: #dc2626; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
         .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
         .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
-        .header h1 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
-        .header p { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
         .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
         .content-area { display: flex; flex-direction: column; gap: 20px; }
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); }
-        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab { flex: 1; padding: 12px; border: 2px solid var(--border); border-radius: 8px; background: var(--bg-input); color: var(--text-primary); cursor: pointer; text-align: center; transition: all 0.3s ease; }
-        .tab.active { border-color: var(--primary); background: var(--primary); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .tab-buttons { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 15px; background: var(--bg-input); border: 2px solid var(--border); border-radius: 10px; cursor: pointer; text-align: center; font-weight: 700; transition: all 0.3s; }
+        .tab-btn:hover { border-color: var(--primary); }
+        .tab-btn.active { border-color: var(--primary); background: rgba(239, 68, 68, 0.2); color: var(--primary); }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); font-weight: 500; }
-        .input-with-icon { position: relative; }
-        .input-with-icon span { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
-        .input-with-icon input { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1.1rem; background: var(--bg-input); color: var(--text-primary); }
-        .input-with-icon input:focus { outline: none; border-color: var(--primary); }
-        .mpg-display { text-align: center; padding: 30px; background: var(--bg-input); border-radius: 16px; margin-top: 20px; }
-        .mpg-value { font-size: 5rem; font-weight: 800; }
-        .mpg-label { color: var(--text-secondary); font-size: 1.1rem; margin-top: 5px; }
-        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
-        .stat-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
-        .stat-value { font-size: 1.5rem; font-weight: 700; }
-        .stat-label { color: var(--text-secondary); font-size: 0.9rem; margin-top: 5px; }
-        .efficiency-bar { margin-top: 20px; padding: 20px; background: var(--bg-input); border-radius: 12px; }
-        .bar-track { height: 20px; background: linear-gradient(90deg, var(--error), var(--accent), var(--success)); border-radius: 10px; position: relative; margin-top: 10px; }
-        .bar-marker { position: absolute; top: -5px; width: 4px; height: 30px; background: white; border-radius: 2px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
-        .bar-labels { display: flex; justify-content: space-between; margin-top: 8px; color: var(--text-secondary); font-size: 0.85rem; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.8); }
+        .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
-        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; transition: all 0.3s ease; }
-        .related-link:hover { background: var(--primary); transform: translateX(5px); }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .header h1 { font-size: 1.8rem; } .form-row { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: 1fr; } .mpg-value { font-size: 3.5rem; } }
+        @media (max-width: 640px) { .form-grid, .results-grid, .tab-buttons { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
 <body>
@@ -69,103 +58,105 @@
     
     <header class="header">
         <h1>⛽ Gas Mileage Calculator</h1>
-        <p>Calculate your vehicle's fuel efficiency and trip costs. Track MPG and save money on gas.</p>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>🚗 Calculate Fuel Efficiency</h2>
-                <div class="tabs">
-                    <div class="tab active" onclick="switchTab('mpg')">Calculate MPG</div>
-                    <div class="tab" onclick="switchTab('cost')">Trip Cost</div>
+                <h2>🚗 Calculate Mode</h2>
+                <div class="tab-buttons">
+                    <div class="tab-btn active" onclick="setMode('mpg')">Calculate MPG</div>
+                    <div class="tab-btn" onclick="setMode('trip')">Trip Cost</div>
                 </div>
                 
-                <div id="mpgTab" class="tab-content active">
-                    <div class="form-row">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label>Distance Traveled</label>
-                            <div class="input-with-icon">
-                                <input type="number" id="distance" placeholder="300" step="1">
-                                <span>miles</span>
-                            </div>
+                <div id="mpgForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Miles Driven</label>
+                            <input type="number" id="miles" value="350" oninput="calculate()">
                         </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label>Fuel Used</label>
-                            <div class="input-with-icon">
-                                <input type="number" id="fuel" placeholder="12" step="0.1">
-                                <span>gallons</span>
-                            </div>
+                        <div class="form-group">
+                            <label>Gallons Used</label>
+                            <input type="number" id="gallons" value="12" step="0.1" oninput="calculate()">
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Gas Price (optional, for cost estimate)</label>
-                        <div class="input-with-icon">
-                            <input type="number" id="gasPrice" placeholder="3.50" step="0.01" value="3.50">
-                            <span>$/gal</span>
+                        <div class="form-group">
+                            <label>Gas Price ($/gallon)</label>
+                            <input type="number" id="gasPrice" value="3.50" step="0.01" oninput="calculate()">
+                        </div>
+                        <div class="form-group">
+                            <label>Unit System</label>
+                            <select id="unit" onchange="calculate()">
+                                <option value="us" selected>US (MPG)</option>
+                                <option value="metric">Metric (L/100km)</option>
+                            </select>
                         </div>
                     </div>
                 </div>
                 
-                <div id="costTab" class="tab-content">
-                    <div class="form-row">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label>Trip Distance</label>
-                            <div class="input-with-icon">
-                                <input type="number" id="tripDistance" placeholder="500" step="1">
-                                <span>miles</span>
-                            </div>
+                <div id="tripForm" style="display: none;">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Trip Distance (miles)</label>
+                            <input type="number" id="tripDistance" value="500" oninput="calculate()">
                         </div>
-                        <div class="form-group" style="margin-bottom: 0;">
+                        <div class="form-group">
                             <label>Your Vehicle's MPG</label>
-                            <div class="input-with-icon">
-                                <input type="number" id="vehicleMpg" placeholder="28" step="0.1">
-                                <span>mpg</span>
-                            </div>
+                            <input type="number" id="vehicleMpg" value="28" step="0.1" oninput="calculate()">
+                        </div>
+                        <div class="form-group">
+                            <label>Gas Price ($/gallon)</label>
+                            <input type="number" id="tripGasPrice" value="3.50" step="0.01" oninput="calculate()">
+                        </div>
+                        <div class="form-group">
+                            <label>Round Trip?</label>
+                            <select id="roundTrip" onchange="calculate()">
+                                <option value="no">One Way</option>
+                                <option value="yes">Round Trip</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label>Gas Price</label>
-                        <div class="input-with-icon">
-                            <input type="number" id="tripGasPrice" placeholder="3.50" step="0.01" value="3.50">
-                            <span>$/gal</span>
-                        </div>
+                </div>
+                
+                <div class="result-hero">
+                    <div class="result-hero-label" id="heroLabel">Your Fuel Economy</div>
+                    <div class="result-hero-value" id="heroValue">0 MPG</div>
+                </div>
+                
+                <div class="results-grid" id="mpgResults">
+                    <div class="result-card">
+                        <div class="result-value" id="mpg">0</div>
+                        <div class="result-label">MPG</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="costPerMile">$0</div>
+                        <div class="result-label">Cost Per Mile</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="totalCost">$0</div>
+                        <div class="result-label">Fuel Cost</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="lPer100">0</div>
+                        <div class="result-label">L/100km</div>
                     </div>
                 </div>
                 
-                <div class="mpg-display" id="results" style="display: none;">
-                    <div class="mpg-value" id="mpgValue" style="color: var(--success);">0</div>
-                    <div class="mpg-label" id="mpgLabel">Miles Per Gallon</div>
-                </div>
-                
-                <div class="stats-grid" id="statsGrid" style="display: none;">
-                    <div class="stat-card">
-                        <div class="stat-value" style="color: var(--accent);" id="costPerMile">$0.00</div>
-                        <div class="stat-label">Cost Per Mile</div>
+                <div class="results-grid" id="tripResults" style="display: none;">
+                    <div class="result-card">
+                        <div class="result-value" id="tripGallons">0</div>
+                        <div class="result-label">Gallons Needed</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-value" style="color: var(--secondary);" id="totalCost">$0.00</div>
-                        <div class="stat-label">Total Fuel Cost</div>
+                    <div class="result-card">
+                        <div class="result-value" id="tripCost">$0</div>
+                        <div class="result-label">Total Fuel Cost</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="kmPerLiter">0</div>
-                        <div class="stat-label">km/L</div>
+                    <div class="result-card">
+                        <div class="result-value" id="tripCostPerMile">$0</div>
+                        <div class="result-label">Cost Per Mile</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="litersper100km">0</div>
-                        <div class="stat-label">L/100km</div>
-                    </div>
-                </div>
-                
-                <div class="efficiency-bar" id="efficiencyBar" style="display: none;">
-                    <span>Fuel Efficiency Rating</span>
-                    <div class="bar-track">
-                        <div class="bar-marker" id="efficiencyMarker" style="left: 50%;"></div>
-                    </div>
-                    <div class="bar-labels">
-                        <span>Poor (15 MPG)</span>
-                        <span>Average (25 MPG)</span>
-                        <span>Excellent (40+ MPG)</span>
+                    <div class="result-card">
+                        <div class="result-value" id="tripTotalMiles">0</div>
+                        <div class="result-label">Total Miles</div>
                     </div>
                 </div>
             </div>
@@ -179,19 +170,11 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="fuel-cost-calculator.html" class="related-link">⛽ Fuel Cost Calculator</a>
                     <a href="car-loan-calculator.html" class="related-link">🚗 Car Loan Calculator</a>
-                    <a href="ev-charging-calculator.html" class="related-link">🔌 EV Charging Calculator</a>
-                    <a href="road-trip-calculator.html" class="related-link">🗺️ Road Trip Calculator</a>
-                    <a href="commute-cost-calculator.html" class="related-link">🏢 Commute Cost</a>
+                    <a href="distance-calculator.html" class="related-link">📍 Distance Calculator</a>
+                    <a href="unit-converter.html" class="related-link">📐 Unit Converter</a>
                     <a href="carbon-footprint-calculator.html" class="related-link">🌍 Carbon Footprint</a>
                 </div>
-            </div>
-
-            <div class="ad-container">
-                <div class="ad-label">Advertisement</div>
-                <script type="text/javascript">atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };</script>
-                <script type="text/javascript" src="//www.highperformanceformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
             </div>
         </div>
 
@@ -201,95 +184,61 @@
                 <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
                 <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
             </div>
-            <div class="ad-container">
-                <div class="ad-label">Advertisement</div>
-                <script type="text/javascript">atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };</script>
-                <script type="text/javascript" src="//www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
-            </div>
         </div>
     </div>
 
     <script>
-        let currentTab = 'mpg';
-
-        function switchTab(tab) {
-            currentTab = tab;
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            event.target.classList.add('active');
-            document.getElementById(tab + 'Tab').classList.add('active');
-            hideResults();
+        let mode = 'mpg';
+        
+        function setMode(m) {
+            mode = m;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.getElementById('mpgForm').style.display = m === 'mpg' ? 'block' : 'none';
+            document.getElementById('tripForm').style.display = m === 'trip' ? 'block' : 'none';
+            document.getElementById('mpgResults').style.display = m === 'mpg' ? 'grid' : 'none';
+            document.getElementById('tripResults').style.display = m === 'trip' ? 'grid' : 'none';
+            calculate();
         }
-
-        function hideResults() {
-            document.getElementById('results').style.display = 'none';
-            document.getElementById('statsGrid').style.display = 'none';
-            document.getElementById('efficiencyBar').style.display = 'none';
-        }
-
+        
         function calculate() {
-            if (currentTab === 'mpg') {
-                const distance = parseFloat(document.getElementById('distance').value) || 0;
-                const fuel = parseFloat(document.getElementById('fuel').value) || 0;
+            if (mode === 'mpg') {
+                const miles = parseFloat(document.getElementById('miles').value) || 0;
+                const gallons = parseFloat(document.getElementById('gallons').value) || 1;
                 const gasPrice = parseFloat(document.getElementById('gasPrice').value) || 0;
-
-                if (distance > 0 && fuel > 0) {
-                    const mpg = distance / fuel;
-                    const totalCost = fuel * gasPrice;
-                    const costPerMile = totalCost / distance;
-                    const kmPerLiter = mpg * 0.425144;
-                    const litersper100km = 235.215 / mpg;
-
-                    showResults(mpg, 'Miles Per Gallon', costPerMile, totalCost, kmPerLiter, litersper100km);
-                }
+                
+                const mpg = miles / gallons;
+                const costPerMile = gasPrice / mpg;
+                const totalCost = gallons * gasPrice;
+                const lPer100 = 235.215 / mpg;
+                
+                document.getElementById('heroLabel').textContent = 'Your Fuel Economy';
+                document.getElementById('heroValue').textContent = mpg.toFixed(1) + ' MPG';
+                document.getElementById('mpg').textContent = mpg.toFixed(1);
+                document.getElementById('costPerMile').textContent = '$' + costPerMile.toFixed(3);
+                document.getElementById('totalCost').textContent = '$' + totalCost.toFixed(2);
+                document.getElementById('lPer100').textContent = lPer100.toFixed(1);
             } else {
-                const tripDistance = parseFloat(document.getElementById('tripDistance').value) || 0;
-                const vehicleMpg = parseFloat(document.getElementById('vehicleMpg').value) || 0;
+                const distance = parseFloat(document.getElementById('tripDistance').value) || 0;
+                const mpg = parseFloat(document.getElementById('vehicleMpg').value) || 1;
                 const gasPrice = parseFloat(document.getElementById('tripGasPrice').value) || 0;
-
-                if (tripDistance > 0 && vehicleMpg > 0) {
-                    const gallonsNeeded = tripDistance / vehicleMpg;
-                    const totalCost = gallonsNeeded * gasPrice;
-                    const costPerMile = gasPrice / vehicleMpg;
-                    const kmPerLiter = vehicleMpg * 0.425144;
-                    const litersper100km = 235.215 / vehicleMpg;
-
-                    document.getElementById('results').style.display = 'block';
-                    document.getElementById('mpgValue').textContent = '$' + totalCost.toFixed(2);
-                    document.getElementById('mpgLabel').textContent = 'Estimated Trip Cost';
-                    document.getElementById('mpgValue').style.color = 'var(--accent)';
-
-                    document.getElementById('statsGrid').style.display = 'grid';
-                    document.getElementById('costPerMile').textContent = '$' + costPerMile.toFixed(3);
-                    document.getElementById('totalCost').textContent = gallonsNeeded.toFixed(1) + ' gal';
-                    document.getElementById('kmPerLiter').textContent = kmPerLiter.toFixed(1);
-                    document.getElementById('litersper100km').textContent = litersper100km.toFixed(1);
-                }
+                const roundTrip = document.getElementById('roundTrip').value === 'yes';
+                
+                const totalMiles = roundTrip ? distance * 2 : distance;
+                const gallonsNeeded = totalMiles / mpg;
+                const tripCost = gallonsNeeded * gasPrice;
+                const costPerMile = gasPrice / mpg;
+                
+                document.getElementById('heroLabel').textContent = 'Trip Fuel Cost';
+                document.getElementById('heroValue').textContent = '$' + tripCost.toFixed(2);
+                document.getElementById('tripGallons').textContent = gallonsNeeded.toFixed(1);
+                document.getElementById('tripCost').textContent = '$' + tripCost.toFixed(2);
+                document.getElementById('tripCostPerMile').textContent = '$' + costPerMile.toFixed(3);
+                document.getElementById('tripTotalMiles').textContent = totalMiles;
             }
         }
-
-        function showResults(mpg, label, costPerMile, totalCost, kmPerLiter, litersper100km) {
-            document.getElementById('results').style.display = 'block';
-            document.getElementById('statsGrid').style.display = 'grid';
-            document.getElementById('efficiencyBar').style.display = 'block';
-
-            const mpgEl = document.getElementById('mpgValue');
-            mpgEl.textContent = mpg.toFixed(1);
-            mpgEl.style.color = mpg >= 30 ? 'var(--success)' : mpg >= 20 ? 'var(--accent)' : 'var(--error)';
-            document.getElementById('mpgLabel').textContent = label;
-
-            document.getElementById('costPerMile').textContent = '$' + costPerMile.toFixed(3);
-            document.getElementById('totalCost').textContent = '$' + totalCost.toFixed(2);
-            document.getElementById('kmPerLiter').textContent = kmPerLiter.toFixed(1);
-            document.getElementById('litersper100km').textContent = litersper100km.toFixed(1);
-
-            const markerPos = Math.min(Math.max((mpg - 15) / 30 * 100, 0), 100);
-            document.getElementById('efficiencyMarker').style.left = markerPos + '%';
-        }
-
-        document.querySelectorAll('input').forEach(input => {
-            input.addEventListener('input', calculate);
-        });
+        
+        calculate();
     </script>
 </body>
 </html>
