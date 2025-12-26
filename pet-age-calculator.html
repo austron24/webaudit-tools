@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Pet Age Calculator - Dog & Cat Years to Human Years</title>
+    <meta name="description" content="Convert your dog or cat's age to human years. Accurate pet age calculation based on size and breed. Free dog years and cat years calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #f59e0b 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .pet-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .pet-btn {
+            flex: 1;
+            padding: 25px;
+            border: 3px solid #e2e8f0;
+            border-radius: 16px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .pet-btn.active {
+            border-color: #f59e0b;
+            background: #fef3c7;
+        }
+        .pet-btn:hover { border-color: #f59e0b; }
+        .pet-icon { font-size: 48px; margin-bottom: 10px; }
+        .pet-name { font-weight: 600; font-size: 18px; }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #f59e0b;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #f59e0b;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #d97706; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 72px; font-weight: bold; }
+        .result-label-main { font-size: 20px; opacity: 0.9; margin-top: 5px; }
+        .life-stage {
+            background: #fef3c7;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .stage-label { font-size: 14px; color: #92400e; }
+        .stage-name { font-size: 28px; font-weight: bold; color: #d97706; margin-top: 5px; }
+        .stage-desc { font-size: 14px; color: #64748b; margin-top: 10px; }
+        .comparison {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .comparison h4 { color: #f59e0b; margin-bottom: 15px; }
+        .age-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .age-bar-label { width: 80px; font-size: 13px; color: #64748b; }
+        .age-bar-track {
+            flex: 1;
+            height: 20px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .age-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #fef3c7, #f59e0b);
+            border-radius: 10px;
+        }
+        .age-bar-value { width: 50px; font-weight: bold; text-align: right; }
+        .milestones {
+            background: #fef3c7;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .milestones h4 { color: #92400e; margin-bottom: 15px; }
+        .milestone {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #fde68a;
+            font-size: 14px;
+        }
+        .milestone:last-child { border: none; }
+        .milestone-icon { font-size: 20px; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #f59e0b; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #d97706;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fde68a; }
+        #dogSize { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐾 Pet Age Calculator</h1>
+            <p class="subtitle">Convert pet years to human years</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="pet-selector">
+                <div class="pet-btn active" onclick="selectPet('dog')">
+                    <div class="pet-icon">🐕</div>
+                    <div class="pet-name">Dog</div>
+                </div>
+                <div class="pet-btn" onclick="selectPet('cat')">
+                    <div class="pet-icon">🐈</div>
+                    <div class="pet-name">Cat</div>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Pet's Age (years)</label>
+                    <input type="number" id="petAge" value="5" min="0" max="30" step="0.5">
+                </div>
+                <div class="input-group" id="dogSize">
+                    <label>Dog Size</label>
+                    <select id="size">
+                        <option value="small">Small (under 20 lbs)</option>
+                        <option value="medium" selected>Medium (20-50 lbs)</option>
+                        <option value="large">Large (50-90 lbs)</option>
+                        <option value="giant">Giant (90+ lbs)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Human Age</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="humanAge">0</div>
+                    <div class="result-label-main">Human Years</div>
+                </div>
+
+                <div class="life-stage" id="lifeStage">
+                    <div class="stage-label">Life Stage</div>
+                    <div class="stage-name" id="stageName">Adult</div>
+                    <div class="stage-desc" id="stageDesc">Your pet is in their prime adult years</div>
+                </div>
+
+                <div class="comparison">
+                    <h4>📊 Age Comparison</h4>
+                    <div class="age-bar">
+                        <span class="age-bar-label">Pet Age</span>
+                        <div class="age-bar-track">
+                            <div class="age-bar-fill" id="petAgeBar"></div>
+                        </div>
+                        <span class="age-bar-value" id="petAgeValue">0</span>
+                    </div>
+                    <div class="age-bar">
+                        <span class="age-bar-label">Human Age</span>
+                        <div class="age-bar-track">
+                            <div class="age-bar-fill" id="humanAgeBar"></div>
+                        </div>
+                        <span class="age-bar-value" id="humanAgeValue">0</span>
+                    </div>
+                </div>
+
+                <div class="milestones">
+                    <h4>🎂 Age Milestones</h4>
+                    <div id="milestoneList"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Pet Calculators</h4>
+            <a href="puppy-food-calculator.html">Puppy Food</a>
+            <a href="dog-weight-calculator.html">Dog Weight Predictor</a>
+            <a href="pet-cost-calculator.html">Pet Cost Calculator</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Pet Age Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        let petType = 'dog';
+
+        function selectPet(type) {
+            petType = type;
+            document.querySelectorAll('.pet-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.getElementById('dogSize').style.display = type === 'dog' ? 'block' : 'none';
+            calculate();
+        }
+
+        function calculate() {
+            const petAge = parseFloat(document.getElementById('petAge').value);
+            const size = document.getElementById('size').value;
+
+            let humanAge;
+            let stage, stageDesc;
+
+            if (petType === 'dog') {
+                // More accurate dog age calculation based on size
+                const multipliers = {
+                    small: { first2: 12.5, after: 4.5, maxAge: 16 },
+                    medium: { first2: 10.5, after: 5, maxAge: 14 },
+                    large: { first2: 9, after: 6, maxAge: 12 },
+                    giant: { first2: 8, after: 7, maxAge: 10 }
+                };
+                const m = multipliers[size];
+
+                if (petAge <= 2) {
+                    humanAge = petAge * m.first2;
+                } else {
+                    humanAge = (2 * m.first2) + ((petAge - 2) * m.after);
+                }
+
+                // Life stage
+                if (petAge < 0.5) { stage = 'Puppy'; stageDesc = 'Rapid growth and development phase'; }
+                else if (petAge < 1) { stage = 'Junior'; stageDesc = 'Adolescent phase, still growing'; }
+                else if (petAge < 3) { stage = 'Young Adult'; stageDesc = 'Fully grown, peak energy'; }
+                else if (petAge < 7) { stage = 'Adult'; stageDesc = 'Prime adult years, maintain healthy habits'; }
+                else if (petAge < 10) { stage = 'Mature'; stageDesc = 'May slow down, regular vet visits important'; }
+                else { stage = 'Senior'; stageDesc = 'Extra care and attention needed'; }
+            } else {
+                // Cat age calculation
+                if (petAge <= 1) {
+                    humanAge = petAge * 15;
+                } else if (petAge <= 2) {
+                    humanAge = 15 + ((petAge - 1) * 9);
+                } else {
+                    humanAge = 24 + ((petAge - 2) * 4);
+                }
+
+                if (petAge < 0.5) { stage = 'Kitten'; stageDesc = 'Playful and curious exploration phase'; }
+                else if (petAge < 2) { stage = 'Junior'; stageDesc = 'Adolescent cat, learning boundaries'; }
+                else if (petAge < 6) { stage = 'Prime'; stageDesc = 'Peak physical condition and energy'; }
+                else if (petAge < 10) { stage = 'Mature'; stageDesc = 'Settled and confident, less active'; }
+                else if (petAge < 15) { stage = 'Senior'; stageDesc = 'Regular health monitoring important'; }
+                else { stage = 'Super Senior'; stageDesc = 'Special care and comfort needed'; }
+            }
+
+            humanAge = Math.round(humanAge);
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('humanAge').textContent = humanAge;
+            document.getElementById('stageName').textContent = stage;
+            document.getElementById('stageDesc').textContent = stageDesc;
+
+            // Age bars
+            const maxPetAge = petType === 'dog' ? 20 : 25;
+            const maxHumanAge = 100;
+            document.getElementById('petAgeBar').style.width = (petAge / maxPetAge * 100) + '%';
+            document.getElementById('humanAgeBar').style.width = (humanAge / maxHumanAge * 100) + '%';
+            document.getElementById('petAgeValue').textContent = petAge;
+            document.getElementById('humanAgeValue').textContent = humanAge;
+
+            // Milestones
+            let milestones = [];
+            if (petType === 'dog') {
+                milestones = [
+                    { icon: '🍼', text: '8 weeks - Can leave mother' },
+                    { icon: '🦷', text: '4-6 months - Adult teeth come in' },
+                    { icon: '✂️', text: '6-12 months - Spay/neuter recommended' },
+                    { icon: '🎓', text: '1 year - Considered adult' },
+                    { icon: '👴', text: '7+ years - Senior care begins' }
+                ];
+            } else {
+                milestones = [
+                    { icon: '🍼', text: '8-12 weeks - Can leave mother' },
+                    { icon: '✂️', text: '4-6 months - Spay/neuter recommended' },
+                    { icon: '🎓', text: '1 year - Considered adult' },
+                    { icon: '🏠', text: '2 years - Personality fully developed' },
+                    { icon: '👴', text: '10+ years - Senior care begins' }
+                ];
+            }
+
+            document.getElementById('milestoneList').innerHTML = milestones.map(m =>
+                `<div class="milestone"><span class="milestone-icon">${m.icon}</span><span>${m.text}</span></div>`
+            ).join('');
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

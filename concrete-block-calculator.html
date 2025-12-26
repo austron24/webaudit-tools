@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Concrete Block Calculator - CMU & Cinder Block Estimator</title>
+    <meta name="description" content="Calculate how many concrete blocks (CMU) you need for walls. Estimate cinder blocks and mortar needed for your project. Free block wall calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #64748b 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #64748b;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .block-types {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .block-btn {
+            padding: 15px 10px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .block-btn.active {
+            border-color: #64748b;
+            background: #f1f5f9;
+        }
+        .block-btn:hover { border-color: #64748b; }
+        .block-size { font-weight: 600; font-size: 14px; }
+        .block-dim { font-size: 11px; color: #64748b; margin-top: 3px; }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #64748b;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #475569; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 72px; font-weight: bold; }
+        .result-label-main { font-size: 20px; opacity: 0.9; margin-top: 5px; }
+        .volume-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .volume-box {
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .volume-value { font-size: 24px; font-weight: bold; color: #475569; }
+        .volume-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .breakdown h4 { color: #64748b; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .materials {
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .materials h4 { color: #475569; margin-bottom: 15px; }
+        .material-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #cbd5e1;
+            font-size: 14px;
+        }
+        .material-row:last-child { border: none; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #64748b; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #475569;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #cbd5e1; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧱 Concrete Block Calculator</h1>
+            <p class="subtitle">Calculate CMU blocks and mortar needed</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Block Size</label>
+                <div class="block-types">
+                    <div class="block-btn active" onclick="selectBlock(this, 'standard')">
+                        <div class="block-size">Standard</div>
+                        <div class="block-dim">8" × 8" × 16"</div>
+                    </div>
+                    <div class="block-btn" onclick="selectBlock(this, 'half')">
+                        <div class="block-size">Half</div>
+                        <div class="block-dim">8" × 8" × 8"</div>
+                    </div>
+                    <div class="block-btn" onclick="selectBlock(this, 'slim')">
+                        <div class="block-size">Slim</div>
+                        <div class="block-dim">4" × 8" × 16"</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Wall Length (feet)</label>
+                    <input type="number" id="wallLength" value="20" min="1" step="0.5">
+                </div>
+                <div class="input-group">
+                    <label>Wall Height (feet)</label>
+                    <input type="number" id="wallHeight" value="8" min="1" step="0.5">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Number of Openings (doors/windows)</label>
+                <input type="number" id="openings" value="1" min="0" max="20">
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Avg Opening Width (ft)</label>
+                    <input type="number" id="openingWidth" value="3" min="0" step="0.5">
+                </div>
+                <div class="input-group">
+                    <label>Avg Opening Height (ft)</label>
+                    <input type="number" id="openingHeight" value="7" min="0" step="0.5">
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Blocks Needed</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="blocksNeeded">0</div>
+                    <div class="result-label-main">Blocks Needed</div>
+                </div>
+
+                <div class="volume-grid">
+                    <div class="volume-box">
+                        <div class="volume-value" id="wallArea">0</div>
+                        <div class="volume-label">Wall Area (sq ft)</div>
+                    </div>
+                    <div class="volume-box">
+                        <div class="volume-value" id="mortarBags">0</div>
+                        <div class="volume-label">Mortar Bags (80lb)</div>
+                    </div>
+                    <div class="volume-box">
+                        <div class="volume-value" id="courses">0</div>
+                        <div class="volume-label">Courses (rows)</div>
+                    </div>
+                    <div class="volume-box">
+                        <div class="volume-value" id="costRange">$0</div>
+                        <div class="volume-label">Est. Block Cost</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📐 Wall Details</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Gross Wall Area</span>
+                        <span class="breakdown-value" id="grossArea">0 sq ft</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Opening Deductions</span>
+                        <span class="breakdown-value" id="openingArea">-0 sq ft</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Blocks per sq ft</span>
+                        <span class="breakdown-value" id="blocksPerSqFt">1.125</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Waste Factor (5%)</span>
+                        <span class="breakdown-value" id="wasteBlocks">+0 blocks</span>
+                    </div>
+                </div>
+
+                <div class="materials">
+                    <h4>🛠️ Materials List</h4>
+                    <div class="material-row">
+                        <span>Concrete Blocks</span>
+                        <span id="totalBlocks">0 blocks</span>
+                    </div>
+                    <div class="material-row">
+                        <span>Type S Mortar (80lb bags)</span>
+                        <span id="mortarNeeded">0 bags</span>
+                    </div>
+                    <div class="material-row">
+                        <span>Mason Sand</span>
+                        <span id="sandNeeded">0 cubic ft</span>
+                    </div>
+                    <div class="material-row">
+                        <span>Rebar (if reinforced)</span>
+                        <span id="rebarNeeded">0 pieces</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Construction Calculators</h4>
+            <a href="concrete-calculator.html">Concrete Calculator</a>
+            <a href="brick-calculator.html">Brick Calculator</a>
+            <a href="fence-cost-calculator.html">Fence Cost</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Concrete Block Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        let selectedBlock = 'standard';
+
+        const blockData = {
+            standard: { sqftPer: 0.89, blocksPerSqFt: 1.125, heightInches: 8, price: 2.00 },
+            half: { sqftPer: 0.44, blocksPerSqFt: 2.25, heightInches: 8, price: 1.50 },
+            slim: { sqftPer: 0.89, blocksPerSqFt: 1.125, heightInches: 8, price: 1.75 }
+        };
+
+        function selectBlock(el, type) {
+            document.querySelectorAll('.block-btn').forEach(btn => btn.classList.remove('active'));
+            el.classList.add('active');
+            selectedBlock = type;
+        }
+
+        function calculate() {
+            const wallLength = parseFloat(document.getElementById('wallLength').value);
+            const wallHeight = parseFloat(document.getElementById('wallHeight').value);
+            const openings = parseFloat(document.getElementById('openings').value);
+            const openingWidth = parseFloat(document.getElementById('openingWidth').value);
+            const openingHeight = parseFloat(document.getElementById('openingHeight').value);
+
+            const block = blockData[selectedBlock];
+
+            // Calculate areas
+            const grossArea = wallLength * wallHeight;
+            const openingArea = openings * openingWidth * openingHeight;
+            const netArea = grossArea - openingArea;
+
+            // Blocks needed
+            const blocksBase = Math.ceil(netArea * block.blocksPerSqFt);
+            const wasteBlocks = Math.ceil(blocksBase * 0.05);
+            const totalBlocks = blocksBase + wasteBlocks;
+
+            // Courses (rows)
+            const courses = Math.ceil((wallHeight * 12) / block.heightInches);
+
+            // Mortar (roughly 1 bag per 12-15 blocks)
+            const mortarBags = Math.ceil(totalBlocks / 12);
+
+            // Sand (roughly 0.1 cubic ft per block for mortar)
+            const sandNeeded = Math.ceil(totalBlocks * 0.1);
+
+            // Rebar (every 4 feet horizontally)
+            const rebarPieces = Math.ceil(wallLength / 4) * Math.ceil(courses / 2);
+
+            // Cost
+            const blockCost = totalBlocks * block.price;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('blocksNeeded').textContent = totalBlocks;
+            document.getElementById('wallArea').textContent = Math.round(netArea);
+            document.getElementById('mortarBags').textContent = mortarBags;
+            document.getElementById('courses').textContent = courses;
+            document.getElementById('costRange').textContent = '$' + Math.round(blockCost);
+            document.getElementById('grossArea').textContent = grossArea + ' sq ft';
+            document.getElementById('openingArea').textContent = '-' + openingArea + ' sq ft';
+            document.getElementById('blocksPerSqFt').textContent = block.blocksPerSqFt;
+            document.getElementById('wasteBlocks').textContent = '+' + wasteBlocks + ' blocks';
+            document.getElementById('totalBlocks').textContent = totalBlocks + ' blocks';
+            document.getElementById('mortarNeeded').textContent = mortarBags + ' bags';
+            document.getElementById('sandNeeded').textContent = sandNeeded + ' cu ft';
+            document.getElementById('rebarNeeded').textContent = rebarPieces + ' pieces (10ft)';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Asphalt Calculator - Driveway & Paving Estimator</title>
+    <meta name="description" content="Calculate how much asphalt you need for driveways, parking lots, and paving projects. Get tons needed and cost estimates. Free asphalt calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #475569;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .input-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #475569;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #334155; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #475569 0%, #334155 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .volume-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .volume-box {
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .volume-value { font-size: 24px; font-weight: bold; color: #475569; }
+        .volume-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .breakdown h4 { color: #475569; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .cost-estimate {
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .cost-estimate h4 { color: #334155; margin-bottom: 15px; }
+        .cost-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #cbd5e1;
+            font-size: 14px;
+        }
+        .cost-row:last-child { border: none; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #475569; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #334155;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #94a3b8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛣️ Asphalt Calculator</h1>
+            <p class="subtitle">Estimate asphalt for driveways & paving</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row-3">
+                <div class="input-group">
+                    <label>Length (feet)</label>
+                    <input type="number" id="length" value="50" min="1" step="1">
+                </div>
+                <div class="input-group">
+                    <label>Width (feet)</label>
+                    <input type="number" id="width" value="12" min="1" step="1">
+                </div>
+                <div class="input-group">
+                    <label>Thickness (inches)</label>
+                    <input type="number" id="thickness" value="3" min="1" max="12" step="0.5">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Project Type</label>
+                    <select id="projectType">
+                        <option value="driveway" selected>Residential Driveway</option>
+                        <option value="parking">Parking Lot</option>
+                        <option value="road">Road/Heavy Use</option>
+                        <option value="overlay">Overlay/Resurfacing</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Asphalt Type</label>
+                    <select id="asphaltType">
+                        <option value="hot" selected>Hot Mix Asphalt</option>
+                        <option value="warm">Warm Mix</option>
+                        <option value="cold">Cold Mix (patch)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Asphalt Needed</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="tonsNeeded">0</div>
+                    <div class="result-label-main">Tons of Asphalt</div>
+                </div>
+
+                <div class="volume-grid">
+                    <div class="volume-box">
+                        <div class="volume-value" id="squareFeet">0</div>
+                        <div class="volume-label">Square Feet</div>
+                    </div>
+                    <div class="volume-box">
+                        <div class="volume-value" id="cubicYards">0</div>
+                        <div class="volume-label">Cubic Yards</div>
+                    </div>
+                    <div class="volume-box">
+                        <div class="volume-value" id="truckLoads">0</div>
+                        <div class="volume-label">Truck Loads (20 ton)</div>
+                    </div>
+                    <div class="volume-box">
+                        <div class="volume-value" id="coverage">0</div>
+                        <div class="volume-label">lbs per sq ft</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📐 Project Details</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Surface Area</span>
+                        <span class="breakdown-value" id="area">0 sq ft</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Thickness</span>
+                        <span class="breakdown-value" id="thicknessDisplay">0 inches</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Volume</span>
+                        <span class="breakdown-value" id="cubicFeet">0 cu ft</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Density Used</span>
+                        <span class="breakdown-value">145 lbs/cu ft</span>
+                    </div>
+                </div>
+
+                <div class="cost-estimate">
+                    <h4>💰 Cost Estimates</h4>
+                    <div class="cost-row">
+                        <span>Materials Only ($80-150/ton)</span>
+                        <span id="materialCost">$0</span>
+                    </div>
+                    <div class="cost-row">
+                        <span>Installed ($3-7/sq ft)</span>
+                        <span id="installedCost">$0</span>
+                    </div>
+                    <div class="cost-row">
+                        <span>Base Prep (if needed)</span>
+                        <span id="baseCost">$0</span>
+                    </div>
+                    <div class="cost-row" style="font-weight: bold; border-top: 2px solid #94a3b8; padding-top: 15px;">
+                        <span>Total Project Estimate</span>
+                        <span id="totalCost">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Paving Calculators</h4>
+            <a href="concrete-calculator.html">Concrete Calculator</a>
+            <a href="gravel-calculator.html">Gravel Calculator</a>
+            <a href="driveway-sealer-calculator.html">Driveway Sealer</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Asphalt Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const length = parseFloat(document.getElementById('length').value);
+            const width = parseFloat(document.getElementById('width').value);
+            const thickness = parseFloat(document.getElementById('thickness').value);
+            const projectType = document.getElementById('projectType').value;
+
+            // Calculate volume
+            const squareFeet = length * width;
+            const thicknessFeet = thickness / 12;
+            const cubicFeet = squareFeet * thicknessFeet;
+            const cubicYards = cubicFeet / 27;
+
+            // Asphalt density: ~145 lbs per cubic foot
+            const density = 145;
+            const totalPounds = cubicFeet * density;
+            const tons = totalPounds / 2000;
+
+            // Coverage
+            const lbsPerSqFt = totalPounds / squareFeet;
+
+            // Truck loads (typical 20 ton trucks)
+            const truckLoads = tons / 20;
+
+            // Cost estimates
+            const materialLow = tons * 80;
+            const materialHigh = tons * 150;
+
+            const installedLow = squareFeet * 3;
+            const installedHigh = squareFeet * 7;
+
+            // Base prep (if needed)
+            let baseCostLow = 0;
+            let baseCostHigh = 0;
+            if (projectType === 'driveway' || projectType === 'parking') {
+                baseCostLow = squareFeet * 1;
+                baseCostHigh = squareFeet * 2;
+            }
+
+            const totalLow = installedLow + baseCostLow;
+            const totalHigh = installedHigh + baseCostHigh;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('tonsNeeded').textContent = tons.toFixed(2);
+            document.getElementById('squareFeet').textContent = squareFeet.toLocaleString();
+            document.getElementById('cubicYards').textContent = cubicYards.toFixed(2);
+            document.getElementById('truckLoads').textContent = truckLoads.toFixed(1);
+            document.getElementById('coverage').textContent = lbsPerSqFt.toFixed(1);
+            document.getElementById('area').textContent = squareFeet.toLocaleString() + ' sq ft';
+            document.getElementById('thicknessDisplay').textContent = thickness + ' inches';
+            document.getElementById('cubicFeet').textContent = cubicFeet.toFixed(1) + ' cu ft';
+            document.getElementById('materialCost').textContent = `$${Math.round(materialLow).toLocaleString()} - $${Math.round(materialHigh).toLocaleString()}`;
+            document.getElementById('installedCost').textContent = `$${Math.round(installedLow).toLocaleString()} - $${Math.round(installedHigh).toLocaleString()}`;
+            document.getElementById('baseCost').textContent = baseCostLow > 0
+                ? `$${Math.round(baseCostLow).toLocaleString()} - $${Math.round(baseCostHigh).toLocaleString()}`
+                : 'N/A (overlay)';
+            document.getElementById('totalCost').textContent = `$${Math.round(totalLow).toLocaleString()} - $${Math.round(totalHigh).toLocaleString()}`;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

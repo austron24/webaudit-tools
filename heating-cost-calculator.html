@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Heating Cost Calculator - Compare Heating Fuel Costs</title>
+    <meta name="description" content="Compare heating costs between natural gas, propane, oil, electric, and wood. Find the cheapest way to heat your home. Free heating cost comparison.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #ea580c 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #ea580c;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .section-title {
+            font-size: 16px;
+            color: #ea580c;
+            margin: 20px 0 15px;
+            padding-top: 15px;
+            border-top: 2px solid #fed7aa;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #ea580c;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 20px;
+        }
+        .btn:hover { background: #c2410c; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 42px; font-weight: bold; }
+        .result-label-main { font-size: 16px; opacity: 0.9; margin-top: 5px; }
+        .comparison-cards {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .fuel-card {
+            background: #fff7ed;
+            padding: 20px;
+            border-radius: 16px;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            align-items: center;
+            gap: 15px;
+        }
+        .fuel-card.winner {
+            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+            border: 3px solid #22c55e;
+        }
+        .fuel-icon { font-size: 32px; text-align: center; }
+        .fuel-info { }
+        .fuel-name { font-weight: 600; font-size: 16px; }
+        .fuel-details { font-size: 12px; color: #64748b; margin-top: 3px; }
+        .fuel-cost { text-align: right; }
+        .fuel-annual { font-size: 24px; font-weight: bold; color: #ea580c; }
+        .fuel-monthly { font-size: 12px; color: #64748b; }
+        .winner .fuel-annual { color: #16a34a; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .breakdown h4 { color: #ea580c; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #ea580c; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #c2410c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fdba74; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔥 Heating Cost Calculator</h1>
+            <p class="subtitle">Compare costs between heating fuels</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Home Size (sq ft)</label>
+                    <input type="number" id="homeSize" value="2000" min="500" step="100">
+                </div>
+                <div class="input-group">
+                    <label>Climate Zone</label>
+                    <select id="climate">
+                        <option value="mild">Mild (South)</option>
+                        <option value="moderate" selected>Moderate</option>
+                        <option value="cold">Cold (Northern US)</option>
+                        <option value="severe">Very Cold</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Home Insulation</label>
+                <select id="insulation">
+                    <option value="poor">Poor (older home, drafty)</option>
+                    <option value="average" selected>Average</option>
+                    <option value="good">Good (newer, well-sealed)</option>
+                </select>
+            </div>
+
+            <div class="section-title">⛽ Local Fuel Prices (update for accuracy)</div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Natural Gas ($/therm)</label>
+                    <input type="number" id="gasPrice" value="1.20" min="0.5" max="5" step="0.05">
+                </div>
+                <div class="input-group">
+                    <label>Propane ($/gallon)</label>
+                    <input type="number" id="propanePrice" value="2.50" min="1" max="6" step="0.10">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Heating Oil ($/gallon)</label>
+                    <input type="number" id="oilPrice" value="3.80" min="2" max="8" step="0.10">
+                </div>
+                <div class="input-group">
+                    <label>Electricity ($/kWh)</label>
+                    <input type="number" id="electricPrice" value="0.15" min="0.05" max="0.50" step="0.01">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Cord of Wood ($)</label>
+                <input type="number" id="woodPrice" value="300" min="100" max="600" step="25">
+            </div>
+
+            <button class="btn" onclick="calculate()">Compare Heating Costs</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="cheapestFuel">Natural Gas</div>
+                    <div class="result-label-main">Cheapest Option for Your Home</div>
+                </div>
+
+                <div class="comparison-cards" id="fuelCards"></div>
+
+                <div class="breakdown">
+                    <h4>📊 Your Home's Heating Needs</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Estimated Annual BTUs</span>
+                        <span class="breakdown-value" id="annualBTU">0 million</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Heating Season Length</span>
+                        <span class="breakdown-value" id="heatingMonths">0 months</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Potential Annual Savings</span>
+                        <span class="breakdown-value" id="savings">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Energy Calculators</h4>
+            <a href="hvac-sizing-calculator.html">HVAC Sizing</a>
+            <a href="electricity-cost-calculator.html">Electricity Cost</a>
+            <a href="firewood-calculator.html">Firewood Calculator</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Heating Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const homeSize = parseFloat(document.getElementById('homeSize').value);
+            const climate = document.getElementById('climate').value;
+            const insulation = document.getElementById('insulation').value;
+            const gasPrice = parseFloat(document.getElementById('gasPrice').value);
+            const propanePrice = parseFloat(document.getElementById('propanePrice').value);
+            const oilPrice = parseFloat(document.getElementById('oilPrice').value);
+            const electricPrice = parseFloat(document.getElementById('electricPrice').value);
+            const woodPrice = parseFloat(document.getElementById('woodPrice').value);
+
+            // Base BTU per sq ft per heating season
+            let baseBTU = 50000; // BTU per sq ft per season
+            if (climate === 'mild') baseBTU = 30000;
+            if (climate === 'cold') baseBTU = 70000;
+            if (climate === 'severe') baseBTU = 90000;
+
+            // Insulation factor
+            let insulationFactor = 1;
+            if (insulation === 'poor') insulationFactor = 1.4;
+            if (insulation === 'good') insulationFactor = 0.7;
+
+            // Heating months
+            const heatingMonths = { mild: 3, moderate: 5, cold: 7, severe: 9 };
+
+            // Total annual BTU needed
+            const annualBTU = homeSize * baseBTU * insulationFactor;
+
+            // Fuel efficiencies and BTU content
+            const fuels = [
+                {
+                    name: 'Natural Gas',
+                    icon: '🔵',
+                    btuPerUnit: 100000, // per therm
+                    efficiency: 0.95,
+                    price: gasPrice,
+                    unit: 'therms'
+                },
+                {
+                    name: 'Propane',
+                    icon: '🟢',
+                    btuPerUnit: 91500, // per gallon
+                    efficiency: 0.90,
+                    price: propanePrice,
+                    unit: 'gallons'
+                },
+                {
+                    name: 'Heating Oil',
+                    icon: '🟤',
+                    btuPerUnit: 138500, // per gallon
+                    efficiency: 0.85,
+                    price: oilPrice,
+                    unit: 'gallons'
+                },
+                {
+                    name: 'Electric (Heat Pump)',
+                    icon: '⚡',
+                    btuPerUnit: 3412, // per kWh
+                    efficiency: 2.5, // COP of heat pump
+                    price: electricPrice,
+                    unit: 'kWh'
+                },
+                {
+                    name: 'Electric (Resistance)',
+                    icon: '🔌',
+                    btuPerUnit: 3412,
+                    efficiency: 1.0,
+                    price: electricPrice,
+                    unit: 'kWh'
+                },
+                {
+                    name: 'Wood (Cord)',
+                    icon: '🪵',
+                    btuPerUnit: 20000000, // per cord
+                    efficiency: 0.60,
+                    price: woodPrice,
+                    unit: 'cords'
+                }
+            ];
+
+            // Calculate costs for each fuel
+            fuels.forEach(fuel => {
+                const effectiveBTU = fuel.btuPerUnit * fuel.efficiency;
+                const unitsNeeded = annualBTU / effectiveBTU;
+                fuel.annualCost = unitsNeeded * fuel.price;
+                fuel.unitsNeeded = unitsNeeded;
+            });
+
+            // Sort by cost
+            fuels.sort((a, b) => a.annualCost - b.annualCost);
+
+            // Mark cheapest
+            const cheapest = fuels[0];
+            const mostExpensive = fuels[fuels.length - 1];
+
+            // Display results
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('cheapestFuel').textContent = cheapest.name;
+            document.getElementById('annualBTU').textContent = (annualBTU / 1000000).toFixed(1) + ' million';
+            document.getElementById('heatingMonths').textContent = heatingMonths[climate] + ' months';
+            document.getElementById('savings').textContent = '$' + Math.round(mostExpensive.annualCost - cheapest.annualCost).toLocaleString() + '/year';
+
+            // Build fuel cards
+            let cardsHTML = '';
+            fuels.forEach((fuel, index) => {
+                const isWinner = index === 0;
+                cardsHTML += `
+                    <div class="fuel-card ${isWinner ? 'winner' : ''}">
+                        <div class="fuel-icon">${fuel.icon}</div>
+                        <div class="fuel-info">
+                            <div class="fuel-name">${fuel.name} ${isWinner ? '✓ Cheapest' : ''}</div>
+                            <div class="fuel-details">${Math.round(fuel.unitsNeeded).toLocaleString()} ${fuel.unit}/year</div>
+                        </div>
+                        <div class="fuel-cost">
+                            <div class="fuel-annual">$${Math.round(fuel.annualCost).toLocaleString()}</div>
+                            <div class="fuel-monthly">$${Math.round(fuel.annualCost / heatingMonths[climate]).toLocaleString()}/mo</div>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('fuelCards').innerHTML = cardsHTML;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

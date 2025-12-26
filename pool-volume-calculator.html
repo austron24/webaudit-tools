@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Pool Volume Calculator - Calculate Pool Gallons</title>
+    <meta name="description" content="Calculate swimming pool volume in gallons. Works for rectangular, round, and oval pools. Essential for chemical dosing and filling. Free pool calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0ea5e9 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .shape-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .shape-btn {
+            padding: 20px 10px;
+            border: 3px solid #e2e8f0;
+            border-radius: 16px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .shape-btn.active {
+            border-color: #0ea5e9;
+            background: #e0f2fe;
+        }
+        .shape-btn:hover { border-color: #0ea5e9; }
+        .shape-icon { font-size: 28px; margin-bottom: 5px; }
+        .shape-label { font-size: 12px; color: #64748b; }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #0ea5e9;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .input-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #0ea5e9;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #0284c7; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .volume-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .volume-box {
+            background: #e0f2fe;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .volume-value { font-size: 24px; font-weight: bold; color: #0284c7; }
+        .volume-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .breakdown h4 { color: #0ea5e9; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .chemicals {
+            background: #e0f2fe;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .chemicals h4 { color: #0284c7; margin-bottom: 15px; }
+        .chem-note { font-size: 13px; color: #64748b; margin-bottom: 15px; }
+        .chem-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #7dd3fc;
+            font-size: 14px;
+        }
+        .chem-row:last-child { border: none; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0ea5e9; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0284c7;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #7dd3fc; }
+        #ovalInputs, #irregularInputs { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏊 Pool Volume Calculator</h1>
+            <p class="subtitle">Calculate pool gallons for chemicals and filling</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="shape-selector">
+                <div class="shape-btn active" onclick="selectShape('rectangle')">
+                    <div class="shape-icon">⬛</div>
+                    <div class="shape-label">Rectangle</div>
+                </div>
+                <div class="shape-btn" onclick="selectShape('round')">
+                    <div class="shape-icon">⚫</div>
+                    <div class="shape-label">Round</div>
+                </div>
+                <div class="shape-btn" onclick="selectShape('oval')">
+                    <div class="shape-icon">⭕</div>
+                    <div class="shape-label">Oval</div>
+                </div>
+                <div class="shape-btn" onclick="selectShape('irregular')">
+                    <div class="shape-icon">🔷</div>
+                    <div class="shape-label">Kidney/Free</div>
+                </div>
+            </div>
+
+            <div id="rectangleInputs">
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Length (feet)</label>
+                        <input type="number" id="length" value="32" min="1" step="0.5">
+                    </div>
+                    <div class="input-group">
+                        <label>Width (feet)</label>
+                        <input type="number" id="width" value="16" min="1" step="0.5">
+                    </div>
+                </div>
+            </div>
+
+            <div id="roundInputs" style="display: none;">
+                <div class="input-group">
+                    <label>Diameter (feet)</label>
+                    <input type="number" id="diameter" value="24" min="1" step="0.5">
+                </div>
+            </div>
+
+            <div id="ovalInputs">
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Long Diameter (feet)</label>
+                        <input type="number" id="longDiam" value="30" min="1" step="0.5">
+                    </div>
+                    <div class="input-group">
+                        <label>Short Diameter (feet)</label>
+                        <input type="number" id="shortDiam" value="15" min="1" step="0.5">
+                    </div>
+                </div>
+            </div>
+
+            <div id="irregularInputs">
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Longest Length (feet)</label>
+                        <input type="number" id="maxLength" value="35" min="1" step="0.5">
+                    </div>
+                    <div class="input-group">
+                        <label>Widest Width (feet)</label>
+                        <input type="number" id="maxWidth" value="18" min="1" step="0.5">
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Shallow End Depth (feet)</label>
+                    <input type="number" id="shallowDepth" value="3.5" min="1" max="12" step="0.5">
+                </div>
+                <div class="input-group">
+                    <label>Deep End Depth (feet)</label>
+                    <input type="number" id="deepDepth" value="8" min="1" max="15" step="0.5">
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Pool Volume</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalGallons">0</div>
+                    <div class="result-label-main">Total Gallons</div>
+                </div>
+
+                <div class="volume-grid">
+                    <div class="volume-box">
+                        <div class="volume-value" id="liters">0</div>
+                        <div class="volume-label">Liters</div>
+                    </div>
+                    <div class="volume-box">
+                        <div class="volume-value" id="cubicFeet">0</div>
+                        <div class="volume-label">Cubic Feet</div>
+                    </div>
+                    <div class="volume-box">
+                        <div class="volume-value" id="fillTime">0</div>
+                        <div class="volume-label">Fill Time (hrs)</div>
+                    </div>
+                    <div class="volume-box">
+                        <div class="volume-value" id="waterCost">$0</div>
+                        <div class="volume-label">Est. Water Cost</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📐 Pool Dimensions</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Surface Area</span>
+                        <span class="breakdown-value" id="surfaceArea">0 sq ft</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Average Depth</span>
+                        <span class="breakdown-value" id="avgDepth">0 ft</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Pool Type</span>
+                        <span class="breakdown-value" id="poolType">Rectangle</span>
+                    </div>
+                </div>
+
+                <div class="chemicals">
+                    <h4>🧪 Chemical Reference (per 10,000 gallons)</h4>
+                    <div class="chem-note">Always test water before adding chemicals. These are general guidelines.</div>
+                    <div class="chem-row">
+                        <span>Chlorine (to raise 1 ppm)</span>
+                        <span id="chlorine">2 oz granular</span>
+                    </div>
+                    <div class="chem-row">
+                        <span>pH Up (to raise 0.1)</span>
+                        <span>6 oz soda ash</span>
+                    </div>
+                    <div class="chem-row">
+                        <span>pH Down (to lower 0.1)</span>
+                        <span>12 oz dry acid</span>
+                    </div>
+                    <div class="chem-row">
+                        <span>Alkalinity Up (10 ppm)</span>
+                        <span>1.5 lbs baking soda</span>
+                    </div>
+                    <div class="chem-row">
+                        <span>Shock Treatment</span>
+                        <span>1 lb shock</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Calculators</h4>
+            <a href="concrete-calculator.html">Concrete Calculator</a>
+            <a href="deck-cost-calculator.html">Deck Cost</a>
+            <a href="square-footage-calculator.html">Square Footage</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Pool Volume Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        let currentShape = 'rectangle';
+
+        function selectShape(shape) {
+            currentShape = shape;
+            document.querySelectorAll('.shape-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            document.getElementById('rectangleInputs').style.display = shape === 'rectangle' ? 'block' : 'none';
+            document.getElementById('roundInputs').style.display = shape === 'round' ? 'block' : 'none';
+            document.getElementById('ovalInputs').style.display = shape === 'oval' ? 'block' : 'none';
+            document.getElementById('irregularInputs').style.display = shape === 'irregular' ? 'block' : 'none';
+        }
+
+        function calculate() {
+            const shallowDepth = parseFloat(document.getElementById('shallowDepth').value);
+            const deepDepth = parseFloat(document.getElementById('deepDepth').value);
+            const avgDepth = (shallowDepth + deepDepth) / 2;
+
+            let surfaceArea, cubicFeet, poolType;
+
+            if (currentShape === 'rectangle') {
+                const length = parseFloat(document.getElementById('length').value);
+                const width = parseFloat(document.getElementById('width').value);
+                surfaceArea = length * width;
+                poolType = 'Rectangle';
+            } else if (currentShape === 'round') {
+                const diameter = parseFloat(document.getElementById('diameter').value);
+                const radius = diameter / 2;
+                surfaceArea = Math.PI * radius * radius;
+                poolType = 'Round';
+            } else if (currentShape === 'oval') {
+                const longDiam = parseFloat(document.getElementById('longDiam').value);
+                const shortDiam = parseFloat(document.getElementById('shortDiam').value);
+                surfaceArea = Math.PI * (longDiam/2) * (shortDiam/2);
+                poolType = 'Oval';
+            } else {
+                const maxLength = parseFloat(document.getElementById('maxLength').value);
+                const maxWidth = parseFloat(document.getElementById('maxWidth').value);
+                surfaceArea = maxLength * maxWidth * 0.85; // 85% factor for kidney shapes
+                poolType = 'Kidney/Freeform';
+            }
+
+            cubicFeet = surfaceArea * avgDepth;
+            const gallons = cubicFeet * 7.48;
+            const liters = gallons * 3.785;
+
+            // Estimates
+            const fillTime = gallons / 540; // avg garden hose ~9 GPM
+            const waterCost = (gallons / 1000) * 5; // ~$5 per 1000 gallons avg
+
+            // Chemical multiplier based on pool size vs 10k gallons
+            const chemMultiplier = gallons / 10000;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalGallons').textContent = Math.round(gallons).toLocaleString();
+            document.getElementById('liters').textContent = Math.round(liters).toLocaleString();
+            document.getElementById('cubicFeet').textContent = Math.round(cubicFeet).toLocaleString();
+            document.getElementById('fillTime').textContent = fillTime.toFixed(1);
+            document.getElementById('waterCost').textContent = '$' + waterCost.toFixed(0);
+            document.getElementById('surfaceArea').textContent = Math.round(surfaceArea) + ' sq ft';
+            document.getElementById('avgDepth').textContent = avgDepth.toFixed(1) + ' ft';
+            document.getElementById('poolType').textContent = poolType;
+
+            // Update chemical amounts
+            const chlorineOz = (2 * chemMultiplier).toFixed(1);
+            document.getElementById('chlorine').textContent = chlorineOz + ' oz granular';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

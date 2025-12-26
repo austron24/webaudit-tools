@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Puppy Food Calculator - How Much to Feed Your Puppy</title>
+    <meta name="description" content="Calculate how much food to feed your puppy based on age, weight, and breed size. Get daily feeding amounts and schedules. Free puppy feeding calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #f97316 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #f97316;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #f97316;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #ea580c; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .schedule-box {
+            background: #fff7ed;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .schedule-time { font-size: 14px; color: #64748b; }
+        .schedule-amount { font-size: 24px; font-weight: bold; color: #f97316; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .breakdown h4 { color: #f97316; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .tips-box {
+            background: #fff7ed;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .tips-box h4 { color: #f97316; margin-bottom: 15px; }
+        .tip { padding: 10px 0; border-bottom: 1px solid #fed7aa; font-size: 14px; }
+        .tip:last-child { border: none; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #f97316; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #ea580c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fed7aa; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐕 Puppy Food Calculator</h1>
+            <p class="subtitle">Calculate the perfect portion for your growing pup</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Puppy's Current Weight (lbs)</label>
+                    <input type="number" id="weight" value="15" min="1" max="200" step="0.5">
+                </div>
+                <div class="input-group">
+                    <label>Puppy's Age</label>
+                    <select id="age">
+                        <option value="8weeks">8-12 weeks</option>
+                        <option value="3months" selected>3-6 months</option>
+                        <option value="6months">6-12 months</option>
+                        <option value="12months">12+ months</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Expected Adult Weight (lbs)</label>
+                    <input type="number" id="adultWeight" value="50" min="5" max="200">
+                </div>
+                <div class="input-group">
+                    <label>Breed Size</label>
+                    <select id="breedSize">
+                        <option value="toy">Toy (under 10 lbs)</option>
+                        <option value="small">Small (10-25 lbs)</option>
+                        <option value="medium" selected>Medium (25-50 lbs)</option>
+                        <option value="large">Large (50-100 lbs)</option>
+                        <option value="giant">Giant (100+ lbs)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Activity Level</label>
+                <select id="activity">
+                    <option value="low">Low (mostly indoor, calm)</option>
+                    <option value="moderate" selected>Moderate (regular walks, play)</option>
+                    <option value="high">High (very active, working dog)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Food Calories (kcal per cup) - check your food bag</label>
+                <input type="number" id="foodCalories" value="350" min="200" max="600">
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Food Amount</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="dailyAmount">0 cups</div>
+                    <div class="result-label-main">Daily Food Amount</div>
+                </div>
+
+                <div class="schedule-grid" id="schedule"></div>
+
+                <div class="breakdown">
+                    <h4>📊 Nutritional Details</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Daily Calories Needed</span>
+                        <span class="breakdown-value" id="dailyCalories">0 kcal</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Per Meal</span>
+                        <span class="breakdown-value" id="perMeal">0 cups</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Monthly Food Needed</span>
+                        <span class="breakdown-value" id="monthlyFood">0 lbs</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Feeding Frequency</span>
+                        <span class="breakdown-value" id="frequency">3x daily</span>
+                    </div>
+                </div>
+
+                <div class="tips-box">
+                    <h4>🦴 Feeding Tips for Your Puppy</h4>
+                    <div id="tips"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Pet Calculators</h4>
+            <a href="dog-weight-calculator.html">Dog Weight Predictor</a>
+            <a href="dog-age-calculator.html">Dog Age Calculator</a>
+            <a href="pet-cost-calculator.html">Pet Cost Calculator</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Puppy Food Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const weight = parseFloat(document.getElementById('weight').value);
+            const age = document.getElementById('age').value;
+            const adultWeight = parseFloat(document.getElementById('adultWeight').value);
+            const breedSize = document.getElementById('breedSize').value;
+            const activity = document.getElementById('activity').value;
+            const foodCalories = parseFloat(document.getElementById('foodCalories').value);
+
+            // Base RER (Resting Energy Requirement)
+            const RER = 70 * Math.pow(weight / 2.2, 0.75);
+
+            // Age multiplier for puppies
+            let ageMultiplier = 2.0;
+            if (age === '8weeks') ageMultiplier = 3.0;
+            else if (age === '3months') ageMultiplier = 2.5;
+            else if (age === '6months') ageMultiplier = 2.0;
+            else if (age === '12months') ageMultiplier = 1.8;
+
+            // Activity adjustment
+            let activityMultiplier = 1.0;
+            if (activity === 'low') activityMultiplier = 0.9;
+            else if (activity === 'high') activityMultiplier = 1.2;
+
+            // Daily calories
+            const dailyCalories = Math.round(RER * ageMultiplier * activityMultiplier);
+            const dailyCups = dailyCalories / foodCalories;
+
+            // Feeding frequency based on age
+            let meals = 3;
+            let frequency = '3 times daily';
+            if (age === '8weeks') { meals = 4; frequency = '4 times daily'; }
+            else if (age === '12months') { meals = 2; frequency = '2 times daily'; }
+
+            const cupsPerMeal = dailyCups / meals;
+
+            // Monthly food (cups to lbs, roughly 4 cups per lb of dry food)
+            const monthlyCups = dailyCups * 30;
+            const monthlyLbs = monthlyCups / 4;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('dailyAmount').textContent = dailyCups.toFixed(1) + ' cups';
+            document.getElementById('dailyCalories').textContent = dailyCalories + ' kcal';
+            document.getElementById('perMeal').textContent = cupsPerMeal.toFixed(2) + ' cups';
+            document.getElementById('monthlyFood').textContent = monthlyLbs.toFixed(1) + ' lbs';
+            document.getElementById('frequency').textContent = frequency;
+
+            // Schedule
+            let scheduleHTML = '';
+            const mealTimes = meals === 4 ? ['7 AM', '11 AM', '3 PM', '7 PM'] :
+                             meals === 3 ? ['7 AM', '12 PM', '6 PM'] :
+                             ['7 AM', '6 PM'];
+            mealTimes.forEach(time => {
+                scheduleHTML += `
+                    <div class="schedule-box">
+                        <div class="schedule-time">${time}</div>
+                        <div class="schedule-amount">${cupsPerMeal.toFixed(2)} cups</div>
+                    </div>
+                `;
+            });
+            document.getElementById('schedule').innerHTML = scheduleHTML;
+
+            // Tips
+            let tips = [];
+            tips.push(`<div class="tip">🥣 Feed puppy-specific food until ${breedSize === 'large' || breedSize === 'giant' ? '18-24 months' : '12 months'} old.</div>`);
+            tips.push('<div class="tip">💧 Always provide fresh water, especially after meals.</div>');
+            tips.push('<div class="tip">⏰ Keep feeding times consistent each day.</div>');
+            if (breedSize === 'large' || breedSize === 'giant') {
+                tips.push('<div class="tip">🦴 Large breeds need controlled growth - avoid overfeeding to protect joints.</div>');
+            }
+            if (age === '8weeks') {
+                tips.push('<div class="tip">🍼 Soften kibble with warm water for young puppies.</div>');
+            }
+            tips.push('<div class="tip">📏 Adjust portions if puppy seems too thin or overweight.</div>');
+            document.getElementById('tips').innerHTML = tips.join('');
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

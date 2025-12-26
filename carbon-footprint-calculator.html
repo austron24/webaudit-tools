@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Carbon Footprint Calculator - Calculate Your CO2 Emissions</title>
+    <meta name="description" content="Calculate your personal carbon footprint. See how your lifestyle impacts the environment. Free CO2 emissions calculator with tips to reduce your impact.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #059669 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .section-title {
+            font-size: 16px;
+            color: #059669;
+            margin: 20px 0 15px;
+            padding-top: 15px;
+            border-top: 2px solid #d1fae5;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title:first-child { border: none; padding-top: 0; margin-top: 0; }
+        .input-group { margin-bottom: 15px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #059669;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #059669;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 20px;
+        }
+        .btn:hover { background: #047857; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .result-compare { font-size: 14px; opacity: 0.8; margin-top: 10px; }
+        .category-breakdown {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .category-box {
+            background: #f0fdf4;
+            padding: 20px;
+            border-radius: 12px;
+        }
+        .category-icon { font-size: 24px; margin-bottom: 5px; }
+        .category-name { font-size: 13px; color: #64748b; }
+        .category-value { font-size: 22px; font-weight: bold; color: #059669; }
+        .category-percent { font-size: 12px; color: #64748b; }
+        .bar-container {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .bar-container h4 { color: #059669; margin-bottom: 15px; }
+        .bar-item {
+            margin-bottom: 15px;
+        }
+        .bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+        .bar-track {
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .bar-fill {
+            height: 100%;
+            border-radius: 6px;
+        }
+        .tips {
+            background: #d1fae5;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .tips h4 { color: #047857; margin-bottom: 15px; }
+        .tip { font-size: 14px; padding: 10px 0; border-bottom: 1px solid #a7f3d0; }
+        .tip:last-child { border: none; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #059669; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #047857;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #6ee7b7; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌍 Carbon Footprint Calculator</h1>
+            <p class="subtitle">Calculate your annual CO2 emissions</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="section-title">🚗 Transportation</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Miles Driven per Year</label>
+                    <input type="number" id="milesPerYear" value="12000" min="0">
+                </div>
+                <div class="input-group">
+                    <label>Vehicle MPG</label>
+                    <input type="number" id="mpg" value="28" min="10" max="100">
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Flights per Year (short)</label>
+                    <input type="number" id="shortFlights" value="2" min="0">
+                </div>
+                <div class="input-group">
+                    <label>Flights per Year (long)</label>
+                    <input type="number" id="longFlights" value="1" min="0">
+                </div>
+            </div>
+
+            <div class="section-title">🏠 Home Energy</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Electricity (kWh/month)</label>
+                    <input type="number" id="electricity" value="900" min="0">
+                </div>
+                <div class="input-group">
+                    <label>Natural Gas (therms/month)</label>
+                    <input type="number" id="gas" value="50" min="0">
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Energy Source</label>
+                <select id="energySource">
+                    <option value="mixed" selected>Mixed Grid (US Average)</option>
+                    <option value="coal">Mostly Coal</option>
+                    <option value="renewable">Mostly Renewable</option>
+                </select>
+            </div>
+
+            <div class="section-title">🍔 Diet & Lifestyle</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Diet Type</label>
+                    <select id="diet">
+                        <option value="heavy">Heavy Meat Eater</option>
+                        <option value="average" selected>Average</option>
+                        <option value="low">Low Meat</option>
+                        <option value="vegetarian">Vegetarian</option>
+                        <option value="vegan">Vegan</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Shopping Habits</label>
+                    <select id="shopping">
+                        <option value="high">Frequent Shopper</option>
+                        <option value="average" selected>Average</option>
+                        <option value="minimal">Minimal/Secondhand</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Carbon Footprint</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalFootprint">0</div>
+                    <div class="result-label-main">Tons CO2 per Year</div>
+                    <div class="result-compare" id="comparison">US Average: 16 tons</div>
+                </div>
+
+                <div class="category-breakdown">
+                    <div class="category-box">
+                        <div class="category-icon">🚗</div>
+                        <div class="category-name">Transportation</div>
+                        <div class="category-value" id="transportCO2">0</div>
+                        <div class="category-percent" id="transportPct">0%</div>
+                    </div>
+                    <div class="category-box">
+                        <div class="category-icon">🏠</div>
+                        <div class="category-name">Home Energy</div>
+                        <div class="category-value" id="homeCO2">0</div>
+                        <div class="category-percent" id="homePct">0%</div>
+                    </div>
+                    <div class="category-box">
+                        <div class="category-icon">🍔</div>
+                        <div class="category-name">Food</div>
+                        <div class="category-value" id="foodCO2">0</div>
+                        <div class="category-percent" id="foodPct">0%</div>
+                    </div>
+                    <div class="category-box">
+                        <div class="category-icon">🛍️</div>
+                        <div class="category-name">Goods & Services</div>
+                        <div class="category-value" id="goodsCO2">0</div>
+                        <div class="category-percent" id="goodsPct">0%</div>
+                    </div>
+                </div>
+
+                <div class="bar-container">
+                    <h4>📊 How You Compare</h4>
+                    <div class="bar-item">
+                        <div class="bar-label">
+                            <span>You</span>
+                            <span id="youBar">0 tons</span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-fill" id="youFill" style="background: #059669;"></div>
+                        </div>
+                    </div>
+                    <div class="bar-item">
+                        <div class="bar-label">
+                            <span>US Average</span>
+                            <span>16 tons</span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width: 80%; background: #f97316;"></div>
+                        </div>
+                    </div>
+                    <div class="bar-item">
+                        <div class="bar-label">
+                            <span>World Average</span>
+                            <span>4 tons</span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width: 20%; background: #3b82f6;"></div>
+                        </div>
+                    </div>
+                    <div class="bar-item">
+                        <div class="bar-label">
+                            <span>Target (Paris Agreement)</span>
+                            <span>2 tons</span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width: 10%; background: #22c55e;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tips">
+                    <h4>💡 Ways to Reduce Your Footprint</h4>
+                    <div id="tipsList"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Eco Calculators</h4>
+            <a href="gas-mileage-calculator.html">Gas Mileage</a>
+            <a href="electricity-cost-calculator.html">Electricity Cost</a>
+            <a href="ev-charging-cost-calculator.html">EV Charging</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Carbon Footprint Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            // Transportation
+            const milesPerYear = parseFloat(document.getElementById('milesPerYear').value);
+            const mpg = parseFloat(document.getElementById('mpg').value);
+            const shortFlights = parseFloat(document.getElementById('shortFlights').value);
+            const longFlights = parseFloat(document.getElementById('longFlights').value);
+
+            // Home Energy
+            const electricity = parseFloat(document.getElementById('electricity').value);
+            const gas = parseFloat(document.getElementById('gas').value);
+            const energySource = document.getElementById('energySource').value;
+
+            // Lifestyle
+            const diet = document.getElementById('diet').value;
+            const shopping = document.getElementById('shopping').value;
+
+            // Transportation CO2
+            const gallonsPerYear = milesPerYear / mpg;
+            const drivingCO2 = gallonsPerYear * 0.00889; // tons CO2 per gallon
+            const flightsCO2 = (shortFlights * 0.5) + (longFlights * 2.5); // tons per flight
+            const transportTotal = drivingCO2 + flightsCO2;
+
+            // Home Energy CO2
+            let electricityFactor = 0.00042; // tons CO2 per kWh (US average)
+            if (energySource === 'coal') electricityFactor = 0.0009;
+            if (energySource === 'renewable') electricityFactor = 0.0001;
+            const electricityCO2 = electricity * 12 * electricityFactor;
+            const gasCO2 = gas * 12 * 0.0053; // tons CO2 per therm
+            const homeTotal = electricityCO2 + gasCO2;
+
+            // Food CO2
+            const dietCO2 = {
+                heavy: 3.3,
+                average: 2.5,
+                low: 1.9,
+                vegetarian: 1.7,
+                vegan: 1.5
+            };
+            const foodTotal = dietCO2[diet];
+
+            // Goods & Services
+            const shoppingCO2 = {
+                high: 4,
+                average: 2.5,
+                minimal: 1
+            };
+            const goodsTotal = shoppingCO2[shopping];
+
+            // Total
+            const total = transportTotal + homeTotal + foodTotal + goodsTotal;
+
+            // Display results
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalFootprint').textContent = total.toFixed(1);
+
+            const diff = total - 16;
+            document.getElementById('comparison').textContent = diff > 0
+                ? `${Math.abs(diff).toFixed(1)} tons above US average`
+                : `${Math.abs(diff).toFixed(1)} tons below US average`;
+
+            document.getElementById('transportCO2').textContent = transportTotal.toFixed(1) + 't';
+            document.getElementById('transportPct').textContent = Math.round(transportTotal/total*100) + '%';
+            document.getElementById('homeCO2').textContent = homeTotal.toFixed(1) + 't';
+            document.getElementById('homePct').textContent = Math.round(homeTotal/total*100) + '%';
+            document.getElementById('foodCO2').textContent = foodTotal.toFixed(1) + 't';
+            document.getElementById('foodPct').textContent = Math.round(foodTotal/total*100) + '%';
+            document.getElementById('goodsCO2').textContent = goodsTotal.toFixed(1) + 't';
+            document.getElementById('goodsPct').textContent = Math.round(goodsTotal/total*100) + '%';
+
+            // Comparison bar
+            const youPct = Math.min(100, (total / 20) * 100);
+            document.getElementById('youFill').style.width = youPct + '%';
+            document.getElementById('youBar').textContent = total.toFixed(1) + ' tons';
+
+            // Tips
+            let tips = [];
+            if (transportTotal > 5) tips.push('<div class="tip">🚗 Consider carpooling, public transit, or an electric vehicle</div>');
+            if (flightsCO2 > 3) tips.push('<div class="tip">✈️ Reduce air travel or purchase carbon offsets</div>');
+            if (electricityCO2 > 3) tips.push('<div class="tip">💡 Switch to LED bulbs and energy-efficient appliances</div>');
+            if (gasCO2 > 2) tips.push('<div class="tip">🌡️ Improve home insulation and lower thermostat in winter</div>');
+            if (diet !== 'vegan' && diet !== 'vegetarian') tips.push('<div class="tip">🥗 Try meatless meals 1-2 days per week</div>');
+            if (shopping === 'high') tips.push('<div class="tip">♻️ Buy secondhand, repair items, and reduce impulse purchases</div>');
+            tips.push('<div class="tip">🌳 Plant trees or support reforestation projects</div>');
+
+            document.getElementById('tipsList').innerHTML = tips.join('');
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Gift Budget Calculator - Holiday & Christmas Gift Planner</title>
+    <meta name="description" content="Plan your holiday gift budget. Track spending for everyone on your list. Free Christmas and holiday gift budget calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #dc2626 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #dc2626;
+        }
+        .gift-list { margin: 20px 0; }
+        .gift-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 40px;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .gift-row input {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+        .gift-row input:focus { border-color: #dc2626; outline: none; }
+        .remove-btn {
+            background: #fee2e2;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            color: #dc2626;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .add-btn {
+            background: none;
+            border: 2px dashed #e2e8f0;
+            padding: 12px;
+            border-radius: 10px;
+            width: 100%;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .add-btn:hover { border-color: #dc2626; color: #dc2626; }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #dc2626;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 20px;
+        }
+        .btn:hover { background: #b91c1c; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .budget-status {
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .under-budget { background: #dcfce7; color: #15803d; }
+        .over-budget { background: #fee2e2; color: #dc2626; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #fef2f2;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #dc2626; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .gift-summary {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .gift-summary h4 { color: #dc2626; margin-bottom: 15px; }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .summary-row:last-child { border: none; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #dc2626; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #b91c1c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fca5a5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎁 Gift Budget Calculator</h1>
+            <p class="subtitle">Plan your holiday gift spending</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Total Gift Budget ($)</label>
+                <input type="number" id="totalBudget" value="500" min="50" step="50">
+            </div>
+
+            <div class="gift-list">
+                <label style="font-size: 14px; color: #64748b; margin-bottom: 10px; display: block;">Gift Recipients</label>
+                <div id="giftRows">
+                    <div class="gift-row">
+                        <input type="text" value="Mom" placeholder="Name">
+                        <input type="number" value="75" placeholder="$" min="0">
+                        <button class="remove-btn" onclick="removeRow(this)">×</button>
+                    </div>
+                    <div class="gift-row">
+                        <input type="text" value="Dad" placeholder="Name">
+                        <input type="number" value="75" placeholder="$" min="0">
+                        <button class="remove-btn" onclick="removeRow(this)">×</button>
+                    </div>
+                    <div class="gift-row">
+                        <input type="text" value="Spouse" placeholder="Name">
+                        <input type="number" value="150" placeholder="$" min="0">
+                        <button class="remove-btn" onclick="removeRow(this)">×</button>
+                    </div>
+                    <div class="gift-row">
+                        <input type="text" value="Kids" placeholder="Name">
+                        <input type="number" value="100" placeholder="$" min="0">
+                        <button class="remove-btn" onclick="removeRow(this)">×</button>
+                    </div>
+                    <div class="gift-row">
+                        <input type="text" value="Friends" placeholder="Name">
+                        <input type="number" value="50" placeholder="$" min="0">
+                        <button class="remove-btn" onclick="removeRow(this)">×</button>
+                    </div>
+                </div>
+                <button class="add-btn" onclick="addRow()">+ Add Recipient</button>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Gift Budget</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalPlanned">$0</div>
+                    <div class="result-label-main">Total Planned Spending</div>
+                </div>
+
+                <div class="budget-status" id="budgetStatus">
+                    <strong id="statusText">Under Budget</strong>
+                    <div id="statusAmount">$50 remaining</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="recipientCount">0</div>
+                        <div class="summary-label">Recipients</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="avgGift">$0</div>
+                        <div class="summary-label">Avg per Person</div>
+                    </div>
+                </div>
+
+                <div class="gift-summary">
+                    <h4>📋 Gift Summary</h4>
+                    <div id="giftSummary"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Budget Calculators</h4>
+            <a href="wedding-budget-calculator.html">Wedding Budget</a>
+            <a href="party-budget-calculator.html">Party Budget</a>
+            <a href="savings-goal-calculator.html">Savings Goal</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Gift Budget Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function addRow() {
+            const container = document.getElementById('giftRows');
+            const row = document.createElement('div');
+            row.className = 'gift-row';
+            row.innerHTML = `
+                <input type="text" placeholder="Name">
+                <input type="number" placeholder="$" min="0" value="0">
+                <button class="remove-btn" onclick="removeRow(this)">×</button>
+            `;
+            container.appendChild(row);
+        }
+
+        function removeRow(btn) {
+            btn.parentElement.remove();
+        }
+
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const budget = parseFloat(document.getElementById('totalBudget').value);
+            const rows = document.querySelectorAll('.gift-row');
+            let total = 0;
+            let count = 0;
+            let summaryHTML = '';
+
+            rows.forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                const name = inputs[0].value || 'Unnamed';
+                const amount = parseFloat(inputs[1].value) || 0;
+                if (amount > 0) {
+                    total += amount;
+                    count++;
+                    summaryHTML += `
+                        <div class="summary-row">
+                            <span>${name}</span>
+                            <span>${formatMoney(amount)}</span>
+                        </div>
+                    `;
+                }
+            });
+
+            const diff = budget - total;
+            const avg = count > 0 ? total / count : 0;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalPlanned').textContent = formatMoney(total);
+            document.getElementById('recipientCount').textContent = count;
+            document.getElementById('avgGift').textContent = formatMoney(avg);
+
+            const statusEl = document.getElementById('budgetStatus');
+            const statusText = document.getElementById('statusText');
+            const statusAmount = document.getElementById('statusAmount');
+
+            if (diff >= 0) {
+                statusEl.className = 'budget-status under-budget';
+                statusText.textContent = '✅ Under Budget';
+                statusAmount.textContent = formatMoney(diff) + ' remaining';
+            } else {
+                statusEl.className = 'budget-status over-budget';
+                statusText.textContent = '⚠️ Over Budget';
+                statusAmount.textContent = formatMoney(Math.abs(diff)) + ' over';
+            }
+
+            document.getElementById('giftSummary').innerHTML = summaryHTML;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
