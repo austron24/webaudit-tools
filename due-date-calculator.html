@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Due Date Calculator - Pregnancy Due Date</title>
-    <meta name="description" content="Free pregnancy due date calculator. Calculate your baby's estimated due date based on last menstrual period or conception date.">
-    <meta name="keywords" content="due date calculator, pregnancy calculator, baby due date, conception date, LMP calculator">
+    <title>Due Date Calculator - Project & Task Deadline Planner</title>
+    <meta name="description" content="Free due date calculator. Calculate deadlines, work back from due dates, and plan project timelines with business day calculations.">
+    <meta name="keywords" content="due date calculator, deadline calculator, project timeline, business days calculator, work back schedule">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/due-date-calculator.html">
     <style>
-        :root { --primary: #ec4899; --primary-dark: #db2777; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #8b5cf6; --primary-dark: #7c3aed; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -20,29 +20,28 @@
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
         .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
         .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
-        .method-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .method-tab { flex: 1; padding: 15px; border: 2px solid var(--border); border-radius: 10px; background: var(--bg-input); color: var(--text-primary); cursor: pointer; text-align: center; font-weight: 600; }
-        .method-tab.active { border-color: var(--primary); background: var(--primary); }
-        .form-group { margin-bottom: 20px; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab { padding: 12px 24px; background: var(--bg-input); border: none; border-radius: 8px; color: var(--text-primary); cursor: pointer; font-size: 1rem; }
+        .tab.active { background: var(--primary); }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
-        input { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
-        input:focus { outline: none; border-color: var(--primary); }
-        .result-card { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 30px; border-radius: 12px; text-align: center; margin-top: 20px; }
-        .result-value { font-size: 2.5rem; font-weight: 800; color: white; }
-        .result-label { color: rgba(255,255,255,0.8); margin-top: 5px; }
-        .timeline { margin-top: 20px; }
-        .timeline-item { display: flex; gap: 15px; padding: 15px 0; border-bottom: 1px solid var(--border); }
-        .timeline-week { min-width: 80px; font-weight: 700; color: var(--secondary); }
-        .timeline-date { color: var(--text-secondary); min-width: 120px; }
-        .progress-bar { margin-top: 20px; background: var(--bg-input); border-radius: 10px; height: 30px; overflow: hidden; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; }
-        .trimester-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
-        .trimester-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 40px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 2rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.9); font-size: 1.2rem; }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .result-value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .trimester-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } .tabs { flex-direction: column; } }
     </style>
 </head>
 <body>
@@ -57,62 +56,97 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
-    
+
     <header class="header">
-        <h1>👶 Due Date Calculator</h1>
+        <h1>📅 Due Date Calculator</h1>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>📅 Calculate Your Due Date</h2>
-                <div class="method-tabs">
-                    <button class="method-tab active" onclick="setMethod('lmp')">Last Period (LMP)</button>
-                    <button class="method-tab" onclick="setMethod('conception')">Conception Date</button>
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('add')">Add Days</button>
+                    <button class="tab" onclick="switchTab('workback')">Work Back</button>
+                    <button class="tab" onclick="switchTab('between')">Days Between</button>
                 </div>
-                
-                <div class="form-group" id="lmpGroup">
-                    <label>First Day of Last Menstrual Period</label>
-                    <input type="date" id="lmpDate" oninput="calculate()">
-                </div>
-                
-                <div class="form-group" id="conceptionGroup" style="display: none;">
-                    <label>Conception Date</label>
-                    <input type="date" id="conceptionDate" oninput="calculate()">
-                </div>
-                
-                <div class="result-card">
-                    <div class="result-label">Estimated Due Date</div>
-                    <div class="result-value" id="dueDate">-</div>
-                    <div id="weeksAlong" style="color: rgba(255,255,255,0.8); margin-top: 10px;"></div>
-                </div>
-                
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill" style="width: 0%">0%</div>
-                </div>
-                
-                <div class="trimester-grid">
-                    <div class="trimester-card">
-                        <div style="font-size: 1.5rem; margin-bottom: 5px;">1️⃣</div>
-                        <div style="font-weight: 700; color: var(--secondary);">First Trimester</div>
-                        <div style="color: var(--text-secondary); font-size: 0.9rem;" id="tri1">Weeks 1-12</div>
-                    </div>
-                    <div class="trimester-card">
-                        <div style="font-size: 1.5rem; margin-bottom: 5px;">2️⃣</div>
-                        <div style="font-weight: 700; color: var(--secondary);">Second Trimester</div>
-                        <div style="color: var(--text-secondary); font-size: 0.9rem;" id="tri2">Weeks 13-26</div>
-                    </div>
-                    <div class="trimester-card">
-                        <div style="font-size: 1.5rem; margin-bottom: 5px;">3️⃣</div>
-                        <div style="font-weight: 700; color: var(--secondary);">Third Trimester</div>
-                        <div style="color: var(--text-secondary); font-size: 0.9rem;" id="tri3">Weeks 27-40</div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="card">
-                <h2>📋 Key Milestones</h2>
-                <div class="timeline" id="timeline"></div>
+                <div id="addTab" class="tab-content active">
+                    <h2>➕ Add Days to Date</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Start Date</label>
+                            <input type="date" id="addStart" onchange="calculateAdd()">
+                        </div>
+                        <div class="form-group">
+                            <label>Days to Add</label>
+                            <input type="number" id="addDays" value="30" min="1" oninput="calculateAdd()">
+                        </div>
+                        <div class="form-group">
+                            <label>Day Type</label>
+                            <select id="addType" onchange="calculateAdd()">
+                                <option value="calendar">Calendar Days</option>
+                                <option value="business">Business Days Only</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="result-hero">
+                        <div class="result-hero-label">Due Date</div>
+                        <div class="result-hero-value" id="addResult">-</div>
+                    </div>
+                </div>
+
+                <div id="workbackTab" class="tab-content">
+                    <h2>⏪ Work Back from Due Date</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Due Date</label>
+                            <input type="date" id="workDue" onchange="calculateWorkback()">
+                        </div>
+                        <div class="form-group">
+                            <label>Days to Work Back</label>
+                            <input type="number" id="workDays" value="14" min="1" oninput="calculateWorkback()">
+                        </div>
+                        <div class="form-group">
+                            <label>Day Type</label>
+                            <select id="workType" onchange="calculateWorkback()">
+                                <option value="calendar">Calendar Days</option>
+                                <option value="business">Business Days Only</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="result-hero">
+                        <div class="result-hero-label">Start By Date</div>
+                        <div class="result-hero-value" id="workResult">-</div>
+                    </div>
+                </div>
+
+                <div id="betweenTab" class="tab-content">
+                    <h2>📊 Days Between Dates</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Start Date</label>
+                            <input type="date" id="betweenStart" onchange="calculateBetween()">
+                        </div>
+                        <div class="form-group">
+                            <label>End Date</label>
+                            <input type="date" id="betweenEnd" onchange="calculateBetween()">
+                        </div>
+                    </div>
+                    <div class="results-grid">
+                        <div class="result-card">
+                            <div class="result-value" id="calendarDays">0</div>
+                            <div class="result-label">Calendar Days</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="result-value" id="businessDays">0</div>
+                            <div class="result-label">Business Days</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="result-value" id="weekendDays">0</div>
+                            <div class="result-label">Weekend Days</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="ad-container">
@@ -124,10 +158,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="pregnancy-calculator.html" class="related-link">🤰 Pregnancy Calculator</a>
-                    <a href="age-calculator.html" class="related-link">📅 Age Calculator</a>
                     <a href="date-calculator.html" class="related-link">📆 Date Calculator</a>
-                    <a href="bmi-calculator.html" class="related-link">⚖️ BMI Calculator</a>
+                    <a href="age-calculator.html" class="related-link">🎂 Age Calculator</a>
+                    <a href="time-calculator.html" class="related-link">⏰ Time Calculator</a>
+                    <a href="pregnancy-calculator.html" class="related-link">🤰 Pregnancy</a>
                 </div>
             </div>
         </div>
@@ -142,92 +176,117 @@
     </div>
 
     <script>
-        let method = 'lmp';
-        
-        function setMethod(m) {
-            method = m;
-            document.querySelectorAll('.method-tab').forEach(t => t.classList.remove('active'));
+        // Set default dates
+        const today = new Date();
+        document.getElementById('addStart').valueAsDate = today;
+        document.getElementById('workDue').valueAsDate = new Date(today.getTime() + 30*24*60*60*1000);
+        document.getElementById('betweenStart').valueAsDate = today;
+        document.getElementById('betweenEnd').valueAsDate = new Date(today.getTime() + 30*24*60*60*1000);
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
             event.target.classList.add('active');
-            document.getElementById('lmpGroup').style.display = m === 'lmp' ? 'block' : 'none';
-            document.getElementById('conceptionGroup').style.display = m === 'conception' ? 'block' : 'none';
-            calculate();
+            document.getElementById(tab + 'Tab').classList.add('active');
         }
-        
-        function calculate() {
-            let lmpDate;
-            
-            if (method === 'lmp') {
-                const lmpInput = document.getElementById('lmpDate').value;
-                if (!lmpInput) return;
-                lmpDate = new Date(lmpInput);
-            } else {
-                const concInput = document.getElementById('conceptionDate').value;
-                if (!concInput) return;
-                const concDate = new Date(concInput);
-                lmpDate = new Date(concDate);
-                lmpDate.setDate(lmpDate.getDate() - 14);
-            }
-            
-            // Due date is 280 days from LMP
-            const dueDate = new Date(lmpDate);
-            dueDate.setDate(dueDate.getDate() + 280);
-            
-            document.getElementById('dueDate').textContent = dueDate.toLocaleDateString('en-US', { 
-                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
-            });
-            
-            // Calculate weeks along
-            const today = new Date();
-            const daysPassed = Math.floor((today - lmpDate) / (1000 * 60 * 60 * 24));
-            const weeks = Math.floor(daysPassed / 7);
-            const days = daysPassed % 7;
-            
-            if (daysPassed >= 0 && weeks <= 42) {
-                document.getElementById('weeksAlong').textContent = `Currently: ${weeks} weeks, ${days} days`;
-                const progress = Math.min((daysPassed / 280) * 100, 100);
-                document.getElementById('progressFill').style.width = progress + '%';
-                document.getElementById('progressFill').textContent = Math.round(progress) + '% complete';
-            } else {
-                document.getElementById('weeksAlong').textContent = '';
-                document.getElementById('progressFill').style.width = '0%';
-                document.getElementById('progressFill').textContent = '';
-            }
-            
-            // Generate milestones
-            const milestones = [
-                { week: 8, event: 'First prenatal visit' },
-                { week: 10, event: 'Genetic testing available' },
-                { week: 12, event: 'End of first trimester' },
-                { week: 16, event: 'May feel first movements' },
-                { week: 20, event: 'Anatomy ultrasound' },
-                { week: 24, event: 'Viability milestone' },
-                { week: 27, event: 'Third trimester begins' },
-                { week: 28, event: 'Third trimester blood tests' },
-                { week: 32, event: 'Baby shower time' },
-                { week: 36, event: 'Weekly checkups begin' },
-                { week: 37, event: 'Full term!' },
-                { week: 40, event: 'Due date' }
-            ];
-            
-            let html = '';
-            milestones.forEach(m => {
-                const milestoneDate = new Date(lmpDate);
-                milestoneDate.setDate(milestoneDate.getDate() + (m.week * 7));
-                const isPast = today >= milestoneDate;
-                html += `<div class="timeline-item" style="${isPast ? 'opacity: 0.5;' : ''}">
-                    <div class="timeline-week">Week ${m.week}</div>
-                    <div class="timeline-date">${milestoneDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
-                    <div>${m.event}</div>
-                </div>`;
-            });
-            document.getElementById('timeline').innerHTML = html;
+
+        function isWeekend(date) {
+            const day = date.getDay();
+            return day === 0 || day === 6;
         }
-        
-        // Set default date to 2 months ago
-        const defaultDate = new Date();
-        defaultDate.setMonth(defaultDate.getMonth() - 2);
-        document.getElementById('lmpDate').value = defaultDate.toISOString().split('T')[0];
-        calculate();
+
+        function addBusinessDays(startDate, days) {
+            let current = new Date(startDate);
+            let added = 0;
+            while (added < days) {
+                current.setDate(current.getDate() + 1);
+                if (!isWeekend(current)) added++;
+            }
+            return current;
+        }
+
+        function subtractBusinessDays(endDate, days) {
+            let current = new Date(endDate);
+            let subtracted = 0;
+            while (subtracted < days) {
+                current.setDate(current.getDate() - 1);
+                if (!isWeekend(current)) subtracted++;
+            }
+            return current;
+        }
+
+        function formatDate(date) {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        function calculateAdd() {
+            const start = new Date(document.getElementById('addStart').value);
+            const days = parseInt(document.getElementById('addDays').value) || 0;
+            const type = document.getElementById('addType').value;
+
+            if (isNaN(start.getTime())) return;
+
+            let result;
+            if (type === 'business') {
+                result = addBusinessDays(start, days);
+            } else {
+                result = new Date(start);
+                result.setDate(result.getDate() + days);
+            }
+
+            document.getElementById('addResult').textContent = formatDate(result);
+        }
+
+        function calculateWorkback() {
+            const due = new Date(document.getElementById('workDue').value);
+            const days = parseInt(document.getElementById('workDays').value) || 0;
+            const type = document.getElementById('workType').value;
+
+            if (isNaN(due.getTime())) return;
+
+            let result;
+            if (type === 'business') {
+                result = subtractBusinessDays(due, days);
+            } else {
+                result = new Date(due);
+                result.setDate(result.getDate() - days);
+            }
+
+            document.getElementById('workResult').textContent = formatDate(result);
+        }
+
+        function calculateBetween() {
+            const start = new Date(document.getElementById('betweenStart').value);
+            const end = new Date(document.getElementById('betweenEnd').value);
+
+            if (isNaN(start.getTime()) || isNaN(end.getTime())) return;
+
+            const msPerDay = 24 * 60 * 60 * 1000;
+            const calendarDays = Math.round((end - start) / msPerDay);
+
+            let businessDays = 0;
+            let weekendDays = 0;
+            let current = new Date(start);
+            while (current < end) {
+                current.setDate(current.getDate() + 1);
+                if (isWeekend(current)) {
+                    weekendDays++;
+                } else {
+                    businessDays++;
+                }
+            }
+
+            document.getElementById('calendarDays').textContent = calendarDays;
+            document.getElementById('businessDays').textContent = businessDays;
+            document.getElementById('weekendDays').textContent = weekendDays;
+        }
+
+        // Initial calculations
+        calculateAdd();
+        calculateWorkback();
+        calculateBetween();
     </script>
 </body>
 </html>
