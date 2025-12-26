@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>College Cost Calculator - 4-Year Cost Estimator</title>
-    <meta name="description" content="Free college cost calculator. Estimate the total cost of a 4-year degree including tuition, room, board, and fees.">
-    <meta name="keywords" content="college cost calculator, university tuition, college expenses, education cost">
-    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/college-cost-calculator.html">
+    <title>SAT Score Calculator - Practice Test Scorer</title>
+    <meta name="description" content="Free SAT score calculator. Calculate your SAT score from practice tests and see your percentile ranking.">
+    <meta name="keywords" content="SAT score calculator, SAT practice test, SAT percentile, college admissions">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/sat-score-calculator.html">
     <style>
-        :root { --primary: #2563eb; --primary-dark: #1d4ed8; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #7c3aed; --primary-dark: #6d28d9; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -23,8 +23,8 @@
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
-        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
-        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        input { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus { outline: none; border-color: var(--primary); }
         .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
         .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
         .result-hero-label { color: rgba(255,255,255,0.8); }
@@ -54,69 +54,60 @@
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
 
     <header class="header">
-        <h1>🎓 College Cost Calculator</h1>
+        <h1>📝 SAT Score Calculator</h1>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>🏫 College Expenses</h2>
+                <h2>✏️ Enter Raw Scores</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Annual Tuition ($)</label>
-                        <input type="number" id="tuition" value="35000" step="1000" oninput="calculate()">
+                        <label>Reading Correct (0-52)</label>
+                        <input type="number" id="reading" value="40" min="0" max="52" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Room & Board ($)</label>
-                        <input type="number" id="room" value="14000" step="500" oninput="calculate()">
+                        <label>Writing Correct (0-44)</label>
+                        <input type="number" id="writing" value="35" min="0" max="44" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Books & Supplies ($)</label>
-                        <input type="number" id="books" value="1200" step="100" oninput="calculate()">
+                        <label>Math No Calc Correct (0-20)</label>
+                        <input type="number" id="mathNoCalc" value="16" min="0" max="20" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Personal Expenses ($)</label>
-                        <input type="number" id="personal" value="2500" step="100" oninput="calculate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Years to Complete</label>
-                        <select id="years" onchange="calculate()">
-                            <option value="2">2 Years</option>
-                            <option value="4" selected>4 Years</option>
-                            <option value="5">5 Years</option>
-                            <option value="6">6 Years</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Annual Increase (%)</label>
-                        <input type="number" id="increase" value="3" step="0.5" oninput="calculate()">
+                        <label>Math Calc Correct (0-38)</label>
+                        <input type="number" id="mathCalc" value="30" min="0" max="38" oninput="calculate()">
                     </div>
                 </div>
 
                 <div class="result-hero">
-                    <div class="result-hero-label">Total Cost of Degree</div>
-                    <div class="result-hero-value" id="totalCost">$0</div>
+                    <div class="result-hero-label">Total SAT Score</div>
+                    <div class="result-hero-value" id="totalScore">0</div>
                 </div>
 
                 <div class="results-grid">
                     <div class="result-card">
-                        <div class="result-value" id="annualCost">$0</div>
-                        <div class="result-label">Year 1 Cost</div>
+                        <div class="result-value" id="erwScore">0</div>
+                        <div class="result-label">Reading/Writing</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="totalTuition">$0</div>
-                        <div class="result-label">Total Tuition</div>
+                        <div class="result-value" id="mathScore">0</div>
+                        <div class="result-label">Math</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="totalLiving">$0</div>
-                        <div class="result-label">Total Living</div>
+                        <div class="result-value" id="percentile">0%</div>
+                        <div class="result-label">Percentile</div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>📊 Year-by-Year Breakdown</h2>
-                <div id="yearlyBreakdown"></div>
+                <h2>📊 Score Benchmarks</h2>
+                <div class="breakdown-row"><span>Top Schools (Ivy+)</span><span>1500+</span></div>
+                <div class="breakdown-row"><span>Highly Competitive</span><span>1400-1500</span></div>
+                <div class="breakdown-row"><span>Competitive</span><span>1200-1400</span></div>
+                <div class="breakdown-row"><span>National Average</span><span>1050</span></div>
+                <div class="breakdown-row"><span>College Ready</span><span>1010+</span></div>
             </div>
 
             <div class="ad-container">
@@ -128,10 +119,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="student-loan-calculator.html" class="related-link">🎓 Student Loans</a>
                     <a href="gpa-calculator.html" class="related-link">📚 GPA Calculator</a>
-                    <a href="savings-goal-calculator.html" class="related-link">💰 Savings Goal</a>
-                    <a href="compound-interest-calculator.html" class="related-link">📈 Compound Interest</a>
+                    <a href="grade-calculator.html" class="related-link">📊 Grade Calculator</a>
+                    <a href="college-cost-calculator.html" class="related-link">🎓 College Cost</a>
+                    <a href="percentage-calculator.html" class="related-link">📐 Percentage</a>
                 </div>
             </div>
         </div>
@@ -147,39 +138,43 @@
 
     <script>
         function calculate() {
-            const tuition = parseFloat(document.getElementById('tuition').value) || 0;
-            const room = parseFloat(document.getElementById('room').value) || 0;
-            const books = parseFloat(document.getElementById('books').value) || 0;
-            const personal = parseFloat(document.getElementById('personal').value) || 0;
-            const years = parseInt(document.getElementById('years').value);
-            const increase = parseFloat(document.getElementById('increase').value) / 100;
+            const reading = Math.min(52, Math.max(0, parseInt(document.getElementById('reading').value) || 0));
+            const writing = Math.min(44, Math.max(0, parseInt(document.getElementById('writing').value) || 0));
+            const mathNoCalc = Math.min(20, Math.max(0, parseInt(document.getElementById('mathNoCalc').value) || 0));
+            const mathCalc = Math.min(38, Math.max(0, parseInt(document.getElementById('mathCalc').value) || 0));
 
-            const year1 = tuition + room + books + personal;
-            let totalCost = 0;
-            let totalTuition = 0;
-            let totalLiving = 0;
-            let html = '';
+            // Approximate conversion (simplified)
+            const rwRaw = reading + writing;
+            const mathRaw = mathNoCalc + mathCalc;
 
-            for (let y = 0; y < years; y++) {
-                const mult = Math.pow(1 + increase, y);
-                const yearTuition = tuition * mult;
-                const yearRoom = room * mult;
-                const yearBooks = books * mult;
-                const yearPersonal = personal * mult;
-                const yearTotal = yearTuition + yearRoom + yearBooks + yearPersonal;
-                
-                totalTuition += yearTuition;
-                totalLiving += yearRoom + yearBooks + yearPersonal;
-                totalCost += yearTotal;
-                
-                html += '<div class="breakdown-row"><span>Year ' + (y + 1) + '</span><span>$' + Math.round(yearTotal).toLocaleString() + '</span></div>';
-            }
+            // Convert to scaled scores (approximate)
+            const erwScore = Math.round(200 + (rwRaw / 96) * 600);
+            const mathScore = Math.round(200 + (mathRaw / 58) * 600);
+            const totalScore = erwScore + mathScore;
 
-            document.getElementById('totalCost').textContent = '$' + Math.round(totalCost).toLocaleString();
-            document.getElementById('annualCost').textContent = '$' + Math.round(year1).toLocaleString();
-            document.getElementById('totalTuition').textContent = '$' + Math.round(totalTuition).toLocaleString();
-            document.getElementById('totalLiving').textContent = '$' + Math.round(totalLiving).toLocaleString();
-            document.getElementById('yearlyBreakdown').innerHTML = html;
+            // Approximate percentile
+            let percentile = 1;
+            if (totalScore >= 1550) percentile = 99;
+            else if (totalScore >= 1500) percentile = 98;
+            else if (totalScore >= 1450) percentile = 96;
+            else if (totalScore >= 1400) percentile = 93;
+            else if (totalScore >= 1350) percentile = 89;
+            else if (totalScore >= 1300) percentile = 84;
+            else if (totalScore >= 1250) percentile = 78;
+            else if (totalScore >= 1200) percentile = 72;
+            else if (totalScore >= 1150) percentile = 64;
+            else if (totalScore >= 1100) percentile = 55;
+            else if (totalScore >= 1050) percentile = 47;
+            else if (totalScore >= 1000) percentile = 38;
+            else if (totalScore >= 950) percentile = 29;
+            else if (totalScore >= 900) percentile = 21;
+            else if (totalScore >= 800) percentile = 10;
+            else percentile = 5;
+
+            document.getElementById('totalScore').textContent = totalScore;
+            document.getElementById('erwScore').textContent = erwScore;
+            document.getElementById('mathScore').textContent = mathScore;
+            document.getElementById('percentile').textContent = percentile + '%';
         }
         calculate();
     </script>
