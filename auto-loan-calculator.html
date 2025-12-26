@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auto Loan Calculator - Car Loan Payment Calculator</title>
-    <meta name="description" content="Free auto loan calculator. Calculate monthly car payments, total interest, and compare loan terms for your vehicle purchase.">
-    <meta name="keywords" content="auto loan calculator, car loan calculator, car payment, vehicle loan, auto financing">
+    <title>Auto Loan Calculator - Car Payment Estimator</title>
+    <meta name="description" content="Free auto loan calculator. Calculate your monthly car payment, total interest, and compare loan terms.">
+    <meta name="keywords" content="auto loan calculator, car payment, car loan, vehicle financing, car finance">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/auto-loan-calculator.html">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #ef4444; --primary-dark: #dc2626; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
         .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
-        .header { background: linear-gradient(135deg, var(--success) 0%, #059669 100%); padding: 40px 20px; text-align: center; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
         .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
         .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
         .content-area { display: flex; flex-direction: column; gap: 20px; }
@@ -32,21 +32,15 @@
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
         .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
         .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
-        .term-comparison { margin-top: 20px; }
-        .term-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; padding: 15px; border-bottom: 1px solid var(--border); align-items: center; }
-        .term-row.header { font-weight: 700; color: var(--secondary); background: var(--bg-input); border-radius: 8px 8px 0 0; }
-        .term-row.selected { background: rgba(99, 102, 241, 0.2); border-left: 3px solid var(--primary); }
-        .payment-visual { margin-top: 20px; padding: 20px; background: var(--bg-input); border-radius: 12px; }
-        .pie-placeholder { width: 200px; height: 200px; margin: 0 auto 20px; border-radius: 50%; background: conic-gradient(var(--primary) 0deg, var(--primary) var(--principal-deg), var(--accent) var(--principal-deg), var(--accent) 360deg); position: relative; }
-        .pie-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 120px; height: 120px; background: var(--bg-input); border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .legend { display: flex; justify-content: center; gap: 30px; }
-        .legend-item { display: flex; align-items: center; gap: 8px; }
-        .legend-color { width: 16px; height: 16px; border-radius: 4px; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
+        .comparison-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px; }
+        .comparison-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .comparison-card.best { border: 2px solid var(--success); }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr 1fr; } .term-row { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 640px) { .form-grid, .results-grid, .comparison-grid { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
 <body>
@@ -69,11 +63,11 @@
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>💰 Loan Details</h2>
+                <h2>🚙 Vehicle & Loan Details</h2>
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Vehicle Price ($)</label>
-                        <input type="number" id="vehiclePrice" value="35000" oninput="calculate()">
+                        <input type="number" id="price" value="35000" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Down Payment ($)</label>
@@ -85,15 +79,15 @@
                     </div>
                     <div class="form-group">
                         <label>Sales Tax (%)</label>
-                        <input type="number" id="salesTax" value="7" step="0.25" oninput="calculate()">
+                        <input type="number" id="salesTax" value="6" step="0.25" oninput="calculate()">
                     </div>
                     <div class="form-group">
                         <label>Interest Rate (APR %)</label>
-                        <input type="number" id="interestRate" value="6.5" step="0.1" oninput="calculate()">
+                        <input type="number" id="rate" value="6.5" step="0.1" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Loan Term (months)</label>
-                        <select id="loanTerm" onchange="calculate()">
+                        <label>Loan Term</label>
+                        <select id="term" onchange="calculate()">
                             <option value="36">36 months (3 years)</option>
                             <option value="48">48 months (4 years)</option>
                             <option value="60" selected>60 months (5 years)</option>
@@ -119,39 +113,18 @@
                     </div>
                     <div class="result-card">
                         <div class="result-value" id="totalCost">$0</div>
-                        <div class="result-label">Total of Payments</div>
+                        <div class="result-label">Total Cost</div>
                     </div>
                     <div class="result-card">
                         <div class="result-value" id="taxAmount">$0</div>
                         <div class="result-label">Sales Tax</div>
                     </div>
                 </div>
-                
-                <div class="payment-visual">
-                    <div class="pie-placeholder" id="pieChart" style="--principal-deg: 270deg;">
-                        <div class="pie-center">
-                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Total Cost</div>
-                            <div style="font-size: 1.2rem; font-weight: 700;" id="pieTotalCost">$0</div>
-                        </div>
-                    </div>
-                    <div class="legend">
-                        <div class="legend-item"><div class="legend-color" style="background: var(--primary);"></div>Principal</div>
-                        <div class="legend-item"><div class="legend-color" style="background: var(--accent);"></div>Interest</div>
-                    </div>
-                </div>
             </div>
 
             <div class="card">
                 <h2>📊 Term Comparison</h2>
-                <div class="term-comparison">
-                    <div class="term-row header">
-                        <span>Term</span>
-                        <span>Monthly</span>
-                        <span>Total Interest</span>
-                        <span>Total Cost</span>
-                    </div>
-                    <div id="termRows"></div>
-                </div>
+                <div class="comparison-grid" id="comparisonGrid"></div>
             </div>
 
             <div class="ad-container">
@@ -163,10 +136,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="car-payment-calculator.html" class="related-link">🚗 Car Payment</a>
-                    <a href="lease-vs-buy-calculator.html" class="related-link">🔑 Lease vs Buy</a>
-                    <a href="auto-insurance-calculator.html" class="related-link">🛡️ Auto Insurance</a>
+                    <a href="car-payment-calculator.html" class="related-link">💵 Car Payment</a>
+                    <a href="car-depreciation-calculator.html" class="related-link">📉 Depreciation</a>
                     <a href="fuel-cost-calculator.html" class="related-link">⛽ Fuel Cost</a>
+                    <a href="lease-vs-buy-calculator.html" class="related-link">🚙 Lease vs Buy</a>
                 </div>
             </div>
         </div>
@@ -181,56 +154,69 @@
     </div>
 
     <script>
-        function calculatePayment(principal, annualRate, months) {
-            const monthlyRate = annualRate / 100 / 12;
-            if (monthlyRate === 0) return principal / months;
-            return principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+        function calculatePayment(principal, rate, months) {
+            const monthlyRate = rate / 100 / 12;
+            if (monthlyRate > 0) {
+                return principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+            }
+            return principal / months;
         }
         
         function calculate() {
-            const vehiclePrice = parseFloat(document.getElementById('vehiclePrice').value) || 0;
+            const price = parseFloat(document.getElementById('price').value) || 0;
             const downPayment = parseFloat(document.getElementById('downPayment').value) || 0;
             const tradeIn = parseFloat(document.getElementById('tradeIn').value) || 0;
-            const salesTax = parseFloat(document.getElementById('salesTax').value) || 0;
-            const interestRate = parseFloat(document.getElementById('interestRate').value) || 0;
-            const loanTerm = parseInt(document.getElementById('loanTerm').value) || 60;
+            const salesTax = parseFloat(document.getElementById('salesTax').value) / 100 || 0;
+            const rate = parseFloat(document.getElementById('rate').value) || 0;
+            const term = parseInt(document.getElementById('term').value);
             
-            const taxAmount = vehiclePrice * (salesTax / 100);
-            const loanAmount = vehiclePrice + taxAmount - downPayment - tradeIn;
-            const monthlyPayment = calculatePayment(loanAmount, interestRate, loanTerm);
-            const totalCost = monthlyPayment * loanTerm;
-            const totalInterest = totalCost - loanAmount;
+            const taxAmount = price * salesTax;
+            const totalPrice = price + taxAmount;
+            const loanAmount = totalPrice - downPayment - tradeIn;
+            
+            const monthlyPayment = calculatePayment(loanAmount, rate, term);
+            const totalPayment = monthlyPayment * term;
+            const totalInterest = totalPayment - loanAmount;
+            const totalCost = totalPayment + downPayment + tradeIn;
             
             document.getElementById('monthlyPayment').textContent = '$' + Math.round(monthlyPayment).toLocaleString();
             document.getElementById('loanAmount').textContent = '$' + Math.round(loanAmount).toLocaleString();
             document.getElementById('totalInterest').textContent = '$' + Math.round(totalInterest).toLocaleString();
             document.getElementById('totalCost').textContent = '$' + Math.round(totalCost).toLocaleString();
             document.getElementById('taxAmount').textContent = '$' + Math.round(taxAmount).toLocaleString();
-            document.getElementById('pieTotalCost').textContent = '$' + Math.round(totalCost).toLocaleString();
             
-            // Pie chart
-            const principalPercent = totalCost > 0 ? (loanAmount / totalCost) * 360 : 270;
-            document.getElementById('pieChart').style.setProperty('--principal-deg', principalPercent + 'deg');
-            
-            // Term comparison
             const terms = [36, 48, 60, 72, 84];
-            let termRowsHtml = '';
+            let comparisonHtml = '';
+            let lowestInterest = Infinity;
+            let bestTerm = 36;
             
-            for (const term of terms) {
-                const payment = calculatePayment(loanAmount, interestRate, term);
-                const total = payment * term;
+            terms.forEach(t => {
+                const payment = calculatePayment(loanAmount, rate, t);
+                const total = payment * t;
                 const interest = total - loanAmount;
-                const selected = term === loanTerm ? 'selected' : '';
-                
-                termRowsHtml += `<div class="term-row ${selected}">
-                    <span>${term} months</span>
-                    <span>$${Math.round(payment).toLocaleString()}</span>
-                    <span>$${Math.round(interest).toLocaleString()}</span>
-                    <span>$${Math.round(total).toLocaleString()}</span>
-                </div>`;
-            }
+                if (interest < lowestInterest) {
+                    lowestInterest = interest;
+                    bestTerm = t;
+                }
+            });
             
-            document.getElementById('termRows').innerHTML = termRowsHtml;
+            terms.forEach(t => {
+                const payment = calculatePayment(loanAmount, rate, t);
+                const total = payment * t;
+                const interest = total - loanAmount;
+                const isBest = t === bestTerm;
+                
+                comparisonHtml += `
+                    <div class="comparison-card ${isBest ? 'best' : ''}">
+                        <div style="font-size: 1.1rem; font-weight: 600; color: var(--secondary);">${t} months</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; margin: 10px 0;">$${Math.round(payment).toLocaleString()}/mo</div>
+                        <div style="color: var(--text-secondary); font-size: 0.85rem;">Interest: $${Math.round(interest).toLocaleString()}</div>
+                        ${isBest ? '<div style="color: var(--success); margin-top: 5px;">✓ Lowest Interest</div>' : ''}
+                    </div>
+                `;
+            });
+            
+            document.getElementById('comparisonGrid').innerHTML = comparisonHtml;
         }
         
         calculate();
