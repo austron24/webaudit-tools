@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quarterly Tax Calculator - Estimated Tax Payments</title>
+    <meta name="description" content="Free quarterly tax calculator. Calculate your estimated quarterly tax payments for self-employment and other income.">
+    <meta name="keywords" content="quarterly tax calculator, estimated tax, 1040-ES, quarterly payments, self-employment tax">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/quarterly-tax-calculator.html">
+    <style>
+        :root { --primary: #f97316; --primary-dark: #ea580c; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
+        .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
+        .content-area { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.8); }
+        .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .schedule-card { background: var(--bg-input); padding: 20px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .schedule-card.upcoming { border-left: 4px solid var(--primary); }
+        .schedule-date { font-weight: 700; color: var(--secondary); }
+        .schedule-amount { font-size: 1.3rem; font-weight: 700; }
+        .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-container" style="display: none;">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
+    
+    <header class="header">
+        <h1>📅 Quarterly Tax Calculator</h1>
+    </header>
+
+    <div class="main-container">
+        <div class="content-area">
+            <div class="card">
+                <h2>💼 Income Information</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Expected Annual Income ($)</label>
+                        <input type="number" id="annualIncome" value="80000" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Income Type</label>
+                        <select id="incomeType" onchange="calculate()">
+                            <option value="selfEmployed" selected>Self-Employment</option>
+                            <option value="1099">1099 Contractor</option>
+                            <option value="investment">Investment Income</option>
+                            <option value="other">Other Income</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Filing Status</label>
+                        <select id="filingStatus" onchange="calculate()">
+                            <option value="single" selected>Single</option>
+                            <option value="married">Married Filing Jointly</option>
+                            <option value="head">Head of Household</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Business Expenses ($)</label>
+                        <input type="number" id="expenses" value="10000" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>W-2 Withholding ($)</label>
+                        <input type="number" id="withholding" value="0" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>State Tax Rate (%)</label>
+                        <input type="number" id="stateRate" value="5" step="0.1" oninput="calculate()">
+                    </div>
+                </div>
+                
+                <div class="result-hero">
+                    <div class="result-hero-label">Quarterly Payment</div>
+                    <div class="result-hero-value" id="quarterlyPayment">$0</div>
+                </div>
+                
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-value" id="annualTax">$0</div>
+                        <div class="result-label">Annual Tax</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="federalTax">$0</div>
+                        <div class="result-label">Federal Tax</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="seTax">$0</div>
+                        <div class="result-label">SE Tax</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="stateTax">$0</div>
+                        <div class="result-label">State Tax</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📆 2025 Payment Schedule</h2>
+                <div class="schedule-card upcoming">
+                    <div>
+                        <div class="schedule-date">Q1 - April 15, 2025</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">Jan 1 - Mar 31 income</div>
+                    </div>
+                    <div class="schedule-amount" id="q1Amount">$0</div>
+                </div>
+                <div class="schedule-card">
+                    <div>
+                        <div class="schedule-date">Q2 - June 16, 2025</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">Apr 1 - May 31 income</div>
+                    </div>
+                    <div class="schedule-amount" id="q2Amount">$0</div>
+                </div>
+                <div class="schedule-card">
+                    <div>
+                        <div class="schedule-date">Q3 - September 15, 2025</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">Jun 1 - Aug 31 income</div>
+                    </div>
+                    <div class="schedule-amount" id="q3Amount">$0</div>
+                </div>
+                <div class="schedule-card">
+                    <div>
+                        <div class="schedule-date">Q4 - January 15, 2026</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">Sep 1 - Dec 31 income</div>
+                    </div>
+                    <div class="schedule-amount" id="q4Amount">$0</div>
+                </div>
+            </div>
+
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+
+            <div class="card">
+                <h2>🔗 Related Tools</h2>
+                <div class="related-tools">
+                    <a href="self-employment-tax-calculator.html" class="related-link">🏢 SE Tax Calculator</a>
+                    <a href="income-tax-calculator.html" class="related-link">📊 Income Tax</a>
+                    <a href="paycheck-calculator.html" class="related-link">💵 Paycheck Calculator</a>
+                    <a href="1099-tax-calculator.html" class="related-link">📋 1099 Calculator</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            const annualIncome = parseFloat(document.getElementById('annualIncome').value) || 0;
+            const incomeType = document.getElementById('incomeType').value;
+            const filingStatus = document.getElementById('filingStatus').value;
+            const expenses = parseFloat(document.getElementById('expenses').value) || 0;
+            const withholding = parseFloat(document.getElementById('withholding').value) || 0;
+            const stateRate = parseFloat(document.getElementById('stateRate').value) / 100 || 0;
+            
+            const netIncome = annualIncome - expenses;
+            
+            let seTax = 0;
+            if (incomeType === 'selfEmployed' || incomeType === '1099') {
+                const seTaxable = netIncome * 0.9235;
+                seTax = Math.min(seTaxable, 168600) * 0.124 + seTaxable * 0.029;
+            }
+            
+            const seDeduction = seTax / 2;
+            const standardDeduction = filingStatus === 'married' ? 29200 : (filingStatus === 'head' ? 21900 : 14600);
+            const taxableIncome = Math.max(0, netIncome - seDeduction - standardDeduction);
+            
+            let federalTax = 0;
+            const brackets = filingStatus === 'married' ? 
+                [[23200, 0.10], [94300, 0.12], [201050, 0.22], [383900, 0.24], [487450, 0.32], [731200, 0.35], [Infinity, 0.37]] :
+                [[11600, 0.10], [47150, 0.12], [100525, 0.22], [191950, 0.24], [243725, 0.32], [609350, 0.35], [Infinity, 0.37]];
+            
+            let prevBracket = 0;
+            for (const [limit, rate] of brackets) {
+                if (taxableIncome > prevBracket) {
+                    const taxableInBracket = Math.min(taxableIncome, limit) - prevBracket;
+                    federalTax += taxableInBracket * rate;
+                }
+                prevBracket = limit;
+            }
+            
+            const stateTax = netIncome * stateRate;
+            const annualTax = federalTax + seTax + stateTax - withholding;
+            const quarterlyPayment = Math.max(0, annualTax / 4);
+            
+            document.getElementById('quarterlyPayment').textContent = '$' + Math.round(quarterlyPayment).toLocaleString();
+            document.getElementById('annualTax').textContent = '$' + Math.round(annualTax).toLocaleString();
+            document.getElementById('federalTax').textContent = '$' + Math.round(federalTax).toLocaleString();
+            document.getElementById('seTax').textContent = '$' + Math.round(seTax).toLocaleString();
+            document.getElementById('stateTax').textContent = '$' + Math.round(stateTax).toLocaleString();
+            
+            document.getElementById('q1Amount').textContent = '$' + Math.round(quarterlyPayment).toLocaleString();
+            document.getElementById('q2Amount').textContent = '$' + Math.round(quarterlyPayment).toLocaleString();
+            document.getElementById('q3Amount').textContent = '$' + Math.round(quarterlyPayment).toLocaleString();
+            document.getElementById('q4Amount').textContent = '$' + Math.round(quarterlyPayment).toLocaleString();
+        }
+        
+        calculate();
+    </script>
+</body>
+</html>
