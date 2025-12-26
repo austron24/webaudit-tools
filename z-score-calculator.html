@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Z-Score Calculator - Standard Score & Percentile</title>
+    <meta name="description" content="Free z-score calculator. Calculate standard score, percentile, probability from mean and standard deviation. Perfect for statistics.">
+    <meta name="keywords" content="z-score calculator, standard score, z value, percentile calculator, normal distribution">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/z-score-calculator.html">
+    <style>
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
+        .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
+        .content-area { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 40px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 2.5rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.9); font-size: 1.2rem; }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .result-value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .formula-box { background: var(--bg-input); padding: 20px; border-radius: 10px; margin-top: 15px; text-align: center; }
+        .formula { font-family: monospace; font-size: 1.3rem; color: var(--secondary); }
+        .z-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.85rem; }
+        .z-table th, .z-table td { padding: 8px; text-align: center; border: 1px solid var(--border); }
+        .z-table th { background: var(--bg-input); color: var(--secondary); }
+        .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
+        @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="ad-container">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': 'b43e7cf5057864a264961884e1f34530', 'format': 'iframe', 'height': 90, 'width': 728, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b43e7cf5057864a264961884e1f34530/invoke.js"></script>
+    </div>
+    <div class="ad-container" style="display: none;">
+        <div class="ad-label">Advertisement</div>
+        <script type="text/javascript">atOptions = { 'key': '9f6b66d433cad4c02b643bdd4b7eefc0', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };</script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
+    </div>
+    <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
+
+    <header class="header">
+        <h1>Z-Score Calculator</h1>
+    </header>
+
+    <div class="main-container">
+        <div class="content-area">
+            <div class="card">
+                <h2>Calculate Z-Score</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Raw Score (X)</label>
+                        <input type="number" id="rawScore" value="85" step="any" oninput="calculateZ()">
+                    </div>
+                    <div class="form-group">
+                        <label>Mean (μ)</label>
+                        <input type="number" id="mean" value="75" step="any" oninput="calculateZ()">
+                    </div>
+                    <div class="form-group">
+                        <label>Standard Deviation (σ)</label>
+                        <input type="number" id="stdDev" value="10" step="any" min="0.001" oninput="calculateZ()">
+                    </div>
+                </div>
+                <div class="formula-box">
+                    <div class="formula">Z = (X - μ) / σ</div>
+                </div>
+            </div>
+
+            <div class="result-hero">
+                <div class="result-hero-label">Z-Score</div>
+                <div class="result-hero-value" id="zResult">1.00</div>
+            </div>
+
+            <div class="results-grid">
+                <div class="result-card">
+                    <div class="result-value" id="percentile">84.13%</div>
+                    <div class="result-label">Percentile</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value" id="probBelow">0.8413</div>
+                    <div class="result-label">P(X ≤ x)</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value" id="probAbove">0.1587</div>
+                    <div class="result-label">P(X > x)</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Reverse: Z-Score to Raw Score</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Z-Score</label>
+                        <input type="number" id="zInput" value="1.96" step="any" oninput="reverseZ()">
+                    </div>
+                    <div class="form-group">
+                        <label>Mean (μ)</label>
+                        <input type="number" id="mean2" value="100" step="any" oninput="reverseZ()">
+                    </div>
+                    <div class="form-group">
+                        <label>Standard Deviation (σ)</label>
+                        <input type="number" id="stdDev2" value="15" step="any" min="0.001" oninput="reverseZ()">
+                    </div>
+                </div>
+                <div class="results-grid" style="grid-template-columns: 1fr;">
+                    <div class="result-card">
+                        <div class="result-value" id="rawResult">129.40</div>
+                        <div class="result-label">Raw Score (X = μ + Z × σ)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Common Z-Score Reference</h2>
+                <table class="z-table">
+                    <tr><th>Z-Score</th><th>Percentile</th><th>P(below)</th><th>Common Use</th></tr>
+                    <tr><td>-3.00</td><td>0.13%</td><td>0.0013</td><td>Extreme low</td></tr>
+                    <tr><td>-2.00</td><td>2.28%</td><td>0.0228</td><td>Very low</td></tr>
+                    <tr><td>-1.00</td><td>15.87%</td><td>0.1587</td><td>Below average</td></tr>
+                    <tr><td>0.00</td><td>50.00%</td><td>0.5000</td><td>Average (mean)</td></tr>
+                    <tr><td>1.00</td><td>84.13%</td><td>0.8413</td><td>Above average</td></tr>
+                    <tr><td>1.645</td><td>95.00%</td><td>0.9500</td><td>90% CI (one-tail)</td></tr>
+                    <tr><td>1.96</td><td>97.50%</td><td>0.9750</td><td>95% CI (two-tail)</td></tr>
+                    <tr><td>2.00</td><td>97.72%</td><td>0.9772</td><td>Very high</td></tr>
+                    <tr><td>2.576</td><td>99.50%</td><td>0.9950</td><td>99% CI (two-tail)</td></tr>
+                    <tr><td>3.00</td><td>99.87%</td><td>0.9987</td><td>Extreme high</td></tr>
+                </table>
+            </div>
+
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'ee368c7cdf94f06bc71fdf57fe4124b8', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+            </div>
+
+            <div class="card">
+                <h2>Related Tools</h2>
+                <div class="related-tools">
+                    <a href="statistics-calculator.html" class="related-link">Statistics Calculator</a>
+                    <a href="probability-calculator.html" class="related-link">Probability Calculator</a>
+                    <a href="percentage-calculator.html" class="related-link">Percentage Calculator</a>
+                    <a href="gpa-calculator.html" class="related-link">GPA Calculator</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Standard normal CDF approximation
+        function normalCDF(z) {
+            const a1 =  0.254829592;
+            const a2 = -0.284496736;
+            const a3 =  1.421413741;
+            const a4 = -1.453152027;
+            const a5 =  1.061405429;
+            const p  =  0.3275911;
+
+            const sign = z < 0 ? -1 : 1;
+            z = Math.abs(z) / Math.sqrt(2);
+
+            const t = 1.0 / (1.0 + p * z);
+            const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-z * z);
+
+            return 0.5 * (1.0 + sign * y);
+        }
+
+        function calculateZ() {
+            const x = parseFloat(document.getElementById('rawScore').value) || 0;
+            const mean = parseFloat(document.getElementById('mean').value) || 0;
+            const stdDev = parseFloat(document.getElementById('stdDev').value) || 1;
+
+            if (stdDev <= 0) {
+                document.getElementById('zResult').textContent = 'Invalid σ';
+                return;
+            }
+
+            const z = (x - mean) / stdDev;
+            const probBelow = normalCDF(z);
+            const probAbove = 1 - probBelow;
+            const percentile = probBelow * 100;
+
+            document.getElementById('zResult').textContent = z.toFixed(4);
+            document.getElementById('percentile').textContent = percentile.toFixed(2) + '%';
+            document.getElementById('probBelow').textContent = probBelow.toFixed(4);
+            document.getElementById('probAbove').textContent = probAbove.toFixed(4);
+        }
+
+        function reverseZ() {
+            const z = parseFloat(document.getElementById('zInput').value) || 0;
+            const mean = parseFloat(document.getElementById('mean2').value) || 0;
+            const stdDev = parseFloat(document.getElementById('stdDev2').value) || 1;
+
+            const x = mean + z * stdDev;
+            document.getElementById('rawResult').textContent = x.toFixed(2);
+        }
+
+        calculateZ();
+        reverseZ();
+    </script>
+</body>
+</html>
