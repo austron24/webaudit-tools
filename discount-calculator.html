@@ -3,55 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discount Calculator - Calculate Sale Price & Savings</title>
-    <meta name="description" content="Free discount calculator. Calculate sale prices, savings, and final cost after discounts. Perfect for shopping and sales.">
-    <meta name="keywords" content="discount calculator, sale price calculator, percent off calculator, savings calculator, shopping calculator">
+    <title>Discount Calculator - Sale Price & Savings</title>
+    <meta name="description" content="Free discount calculator. Calculate sale prices, savings amount, and final cost after any percentage discount.">
+    <meta name="keywords" content="discount calculator, sale price, percent off, savings calculator, price after discount">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/discount-calculator.html">
-    <meta property="og:title" content="Discount Calculator">
-    <meta property="og:description" content="Calculate sale prices and savings instantly. See how much you save with any discount.">
-    <meta property="og:type" content="website">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --error: #ef4444; }
+        :root { --primary: #ef4444; --primary-dark: #dc2626; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
         .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
         .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
-        .header h1 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
-        .header p { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
         .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
         .content-area { display: flex; flex-direction: column; gap: 20px; }
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); }
-        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); font-weight: 500; }
-        .input-with-icon { position: relative; }
-        .input-with-icon span { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
-        .input-with-icon input { width: 100%; padding: 15px 15px 15px 40px; border: 2px solid var(--border); border-radius: 10px; font-size: 1.1rem; background: var(--bg-input); color: var(--text-primary); }
-        .input-with-icon input:focus { outline: none; border-color: var(--primary); }
-        .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
-        .btn-primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
-        .results { display: none; margin-top: 20px; }
-        .result-card { background: var(--bg-input); border-radius: 12px; padding: 20px; margin-bottom: 15px; }
-        .result-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
-        .result-row:last-child { border-bottom: none; }
-        .result-label { color: var(--text-secondary); }
-        .result-value { font-size: 1.3rem; font-weight: 700; }
-        .result-value.price { color: var(--success); }
-        .result-value.savings { color: var(--accent); }
-        .savings-bar { margin-top: 20px; background: var(--bg-dark); border-radius: 10px; padding: 20px; }
-        .savings-visual { height: 30px; background: var(--bg-input); border-radius: 15px; overflow: hidden; margin: 10px 0; }
-        .savings-fill { height: 100%; background: linear-gradient(90deg, var(--success), var(--secondary)); border-radius: 15px; transition: width 0.5s ease; }
-        .quick-discounts { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px; }
-        .quick-btn { padding: 10px; border: 2px solid var(--border); border-radius: 8px; background: var(--bg-input); color: var(--text-primary); cursor: pointer; transition: all 0.3s ease; }
-        .quick-btn:hover, .quick-btn.active { border-color: var(--primary); background: var(--primary); }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        input { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus { outline: none; border-color: var(--primary); }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.8); }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
-        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; transition: all 0.3s ease; }
-        .related-link:hover { background: var(--primary); transform: translateX(5px); }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .header h1 { font-size: 1.8rem; } .quick-discounts { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -66,83 +52,68 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
-    
+
     <header class="header">
         <h1>🏷️ Discount Calculator</h1>
-        <p>Calculate your savings instantly. See the final price after any discount or sale.</p>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>💰 Calculate Your Discount</h2>
-                <div class="form-group">
-                    <label>Original Price</label>
-                    <div class="input-with-icon">
-                        <span>$</span>
-                        <input type="number" id="originalPrice" placeholder="100.00" step="0.01">
+                <h2>💰 Calculate Discount</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Original Price ($)</label>
+                        <input type="number" id="originalPrice" value="100" step="0.01" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Discount (%)</label>
+                        <input type="number" id="discount" value="25" step="1" oninput="calculate()">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>Quick Discounts</label>
-                    <div class="quick-discounts">
-                        <button class="quick-btn" onclick="setDiscount(10)">10%</button>
-                        <button class="quick-btn" onclick="setDiscount(15)">15%</button>
-                        <button class="quick-btn" onclick="setDiscount(20)">20%</button>
-                        <button class="quick-btn" onclick="setDiscount(25)">25%</button>
-                        <button class="quick-btn" onclick="setDiscount(30)">30%</button>
-                        <button class="quick-btn" onclick="setDiscount(40)">40%</button>
-                        <button class="quick-btn" onclick="setDiscount(50)">50%</button>
-                        <button class="quick-btn" onclick="setDiscount(60)">60%</button>
-                        <button class="quick-btn" onclick="setDiscount(70)">70%</button>
-                        <button class="quick-btn" onclick="setDiscount(75)">75%</button>
-                    </div>
+
+                <div class="result-hero">
+                    <div class="result-hero-label">Sale Price</div>
+                    <div class="result-hero-value" id="salePrice">$0</div>
                 </div>
-                <div class="form-group">
-                    <label>Discount Percentage</label>
-                    <div class="input-with-icon">
-                        <span>%</span>
-                        <input type="number" id="discountPercent" placeholder="25" max="100">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Additional Tax Rate (optional)</label>
-                    <div class="input-with-icon">
-                        <span>%</span>
-                        <input type="number" id="taxRate" placeholder="0" value="0">
-                    </div>
-                </div>
-                <button class="btn btn-primary" onclick="calculate()">Calculate Savings</button>
-                
-                <div class="results" id="results">
+
+                <div class="results-grid">
                     <div class="result-card">
-                        <div class="result-row">
-                            <span class="result-label">Original Price</span>
-                            <span class="result-value" id="origPrice">$0.00</span>
-                        </div>
-                        <div class="result-row">
-                            <span class="result-label">Discount (<span id="discPct">0</span>%)</span>
-                            <span class="result-value savings" id="discAmount">-$0.00</span>
-                        </div>
-                        <div class="result-row" id="taxRow" style="display: none;">
-                            <span class="result-label">Tax (<span id="taxPct">0</span>%)</span>
-                            <span class="result-value" id="taxAmount">+$0.00</span>
-                        </div>
-                        <div class="result-row" style="border-top: 2px solid var(--primary); padding-top: 15px;">
-                            <span class="result-label" style="font-size: 1.2rem; font-weight: 600;">Final Price</span>
-                            <span class="result-value price" id="finalPrice" style="font-size: 1.8rem;">$0.00</span>
-                        </div>
+                        <div class="result-value" id="originalDisplay">$0</div>
+                        <div class="result-label">Original Price</div>
                     </div>
-                    <div class="savings-bar">
-                        <div style="display: flex; justify-content: space-between;">
-                            <span>You Save:</span>
-                            <span class="result-value savings" id="totalSavings">$0.00</span>
-                        </div>
-                        <div class="savings-visual">
-                            <div class="savings-fill" id="savingsFill" style="width: 0%"></div>
-                        </div>
+                    <div class="result-card">
+                        <div class="result-value" id="savings" style="color: var(--success);">$0</div>
+                        <div class="result-label">You Save</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="discountPct">0%</div>
+                        <div class="result-label">Discount</div>
                     </div>
                 </div>
+            </div>
+
+            <div class="card">
+                <h2>🔢 Double Discount (Stacked Discounts)</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>First Discount (%)</label>
+                        <input type="number" id="discount1" value="20" step="1" oninput="calcDouble()">
+                    </div>
+                    <div class="form-group">
+                        <label>Second Discount (%)</label>
+                        <input type="number" id="discount2" value="10" step="1" oninput="calcDouble()">
+                    </div>
+                </div>
+                <div class="breakdown-row"><span>After First Discount</span><span id="afterFirst">$0</span></div>
+                <div class="breakdown-row"><span>After Second Discount</span><span id="afterSecond">$0</span></div>
+                <div class="breakdown-row" style="font-weight: 700;"><span>Total Savings</span><span id="totalSavings" style="color: var(--success);">$0</span></div>
+                <div class="breakdown-row"><span>Effective Discount</span><span id="effectiveDiscount">0%</span></div>
+            </div>
+
+            <div class="card">
+                <h2>📊 Common Discounts</h2>
+                <div id="discountTable"></div>
             </div>
 
             <div class="ad-container">
@@ -154,19 +125,11 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="sales-tax-calculator.html" class="related-link">🧾 Sales Tax Calculator</a>
-                    <a href="percentage-calculator.html" class="related-link">📊 Percentage Calculator</a>
-                    <a href="tip-calculator.html" class="related-link">💵 Tip Calculator</a>
-                    <a href="markup-calculator.html" class="related-link">📈 Markup Calculator</a>
-                    <a href="margin-calculator.html" class="related-link">💹 Margin Calculator</a>
-                    <a href="price-per-unit-calculator.html" class="related-link">📦 Price Per Unit</a>
+                    <a href="sales-tax-calculator.html" class="related-link">🧾 Sales Tax</a>
+                    <a href="percentage-calculator.html" class="related-link">📊 Percentage</a>
+                    <a href="markup-calculator.html" class="related-link">📈 Markup</a>
+                    <a href="profit-margin-calculator.html" class="related-link">💰 Profit Margin</a>
                 </div>
-            </div>
-
-            <div class="ad-container">
-                <div class="ad-label">Advertisement</div>
-                <script type="text/javascript">atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };</script>
-                <script type="text/javascript" src="//www.highperformanceformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
             </div>
         </div>
 
@@ -176,55 +139,51 @@
                 <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
                 <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
             </div>
-            <div class="ad-container">
-                <div class="ad-label">Advertisement</div>
-                <script type="text/javascript">atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };</script>
-                <script type="text/javascript" src="//www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
-            </div>
         </div>
     </div>
 
     <script>
-        function setDiscount(pct) {
-            document.getElementById('discountPercent').value = pct;
-            document.querySelectorAll('.quick-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            calculate();
-        }
-
         function calculate() {
             const original = parseFloat(document.getElementById('originalPrice').value) || 0;
-            const discount = parseFloat(document.getElementById('discountPercent').value) || 0;
-            const tax = parseFloat(document.getElementById('taxRate').value) || 0;
+            const discount = parseFloat(document.getElementById('discount').value) / 100 || 0;
 
-            if (original <= 0) return;
+            const savings = original * discount;
+            const salePrice = original - savings;
 
-            const savings = original * (discount / 100);
-            const discountedPrice = original - savings;
-            const taxAmount = discountedPrice * (tax / 100);
-            const finalPrice = discountedPrice + taxAmount;
+            document.getElementById('salePrice').textContent = '$' + salePrice.toFixed(2);
+            document.getElementById('originalDisplay').textContent = '$' + original.toFixed(2);
+            document.getElementById('savings').textContent = '$' + savings.toFixed(2);
+            document.getElementById('discountPct').textContent = (discount * 100).toFixed(0) + '%';
 
-            document.getElementById('results').style.display = 'block';
-            document.getElementById('origPrice').textContent = '$' + original.toFixed(2);
-            document.getElementById('discPct').textContent = discount;
-            document.getElementById('discAmount').textContent = '-$' + savings.toFixed(2);
-            
-            if (tax > 0) {
-                document.getElementById('taxRow').style.display = 'flex';
-                document.getElementById('taxPct').textContent = tax;
-                document.getElementById('taxAmount').textContent = '+$' + taxAmount.toFixed(2);
-            } else {
-                document.getElementById('taxRow').style.display = 'none';
-            }
-            
-            document.getElementById('finalPrice').textContent = '$' + finalPrice.toFixed(2);
-            document.getElementById('totalSavings').textContent = '$' + savings.toFixed(2);
-            document.getElementById('savingsFill').style.width = discount + '%';
+            const discounts = [10, 15, 20, 25, 30, 40, 50, 75];
+            let tableHtml = '';
+            discounts.forEach(d => {
+                const save = original * (d / 100);
+                const sale = original - save;
+                tableHtml += '<div class="breakdown-row"><span>' + d + '% off</span><span>Save $' + save.toFixed(2) + '</span><span>$' + sale.toFixed(2) + '</span></div>';
+            });
+            document.getElementById('discountTable').innerHTML = tableHtml;
+
+            calcDouble();
         }
 
-        document.querySelectorAll('input').forEach(input => {
-            input.addEventListener('input', calculate);
-        });
+        function calcDouble() {
+            const original = parseFloat(document.getElementById('originalPrice').value) || 0;
+            const d1 = parseFloat(document.getElementById('discount1').value) / 100 || 0;
+            const d2 = parseFloat(document.getElementById('discount2').value) / 100 || 0;
+
+            const afterFirst = original * (1 - d1);
+            const afterSecond = afterFirst * (1 - d2);
+            const totalSavings = original - afterSecond;
+            const effective = original > 0 ? (totalSavings / original) * 100 : 0;
+
+            document.getElementById('afterFirst').textContent = '$' + afterFirst.toFixed(2);
+            document.getElementById('afterSecond').textContent = '$' + afterSecond.toFixed(2);
+            document.getElementById('totalSavings').textContent = '$' + totalSavings.toFixed(2);
+            document.getElementById('effectiveDiscount').textContent = effective.toFixed(1) + '%';
+        }
+
+        calculate();
     </script>
 </body>
 </html>

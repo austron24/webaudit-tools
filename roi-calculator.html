@@ -3,57 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROI Calculator - Calculate Return on Investment</title>
-    <meta name="description" content="Free ROI calculator. Calculate return on investment percentage and profit. Compare investments and analyze performance.">
-    <meta name="keywords" content="ROI calculator, return on investment, investment calculator, profit calculator, investment returns">
+    <title>ROI Calculator - Return on Investment</title>
+    <meta name="description" content="Free ROI calculator. Calculate your return on investment percentage and annualized returns for any investment.">
+    <meta name="keywords" content="ROI calculator, return on investment, investment return, investment calculator, profit calculator">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/roi-calculator.html">
-    <meta property="og:title" content="ROI Calculator">
-    <meta property="og:description" content="Calculate your return on investment instantly. Analyze investment performance and compare opportunities.">
-    <meta property="og:type" content="website">
     <style>
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; --error: #ef4444; }
+        :root { --primary: #8b5cf6; --primary-dark: #7c3aed; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
         .ad-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
         .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 40px 20px; text-align: center; }
-        .header h1 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
-        .header p { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
         .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 160px; gap: 20px; }
         .content-area { display: flex; flex-direction: column; gap: 20px; }
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); }
-        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
+        .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
+        .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); font-weight: 500; }
-        .input-with-icon { position: relative; }
-        .input-with-icon span { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
-        .input-with-icon input { width: 100%; padding: 15px 15px 15px 40px; border: 2px solid var(--border); border-radius: 10px; font-size: 1.1rem; background: var(--bg-input); color: var(--text-primary); }
-        .input-with-icon input:focus { outline: none; border-color: var(--primary); }
-        .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
-        .btn-primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
-        .results { display: none; margin-top: 20px; }
-        .roi-display { text-align: center; padding: 30px; background: var(--bg-input); border-radius: 16px; margin-bottom: 20px; }
-        .roi-value { font-size: 4rem; font-weight: 800; }
-        .roi-value.positive { color: var(--success); }
-        .roi-value.negative { color: var(--error); }
-        .roi-label { color: var(--text-secondary); font-size: 1.2rem; margin-top: 10px; }
-        .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .metric-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
-        .metric-value { font-size: 1.5rem; font-weight: 700; color: var(--text-primary); }
-        .metric-value.profit { color: var(--success); }
-        .metric-value.loss { color: var(--error); }
-        .metric-label { color: var(--text-secondary); font-size: 0.9rem; margin-top: 5px; }
-        .comparison-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .comparison-table th, .comparison-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
-        .comparison-table th { color: var(--secondary); font-weight: 600; }
-        .comparison-table tr:hover { background: var(--bg-input); }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        input { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus { outline: none; border-color: var(--primary); }
+        .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
+        .result-hero.positive { background: linear-gradient(135deg, var(--success), #059669); }
+        .result-hero.negative { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
+        .result-hero-label { color: rgba(255,255,255,0.8); }
+        .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
+        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
-        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; transition: all 0.3s ease; }
-        .related-link:hover { background: var(--primary); transform: translateX(5px); }
+        .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
+        .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .header h1 { font-size: 1.8rem; } .metrics-grid { grid-template-columns: 1fr; } .roi-value { font-size: 3rem; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
 <body>
@@ -68,63 +54,66 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
-    
+
     <header class="header">
-        <h1>💹 ROI Calculator</h1>
-        <p>Calculate your return on investment. Analyze performance and compare investment opportunities.</p>
+        <h1>📈 ROI Calculator</h1>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>📈 Calculate ROI</h2>
-                <div class="form-group">
-                    <label>Initial Investment</label>
-                    <div class="input-with-icon">
-                        <span>$</span>
-                        <input type="number" id="investment" placeholder="10000" step="0.01">
+                <h2>💰 Investment Details</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Initial Investment ($)</label>
+                        <input type="number" id="initialInvestment" value="10000" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Final Value ($)</label>
+                        <input type="number" id="finalValue" value="15000" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Investment Period (Years)</label>
+                        <input type="number" id="years" value="3" step="0.5" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Additional Costs ($)</label>
+                        <input type="number" id="additionalCosts" value="0" oninput="calculate()">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>Final Value (or Current Value)</label>
-                    <div class="input-with-icon">
-                        <span>$</span>
-                        <input type="number" id="finalValue" placeholder="12500" step="0.01">
+
+                <div class="result-hero" id="roiHero">
+                    <div class="result-hero-label">Total ROI</div>
+                    <div class="result-hero-value" id="totalRoi">0%</div>
+                </div>
+
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-value" id="netProfit">$0</div>
+                        <div class="result-label">Net Profit</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="annualizedRoi">0%</div>
+                        <div class="result-label">Annualized ROI</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="totalCost">$0</div>
+                        <div class="result-label">Total Cost</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="multiplier">1.0x</div>
+                        <div class="result-label">Return Multiple</div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>Investment Period (optional, for annualized ROI)</label>
-                    <div class="input-with-icon">
-                        <span>📅</span>
-                        <input type="number" id="years" placeholder="Years (e.g., 2)" step="0.1">
-                    </div>
-                </div>
-                <button class="btn btn-primary" onclick="calculate()">Calculate ROI</button>
-                
-                <div class="results" id="results">
-                    <div class="roi-display">
-                        <div class="roi-value" id="roiValue">0%</div>
-                        <div class="roi-label">Return on Investment</div>
-                    </div>
-                    <div class="metrics-grid">
-                        <div class="metric-card">
-                            <div class="metric-value" id="profit">$0</div>
-                            <div class="metric-label">Total Profit/Loss</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-value" id="annualized">0%</div>
-                            <div class="metric-label">Annualized ROI</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-value" id="multiplier">1.0x</div>
-                            <div class="metric-label">Investment Multiplier</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-value" id="doubled">-</div>
-                            <div class="metric-label">Years to Double</div>
-                        </div>
-                    </div>
-                </div>
+            </div>
+
+            <div class="card">
+                <h2>📊 Breakdown</h2>
+                <div class="breakdown-row"><span>Initial Investment</span><span id="initialDisplay">$0</span></div>
+                <div class="breakdown-row"><span>Additional Costs</span><span id="costsDisplay">$0</span></div>
+                <div class="breakdown-row"><span>Total Investment</span><span id="totalInvestDisplay">$0</span></div>
+                <div class="breakdown-row"><span>Final Value</span><span id="finalDisplay">$0</span></div>
+                <div class="breakdown-row" style="font-weight: 700;"><span>Net Profit/Loss</span><span id="profitDisplay">$0</span></div>
             </div>
 
             <div class="ad-container">
@@ -134,44 +123,13 @@
             </div>
 
             <div class="card">
-                <h2>📊 ROI Comparison</h2>
-                <p style="color: var(--text-secondary); margin-bottom: 15px;">Compare common investment benchmarks</p>
-                <table class="comparison-table">
-                    <thead>
-                        <tr>
-                            <th>Investment Type</th>
-                            <th>Typical Annual Return</th>
-                            <th>Risk Level</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>High-Yield Savings</td><td>4-5%</td><td style="color: var(--success);">Very Low</td></tr>
-                        <tr><td>Treasury Bonds</td><td>4-5%</td><td style="color: var(--success);">Low</td></tr>
-                        <tr><td>Corporate Bonds</td><td>5-7%</td><td style="color: var(--accent);">Low-Medium</td></tr>
-                        <tr><td>S&P 500 Index</td><td>10-12%</td><td style="color: var(--accent);">Medium</td></tr>
-                        <tr><td>Real Estate</td><td>8-12%</td><td style="color: var(--accent);">Medium</td></tr>
-                        <tr><td>Growth Stocks</td><td>15-20%</td><td style="color: var(--error);">High</td></tr>
-                        <tr><td>Crypto</td><td>Variable</td><td style="color: var(--error);">Very High</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="compound-interest-calculator.html" class="related-link">📈 Compound Interest</a>
-                    <a href="investment-calculator.html" class="related-link">💰 Investment Calculator</a>
-                    <a href="savings-goal-calculator.html" class="related-link">🎯 Savings Goal</a>
-                    <a href="401k-calculator.html" class="related-link">🏦 401k Calculator</a>
-                    <a href="retirement-calculator.html" class="related-link">🌴 Retirement Calculator</a>
-                    <a href="inflation-calculator.html" class="related-link">📉 Inflation Calculator</a>
+                    <a href="investment-calculator.html" class="related-link">📈 Investment</a>
+                    <a href="compound-interest-calculator.html" class="related-link">💵 Compound Interest</a>
+                    <a href="stock-profit-calculator.html" class="related-link">📊 Stock Profit</a>
+                    <a href="profit-margin-calculator.html" class="related-link">💰 Profit Margin</a>
                 </div>
-            </div>
-
-            <div class="ad-container">
-                <div class="ad-label">Advertisement</div>
-                <script type="text/javascript">atOptions = { 'key': 'bca56f01884f1cf07c196213009e77ac', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };</script>
-                <script type="text/javascript" src="//www.highperformanceformat.com/bca56f01884f1cf07c196213009e77ac/invoke.js"></script>
             </div>
         </div>
 
@@ -181,59 +139,41 @@
                 <script type="text/javascript">atOptions = { 'key': 'd4702b3e9743f9cd914a00e5026493f3', 'format': 'iframe', 'height': 600, 'width': 160, 'params': {} };</script>
                 <script type="text/javascript" src="//www.highperformanceformat.com/d4702b3e9743f9cd914a00e5026493f3/invoke.js"></script>
             </div>
-            <div class="ad-container">
-                <div class="ad-label">Advertisement</div>
-                <script type="text/javascript">atOptions = { 'key': '8398a480b05e8a3236f9ea561b7cab1a', 'format': 'iframe', 'height': 300, 'width': 160, 'params': {} };</script>
-                <script type="text/javascript" src="//www.highperformanceformat.com/8398a480b05e8a3236f9ea561b7cab1a/invoke.js"></script>
-            </div>
         </div>
     </div>
 
     <script>
         function calculate() {
-            const investment = parseFloat(document.getElementById('investment').value) || 0;
-            const finalValue = parseFloat(document.getElementById('finalValue').value) || 0;
-            const years = parseFloat(document.getElementById('years').value) || 0;
+            const initial = parseFloat(document.getElementById('initialInvestment').value) || 0;
+            const final = parseFloat(document.getElementById('finalValue').value) || 0;
+            const years = parseFloat(document.getElementById('years').value) || 1;
+            const additionalCosts = parseFloat(document.getElementById('additionalCosts').value) || 0;
 
-            if (investment <= 0) return;
+            const totalCost = initial + additionalCosts;
+            const netProfit = final - totalCost;
+            const totalRoi = totalCost > 0 ? (netProfit / totalCost) * 100 : 0;
+            const multiplier = totalCost > 0 ? final / totalCost : 0;
+            const annualizedRoi = years > 0 && totalCost > 0 ? (Math.pow(final / totalCost, 1 / years) - 1) * 100 : 0;
 
-            const profit = finalValue - investment;
-            const roi = (profit / investment) * 100;
-            const multiplier = finalValue / investment;
-            
-            // Annualized ROI
-            let annualized = 0;
-            if (years > 0) {
-                annualized = (Math.pow(multiplier, 1/years) - 1) * 100;
-            }
-
-            // Years to double (Rule of 72)
-            let yearsToDouble = '-';
-            if (annualized > 0) {
-                yearsToDouble = (72 / annualized).toFixed(1) + ' years';
-            } else if (roi > 0 && years > 0) {
-                const impliedRate = roi / years;
-                yearsToDouble = (72 / impliedRate).toFixed(1) + ' years';
-            }
-
-            document.getElementById('results').style.display = 'block';
-            
-            const roiElement = document.getElementById('roiValue');
-            roiElement.textContent = (roi >= 0 ? '+' : '') + roi.toFixed(2) + '%';
-            roiElement.className = 'roi-value ' + (roi >= 0 ? 'positive' : 'negative');
-            
-            const profitElement = document.getElementById('profit');
-            profitElement.textContent = (profit >= 0 ? '+$' : '-$') + Math.abs(profit).toLocaleString(undefined, {maximumFractionDigits: 2});
-            profitElement.className = 'metric-value ' + (profit >= 0 ? 'profit' : 'loss');
-            
-            document.getElementById('annualized').textContent = years > 0 ? (annualized >= 0 ? '+' : '') + annualized.toFixed(2) + '%' : 'Enter years';
+            document.getElementById('totalRoi').textContent = (totalRoi >= 0 ? '+' : '') + totalRoi.toFixed(1) + '%';
+            document.getElementById('netProfit').textContent = (netProfit >= 0 ? '$' : '-$') + Math.abs(Math.round(netProfit)).toLocaleString();
+            document.getElementById('annualizedRoi').textContent = (annualizedRoi >= 0 ? '+' : '') + annualizedRoi.toFixed(1) + '%';
+            document.getElementById('totalCost').textContent = '$' + Math.round(totalCost).toLocaleString();
             document.getElementById('multiplier').textContent = multiplier.toFixed(2) + 'x';
-            document.getElementById('doubled').textContent = yearsToDouble;
-        }
 
-        document.querySelectorAll('input').forEach(input => {
-            input.addEventListener('input', calculate);
-        });
+            document.getElementById('initialDisplay').textContent = '$' + Math.round(initial).toLocaleString();
+            document.getElementById('costsDisplay').textContent = '$' + Math.round(additionalCosts).toLocaleString();
+            document.getElementById('totalInvestDisplay').textContent = '$' + Math.round(totalCost).toLocaleString();
+            document.getElementById('finalDisplay').textContent = '$' + Math.round(final).toLocaleString();
+            document.getElementById('profitDisplay').textContent = (netProfit >= 0 ? '$' : '-$') + Math.abs(Math.round(netProfit)).toLocaleString();
+            document.getElementById('profitDisplay').style.color = netProfit >= 0 ? 'var(--success)' : '#ef4444';
+
+            const heroEl = document.getElementById('roiHero');
+            heroEl.classList.remove('positive', 'negative');
+            if (totalRoi > 0) heroEl.classList.add('positive');
+            else if (totalRoi < 0) heroEl.classList.add('negative');
+        }
+        calculate();
     </script>
 </body>
 </html>

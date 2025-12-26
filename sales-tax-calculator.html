@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Tax Calculator - Calculate Tax & Total</title>
-    <meta name="description" content="Free sales tax calculator. Calculate sales tax and total price for any purchase. Includes state tax rates.">
-    <meta name="keywords" content="sales tax calculator, tax calculator, sales tax by state, calculate tax, purchase tax">
+    <title>Sales Tax Calculator - Calculate Tax Amount</title>
+    <meta name="description" content="Free sales tax calculator. Calculate sales tax for any purchase, find pre-tax price, or determine tax rate.">
+    <meta name="keywords" content="sales tax calculator, tax calculator, calculate tax, pre-tax price, tax rate">
     <link rel="canonical" href="https://austron24.github.io/webaudit-tools/sales-tax-calculator.html">
     <style>
-        :root { --primary: #10b981; --primary-dark: #059669; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #0ea5e9; --primary-dark: #0284c7; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -23,23 +23,21 @@
         .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
-        input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
-        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        input { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
+        input:focus { outline: none; border-color: var(--primary); }
         .result-hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 35px; border-radius: 16px; text-align: center; margin: 20px 0; }
         .result-hero-value { font-size: 3rem; font-weight: 800; color: white; }
         .result-hero-label { color: rgba(255,255,255,0.8); }
         .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
         .result-card { background: var(--bg-input); padding: 20px; border-radius: 12px; text-align: center; }
-        .result-value { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
-        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.9rem; }
-        .state-rates { max-height: 300px; overflow-y: auto; margin-top: 15px; }
-        .rate-row { display: flex; justify-content: space-between; padding: 10px 15px; border-bottom: 1px solid var(--border); }
-        .rate-row:hover { background: var(--bg-input); }
+        .result-value { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+        .result-label { color: var(--text-secondary); margin-top: 5px; font-size: 0.85rem; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 12px 15px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; }
         .related-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .related-link { display: block; padding: 12px 16px; background: var(--bg-input); border-radius: 8px; color: var(--text-primary); text-decoration: none; }
         .related-link:hover { background: var(--primary); }
         @media (max-width: 968px) { .main-container { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 640px) { .form-grid, .results-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -54,7 +52,7 @@
         <script type="text/javascript" src="//www.highperformanceformat.com/9f6b66d433cad4c02b643bdd4b7eefc0/invoke.js"></script>
     </div>
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
-    
+
     <header class="header">
         <h1>🧾 Sales Tax Calculator</h1>
     </header>
@@ -62,84 +60,62 @@
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>💰 Calculate Tax</h2>
+                <h2>💰 Calculate Sales Tax</h2>
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Price Before Tax ($)</label>
-                        <input type="number" id="price" value="100" step="0.01" oninput="calculate()">
+                        <input type="number" id="preTaxPrice" value="100" step="0.01" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Tax Rate (%)</label>
-                        <input type="number" id="taxRate" value="7.25" step="0.01" oninput="calculate()">
+                        <label>Sales Tax Rate (%)</label>
+                        <input type="number" id="taxRate" value="8.25" step="0.01" oninput="calculate()">
                     </div>
                 </div>
-                
-                <div class="form-group">
-                    <label>Or Select State</label>
-                    <select id="state" onchange="selectState()">
-                        <option value="">-- Custom Rate --</option>
-                        <option value="7.25">California (7.25%)</option>
-                        <option value="6.25">Texas (6.25%)</option>
-                        <option value="6.00">Florida (6.00%)</option>
-                        <option value="4.00">New York (4.00%)</option>
-                        <option value="6.00">Pennsylvania (6.00%)</option>
-                        <option value="6.25">Illinois (6.25%)</option>
-                        <option value="5.75">Ohio (5.75%)</option>
-                        <option value="6.00">Georgia (6.00%)</option>
-                        <option value="4.225">Missouri (4.225%)</option>
-                        <option value="6.50">Washington (6.50%)</option>
-                        <option value="6.625">New Jersey (6.625%)</option>
-                        <option value="4.50">Arizona (4.50%)</option>
-                        <option value="2.90">Colorado (2.90%)</option>
-                        <option value="0">Oregon (0%)</option>
-                        <option value="0">Montana (0%)</option>
-                        <option value="0">New Hampshire (0%)</option>
-                        <option value="0">Delaware (0%)</option>
-                        <option value="0">Alaska (0%)</option>
-                    </select>
-                </div>
-                
+
                 <div class="result-hero">
-                    <div class="result-hero-label">Total Price</div>
-                    <div class="result-hero-value" id="total">$0.00</div>
+                    <div class="result-hero-label">Total Price (with Tax)</div>
+                    <div class="result-hero-value" id="totalPrice">$0</div>
                 </div>
-                
+
                 <div class="results-grid">
                     <div class="result-card">
-                        <div class="result-value" id="originalPrice">$0.00</div>
-                        <div class="result-label">Original Price</div>
+                        <div class="result-value" id="preTaxDisplay">$0</div>
+                        <div class="result-label">Pre-Tax Price</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="taxAmount">$0.00</div>
+                        <div class="result-value" id="taxAmount">$0</div>
                         <div class="result-label">Tax Amount</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="effectiveRate">0%</div>
+                        <div class="result-value" id="taxRateDisplay">0%</div>
                         <div class="result-label">Tax Rate</div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>📊 State Tax Rates</h2>
-                <div class="state-rates">
-                    <div class="rate-row"><span>California</span><span>7.25%</span></div>
-                    <div class="rate-row"><span>Tennessee</span><span>7.00%</span></div>
-                    <div class="rate-row"><span>Indiana</span><span>7.00%</span></div>
-                    <div class="rate-row"><span>Mississippi</span><span>7.00%</span></div>
-                    <div class="rate-row"><span>Rhode Island</span><span>7.00%</span></div>
-                    <div class="rate-row"><span>Minnesota</span><span>6.875%</span></div>
-                    <div class="rate-row"><span>Nevada</span><span>6.85%</span></div>
-                    <div class="rate-row"><span>New Jersey</span><span>6.625%</span></div>
-                    <div class="rate-row"><span>Washington</span><span>6.50%</span></div>
-                    <div class="rate-row"><span>Texas</span><span>6.25%</span></div>
-                    <div class="rate-row"><span>Illinois</span><span>6.25%</span></div>
-                    <div class="rate-row"><span>Florida</span><span>6.00%</span></div>
-                    <div class="rate-row"><span>Oregon</span><span>0%</span></div>
-                    <div class="rate-row"><span>Montana</span><span>0%</span></div>
-                    <div class="rate-row"><span>New Hampshire</span><span>0%</span></div>
-                    <div class="rate-row"><span>Delaware</span><span>0%</span></div>
+                <h2>🔄 Reverse Calculate (From Total)</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Total Price (with tax) ($)</label>
+                        <input type="number" id="totalWithTax" value="108.25" step="0.01" oninput="reverseCalculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Sales Tax Rate (%)</label>
+                        <input type="number" id="reverseTaxRate" value="8.25" step="0.01" oninput="reverseCalculate()">
+                    </div>
                 </div>
+                <div class="breakdown-row"><span>Pre-Tax Price</span><span id="reversePreTax">$0</span></div>
+                <div class="breakdown-row"><span>Tax Paid</span><span id="reverseTaxPaid">$0</span></div>
+            </div>
+
+            <div class="card">
+                <h2>📊 Common US Sales Tax Rates</h2>
+                <div class="breakdown-row"><span>California</span><span>7.25% (+ local)</span></div>
+                <div class="breakdown-row"><span>Texas</span><span>6.25% (+ local)</span></div>
+                <div class="breakdown-row"><span>New York</span><span>4% (+ local)</span></div>
+                <div class="breakdown-row"><span>Florida</span><span>6% (+ local)</span></div>
+                <div class="breakdown-row"><span>No Sales Tax</span><span>OR, MT, NH, DE, AK</span></div>
             </div>
 
             <div class="ad-container">
@@ -152,9 +128,9 @@
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
                     <a href="tip-calculator.html" class="related-link">💵 Tip Calculator</a>
-                    <a href="discount-calculator.html" class="related-link">🏷️ Discount Calculator</a>
-                    <a href="percentage-calculator.html" class="related-link">📊 Percentage Calculator</a>
-                    <a href="income-tax-calculator.html" class="related-link">📋 Income Tax Calculator</a>
+                    <a href="discount-calculator.html" class="related-link">🏷️ Discount</a>
+                    <a href="vat-calculator.html" class="related-link">📋 VAT</a>
+                    <a href="income-tax-calculator.html" class="related-link">📊 Income Tax</a>
                 </div>
             </div>
         </div>
@@ -169,28 +145,32 @@
     </div>
 
     <script>
-        function selectState() {
-            const state = document.getElementById('state').value;
-            if (state) {
-                document.getElementById('taxRate').value = state;
-                calculate();
-            }
-        }
-        
         function calculate() {
-            const price = parseFloat(document.getElementById('price').value) || 0;
-            const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
-            
-            const taxAmount = price * (taxRate / 100);
-            const total = price + taxAmount;
-            
-            document.getElementById('originalPrice').textContent = '$' + price.toFixed(2);
+            const preTax = parseFloat(document.getElementById('preTaxPrice').value) || 0;
+            const taxRate = parseFloat(document.getElementById('taxRate').value) / 100 || 0;
+
+            const taxAmount = preTax * taxRate;
+            const total = preTax + taxAmount;
+
+            document.getElementById('totalPrice').textContent = '$' + total.toFixed(2);
+            document.getElementById('preTaxDisplay').textContent = '$' + preTax.toFixed(2);
             document.getElementById('taxAmount').textContent = '$' + taxAmount.toFixed(2);
-            document.getElementById('total').textContent = '$' + total.toFixed(2);
-            document.getElementById('effectiveRate').textContent = taxRate.toFixed(2) + '%';
+            document.getElementById('taxRateDisplay').textContent = (taxRate * 100).toFixed(2) + '%';
         }
-        
+
+        function reverseCalculate() {
+            const total = parseFloat(document.getElementById('totalWithTax').value) || 0;
+            const taxRate = parseFloat(document.getElementById('reverseTaxRate').value) / 100 || 0;
+
+            const preTax = total / (1 + taxRate);
+            const taxPaid = total - preTax;
+
+            document.getElementById('reversePreTax').textContent = '$' + preTax.toFixed(2);
+            document.getElementById('reverseTaxPaid').textContent = '$' + taxPaid.toFixed(2);
+        }
+
         calculate();
+        reverseCalculate();
     </script>
 </body>
 </html>
