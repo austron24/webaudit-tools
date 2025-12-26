@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Patio Cost Calculator - Paver & Concrete Patio Estimator</title>
+    <meta name="description" content="Calculate patio installation costs for pavers, concrete, and stone. Get material and labor estimates. Free patio cost calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #78716c 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #78716c;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #78716c;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #57534e; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #78716c 0%, #57534e 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #f5f5f4;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #57534e; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #57534e; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #57534e; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #44403c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #d6d3d1; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏡 Patio Cost Calculator</h1>
+            <p class="subtitle">Estimate your patio installation costs</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Length (feet)</label>
+                    <input type="number" id="length" value="20" min="5" step="1">
+                </div>
+                <div class="input-group">
+                    <label>Width (feet)</label>
+                    <input type="number" id="width" value="15" min="5" step="1">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Patio Material</label>
+                <select id="material">
+                    <option value="concrete">Poured Concrete ($8-15/sq ft)</option>
+                    <option value="stamped">Stamped Concrete ($12-25/sq ft)</option>
+                    <option value="paver" selected>Concrete Pavers ($15-25/sq ft)</option>
+                    <option value="brick">Brick Pavers ($20-30/sq ft)</option>
+                    <option value="flagstone">Flagstone ($20-35/sq ft)</option>
+                    <option value="bluestone">Bluestone ($25-40/sq ft)</option>
+                </select>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Base Prep Needed</label>
+                    <select id="basePrep">
+                        <option value="none">Existing base OK</option>
+                        <option value="light">Light prep needed</option>
+                        <option value="full" selected>Full excavation & base</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Additional Features</label>
+                    <select id="features">
+                        <option value="none" selected>None</option>
+                        <option value="border">Decorative border</option>
+                        <option value="steps">Steps/levels</option>
+                        <option value="fire">Fire pit area</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Patio Cost</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalCost">$0</div>
+                    <div class="result-label-main">Estimated Total Cost</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="sqFeet">0</div>
+                        <div class="summary-label">Square Feet</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="perSqFt">$0</div>
+                        <div class="summary-label">Cost per Sq Ft</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="materialCost">$0</div>
+                        <div class="summary-label">Materials</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="laborCost">$0</div>
+                        <div class="summary-label">Labor</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Cost Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Materials</span>
+                        <span class="breakdown-value" id="displayMaterial">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Labor & Installation</span>
+                        <span class="breakdown-value" id="displayLabor">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Base Preparation</span>
+                        <span class="breakdown-value" id="displayBase">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Additional Features</span>
+                        <span class="breakdown-value" id="displayFeatures">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Improvement Calculators</h4>
+            <a href="concrete-patio-cost-calculator.html">Concrete Patio</a>
+            <a href="deck-building-cost-calculator.html">Deck Cost</a>
+            <a href="paver-calculator.html">Paver Calculator</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Patio Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const length = parseFloat(document.getElementById('length').value);
+            const width = parseFloat(document.getElementById('width').value);
+            const material = document.getElementById('material').value;
+            const basePrep = document.getElementById('basePrep').value;
+            const features = document.getElementById('features').value;
+
+            const sqFeet = length * width;
+
+            // Material costs per sq ft (installed)
+            const materialCosts = {
+                concrete: { low: 8, high: 15 },
+                stamped: { low: 12, high: 25 },
+                paver: { low: 15, high: 25 },
+                brick: { low: 20, high: 30 },
+                flagstone: { low: 20, high: 35 },
+                bluestone: { low: 25, high: 40 }
+            };
+
+            const cost = materialCosts[material];
+            const avgCost = (cost.low + cost.high) / 2;
+
+            // Base calculation
+            let materialTotal = sqFeet * (avgCost * 0.4);
+            let laborTotal = sqFeet * (avgCost * 0.6);
+
+            // Base prep costs
+            let baseCost = 0;
+            if (basePrep === 'light') baseCost = sqFeet * 2;
+            else if (basePrep === 'full') baseCost = sqFeet * 5;
+
+            // Feature costs
+            let featureCost = 0;
+            if (features === 'border') featureCost = (length + width) * 2 * 15;
+            else if (features === 'steps') featureCost = 800;
+            else if (features === 'fire') featureCost = 1500;
+
+            const totalCost = materialTotal + laborTotal + baseCost + featureCost;
+            const perSqFt = totalCost / sqFeet;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalCost').textContent = formatMoney(totalCost);
+            document.getElementById('sqFeet').textContent = sqFeet.toLocaleString();
+            document.getElementById('perSqFt').textContent = '$' + perSqFt.toFixed(2);
+            document.getElementById('materialCost').textContent = formatMoney(materialTotal);
+            document.getElementById('laborCost').textContent = formatMoney(laborTotal);
+
+            document.getElementById('displayMaterial').textContent = formatMoney(materialTotal);
+            document.getElementById('displayLabor').textContent = formatMoney(laborTotal);
+            document.getElementById('displayBase').textContent = formatMoney(baseCost);
+            document.getElementById('displayFeatures').textContent = formatMoney(featureCost);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

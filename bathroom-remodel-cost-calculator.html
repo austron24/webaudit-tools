@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Bathroom Remodel Cost Calculator - Renovation Estimator</title>
+    <meta name="description" content="Calculate bathroom remodel costs for any budget. Estimate tile, fixtures, and labor. Free bathroom renovation cost calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0891b2 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #0891b2;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .section-title {
+            font-size: 16px;
+            color: #0891b2;
+            margin: 20px 0 15px;
+            padding-top: 15px;
+            border-top: 2px solid #cffafe;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #0891b2;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #0e7490; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #cffafe;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #0891b2; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #0891b2; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0891b2; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0e7490;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #67e8f9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚿 Bathroom Remodel Calculator</h1>
+            <p class="subtitle">Estimate your bathroom renovation costs</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Bathroom Size</label>
+                    <select id="size">
+                        <option value="half">Half Bath (20-30 sq ft)</option>
+                        <option value="small">Small Full (35-50 sq ft)</option>
+                        <option value="medium" selected>Medium (50-75 sq ft)</option>
+                        <option value="large">Large (75-100 sq ft)</option>
+                        <option value="master">Master (100+ sq ft)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Remodel Scope</label>
+                    <select id="scope">
+                        <option value="cosmetic">Cosmetic (paint, fixtures)</option>
+                        <option value="partial">Partial (keep layout)</option>
+                        <option value="full" selected>Full Remodel</option>
+                        <option value="luxury">Luxury/High-End</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section-title">🛁 Fixtures</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Shower/Tub</label>
+                    <select id="shower">
+                        <option value="keep">Keep existing</option>
+                        <option value="tub">New tub ($500-2000)</option>
+                        <option value="shower" selected>Walk-in shower ($1500-5000)</option>
+                        <option value="combo">Tub/shower combo ($800-3000)</option>
+                        <option value="luxury">Luxury shower ($5000+)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Vanity</label>
+                    <select id="vanity">
+                        <option value="keep">Keep existing</option>
+                        <option value="basic">Basic ($300-800)</option>
+                        <option value="mid" selected>Mid-range ($800-2000)</option>
+                        <option value="custom">Custom ($2000-5000)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Toilet</label>
+                    <select id="toilet">
+                        <option value="keep">Keep existing</option>
+                        <option value="basic" selected>Standard ($200-400)</option>
+                        <option value="dual">Dual flush ($300-600)</option>
+                        <option value="bidet">Bidet toilet ($500-2000)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Flooring</label>
+                    <select id="flooring">
+                        <option value="vinyl">Vinyl ($3-7/sq ft)</option>
+                        <option value="tile" selected>Ceramic tile ($8-15/sq ft)</option>
+                        <option value="porcelain">Porcelain ($10-20/sq ft)</option>
+                        <option value="heated">Heated tile ($20-35/sq ft)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Remodel Cost</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalCost">$0</div>
+                    <div class="result-label-main">Estimated Total Cost</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="laborCost">$0</div>
+                        <div class="summary-label">Labor (40-50%)</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="materialCost">$0</div>
+                        <div class="summary-label">Materials</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="lowRange">$0</div>
+                        <div class="summary-label">Low Estimate</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="highRange">$0</div>
+                        <div class="summary-label">High Estimate</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Cost Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Shower/Tub</span>
+                        <span class="breakdown-value" id="displayShower">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Vanity & Sink</span>
+                        <span class="breakdown-value" id="displayVanity">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Toilet</span>
+                        <span class="breakdown-value" id="displayToilet">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Flooring</span>
+                        <span class="breakdown-value" id="displayFlooring">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Labor & Installation</span>
+                        <span class="breakdown-value" id="displayLabor">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Remodeling Calculators</h4>
+            <a href="bathroom-tile-calculator.html">Bathroom Tile</a>
+            <a href="kitchen-remodel-calculator.html">Kitchen Remodel</a>
+            <a href="tile-calculator.html">Tile Calculator</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Bathroom Remodel Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const size = document.getElementById('size').value;
+            const scope = document.getElementById('scope').value;
+            const shower = document.getElementById('shower').value;
+            const vanity = document.getElementById('vanity').value;
+            const toilet = document.getElementById('toilet').value;
+            const flooring = document.getElementById('flooring').value;
+
+            // Size in sq ft
+            const sizes = { half: 25, small: 42, medium: 62, large: 87, master: 120 };
+            const sqFt = sizes[size];
+
+            // Shower/tub costs
+            const showerCosts = { keep: 0, tub: 1250, shower: 3250, combo: 1900, luxury: 7500 };
+            const showerCost = showerCosts[shower];
+
+            // Vanity costs
+            const vanityCosts = { keep: 0, basic: 550, mid: 1400, custom: 3500 };
+            const vanityCost = vanityCosts[vanity];
+
+            // Toilet costs
+            const toiletCosts = { keep: 0, basic: 300, dual: 450, bidet: 1250 };
+            const toiletCost = toiletCosts[toilet];
+
+            // Flooring costs per sq ft
+            const flooringCosts = { vinyl: 5, tile: 11, porcelain: 15, heated: 27 };
+            const flooringCost = sqFt * flooringCosts[flooring];
+
+            // Base materials total
+            let materialTotal = showerCost + vanityCost + toiletCost + flooringCost;
+
+            // Scope multiplier
+            const scopeMultiplier = { cosmetic: 0.5, partial: 0.8, full: 1, luxury: 1.5 };
+            materialTotal *= scopeMultiplier[scope];
+
+            // Labor (typically 40-50% of project)
+            const laborTotal = materialTotal * 0.8;
+
+            const total = materialTotal + laborTotal;
+            const lowRange = total * 0.8;
+            const highRange = total * 1.3;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalCost').textContent = formatMoney(total);
+            document.getElementById('laborCost').textContent = formatMoney(laborTotal);
+            document.getElementById('materialCost').textContent = formatMoney(materialTotal);
+            document.getElementById('lowRange').textContent = formatMoney(lowRange);
+            document.getElementById('highRange').textContent = formatMoney(highRange);
+
+            document.getElementById('displayShower').textContent = formatMoney(showerCost);
+            document.getElementById('displayVanity').textContent = formatMoney(vanityCost);
+            document.getElementById('displayToilet').textContent = formatMoney(toiletCost);
+            document.getElementById('displayFlooring').textContent = formatMoney(flooringCost);
+            document.getElementById('displayLabor').textContent = formatMoney(laborTotal);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

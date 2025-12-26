@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Pet Insurance Calculator - Monthly Cost Estimator</title>
+    <meta name="description" content="Calculate pet insurance costs for dogs and cats. Compare coverage options and estimate monthly premiums. Free pet insurance calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #f97316 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #f97316;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #f97316;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #ea580c; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #ffedd5;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #f97316; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #f97316; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #f97316; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #ea580c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fdba74; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐾 Pet Insurance Calculator</h1>
+            <p class="subtitle">Estimate monthly pet insurance costs</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Pet Type</label>
+                    <select id="petType" onchange="updateBreeds()">
+                        <option value="dog">Dog</option>
+                        <option value="cat">Cat</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Pet Age (years)</label>
+                    <input type="number" id="petAge" value="3" min="0" max="20">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Breed Size</label>
+                    <select id="breedSize">
+                        <option value="small">Small (under 20 lbs)</option>
+                        <option value="medium" selected>Medium (20-50 lbs)</option>
+                        <option value="large">Large (50-90 lbs)</option>
+                        <option value="giant">Giant (90+ lbs)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Coverage Level</label>
+                    <select id="coverage">
+                        <option value="accident">Accident Only</option>
+                        <option value="basic">Basic (Accident + Illness)</option>
+                        <option value="comprehensive" selected>Comprehensive</option>
+                        <option value="wellness">Comprehensive + Wellness</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Annual Deductible</label>
+                    <select id="deductible">
+                        <option value="100">$100</option>
+                        <option value="250" selected>$250</option>
+                        <option value="500">$500</option>
+                        <option value="1000">$1,000</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Reimbursement Rate</label>
+                    <select id="reimbursement">
+                        <option value="70">70%</option>
+                        <option value="80" selected>80%</option>
+                        <option value="90">90%</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Insurance Cost</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="monthlyCost">$0</div>
+                    <div class="result-label-main">Estimated Monthly Premium</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="annualCost">$0</div>
+                        <div class="summary-label">Annual Cost</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="displayDeductible">$0</div>
+                        <div class="summary-label">Annual Deductible</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="displayReimburse">0%</div>
+                        <div class="summary-label">Reimbursement</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="maxPayout">$0</div>
+                        <div class="summary-label">Typical Annual Max</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Premium Factors</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Base Rate</span>
+                        <span class="breakdown-value" id="baseRate">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Age Adjustment</span>
+                        <span class="breakdown-value" id="ageAdj">+$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Coverage Adjustment</span>
+                        <span class="breakdown-value" id="coverageAdj">+$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Deductible Discount</span>
+                        <span class="breakdown-value" id="deductibleDisc">-$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Pet Calculators</h4>
+            <a href="dog-boarding-cost-calculator.html">Dog Boarding</a>
+            <a href="horse-cost-calculator.html">Horse Cost</a>
+            <a href="baby-budget-calculator.html">Baby Budget</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Pet Insurance Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const petType = document.getElementById('petType').value;
+            const petAge = parseInt(document.getElementById('petAge').value);
+            const breedSize = document.getElementById('breedSize').value;
+            const coverage = document.getElementById('coverage').value;
+            const deductible = parseInt(document.getElementById('deductible').value);
+            const reimbursement = parseInt(document.getElementById('reimbursement').value);
+
+            // Base monthly rates
+            let baseRate = petType === 'dog' ? 45 : 30;
+
+            // Size adjustment (dogs only)
+            if (petType === 'dog') {
+                const sizeMultiplier = { small: 0.85, medium: 1.0, large: 1.25, giant: 1.5 };
+                baseRate *= sizeMultiplier[breedSize];
+            }
+
+            // Age adjustment
+            let ageAdjustment = 0;
+            if (petAge >= 8) ageAdjustment = baseRate * 0.5;
+            else if (petAge >= 5) ageAdjustment = baseRate * 0.25;
+            else if (petAge >= 3) ageAdjustment = baseRate * 0.1;
+
+            // Coverage adjustment
+            const coverageMultiplier = { accident: 0.4, basic: 0.7, comprehensive: 1.0, wellness: 1.35 };
+            const coverageAdjustment = baseRate * (coverageMultiplier[coverage] - 1);
+
+            // Deductible discount
+            const deductibleDiscount = { 100: 0, 250: baseRate * 0.1, 500: baseRate * 0.2, 1000: baseRate * 0.35 };
+            const dedDiscount = deductibleDiscount[deductible];
+
+            // Reimbursement adjustment
+            const reimburseAdj = { 70: -baseRate * 0.15, 80: 0, 90: baseRate * 0.2 };
+            const reimburseAdjustment = reimburseAdj[reimbursement];
+
+            const monthlyCost = baseRate + ageAdjustment + coverageAdjustment - dedDiscount + reimburseAdjustment;
+            const annualCost = monthlyCost * 12;
+
+            // Typical annual maximums
+            const maxPayouts = { accident: 5000, basic: 10000, comprehensive: 15000, wellness: 20000 };
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('monthlyCost').textContent = formatMoney(monthlyCost);
+            document.getElementById('annualCost').textContent = formatMoney(annualCost);
+            document.getElementById('displayDeductible').textContent = formatMoney(deductible);
+            document.getElementById('displayReimburse').textContent = reimbursement + '%';
+            document.getElementById('maxPayout').textContent = formatMoney(maxPayouts[coverage]);
+
+            document.getElementById('baseRate').textContent = formatMoney(baseRate);
+            document.getElementById('ageAdj').textContent = '+' + formatMoney(ageAdjustment);
+            document.getElementById('coverageAdj').textContent = (coverageAdjustment >= 0 ? '+' : '') + formatMoney(coverageAdjustment);
+            document.getElementById('deductibleDisc').textContent = '-' + formatMoney(dedDiscount);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

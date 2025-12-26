@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Lawn Aeration Calculator - Aeration Cost Estimator</title>
+    <meta name="description" content="Calculate lawn aeration costs and timing. Compare DIY vs professional aeration services. Free lawn aeration calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #22c55e 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #22c55e;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #22c55e;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #16a34a; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #dcfce7;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #22c55e; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #22c55e; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #22c55e; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #16a34a;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #86efac; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌱 Lawn Aeration Calculator</h1>
+            <p class="subtitle">Calculate aeration costs for your lawn</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Lawn Size (square feet)</label>
+                <input type="number" id="lawnSize" value="5000" min="500" step="500">
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Aeration Method</label>
+                    <select id="method">
+                        <option value="diy">DIY Rental</option>
+                        <option value="pro" selected>Professional Service</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Soil Condition</label>
+                    <select id="condition">
+                        <option value="light">Light compaction</option>
+                        <option value="moderate" selected>Moderate</option>
+                        <option value="heavy">Heavy compaction</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Add Overseeding?</label>
+                <select id="overseed">
+                    <option value="none" selected>No overseeding</option>
+                    <option value="basic">Basic seed ($0.02/sq ft)</option>
+                    <option value="premium">Premium seed ($0.04/sq ft)</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Aeration Cost</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalCost">$0</div>
+                    <div class="result-label-main">Total Aeration Cost</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="perSqFt">$0</div>
+                        <div class="summary-label">Per Sq Ft</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="diyCost">$0</div>
+                        <div class="summary-label">DIY Option</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="proCost">$0</div>
+                        <div class="summary-label">Pro Service</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="savings">$0</div>
+                        <div class="summary-label">Potential Savings</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Cost Details</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Lawn Size</span>
+                        <span class="breakdown-value" id="displaySize">0 sq ft</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Base Aeration</span>
+                        <span class="breakdown-value" id="displayBase">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Overseeding</span>
+                        <span class="breakdown-value" id="displayOverseed">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Best Time</span>
+                        <span class="breakdown-value">Fall (Sept-Oct)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Lawn Calculators</h4>
+            <a href="lawn-fertilizer-calculator.html">Lawn Fertilizer</a>
+            <a href="lawn-seed-calculator.html">Lawn Seed</a>
+            <a href="lawn-mowing-cost-calculator.html">Mowing Cost</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Lawn Aeration Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const lawnSize = parseFloat(document.getElementById('lawnSize').value);
+            const method = document.getElementById('method').value;
+            const condition = document.getElementById('condition').value;
+            const overseed = document.getElementById('overseed').value;
+
+            // Base professional rate: $0.03-0.05 per sq ft, minimum $75-150
+            let proRate = 0.04;
+            if (condition === 'heavy') proRate = 0.05;
+            else if (condition === 'light') proRate = 0.03;
+
+            let proCost = Math.max(lawnSize * proRate, 100);
+
+            // DIY: Rental ~$75-100 for half day
+            const diyCost = lawnSize <= 10000 ? 85 : 120;
+
+            // Overseeding cost
+            let overseedCost = 0;
+            if (overseed === 'basic') overseedCost = lawnSize * 0.02;
+            else if (overseed === 'premium') overseedCost = lawnSize * 0.04;
+
+            const totalCost = (method === 'pro' ? proCost : diyCost) + overseedCost;
+            const perSqFt = totalCost / lawnSize;
+            const savings = Math.abs(proCost - diyCost);
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalCost').textContent = formatMoney(totalCost);
+            document.getElementById('perSqFt').textContent = '$' + perSqFt.toFixed(3);
+            document.getElementById('diyCost').textContent = formatMoney(diyCost + overseedCost);
+            document.getElementById('proCost').textContent = formatMoney(proCost + overseedCost);
+            document.getElementById('savings').textContent = formatMoney(savings);
+
+            document.getElementById('displaySize').textContent = lawnSize.toLocaleString() + ' sq ft';
+            document.getElementById('displayBase').textContent = formatMoney(method === 'pro' ? proCost : diyCost);
+            document.getElementById('displayOverseed').textContent = formatMoney(overseedCost);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

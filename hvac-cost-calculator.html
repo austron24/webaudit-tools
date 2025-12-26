@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free HVAC Cost Calculator - AC & Heating Installation Costs</title>
+    <meta name="description" content="Calculate HVAC installation and replacement costs. Compare AC, furnace, and heat pump prices. Free HVAC cost calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #dc2626 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #dc2626;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #dc2626;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #b91c1c; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #fee2e2;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #dc2626; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #dc2626; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #dc2626; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #b91c1c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fca5a5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌡️ HVAC Cost Calculator</h1>
+            <p class="subtitle">Estimate AC & heating installation costs</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Home Size (sq ft)</label>
+                    <input type="number" id="homeSize" value="2000" min="500" max="10000" step="100">
+                </div>
+                <div class="input-group">
+                    <label>Number of Stories</label>
+                    <select id="stories">
+                        <option value="1">1 Story</option>
+                        <option value="2" selected>2 Stories</option>
+                        <option value="3">3+ Stories</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>System Type</label>
+                <select id="systemType">
+                    <option value="central">Central AC + Gas Furnace</option>
+                    <option value="heatpump" selected>Heat Pump (Heating & Cooling)</option>
+                    <option value="minisplit">Ductless Mini-Split</option>
+                    <option value="geothermal">Geothermal Heat Pump</option>
+                    <option value="aconly">Central AC Only</option>
+                    <option value="furnaceonly">Furnace Only</option>
+                </select>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Efficiency Level</label>
+                    <select id="efficiency">
+                        <option value="standard">Standard Efficiency</option>
+                        <option value="high" selected>High Efficiency</option>
+                        <option value="premium">Premium/Variable Speed</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Ductwork Needed?</label>
+                    <select id="ductwork">
+                        <option value="existing" selected>Existing Ducts (OK condition)</option>
+                        <option value="repair">Existing (Needs Repair)</option>
+                        <option value="new">New Ductwork Required</option>
+                        <option value="none">No Ducts (Mini-Split)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Brand Tier</label>
+                <select id="brand">
+                    <option value="economy">Economy (Goodman, Payne)</option>
+                    <option value="midrange" selected>Mid-Range (Carrier, Trane)</option>
+                    <option value="premium">Premium (Lennox, American Standard)</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate HVAC Cost</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalCost">$0</div>
+                    <div class="result-label-main">Total HVAC Installation Cost</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="equipmentCost">$0</div>
+                        <div class="summary-label">Equipment</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="laborCost">$0</div>
+                        <div class="summary-label">Installation</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="tonnage">0</div>
+                        <div class="summary-label">Tonnage Needed</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="savings">$0</div>
+                        <div class="summary-label">Est. Annual Savings</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Cost Details</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Home Size</span>
+                        <span class="breakdown-value" id="displaySize">0 sq ft</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">System Type</span>
+                        <span class="breakdown-value" id="displaySystem">Heat Pump</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Ductwork</span>
+                        <span class="breakdown-value" id="ductCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Permits & Misc</span>
+                        <span class="breakdown-value" id="permitCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Typical Lifespan</span>
+                        <span class="breakdown-value" id="lifespan">15-20 years</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Calculators</h4>
+            <a href="appliance-energy-calculator.html">Appliance Energy</a>
+            <a href="home-warranty-calculator.html">Home Warranty</a>
+            <a href="electricity-cost-calculator.html">Electricity Cost</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>HVAC Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const homeSize = parseInt(document.getElementById('homeSize').value);
+            const stories = parseInt(document.getElementById('stories').value);
+            const systemType = document.getElementById('systemType').value;
+            const efficiency = document.getElementById('efficiency').value;
+            const ductwork = document.getElementById('ductwork').value;
+            const brand = document.getElementById('brand').value;
+
+            // Calculate tonnage (1 ton per 400-600 sq ft)
+            const tonnage = Math.ceil(homeSize / 500);
+
+            // Base equipment costs by system type (per ton)
+            const baseCosts = {
+                central: 2500,
+                heatpump: 3000,
+                minisplit: 2000,
+                geothermal: 6000,
+                aconly: 1800,
+                furnaceonly: 1500
+            };
+
+            // Efficiency multipliers
+            const efficiencyMult = {
+                standard: 1.0,
+                high: 1.25,
+                premium: 1.6
+            };
+
+            // Brand multipliers
+            const brandMult = {
+                economy: 0.85,
+                midrange: 1.0,
+                premium: 1.3
+            };
+
+            // Calculate equipment cost
+            let equipmentCost = baseCosts[systemType] * tonnage * efficiencyMult[efficiency] * brandMult[brand];
+
+            // Ductwork costs
+            const ductCosts = {
+                existing: 0,
+                repair: 1500,
+                new: homeSize * 3,
+                none: 0
+            };
+            const ductCost = ductCosts[ductwork];
+
+            // Labor (typically 30-50% of equipment)
+            const laborCost = equipmentCost * 0.4 * stories;
+
+            // Permits and miscellaneous
+            const permitCost = 500 + (systemType === 'geothermal' ? 1000 : 0);
+
+            const totalCost = equipmentCost + ductCost + laborCost + permitCost;
+
+            // Estimated annual savings (high efficiency vs standard)
+            const baseBill = homeSize * 0.5; // ~$0.50 per sq ft per year
+            const savingsPercent = { standard: 0, high: 0.15, premium: 0.3 };
+            const annualSavings = baseBill * savingsPercent[efficiency];
+
+            // System names for display
+            const systemNames = {
+                central: 'Central AC + Furnace',
+                heatpump: 'Heat Pump',
+                minisplit: 'Mini-Split',
+                geothermal: 'Geothermal',
+                aconly: 'Central AC',
+                furnaceonly: 'Furnace'
+            };
+
+            // Lifespan by system
+            const lifespans = {
+                central: '15-20 years',
+                heatpump: '12-15 years',
+                minisplit: '15-20 years',
+                geothermal: '20-25 years',
+                aconly: '15-20 years',
+                furnaceonly: '15-20 years'
+            };
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalCost').textContent = formatMoney(totalCost);
+            document.getElementById('equipmentCost').textContent = formatMoney(equipmentCost);
+            document.getElementById('laborCost').textContent = formatMoney(laborCost);
+            document.getElementById('tonnage').textContent = tonnage + ' ton';
+            document.getElementById('savings').textContent = formatMoney(annualSavings) + '/yr';
+
+            document.getElementById('displaySize').textContent = homeSize.toLocaleString() + ' sq ft';
+            document.getElementById('displaySystem').textContent = systemNames[systemType];
+            document.getElementById('ductCost').textContent = formatMoney(ductCost);
+            document.getElementById('permitCost').textContent = formatMoney(permitCost);
+            document.getElementById('lifespan').textContent = lifespans[systemType];
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

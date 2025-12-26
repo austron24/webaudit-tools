@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free DIY vs Hire Calculator - Should I Do It Myself?</title>
+    <meta name="description" content="Calculate if you should DIY or hire a pro. Compare costs including your time value. Free DIY vs hire contractor calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #10b981 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .section-title {
+            font-size: 16px;
+            color: #10b981;
+            margin: 20px 0 15px;
+            padding-top: 15px;
+            border-top: 2px solid #d1fae5;
+        }
+        .section-title:first-child { border: none; padding-top: 0; margin-top: 0; }
+        .input-group { margin-bottom: 15px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #10b981;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #10b981;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 20px;
+        }
+        .btn:hover { background: #059669; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-box-main.diy { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; }
+        .result-box-main.hire { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; }
+        .result-value-main { font-size: 32px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 10px; }
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .comparison-box {
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .comparison-box.diy { background: #d1fae5; }
+        .comparison-box.hire { background: #dbeafe; }
+        .comparison-title { font-weight: 600; margin-bottom: 10px; }
+        .comparison-value { font-size: 28px; font-weight: bold; }
+        .comparison-box.diy .comparison-value { color: #10b981; }
+        .comparison-box.hire .comparison-value { color: #3b82f6; }
+        .comparison-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #10b981; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #10b981; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #059669;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #6ee7b7; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔨 DIY vs Hire Calculator</h1>
+            <p class="subtitle">Find out if you should do it yourself or hire a pro</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="section-title">💵 Professional Costs</div>
+            <div class="input-group">
+                <label>Contractor Quote ($)</label>
+                <input type="number" id="contractorCost" value="2500" min="0" step="100">
+            </div>
+
+            <div class="section-title">🛠️ DIY Costs</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Materials Cost ($)</label>
+                    <input type="number" id="materialsCost" value="800" min="0" step="50">
+                </div>
+                <div class="input-group">
+                    <label>Tool Rental/Purchase ($)</label>
+                    <input type="number" id="toolsCost" value="150" min="0" step="25">
+                </div>
+            </div>
+
+            <div class="section-title">⏱️ Your Time Value</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Your Hourly Rate ($)</label>
+                    <input type="number" id="hourlyRate" value="35" min="10" step="5">
+                </div>
+                <div class="input-group">
+                    <label>Estimated DIY Hours</label>
+                    <input type="number" id="diyHours" value="20" min="1" step="1">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Your Experience Level</label>
+                <select id="experience">
+                    <option value="none">No experience (add 50% time)</option>
+                    <option value="some" selected>Some experience</option>
+                    <option value="skilled">Skilled DIYer (save 25% time)</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="calculate()">Compare DIY vs Hire</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main" id="recommendationBox">
+                    <div class="result-value-main" id="recommendation">DIY</div>
+                    <div class="result-label-main" id="savingsText">Save $500 by doing it yourself</div>
+                </div>
+
+                <div class="comparison-grid">
+                    <div class="comparison-box diy">
+                        <div class="comparison-title">🔧 DIY Total</div>
+                        <div class="comparison-value" id="diyTotal">$0</div>
+                        <div class="comparison-label">Including your time</div>
+                    </div>
+                    <div class="comparison-box hire">
+                        <div class="comparison-title">👷 Hire Pro</div>
+                        <div class="comparison-value" id="hireTotal">$0</div>
+                        <div class="comparison-label">Contractor quote</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Cost Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">DIY Materials</span>
+                        <span class="breakdown-value" id="displayMaterials">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">DIY Tools</span>
+                        <span class="breakdown-value" id="displayTools">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Your Time Value</span>
+                        <span class="breakdown-value" id="displayTime">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Actual DIY Hours</span>
+                        <span class="breakdown-value" id="displayHours">0 hrs</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Difference</span>
+                        <span class="breakdown-value" id="displayDiff">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Improvement Calculators</h4>
+            <a href="handyman-cost-calculator.html">Handyman Cost</a>
+            <a href="electrician-cost-calculator.html">Electrician Cost</a>
+            <a href="plumber-cost-calculator.html">Plumber Cost</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>DIY vs Hire Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const contractorCost = parseFloat(document.getElementById('contractorCost').value);
+            const materialsCost = parseFloat(document.getElementById('materialsCost').value);
+            const toolsCost = parseFloat(document.getElementById('toolsCost').value);
+            const hourlyRate = parseFloat(document.getElementById('hourlyRate').value);
+            let diyHours = parseFloat(document.getElementById('diyHours').value);
+            const experience = document.getElementById('experience').value;
+
+            // Adjust hours based on experience
+            if (experience === 'none') diyHours *= 1.5;
+            else if (experience === 'skilled') diyHours *= 0.75;
+
+            const timeValue = diyHours * hourlyRate;
+            const diyTotal = materialsCost + toolsCost + timeValue;
+            const hireTotal = contractorCost;
+            const difference = Math.abs(diyTotal - hireTotal);
+
+            const resultBox = document.getElementById('recommendationBox');
+            const recommendation = document.getElementById('recommendation');
+            const savingsText = document.getElementById('savingsText');
+
+            if (diyTotal < hireTotal) {
+                resultBox.className = 'result-box-main diy';
+                recommendation.textContent = '🔧 DIY It!';
+                savingsText.textContent = `Save ${formatMoney(difference)} by doing it yourself`;
+            } else {
+                resultBox.className = 'result-box-main hire';
+                recommendation.textContent = '👷 Hire a Pro';
+                savingsText.textContent = `Save ${formatMoney(difference)} in time value by hiring`;
+            }
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('diyTotal').textContent = formatMoney(diyTotal);
+            document.getElementById('hireTotal').textContent = formatMoney(hireTotal);
+
+            document.getElementById('displayMaterials').textContent = formatMoney(materialsCost);
+            document.getElementById('displayTools').textContent = formatMoney(toolsCost);
+            document.getElementById('displayTime').textContent = formatMoney(timeValue);
+            document.getElementById('displayHours').textContent = Math.round(diyHours) + ' hrs';
+            document.getElementById('displayDiff').textContent = formatMoney(difference);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

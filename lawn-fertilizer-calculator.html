@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Lawn Fertilizer Calculator - How Much Fertilizer Do I Need?</title>
+    <meta name="description" content="Calculate how much fertilizer you need for your lawn. Get NPK rates and application amounts. Free lawn fertilizer calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #16a34a 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #16a34a;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #16a34a;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #15803d; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #dcfce7;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #16a34a; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #16a34a; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #16a34a; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #15803d;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #86efac; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌿 Lawn Fertilizer Calculator</h1>
+            <p class="subtitle">Calculate fertilizer needs for your lawn</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Lawn Size (square feet)</label>
+                <input type="number" id="lawnSize" value="5000" min="100" step="100">
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Grass Type</label>
+                    <select id="grassType">
+                        <option value="cool">Cool Season (Fescue, Bluegrass)</option>
+                        <option value="warm">Warm Season (Bermuda, Zoysia)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Season</label>
+                    <select id="season">
+                        <option value="spring">Spring</option>
+                        <option value="summer">Summer</option>
+                        <option value="fall" selected>Fall</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Fertilizer N-P-K Ratio (e.g., 20-5-10)</label>
+                <div class="input-row" style="grid-template-columns: 1fr 1fr 1fr;">
+                    <input type="number" id="nitrogen" value="20" min="0" max="50" placeholder="N">
+                    <input type="number" id="phosphorus" value="5" min="0" max="50" placeholder="P">
+                    <input type="number" id="potassium" value="10" min="0" max="50" placeholder="K">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Desired Nitrogen Rate (lbs N per 1000 sq ft)</label>
+                <select id="nRate">
+                    <option value="0.5">0.5 lb (light feeding)</option>
+                    <option value="0.75">0.75 lb (moderate)</option>
+                    <option value="1" selected>1.0 lb (standard)</option>
+                    <option value="1.5">1.5 lb (heavy feeding)</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Fertilizer Amount</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalFertilizer">0 lbs</div>
+                    <div class="result-label-main">Total Fertilizer Needed</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="bags">0</div>
+                        <div class="summary-label">Bags (50 lb)</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="coverage">0</div>
+                        <div class="summary-label">Sq Ft Coverage</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="nApplied">0</div>
+                        <div class="summary-label">Actual N Applied (lbs)</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="costEst">$0</div>
+                        <div class="summary-label">Est. Cost</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Application Details</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Lawn Size</span>
+                        <span class="breakdown-value" id="displaySize">0 sq ft</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Fertilizer per 1000 sq ft</span>
+                        <span class="breakdown-value" id="perThousand">0 lbs</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Spreader Setting (approx)</span>
+                        <span class="breakdown-value" id="spreaderSetting">Medium-High</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Best Time to Apply</span>
+                        <span class="breakdown-value" id="bestTime">Early morning</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Lawn & Garden Calculators</h4>
+            <a href="lawn-seed-calculator.html">Lawn Seed</a>
+            <a href="mulch-calculator.html">Mulch Calculator</a>
+            <a href="sod-calculator.html">Sod Calculator</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Lawn Fertilizer Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const lawnSize = parseFloat(document.getElementById('lawnSize').value);
+            const nitrogen = parseFloat(document.getElementById('nitrogen').value);
+            const nRate = parseFloat(document.getElementById('nRate').value);
+
+            // Calculate fertilizer per 1000 sq ft
+            // Formula: (Desired N lbs / N percentage) * 100
+            const fertPer1000 = (nRate / nitrogen) * 100;
+
+            // Total fertilizer needed
+            const totalFert = (lawnSize / 1000) * fertPer1000;
+
+            // Bags needed (50 lb bags typical)
+            const bags = Math.ceil(totalFert / 50);
+
+            // Actual N applied
+            const actualN = (totalFert * nitrogen) / 100;
+
+            // Cost estimate (~$30-50 per 50lb bag)
+            const costEst = bags * 40;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalFertilizer').textContent = totalFert.toFixed(1) + ' lbs';
+            document.getElementById('bags').textContent = bags;
+            document.getElementById('coverage').textContent = lawnSize.toLocaleString();
+            document.getElementById('nApplied').textContent = actualN.toFixed(2);
+            document.getElementById('costEst').textContent = '$' + costEst;
+
+            document.getElementById('displaySize').textContent = lawnSize.toLocaleString() + ' sq ft';
+            document.getElementById('perThousand').textContent = fertPer1000.toFixed(1) + ' lbs';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

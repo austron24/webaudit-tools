@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Deck Cost Calculator - Build Your Dream Deck</title>
+    <meta name="description" content="Calculate deck building costs for wood, composite, and PVC decks. Estimate materials and labor. Free deck cost calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #a3785c 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #a3785c;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #a3785c;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #8b6650; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #a3785c 0%, #8b6650 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.9; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #f5ebe0;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #a3785c; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #a3785c; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #a3785c; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #8b6650;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #d4b8a0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🪵 Deck Cost Calculator</h1>
+            <p class="subtitle">Estimate your deck building costs</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Deck Length (feet)</label>
+                    <input type="number" id="length" value="20" min="8" max="100">
+                </div>
+                <div class="input-group">
+                    <label>Deck Width (feet)</label>
+                    <input type="number" id="width" value="12" min="8" max="50">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Decking Material</label>
+                <select id="material">
+                    <option value="pressure">Pressure-Treated Wood ($15-25/sqft)</option>
+                    <option value="cedar">Cedar ($25-35/sqft)</option>
+                    <option value="redwood">Redwood ($30-40/sqft)</option>
+                    <option value="composite" selected>Composite ($25-45/sqft)</option>
+                    <option value="pvc">PVC ($30-50/sqft)</option>
+                    <option value="ipe">Ipe/Hardwood ($40-60/sqft)</option>
+                </select>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Deck Height</label>
+                    <select id="height">
+                        <option value="ground">Ground Level (0-2 ft)</option>
+                        <option value="low" selected>Low (2-4 ft)</option>
+                        <option value="elevated">Elevated (4-8 ft)</option>
+                        <option value="high">High (8+ ft)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Railing</label>
+                    <select id="railing">
+                        <option value="none">No Railing</option>
+                        <option value="wood" selected>Wood Railing</option>
+                        <option value="composite">Composite Railing</option>
+                        <option value="metal">Metal/Cable Railing</option>
+                        <option value="glass">Glass Railing</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Additional Features</label>
+                <select id="features">
+                    <option value="basic" selected>Basic (Deck Only)</option>
+                    <option value="stairs">Add Stairs (+$500-1500)</option>
+                    <option value="pergola">Add Pergola (+$2000-5000)</option>
+                    <option value="builtin">Built-in Seating (+$1000-3000)</option>
+                    <option value="full">Full Package (All Features)</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Deck Cost</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="totalCost">$0</div>
+                    <div class="result-label-main">Total Deck Cost (Installed)</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="sqFt">0</div>
+                        <div class="summary-label">Square Feet</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="perSqFt">$0</div>
+                        <div class="summary-label">Per Sq Ft</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="materialCost">$0</div>
+                        <div class="summary-label">Materials</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="laborCost">$0</div>
+                        <div class="summary-label">Labor</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Cost Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Deck Size</span>
+                        <span class="breakdown-value" id="displaySize">0 x 0 ft</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Decking Material</span>
+                        <span class="breakdown-value" id="displayMaterial">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Framing/Structure</span>
+                        <span class="breakdown-value" id="framingCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Railing</span>
+                        <span class="breakdown-value" id="railingCost">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Features</span>
+                        <span class="breakdown-value" id="featuresCost">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Outdoor Calculators</h4>
+            <a href="patio-cost-calculator.html">Patio Cost</a>
+            <a href="fence-calculator.html">Fence Cost</a>
+            <a href="lawn-fertilizer-calculator.html">Lawn Fertilizer</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Deck Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function formatMoney(amount) {
+            return '$' + Math.round(amount).toLocaleString();
+        }
+
+        function calculate() {
+            const length = parseInt(document.getElementById('length').value);
+            const width = parseInt(document.getElementById('width').value);
+            const material = document.getElementById('material').value;
+            const height = document.getElementById('height').value;
+            const railing = document.getElementById('railing').value;
+            const features = document.getElementById('features').value;
+
+            const sqFt = length * width;
+            const perimeter = 2 * (length + width);
+
+            // Material costs per sq ft (materials only)
+            const materialCosts = {
+                pressure: 8,
+                cedar: 14,
+                redwood: 18,
+                composite: 18,
+                pvc: 22,
+                ipe: 30
+            };
+
+            // Labor multiplier by height
+            const heightMultipliers = {
+                ground: 1.0,
+                low: 1.2,
+                elevated: 1.5,
+                high: 2.0
+            };
+
+            // Railing costs per linear foot
+            const railingCosts = {
+                none: 0,
+                wood: 25,
+                composite: 40,
+                metal: 60,
+                glass: 150
+            };
+
+            // Feature costs
+            const featureCosts = {
+                basic: 0,
+                stairs: 1000,
+                pergola: 3500,
+                builtin: 2000,
+                full: 6500
+            };
+
+            // Calculate costs
+            const deckingMaterial = materialCosts[material] * sqFt;
+            const framingCost = sqFt * 5 * heightMultipliers[height];
+            const railingTotal = railingCosts[railing] * perimeter;
+            const laborCost = sqFt * 10 * heightMultipliers[height];
+            const featureTotal = featureCosts[features];
+
+            const materialTotal = deckingMaterial + framingCost + railingTotal;
+            const totalCost = materialTotal + laborCost + featureTotal;
+            const perSqFt = totalCost / sqFt;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('totalCost').textContent = formatMoney(totalCost);
+            document.getElementById('sqFt').textContent = sqFt.toLocaleString();
+            document.getElementById('perSqFt').textContent = formatMoney(perSqFt);
+            document.getElementById('materialCost').textContent = formatMoney(materialTotal);
+            document.getElementById('laborCost').textContent = formatMoney(laborCost);
+
+            document.getElementById('displaySize').textContent = length + ' x ' + width + ' ft';
+            document.getElementById('displayMaterial').textContent = formatMoney(deckingMaterial);
+            document.getElementById('framingCost').textContent = formatMoney(framingCost);
+            document.getElementById('railingCost').textContent = formatMoney(railingTotal);
+            document.getElementById('featuresCost').textContent = formatMoney(featureTotal);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

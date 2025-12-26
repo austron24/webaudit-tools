@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Appliance Energy Calculator - Electricity Cost Estimator</title>
+    <meta name="description" content="Calculate how much electricity your appliances use. Estimate annual energy costs for any device. Free appliance energy calculator.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #eab308 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #eab308;
+        }
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #eab308;
+            color: #1e293b;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #ca8a04; }
+        .results { margin-top: 30px; display: none; }
+        .result-box-main {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            color: #1e293b;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .result-value-main { font-size: 56px; font-weight: bold; }
+        .result-label-main { font-size: 18px; opacity: 0.8; margin-top: 5px; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background: #fef9c3;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .summary-value { font-size: 24px; font-weight: bold; color: #ca8a04; }
+        .summary-label { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown h4 { color: #ca8a04; margin-bottom: 15px; }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .breakdown-row:last-child { border: none; }
+        .breakdown-label { color: #64748b; }
+        .breakdown-value { font-weight: 600; color: #1e293b; }
+        .ad-container { text-align: center; margin: 25px 0; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #ca8a04; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #a16207;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fde047; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚡ Appliance Energy Calculator</h1>
+            <p class="subtitle">Calculate electricity costs for any appliance</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Appliance Type (or choose custom)</label>
+                <select id="appliance" onchange="updateWattage()">
+                    <option value="custom">Custom / Enter watts</option>
+                    <option value="refrigerator">Refrigerator (150W avg)</option>
+                    <option value="ac">Air Conditioner (1500W)</option>
+                    <option value="heater">Space Heater (1500W)</option>
+                    <option value="washer">Washing Machine (500W)</option>
+                    <option value="dryer">Clothes Dryer (3000W)</option>
+                    <option value="dishwasher">Dishwasher (1800W)</option>
+                    <option value="tv">TV (100W)</option>
+                    <option value="computer">Desktop Computer (200W)</option>
+                    <option value="laptop">Laptop (50W)</option>
+                    <option value="microwave">Microwave (1000W)</option>
+                    <option value="oven">Electric Oven (2500W)</option>
+                    <option value="waterheater">Water Heater (4500W)</option>
+                </select>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Wattage (W)</label>
+                    <input type="number" id="wattage" value="1000" min="1" step="10">
+                </div>
+                <div class="input-group">
+                    <label>Electricity Rate ($/kWh)</label>
+                    <input type="number" id="rate" value="0.15" min="0.01" max="1" step="0.01">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Hours Used per Day</label>
+                    <input type="number" id="hoursDay" value="4" min="0.1" max="24" step="0.5">
+                </div>
+                <div class="input-group">
+                    <label>Days Used per Month</label>
+                    <input type="number" id="daysMonth" value="30" min="1" max="31">
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">Calculate Energy Cost</button>
+
+            <div class="results" id="results">
+                <div class="result-box-main">
+                    <div class="result-value-main" id="annualCost">$0</div>
+                    <div class="result-label-main">Annual Cost</div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-value" id="monthlyCost">$0</div>
+                        <div class="summary-label">Monthly Cost</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="dailyCost">$0</div>
+                        <div class="summary-label">Daily Cost</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="kwhMonth">0</div>
+                        <div class="summary-label">kWh per Month</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-value" id="kwhYear">0</div>
+                        <div class="summary-label">kWh per Year</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Energy Details</h4>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Wattage</span>
+                        <span class="breakdown-value" id="displayWatts">0 W</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Usage</span>
+                        <span class="breakdown-value" id="displayUsage">0 hrs/day</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">kWh per Hour</span>
+                        <span class="breakdown-value" id="kwhHour">0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">Cost per Hour</span>
+                        <span class="breakdown-value" id="costHour">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-container">
+            <script>
+                atOptions = {
+                    'key' : 'ee368c7cdf94f06bc71fdf57fe4124b8',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/ee368c7cdf94f06bc71fdf57fe4124b8/invoke.js"></script>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Energy Calculators</h4>
+            <a href="electricity-cost-calculator.html">Electricity Cost</a>
+            <a href="solar-panel-cost-calculator.html">Solar Panel</a>
+            <a href="heating-cost-calculator.html">Heating Cost</a>
+            <a href="index.html">View All Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Appliance Energy Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a></p>
+    </footer>
+
+    <script>
+        function updateWattage() {
+            const appliance = document.getElementById('appliance').value;
+            const wattages = {
+                custom: 1000,
+                refrigerator: 150,
+                ac: 1500,
+                heater: 1500,
+                washer: 500,
+                dryer: 3000,
+                dishwasher: 1800,
+                tv: 100,
+                computer: 200,
+                laptop: 50,
+                microwave: 1000,
+                oven: 2500,
+                waterheater: 4500
+            };
+            document.getElementById('wattage').value = wattages[appliance];
+        }
+
+        function calculate() {
+            const wattage = parseFloat(document.getElementById('wattage').value);
+            const rate = parseFloat(document.getElementById('rate').value);
+            const hoursDay = parseFloat(document.getElementById('hoursDay').value);
+            const daysMonth = parseInt(document.getElementById('daysMonth').value);
+
+            // kWh calculations
+            const kwhHour = wattage / 1000;
+            const kwhDay = kwhHour * hoursDay;
+            const kwhMonth = kwhDay * daysMonth;
+            const kwhYear = kwhMonth * 12;
+
+            // Cost calculations
+            const costHour = kwhHour * rate;
+            const dailyCost = kwhDay * rate;
+            const monthlyCost = kwhMonth * rate;
+            const annualCost = kwhYear * rate;
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('annualCost').textContent = '$' + annualCost.toFixed(2);
+            document.getElementById('monthlyCost').textContent = '$' + monthlyCost.toFixed(2);
+            document.getElementById('dailyCost').textContent = '$' + dailyCost.toFixed(2);
+            document.getElementById('kwhMonth').textContent = kwhMonth.toFixed(1);
+            document.getElementById('kwhYear').textContent = kwhYear.toFixed(0);
+
+            document.getElementById('displayWatts').textContent = wattage + ' W';
+            document.getElementById('displayUsage').textContent = hoursDay + ' hrs/day';
+            document.getElementById('kwhHour').textContent = kwhHour.toFixed(3);
+            document.getElementById('costHour').textContent = '$' + costHour.toFixed(4);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
