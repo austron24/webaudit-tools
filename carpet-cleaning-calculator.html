@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carpet Cleaning Cost Calculator - Professional Cleaning Estimates</title>
+    <meta name="description" content="Estimate carpet cleaning costs. Calculate professional carpet cleaning prices by room, square footage, or whole house.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #7c3aed 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #7c3aed;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #f5f3ff;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .compare-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #6d28d9;
+        }
+        .compare-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #6d28d9;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #6d28d9; }
+        .pricing {
+            background: #f5f3ff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 {
+            color: #6d28d9;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .pricing table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd6fe;
+        }
+        .pricing th { color: #6d28d9; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #6d28d9;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #6d28d9; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #7c3aed;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #c4b5fd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧹 Carpet Cleaning Calculator</h1>
+            <p class="subtitle">Estimate professional cleaning costs</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group full">
+                    <label>Calculation Method</label>
+                    <select id="method" onchange="toggleMethod()">
+                        <option value="sqft">By Square Footage</option>
+                        <option value="rooms">By Number of Rooms</option>
+                    </select>
+                </div>
+                <div class="input-group" id="sqftInput">
+                    <label>Carpet Area (sq ft)</label>
+                    <input type="number" id="sqft" value="1000" oninput="calculate()">
+                </div>
+                <div class="input-group" id="roomsInput" style="display:none;">
+                    <label>Number of Rooms</label>
+                    <input type="number" id="rooms" value="3" min="1" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Cleaning Type</label>
+                    <select id="cleanType" onchange="calculate()">
+                        <option value="standard">Standard Clean</option>
+                        <option value="deep">Deep Clean</option>
+                        <option value="stain">Stain Treatment</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Condition</label>
+                    <select id="condition" onchange="calculate()">
+                        <option value="light">Lightly Soiled</option>
+                        <option value="moderate" selected>Moderate</option>
+                        <option value="heavy">Heavily Soiled</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Add-On Services</label>
+                    <select id="addons" onchange="calculate()">
+                        <option value="none">None</option>
+                        <option value="deodorizer">Deodorizer ($25)</option>
+                        <option value="protectant">Stain Protectant ($50)</option>
+                        <option value="both">Both ($70)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Cost</div>
+                <div class="value" id="totalCost">$150-250</div>
+                <div class="sub" id="pricePerSqft">$0.15-0.25 per sq ft</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Low Estimate</div>
+                    <div class="value" id="lowEst">$150</div>
+                    <div class="note">Budget service</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">High Estimate</div>
+                    <div class="value" id="highEst">$250</div>
+                    <div class="note">Premium service</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Min Charge</div>
+                    <div class="value" id="minCharge">$75-100</div>
+                    <div class="note">Most companies</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Per Room</div>
+                    <div class="value" id="perRoom">$25-75</div>
+                    <div class="note">Average rate</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Cost Breakdown</h4>
+                <div class="break-row">
+                    <span>Base Cleaning</span>
+                    <span class="value" id="baseCost">$150</span>
+                </div>
+                <div class="break-row">
+                    <span>Condition Adjustment</span>
+                    <span class="value" id="condCost">+$0</span>
+                </div>
+                <div class="break-row">
+                    <span>Add-On Services</span>
+                    <span class="value" id="addonCost">+$0</span>
+                </div>
+                <div class="break-row">
+                    <span>Travel/Minimum Fee</span>
+                    <span class="value" id="travelCost">Included</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Average Pricing Guide</h4>
+                <table>
+                    <tr>
+                        <th>Service</th>
+                        <th>Per Sq Ft</th>
+                        <th>Per Room</th>
+                    </tr>
+                    <tr><td>Standard Clean</td><td>$0.15-0.25</td><td>$25-50</td></tr>
+                    <tr><td>Deep Clean</td><td>$0.20-0.35</td><td>$40-75</td></tr>
+                    <tr><td>Stain Treatment</td><td>$0.25-0.45</td><td>$50-100</td></tr>
+                    <tr><td>Pet Odor Removal</td><td>$0.35-0.50</td><td>$75-150</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Carpet Cleaning Tips</h4>
+                <div class="tip-item">✓ Clean carpets every 12-18 months for best results</div>
+                <div class="tip-item">✓ Vacuum before professional cleaning</div>
+                <div class="tip-item">✓ Move small furniture yourself to save money</div>
+                <div class="tip-item">✓ Ask about spot treatment for high-traffic areas</div>
+                <div class="tip-item">✓ Allow 4-6 hours for carpets to dry completely</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Tools</h4>
+            <a href="carpet-calculator.html">Carpet Calculator</a>
+            <a href="flooring-calculator.html">Flooring Calculator</a>
+            <a href="paint-calculator.html">Paint Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Carpet Cleaning Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function toggleMethod() {
+            const method = document.getElementById('method').value;
+            document.getElementById('sqftInput').style.display = method === 'sqft' ? 'block' : 'none';
+            document.getElementById('roomsInput').style.display = method === 'rooms' ? 'block' : 'none';
+            calculate();
+        }
+
+        function calculate() {
+            const method = document.getElementById('method').value;
+            const cleanType = document.getElementById('cleanType').value;
+            const condition = document.getElementById('condition').value;
+            const addons = document.getElementById('addons').value;
+
+            let sqft;
+            if (method === 'sqft') {
+                sqft = parseFloat(document.getElementById('sqft').value) || 0;
+            } else {
+                const rooms = parseInt(document.getElementById('rooms').value) || 1;
+                sqft = rooms * 200; // Average room size
+            }
+
+            // Base rates per sq ft
+            const rates = {
+                standard: { low: 0.15, high: 0.25 },
+                deep: { low: 0.20, high: 0.35 },
+                stain: { low: 0.25, high: 0.45 }
+            };
+
+            let rateLow = rates[cleanType].low;
+            let rateHigh = rates[cleanType].high;
+
+            // Condition multiplier
+            const condMultiplier = {
+                light: 1.0,
+                moderate: 1.15,
+                heavy: 1.35
+            };
+            rateLow *= condMultiplier[condition];
+            rateHigh *= condMultiplier[condition];
+
+            // Calculate base
+            let baseLow = sqft * rateLow;
+            let baseHigh = sqft * rateHigh;
+
+            // Minimum charge
+            const minCharge = 75;
+            baseLow = Math.max(baseLow, minCharge);
+            baseHigh = Math.max(baseHigh, minCharge);
+
+            // Add-ons
+            const addonCosts = {
+                none: 0,
+                deodorizer: 25,
+                protectant: 50,
+                both: 70
+            };
+            const addonCost = addonCosts[addons];
+
+            const totalLow = Math.round(baseLow + addonCost);
+            const totalHigh = Math.round(baseHigh + addonCost);
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + totalLow + '-' + totalHigh;
+            document.getElementById('pricePerSqft').textContent = '$' + rateLow.toFixed(2) + '-' + rateHigh.toFixed(2) + ' per sq ft';
+
+            document.getElementById('lowEst').textContent = '$' + totalLow;
+            document.getElementById('highEst').textContent = '$' + totalHigh;
+
+            document.getElementById('baseCost').textContent = '$' + Math.round(baseLow) + '-' + Math.round(baseHigh);
+            document.getElementById('condCost').textContent = condition === 'light' ? '+$0' : '+' + Math.round((condMultiplier[condition] - 1) * 100) + '%';
+            document.getElementById('addonCost').textContent = addonCost > 0 ? '+$' + addonCost : '+$0';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

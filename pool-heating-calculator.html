@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pool Heating Cost Calculator - Heat Your Pool Economically</title>
+    <meta name="description" content="Calculate pool heating costs. Compare gas, electric, heat pump, and solar heating options for your swimming pool.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0284c7 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #0284c7;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #e0f2fe;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .compare-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #0369a1;
+        }
+        .compare-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .heater-comparison {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .heater-comparison h4 {
+            color: #0369a1;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .heater-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .heater-row:last-child { border: none; }
+        .heater-row .value { font-weight: 600; color: #0369a1; }
+        .heater-row.best { background: #dcfce7; margin: 0 -20px; padding: 12px 20px; border-radius: 8px; }
+        .breakdown {
+            background: #e0f2fe;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #0369a1;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #bae6fd;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #0369a1; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #0369a1;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0369a1; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0284c7;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #7dd3fc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏊 Pool Heating Calculator</h1>
+            <p class="subtitle">Compare heating costs by type</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Pool Size (gallons)</label>
+                    <input type="number" id="poolGallons" value="20000" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Current Temp (°F)</label>
+                    <input type="number" id="currentTemp" value="65" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Desired Temp (°F)</label>
+                    <input type="number" id="desiredTemp" value="82" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Swimming Season (months)</label>
+                    <input type="number" id="seasonMonths" value="6" min="1" max="12" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Gas Price ($/therm)</label>
+                    <input type="number" id="gasPrice" value="1.50" step="0.01" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Electric Rate ($/kWh)</label>
+                    <input type="number" id="electricRate" value="0.14" step="0.01" oninput="calculate()">
+                </div>
+                <div class="input-group full">
+                    <label>Pool Cover?</label>
+                    <select id="poolCover" onchange="calculate()">
+                        <option value="none">No Cover</option>
+                        <option value="solar" selected>Solar Cover</option>
+                        <option value="automatic">Automatic Cover</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Best Value: Heat Pump</div>
+                <div class="value" id="bestCost">$45/mo</div>
+                <div class="sub" id="bestTotal">$270 per season</div>
+            </div>
+
+            <div class="heater-comparison">
+                <h4>🔥 Monthly Heating Cost by Type</h4>
+                <div class="heater-row" id="gasRow">
+                    <span>⛽ Gas Heater</span>
+                    <span class="value" id="gasCost">$180/mo</span>
+                </div>
+                <div class="heater-row" id="electricRow">
+                    <span>⚡ Electric Resistance</span>
+                    <span class="value" id="electricCost">$350/mo</span>
+                </div>
+                <div class="heater-row best" id="heatPumpRow">
+                    <span>🌡️ Heat Pump (Best)</span>
+                    <span class="value" id="heatPumpCost">$45/mo</span>
+                </div>
+                <div class="heater-row" id="solarRow">
+                    <span>☀️ Solar (after install)</span>
+                    <span class="value" id="solarCost">$0/mo</span>
+                </div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">BTUs to Heat</div>
+                    <div class="value" id="btusNeeded">2.8M</div>
+                    <div class="note">Initial heating</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Temp Rise</div>
+                    <div class="value" id="tempRise">17°F</div>
+                    <div class="note">To desired temp</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Gas Heater</div>
+                    <div class="value" id="gasHours">8 hrs</div>
+                    <div class="note">To heat up</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Heat Pump</div>
+                    <div class="value" id="heatPumpHours">24 hrs</div>
+                    <div class="note">To heat up</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Annual Cost Comparison</h4>
+                <div class="break-row">
+                    <span>Gas Heater</span>
+                    <span class="value" id="gasAnnual">$1,080</span>
+                </div>
+                <div class="break-row">
+                    <span>Electric Resistance</span>
+                    <span class="value" id="electricAnnual">$2,100</span>
+                </div>
+                <div class="break-row">
+                    <span>Heat Pump</span>
+                    <span class="value" id="heatPumpAnnual">$270</span>
+                </div>
+                <div class="break-row">
+                    <span>Solar (operating)</span>
+                    <span class="value" id="solarAnnual">$0-50</span>
+                </div>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Pool Heating Tips</h4>
+                <div class="tip-item">✓ Use a pool cover - saves 50-70% on heating costs</div>
+                <div class="tip-item">✓ Heat pumps cost more upfront but save long-term</div>
+                <div class="tip-item">✓ Solar is free to run but needs sunny climate</div>
+                <div class="tip-item">✓ Gas heaters heat fast but cost most to operate</div>
+                <div class="tip-item">✓ Lower temp by 1°F = 10-15% energy savings</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Pool Tools</h4>
+            <a href="pool-volume-calculator.html">Pool Volume</a>
+            <a href="pool-chemical-calculator.html">Pool Chemicals</a>
+            <a href="electricity-cost-calculator.html">Electricity Cost</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Pool Heating Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const gallons = parseFloat(document.getElementById('poolGallons').value) || 20000;
+            const currentTemp = parseFloat(document.getElementById('currentTemp').value) || 65;
+            const desiredTemp = parseFloat(document.getElementById('desiredTemp').value) || 82;
+            const seasonMonths = parseInt(document.getElementById('seasonMonths').value) || 6;
+            const gasPrice = parseFloat(document.getElementById('gasPrice').value) || 1.50;
+            const electricRate = parseFloat(document.getElementById('electricRate').value) || 0.14;
+            const poolCover = document.getElementById('poolCover').value;
+
+            const tempRise = desiredTemp - currentTemp;
+
+            // BTUs needed to heat pool (water weight * temp rise * 8.34 lbs/gal)
+            const btusInitial = gallons * tempRise * 8.34;
+
+            // Daily heat loss (depends on cover)
+            const heatLossFactor = {
+                none: 0.15,      // Loses 15% per day
+                solar: 0.07,    // Loses 7% per day
+                automatic: 0.04 // Loses 4% per day
+            };
+            const dailyHeatLoss = btusInitial * heatLossFactor[poolCover];
+
+            // Monthly BTUs needed (to maintain temp)
+            const monthlyBTUs = dailyHeatLoss * 30;
+
+            // Gas heater (80% efficient, 1 therm = 100,000 BTU)
+            const gasEfficiency = 0.80;
+            const thermsMonth = monthlyBTUs / (100000 * gasEfficiency);
+            const gasMonthlyCost = thermsMonth * gasPrice;
+
+            // Electric resistance (100% efficient, 1 kWh = 3,412 BTU)
+            const electricKwh = monthlyBTUs / 3412;
+            const electricMonthlyCost = electricKwh * electricRate;
+
+            // Heat pump (COP 5.0 = 500% efficient)
+            const heatPumpCOP = 5.0;
+            const heatPumpKwh = monthlyBTUs / (3412 * heatPumpCOP);
+            const heatPumpMonthlyCost = heatPumpKwh * electricRate;
+
+            // Solar (essentially free after installation)
+            const solarMonthlyCost = 0;
+
+            // Time to heat initially
+            const gasHeaterBTUH = 400000; // 400k BTU/hr heater
+            const heatPumpBTUH = 100000;  // 100k BTU/hr heat pump
+            const gasHours = Math.round(btusInitial / gasHeaterBTUH);
+            const heatPumpHoursVal = Math.round(btusInitial / heatPumpBTUH);
+
+            // Update display
+            document.getElementById('tempRise').textContent = tempRise + '°F';
+            document.getElementById('btusNeeded').textContent = (btusInitial / 1000000).toFixed(1) + 'M';
+            document.getElementById('gasHours').textContent = gasHours + ' hrs';
+            document.getElementById('heatPumpHours').textContent = heatPumpHoursVal + ' hrs';
+
+            document.getElementById('gasCost').textContent = '$' + Math.round(gasMonthlyCost) + '/mo';
+            document.getElementById('electricCost').textContent = '$' + Math.round(electricMonthlyCost) + '/mo';
+            document.getElementById('heatPumpCost').textContent = '$' + Math.round(heatPumpMonthlyCost) + '/mo';
+            document.getElementById('solarCost').textContent = '$0/mo';
+
+            document.getElementById('gasAnnual').textContent = '$' + Math.round(gasMonthlyCost * seasonMonths).toLocaleString();
+            document.getElementById('electricAnnual').textContent = '$' + Math.round(electricMonthlyCost * seasonMonths).toLocaleString();
+            document.getElementById('heatPumpAnnual').textContent = '$' + Math.round(heatPumpMonthlyCost * seasonMonths).toLocaleString();
+            document.getElementById('solarAnnual').textContent = '$0-50';
+
+            // Best value (heat pump usually)
+            document.getElementById('bestCost').textContent = '$' + Math.round(heatPumpMonthlyCost) + '/mo';
+            document.getElementById('bestTotal').textContent = '$' + Math.round(heatPumpMonthlyCost * seasonMonths) + ' per season';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

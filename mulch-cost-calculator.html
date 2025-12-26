@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mulch Cost Calculator - Estimate Mulch Pricing</title>
+    <meta name="description" content="Calculate how much mulch costs. Estimate mulch pricing for your landscaping project by cubic yards or bags.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #65a30d 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #65a30d;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #65a30d 0%, #4d7c0f 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .cost-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .cost-item {
+            background: #ecfccb;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .cost-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .cost-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #4d7c0f;
+        }
+        .cost-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #4d7c0f;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #4d7c0f; }
+        .pricing {
+            background: #ecfccb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 {
+            color: #4d7c0f;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .pricing table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #bef264;
+        }
+        .pricing th { color: #4d7c0f; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #4d7c0f;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #4d7c0f; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #65a30d;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #bef264; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌿 Mulch Cost Calculator</h1>
+            <p class="subtitle">Estimate mulch pricing for your project</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Area Length (ft)</label>
+                    <input type="number" id="length" value="20" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Area Width (ft)</label>
+                    <input type="number" id="width" value="10" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Depth (inches)</label>
+                    <select id="depth" onchange="calculate()">
+                        <option value="2">2 inches (refreshing)</option>
+                        <option value="3" selected>3 inches (recommended)</option>
+                        <option value="4">4 inches (new beds)</option>
+                        <option value="6">6 inches (deep coverage)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Mulch Type</label>
+                    <select id="mulchType" onchange="calculate()">
+                        <option value="hardwood">Hardwood Mulch</option>
+                        <option value="cedar" selected>Cedar Mulch</option>
+                        <option value="cypress">Cypress Mulch</option>
+                        <option value="pine">Pine Bark</option>
+                        <option value="rubber">Rubber Mulch</option>
+                        <option value="dyed">Dyed Mulch (Red/Black)</option>
+                    </select>
+                </div>
+                <div class="input-group full">
+                    <label>Purchase Method</label>
+                    <select id="purchaseMethod" onchange="calculate()">
+                        <option value="bulk">Bulk (cubic yards)</option>
+                        <option value="bags">Bags (2 cu ft bags)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Total Cost</div>
+                <div class="value" id="totalCost">$150</div>
+                <div class="sub" id="amountNeeded">1.85 cubic yards needed</div>
+            </div>
+
+            <div class="cost-grid">
+                <div class="cost-item">
+                    <div class="type">Cubic Yards</div>
+                    <div class="value" id="cubicYards">1.85</div>
+                    <div class="note">bulk delivery</div>
+                </div>
+                <div class="cost-item">
+                    <div class="type">Bags (2 cu ft)</div>
+                    <div class="value" id="bags">25</div>
+                    <div class="note">store purchase</div>
+                </div>
+                <div class="cost-item">
+                    <div class="type">Bulk Price</div>
+                    <div class="value" id="bulkCost">$75</div>
+                    <div class="note">+ delivery</div>
+                </div>
+                <div class="cost-item">
+                    <div class="type">Bag Price</div>
+                    <div class="value" id="bagCost">$100</div>
+                    <div class="note">DIY pickup</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>📐 Coverage Breakdown</h4>
+                <div class="break-row">
+                    <span>Total Area</span>
+                    <span class="value" id="totalArea">200 sq ft</span>
+                </div>
+                <div class="break-row">
+                    <span>Cubic Feet Needed</span>
+                    <span class="value" id="cubicFeet">50 cu ft</span>
+                </div>
+                <div class="break-row">
+                    <span>Coverage Depth</span>
+                    <span class="value" id="coverageDepth">3 inches</span>
+                </div>
+                <div class="break-row">
+                    <span>Delivery Fee (typical)</span>
+                    <span class="value" id="deliveryFee">$50-75</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>💰 Mulch Pricing Guide</h4>
+                <table>
+                    <tr>
+                        <th>Type</th>
+                        <th>Per Yard</th>
+                        <th>Per Bag</th>
+                    </tr>
+                    <tr><td>Hardwood</td><td>$25-35</td><td>$3-4</td></tr>
+                    <tr><td>Cedar</td><td>$35-50</td><td>$4-6</td></tr>
+                    <tr><td>Cypress</td><td>$35-55</td><td>$5-7</td></tr>
+                    <tr><td>Pine Bark</td><td>$30-40</td><td>$4-5</td></tr>
+                    <tr><td>Dyed</td><td>$30-45</td><td>$4-5</td></tr>
+                    <tr><td>Rubber</td><td>$80-120</td><td>$8-12</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Mulch Tips</h4>
+                <div class="tip-item">✓ Bulk is cheaper for 3+ cubic yards</div>
+                <div class="tip-item">✓ Keep mulch 2-3" away from plant stems</div>
+                <div class="tip-item">✓ Refresh mulch annually (2" depth)</div>
+                <div class="tip-item">✓ Cedar and cypress resist insects naturally</div>
+                <div class="tip-item">✓ Rubber mulch lasts 10+ years but costs more</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Landscaping Tools</h4>
+            <a href="mulch-calculator.html">Mulch Calculator</a>
+            <a href="topsoil-calculator.html">Topsoil Calculator</a>
+            <a href="gravel-calculator.html">Gravel Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Mulch Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const length = parseFloat(document.getElementById('length').value) || 0;
+            const width = parseFloat(document.getElementById('width').value) || 0;
+            const depth = parseFloat(document.getElementById('depth').value) || 3;
+            const mulchType = document.getElementById('mulchType').value;
+            const purchaseMethod = document.getElementById('purchaseMethod').value;
+
+            const sqft = length * width;
+            const cubicFeet = sqft * (depth / 12);
+            const cubicYards = cubicFeet / 27;
+
+            // Bags (2 cu ft per bag)
+            const bagsNeeded = Math.ceil(cubicFeet / 2);
+
+            // Pricing per cubic yard and per bag
+            const pricing = {
+                hardwood: { yard: 30, bag: 3.5 },
+                cedar: { yard: 42, bag: 5 },
+                cypress: { yard: 45, bag: 6 },
+                pine: { yard: 35, bag: 4.5 },
+                rubber: { yard: 100, bag: 10 },
+                dyed: { yard: 38, bag: 4.5 }
+            };
+
+            const pricePerYard = pricing[mulchType].yard;
+            const pricePerBag = pricing[mulchType].bag;
+
+            const bulkCost = Math.round(cubicYards * pricePerYard);
+            const bagCost = Math.round(bagsNeeded * pricePerBag);
+
+            // Total with delivery estimate for bulk
+            const deliveryFee = 60;
+            const totalBulk = bulkCost + (cubicYards >= 2 ? deliveryFee : 0);
+            const totalBag = bagCost;
+
+            const displayCost = purchaseMethod === 'bulk' ? totalBulk : totalBag;
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + displayCost;
+            document.getElementById('amountNeeded').textContent = cubicYards.toFixed(2) + ' cubic yards needed';
+
+            document.getElementById('cubicYards').textContent = cubicYards.toFixed(2);
+            document.getElementById('bags').textContent = bagsNeeded;
+            document.getElementById('bulkCost').textContent = '$' + bulkCost;
+            document.getElementById('bagCost').textContent = '$' + bagCost;
+
+            document.getElementById('totalArea').textContent = sqft.toLocaleString() + ' sq ft';
+            document.getElementById('cubicFeet').textContent = cubicFeet.toFixed(1) + ' cu ft';
+            document.getElementById('coverageDepth').textContent = depth + ' inches';
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

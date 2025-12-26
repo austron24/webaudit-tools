@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dog Food Cost Calculator - Monthly & Yearly Feeding Costs</title>
+    <meta name="description" content="Calculate how much dog food costs per month and year. Estimate feeding costs based on dog size and food type.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #ea580c 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #ea580c;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 48px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .cost-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .cost-item {
+            background: #fff7ed;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .cost-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .cost-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #c2410c;
+        }
+        .cost-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #c2410c;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #c2410c; }
+        .guide {
+            background: #fff7ed;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .guide h4 {
+            color: #c2410c;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .guide table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .guide th, .guide td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #fed7aa;
+        }
+        .guide th { color: #c2410c; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #c2410c;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #c2410c; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #ea580c;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #fed7aa; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐕 Dog Food Cost Calculator</h1>
+            <p class="subtitle">Estimate monthly and yearly feeding costs</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Dog Size</label>
+                    <select id="dogSize" onchange="calculate()">
+                        <option value="toy">Toy (up to 10 lbs)</option>
+                        <option value="small">Small (10-25 lbs)</option>
+                        <option value="medium" selected>Medium (25-50 lbs)</option>
+                        <option value="large">Large (50-75 lbs)</option>
+                        <option value="xlarge">X-Large (75+ lbs)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Dog's Weight (lbs)</label>
+                    <input type="number" id="weight" value="40" oninput="calculate()">
+                </div>
+                <div class="input-group full">
+                    <label>Food Quality</label>
+                    <select id="foodQuality" onchange="calculate()">
+                        <option value="budget">Budget ($20-30 per 30lb bag)</option>
+                        <option value="midrange" selected>Mid-Range ($40-60 per 30lb bag)</option>
+                        <option value="premium">Premium ($60-80 per 30lb bag)</option>
+                        <option value="superpremium">Super Premium ($80-120 per 30lb bag)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Activity Level</label>
+                    <select id="activity" onchange="calculate()">
+                        <option value="low">Low (senior/lazy)</option>
+                        <option value="moderate" selected>Moderate</option>
+                        <option value="high">High (active/working)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Feeding Type</label>
+                    <select id="feedType" onchange="calculate()">
+                        <option value="dry" selected>Dry Kibble Only</option>
+                        <option value="mixed">Mixed (Dry + Wet)</option>
+                        <option value="wet">Wet Food Only</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Monthly Food Cost</div>
+                <div class="value" id="monthlyCost">$45</div>
+                <div class="sub" id="dailyCost">~$1.50 per day</div>
+            </div>
+
+            <div class="cost-grid">
+                <div class="cost-item">
+                    <div class="type">Yearly Cost</div>
+                    <div class="value" id="yearlyCost">$540</div>
+                    <div class="note">Annual estimate</div>
+                </div>
+                <div class="cost-item">
+                    <div class="type">Daily Amount</div>
+                    <div class="value" id="dailyAmount">2.5 cups</div>
+                    <div class="note">Recommended</div>
+                </div>
+                <div class="cost-item">
+                    <div class="type">Bags per Month</div>
+                    <div class="value" id="bagsMonth">1.5</div>
+                    <div class="note">30lb bags</div>
+                </div>
+                <div class="cost-item">
+                    <div class="type">Bags per Year</div>
+                    <div class="value" id="bagsYear">18</div>
+                    <div class="note">30lb bags</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>🍖 Feeding Breakdown</h4>
+                <div class="break-row">
+                    <span>Daily Food Amount</span>
+                    <span class="value" id="dailyOz">5 oz</span>
+                </div>
+                <div class="break-row">
+                    <span>Monthly Food Needed</span>
+                    <span class="value" id="monthlyLbs">10 lbs</span>
+                </div>
+                <div class="break-row">
+                    <span>Calories per Day</span>
+                    <span class="value" id="calories">900 kcal</span>
+                </div>
+                <div class="break-row">
+                    <span>Cost per Feeding</span>
+                    <span class="value" id="costPerMeal">$0.75</span>
+                </div>
+            </div>
+
+            <div class="guide">
+                <h4>📊 Feeding Guide by Weight</h4>
+                <table>
+                    <tr>
+                        <th>Weight</th>
+                        <th>Daily (cups)</th>
+                        <th>Monthly Cost</th>
+                    </tr>
+                    <tr><td>10 lbs</td><td>3/4 - 1</td><td>$15-30</td></tr>
+                    <tr><td>25 lbs</td><td>1.5 - 2</td><td>$25-45</td></tr>
+                    <tr><td>50 lbs</td><td>2.5 - 3.5</td><td>$40-70</td></tr>
+                    <tr><td>75 lbs</td><td>3.5 - 4.5</td><td>$55-95</td></tr>
+                    <tr><td>100 lbs</td><td>4.5 - 6</td><td>$70-120</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 Dog Food Saving Tips</h4>
+                <div class="tip-item">✓ Buy in bulk - larger bags cost less per pound</div>
+                <div class="tip-item">✓ Subscribe & Save programs offer 5-15% off</div>
+                <div class="tip-item">✓ Quality food = fewer vet bills long-term</div>
+                <div class="tip-item">✓ Avoid overfeeding - follow package guidelines</div>
+                <div class="tip-item">✓ Store food properly to prevent spoilage</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Pet Tools</h4>
+            <a href="dog-age-calculator.html">Dog Age Calculator</a>
+            <a href="dog-food-calculator.html">Dog Food Amount</a>
+            <a href="cat-age-calculator.html">Cat Age Calculator</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Dog Food Cost Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const weight = parseFloat(document.getElementById('weight').value) || 40;
+            const foodQuality = document.getElementById('foodQuality').value;
+            const activity = document.getElementById('activity').value;
+            const feedType = document.getElementById('feedType').value;
+
+            // Calories needed per day (RER * activity factor)
+            // RER = 70 * (weight in kg)^0.75
+            const weightKg = weight * 0.453592;
+            const rer = 70 * Math.pow(weightKg, 0.75);
+
+            const activityMultiplier = {
+                low: 1.2,
+                moderate: 1.6,
+                high: 2.0
+            };
+            const dailyCalories = Math.round(rer * activityMultiplier[activity]);
+
+            // Cups of food per day (assuming ~400 kcal per cup for kibble)
+            const cupsPerDay = dailyCalories / 400;
+
+            // Ounces per day (1 cup dry food ≈ 4 oz)
+            const ozPerDay = cupsPerDay * 4;
+            const lbsPerMonth = (ozPerDay * 30) / 16;
+
+            // Cost per 30lb bag
+            const bagCosts = {
+                budget: 25,
+                midrange: 50,
+                premium: 70,
+                superpremium: 100
+            };
+            const costPer30lb = bagCosts[foodQuality];
+            const costPerLb = costPer30lb / 30;
+
+            // Wet food multiplier (wet food costs 3-4x more)
+            const wetMultiplier = {
+                dry: 1.0,
+                mixed: 1.5,
+                wet: 3.5
+            };
+
+            const monthlyCost = Math.round(lbsPerMonth * costPerLb * wetMultiplier[feedType]);
+            const yearlyCost = monthlyCost * 12;
+            const dailyCost = (monthlyCost / 30).toFixed(2);
+
+            // Bags per month/year
+            const bagsMonth = (lbsPerMonth / 30).toFixed(1);
+            const bagsYear = Math.ceil(lbsPerMonth * 12 / 30);
+
+            // Update display
+            document.getElementById('monthlyCost').textContent = '$' + monthlyCost;
+            document.getElementById('dailyCost').textContent = '~$' + dailyCost + ' per day';
+            document.getElementById('yearlyCost').textContent = '$' + yearlyCost.toLocaleString();
+            document.getElementById('dailyAmount').textContent = cupsPerDay.toFixed(1) + ' cups';
+            document.getElementById('bagsMonth').textContent = bagsMonth;
+            document.getElementById('bagsYear').textContent = bagsYear;
+
+            document.getElementById('dailyOz').textContent = Math.round(ozPerDay) + ' oz';
+            document.getElementById('monthlyLbs').textContent = Math.round(lbsPerMonth) + ' lbs';
+            document.getElementById('calories').textContent = dailyCalories + ' kcal';
+            document.getElementById('costPerMeal').textContent = '$' + (monthlyCost / 60).toFixed(2);
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
