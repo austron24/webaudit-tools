@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HVAC Replacement Cost Calculator - AC & Furnace Estimates</title>
+    <meta name="description" content="Calculate HVAC replacement costs. Estimate air conditioner, furnace, and heat pump installation prices.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0284c7 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .container { max-width: 550px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; opacity: 0.9; }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            color: #1e293b;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group.full { grid-column: span 2; }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #0284c7;
+        }
+        .result-box {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin: 25px 0;
+        }
+        .result-box .label { opacity: 0.9; font-size: 14px; }
+        .result-box .value { font-size: 42px; font-weight: bold; }
+        .result-box .sub { opacity: 0.8; font-size: 14px; margin-top: 5px; }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .compare-item {
+            background: #e0f2fe;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .compare-item .type {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .compare-item .value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #0369a1;
+        }
+        .compare-item .note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .breakdown {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .breakdown h4 {
+            color: #0369a1;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .break-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .break-row:last-child { border: none; }
+        .break-row .value { font-weight: 600; color: #0369a1; }
+        .pricing {
+            background: #e0f2fe;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .pricing h4 {
+            color: #0369a1;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .pricing table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .pricing th, .pricing td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #bae6fd;
+        }
+        .pricing th { color: #0369a1; }
+        .tips {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tips h4 {
+            color: #0369a1;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .tip-item {
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tip-item:last-child { border: none; }
+        .tools-promo {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1e293b;
+            margin-top: 25px;
+        }
+        .tools-promo h4 { color: #0369a1; margin-bottom: 10px; }
+        .tools-promo a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #0284c7;
+            text-decoration: none;
+        }
+        .tools-promo a:hover { text-decoration: underline; }
+        footer { text-align: center; padding: 30px 20px; opacity: 0.8; font-size: 14px; }
+        footer a { color: #7dd3fc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>❄️ HVAC Replacement Cost</h1>
+            <p class="subtitle">AC, furnace & heat pump estimates</p>
+        </header>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group full">
+                    <label>System Type</label>
+                    <select id="systemType" onchange="calculate()">
+                        <option value="ac">Central AC Only</option>
+                        <option value="furnace">Furnace Only</option>
+                        <option value="both" selected>AC + Furnace (Complete)</option>
+                        <option value="heatpump">Heat Pump</option>
+                        <option value="minisplit">Ductless Mini-Split</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Home Size (sq ft)</label>
+                    <input type="number" id="homeSize" value="2000" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>System Size (tons)</label>
+                    <select id="tonnage" onchange="calculate()">
+                        <option value="2">2 Ton (1000-1500 sq ft)</option>
+                        <option value="2.5">2.5 Ton (1500-1800 sq ft)</option>
+                        <option value="3" selected>3 Ton (1800-2200 sq ft)</option>
+                        <option value="3.5">3.5 Ton (2200-2600 sq ft)</option>
+                        <option value="4">4 Ton (2600-3200 sq ft)</option>
+                        <option value="5">5 Ton (3200+ sq ft)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Efficiency Level</label>
+                    <select id="efficiency" onchange="calculate()">
+                        <option value="standard">Standard (14-16 SEER)</option>
+                        <option value="high" selected>High Efficiency (17-20 SEER)</option>
+                        <option value="premium">Premium (21+ SEER)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Brand Tier</label>
+                    <select id="brand" onchange="calculate()">
+                        <option value="budget">Budget Brands</option>
+                        <option value="mid" selected>Mid-Range (Carrier, Lennox)</option>
+                        <option value="premium">Premium (Trane, American Standard)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="label">Estimated Total Cost</div>
+                <div class="value" id="totalCost">$8,500-12,000</div>
+                <div class="sub" id="costNote">Installed with warranty</div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <div class="type">Equipment</div>
+                    <div class="value" id="equipCost">$4,500</div>
+                    <div class="note">AC + Furnace</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Installation</div>
+                    <div class="value" id="laborCost">$4,000</div>
+                    <div class="note">Labor + materials</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Annual Savings</div>
+                    <div class="value" id="savings">$300</div>
+                    <div class="note">High efficiency</div>
+                </div>
+                <div class="compare-item">
+                    <div class="type">Payback</div>
+                    <div class="value" id="payback">8-12 yrs</div>
+                    <div class="note">Efficiency upgrade</div>
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <h4>💰 Cost Breakdown</h4>
+                <div class="break-row">
+                    <span>Equipment</span>
+                    <span class="value" id="equipBreak">$4,500</span>
+                </div>
+                <div class="break-row">
+                    <span>Installation Labor</span>
+                    <span class="value" id="laborBreak">$2,500</span>
+                </div>
+                <div class="break-row">
+                    <span>Materials (duct, etc.)</span>
+                    <span class="value" id="matBreak">$800</span>
+                </div>
+                <div class="break-row">
+                    <span>Permits & Inspection</span>
+                    <span class="value" id="permitBreak">$200-500</span>
+                </div>
+            </div>
+
+            <div class="pricing">
+                <h4>📊 Average HVAC Costs</h4>
+                <table>
+                    <tr>
+                        <th>System</th>
+                        <th>Cost Range</th>
+                    </tr>
+                    <tr><td>Central AC (3 ton)</td><td>$4,000-8,000</td></tr>
+                    <tr><td>Gas Furnace</td><td>$3,000-6,000</td></tr>
+                    <tr><td>AC + Furnace</td><td>$7,000-15,000</td></tr>
+                    <tr><td>Heat Pump</td><td>$5,000-12,000</td></tr>
+                    <tr><td>Ductless Mini-Split</td><td>$3,000-8,000</td></tr>
+                </table>
+            </div>
+
+            <div class="tips">
+                <h4>💡 HVAC Buying Tips</h4>
+                <div class="tip-item">✓ Get 3+ quotes from licensed contractors</div>
+                <div class="tip-item">✓ Check for utility rebates and tax credits</div>
+                <div class="tip-item">✓ Higher SEER = lower operating costs</div>
+                <div class="tip-item">✓ Ask about financing options</div>
+                <div class="tip-item">✓ Replace both AC and furnace together</div>
+            </div>
+        </div>
+
+        <div class="tools-promo">
+            <h4>More Home Tools</h4>
+            <a href="ac-btu-calculator.html">AC BTU Calculator</a>
+            <a href="electricity-cost-calculator.html">Electric Cost</a>
+            <a href="home-affordability-calculator.html">Home Affordability</a>
+            <a href="index.html">View All 100+ Tools</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>HVAC Replacement Calculator by WebAudit Pro</p>
+        <p><a href="index.html">More Free Tools</a> | <a href="https://fiverr.com/austron24">Professional Audits</a></p>
+    </footer>
+
+    <script>
+        function calculate() {
+            const systemType = document.getElementById('systemType').value;
+            const tonnage = parseFloat(document.getElementById('tonnage').value) || 3;
+            const efficiency = document.getElementById('efficiency').value;
+            const brand = document.getElementById('brand').value;
+
+            // Base equipment costs
+            const baseCosts = {
+                ac: 3000,
+                furnace: 2500,
+                both: 5500,
+                heatpump: 4500,
+                minisplit: 3000
+            };
+
+            let equipCost = baseCosts[systemType];
+
+            // Tonnage multiplier
+            equipCost *= (tonnage / 3);
+
+            // Efficiency multiplier
+            const effMultiplier = {
+                standard: 1.0,
+                high: 1.3,
+                premium: 1.6
+            };
+            equipCost *= effMultiplier[efficiency];
+
+            // Brand multiplier
+            const brandMultiplier = {
+                budget: 0.8,
+                mid: 1.0,
+                premium: 1.3
+            };
+            equipCost *= brandMultiplier[brand];
+
+            equipCost = Math.round(equipCost);
+
+            // Installation costs
+            const laborBase = systemType === 'both' ? 3500 : 2000;
+            const laborCost = Math.round(laborBase * (tonnage / 3));
+            const matCost = Math.round(800 * (tonnage / 3));
+
+            const totalLow = Math.round((equipCost + laborCost + matCost) * 0.9);
+            const totalHigh = Math.round((equipCost + laborCost + matCost) * 1.2 + 500);
+
+            // Energy savings estimate
+            const savingsBase = efficiency === 'premium' ? 400 : (efficiency === 'high' ? 250 : 0);
+            const paybackYears = savingsBase > 0 ? Math.round((totalLow - baseCosts[systemType]) / savingsBase) : 0;
+
+            // Update display
+            document.getElementById('totalCost').textContent = '$' + totalLow.toLocaleString() + '-' + totalHigh.toLocaleString();
+            document.getElementById('equipCost').textContent = '$' + equipCost.toLocaleString();
+            document.getElementById('laborCost').textContent = '$' + (laborCost + matCost).toLocaleString();
+            document.getElementById('savings').textContent = savingsBase > 0 ? '$' + savingsBase + '/yr' : 'Baseline';
+            document.getElementById('payback').textContent = paybackYears > 0 ? paybackYears + '-' + (paybackYears + 4) + ' yrs' : 'N/A';
+
+            document.getElementById('equipBreak').textContent = '$' + equipCost.toLocaleString();
+            document.getElementById('laborBreak').textContent = '$' + laborCost.toLocaleString();
+            document.getElementById('matBreak').textContent = '$' + matCost;
+        }
+
+        calculate();
+    </script>
+</body>
+</html>
