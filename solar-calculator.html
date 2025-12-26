@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Concrete Calculator - Cubic Yards & Bags Needed</title>
-    <meta name="description" content="Free concrete calculator. Calculate how much concrete you need in cubic yards, cubic feet, and bags for your project.">
-    <meta name="keywords" content="concrete calculator, cubic yards, concrete bags, cement calculator, concrete estimator">
-    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/concrete-calculator.html">
+    <title>Solar Panel Calculator - System Size & Savings</title>
+    <meta name="description" content="Free solar panel calculator. Estimate the solar system size you need and calculate potential savings on electricity.">
+    <meta name="keywords" content="solar calculator, solar panel, solar system size, solar savings, renewable energy">
+    <link rel="canonical" href="https://austron24.github.io/webaudit-tools/solar-calculator.html">
     <style>
-        :root { --primary: #64748b; --primary-dark: #475569; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
+        :root { --primary: #f59e0b; --primary-dark: #d97706; --secondary: #22d3ee; --accent: #f59e0b; --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #334155; --text-primary: #f1f5f9; --text-secondary: #94a3b8; --border: #475569; --success: #10b981; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
         .ad-container { background: var(--bg-card); padding: 10px; text-align: center; margin: 10px 0; border-radius: 8px; }
@@ -20,7 +20,7 @@
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
         .card { background: var(--bg-card); border-radius: 16px; padding: 24px; }
         .card h2 { color: var(--secondary); margin-bottom: 20px; font-size: 1.3rem; }
-        .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
         input, select { width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-input); color: var(--text-primary); }
@@ -54,66 +54,63 @@
     <style>@media (max-width: 728px) { .ad-container:first-child { display: none !important; } .ad-container:nth-child(2) { display: block !important; } }</style>
 
     <header class="header">
-        <h1>🏗️ Concrete Calculator</h1>
+        <h1>☀️ Solar Panel Calculator</h1>
     </header>
 
     <div class="main-container">
         <div class="content-area">
             <div class="card">
-                <h2>📐 Slab Dimensions</h2>
+                <h2>⚡ Your Energy Usage</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Length (feet)</label>
-                        <input type="number" id="length" value="10" step="0.5" oninput="calculate()">
+                        <label>Monthly Electric Bill ($)</label>
+                        <input type="number" id="monthlyBill" value="150" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Width (feet)</label>
-                        <input type="number" id="width" value="10" step="0.5" oninput="calculate()">
+                        <label>Electricity Rate ($/kWh)</label>
+                        <input type="number" id="rate" value="0.15" step="0.01" oninput="calculate()">
                     </div>
                     <div class="form-group">
-                        <label>Thickness (inches)</label>
-                        <input type="number" id="thickness" value="4" step="0.5" oninput="calculate()">
+                        <label>Peak Sun Hours (Daily)</label>
+                        <input type="number" id="sunHours" value="5" step="0.5" oninput="calculate()">
+                    </div>
+                    <div class="form-group">
+                        <label>System Efficiency (%)</label>
+                        <input type="number" id="efficiency" value="80" oninput="calculate()">
                     </div>
                 </div>
 
                 <div class="result-hero">
-                    <div class="result-hero-label">Concrete Needed</div>
-                    <div class="result-hero-value" id="cubicYards">0 yd³</div>
+                    <div class="result-hero-label">Recommended System Size</div>
+                    <div class="result-hero-value" id="systemSize">0 kW</div>
                 </div>
 
                 <div class="results-grid">
                     <div class="result-card">
-                        <div class="result-value" id="cubicFeet">0</div>
-                        <div class="result-label">Cubic Feet</div>
+                        <div class="result-value" id="monthlyKwh">0</div>
+                        <div class="result-label">Monthly kWh</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="bags40">0</div>
-                        <div class="result-label">40 lb Bags</div>
+                        <div class="result-value" id="panelCount">0</div>
+                        <div class="result-label">Panels Needed (400W)</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="bags60">0</div>
-                        <div class="result-label">60 lb Bags</div>
+                        <div class="result-value" id="yearlySavings">$0</div>
+                        <div class="result-label">Yearly Savings</div>
                     </div>
                     <div class="result-card">
-                        <div class="result-value" id="bags80">0</div>
-                        <div class="result-label">80 lb Bags</div>
+                        <div class="result-value" id="estimatedCost">$0</div>
+                        <div class="result-label">Est. System Cost</div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>💰 Cost Estimate</h2>
-                <div class="breakdown-row"><span>Ready-Mix Delivery (~$125/yd³)</span><span id="readyMixCost">$0</span></div>
-                <div class="breakdown-row"><span>80 lb Bags (~$6/bag)</span><span id="bagsCost">$0</span></div>
-                <div class="breakdown-row"><span>Add 10% for waste</span><span id="withWaste">0 yd³</span></div>
-            </div>
-
-            <div class="card">
-                <h2>📊 Common Thicknesses</h2>
-                <div class="breakdown-row"><span>Sidewalk/Patio</span><span>4 inches</span></div>
-                <div class="breakdown-row"><span>Driveway</span><span>4-6 inches</span></div>
-                <div class="breakdown-row"><span>Garage Floor</span><span>4-6 inches</span></div>
-                <div class="breakdown-row"><span>Foundation</span><span>8-12 inches</span></div>
+                <h2>💰 Financial Analysis</h2>
+                <div class="breakdown-row"><span>Federal Tax Credit (30%)</span><span id="taxCredit">$0</span></div>
+                <div class="breakdown-row"><span>Net Cost After Credit</span><span id="netCost">$0</span></div>
+                <div class="breakdown-row"><span>Simple Payback Period</span><span id="payback">0 years</span></div>
+                <div class="breakdown-row"><span>25-Year Savings</span><span id="lifetimeSavings" style="color: var(--success);">$0</span></div>
             </div>
 
             <div class="ad-container">
@@ -125,10 +122,10 @@
             <div class="card">
                 <h2>🔗 Related Tools</h2>
                 <div class="related-tools">
-                    <a href="gravel-calculator.html" class="related-link">🪨 Gravel</a>
-                    <a href="mulch-calculator.html" class="related-link">🌿 Mulch</a>
-                    <a href="paver-calculator.html" class="related-link">🧱 Pavers</a>
-                    <a href="square-footage-calculator.html" class="related-link">📐 Square Footage</a>
+                    <a href="electricity-cost-calculator.html" class="related-link">⚡ Electricity Cost</a>
+                    <a href="propane-calculator.html" class="related-link">🔥 Propane</a>
+                    <a href="natural-gas-calculator.html" class="related-link">💨 Natural Gas</a>
+                    <a href="roi-calculator.html" class="related-link">📈 ROI</a>
                 </div>
             </div>
         </div>
@@ -144,26 +141,32 @@
 
     <script>
         function calculate() {
-            const length = parseFloat(document.getElementById('length').value) || 0;
-            const width = parseFloat(document.getElementById('width').value) || 0;
-            const thickness = parseFloat(document.getElementById('thickness').value) || 0;
+            const monthlyBill = parseFloat(document.getElementById('monthlyBill').value) || 0;
+            const rate = parseFloat(document.getElementById('rate').value) || 0.15;
+            const sunHours = parseFloat(document.getElementById('sunHours').value) || 5;
+            const efficiency = parseFloat(document.getElementById('efficiency').value) / 100 || 0.8;
 
-            const cubicFeet = length * width * (thickness / 12);
-            const cubicYards = cubicFeet / 27;
-            const withWaste = cubicYards * 1.1;
+            const monthlyKwh = monthlyBill / rate;
+            const dailyKwh = monthlyKwh / 30;
+            const systemSizeKw = dailyKwh / (sunHours * efficiency);
+            const panelCount = Math.ceil(systemSizeKw * 1000 / 400);
+            const yearlySavings = monthlyBill * 12;
+            const costPerWatt = 2.75;
+            const estimatedCost = systemSizeKw * 1000 * costPerWatt;
+            const taxCredit = estimatedCost * 0.30;
+            const netCost = estimatedCost - taxCredit;
+            const payback = netCost / yearlySavings;
+            const lifetimeSavings = (yearlySavings * 25) - netCost;
 
-            const bags40 = Math.ceil(cubicFeet / 0.011);
-            const bags60 = Math.ceil(cubicFeet / 0.017);
-            const bags80 = Math.ceil(cubicFeet / 0.022);
-
-            document.getElementById('cubicYards').textContent = cubicYards.toFixed(2) + ' yd³';
-            document.getElementById('cubicFeet').textContent = cubicFeet.toFixed(1) + ' ft³';
-            document.getElementById('bags40').textContent = bags40;
-            document.getElementById('bags60').textContent = bags60;
-            document.getElementById('bags80').textContent = bags80;
-            document.getElementById('readyMixCost').textContent = '$' + Math.round(withWaste * 125);
-            document.getElementById('bagsCost').textContent = '$' + Math.round(bags80 * 6);
-            document.getElementById('withWaste').textContent = withWaste.toFixed(2) + ' yd³';
+            document.getElementById('systemSize').textContent = systemSizeKw.toFixed(1) + ' kW';
+            document.getElementById('monthlyKwh').textContent = Math.round(monthlyKwh) + ' kWh';
+            document.getElementById('panelCount').textContent = panelCount + ' panels';
+            document.getElementById('yearlySavings').textContent = '$' + Math.round(yearlySavings).toLocaleString();
+            document.getElementById('estimatedCost').textContent = '$' + Math.round(estimatedCost).toLocaleString();
+            document.getElementById('taxCredit').textContent = '$' + Math.round(taxCredit).toLocaleString();
+            document.getElementById('netCost').textContent = '$' + Math.round(netCost).toLocaleString();
+            document.getElementById('payback').textContent = payback.toFixed(1) + ' years';
+            document.getElementById('lifetimeSavings').textContent = '$' + Math.round(lifetimeSavings).toLocaleString();
         }
         calculate();
     </script>
